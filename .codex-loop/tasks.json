@@ -26,9 +26,16 @@
     {
       "id": "004",
       "title": "팀원 실제 CSV 수신 후 컬럼 매핑 검증하기",
-      "status": "in_progress",
+      "status": "waiting",
       "priority": "p0",
       "file": "tasks/TASK-004.json"
+    },
+    {
+      "id": "005",
+      "title": "수상 전략 관점에서 AI 설계 재검토하기",
+      "status": "in_progress",
+      "priority": "p0",
+      "file": "tasks/TASK-005.json"
     }
   ],
   "source": "seniorcareservice-project-plan"

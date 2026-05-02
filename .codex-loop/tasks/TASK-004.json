@@ -1,7 +1,7 @@
 {
   "id": "004",
   "title": "팀원 실제 CSV 수신 후 컬럼 매핑 검증하기",
-  "status": "in_progress",
+  "status": "waiting",
   "priority": "p0",
   "summary": "팀원이 공공데이터포털에서 받은 실제 CSV를 data/raw/에 넣었을 때 현재 모델 파이프라인에 바로 연결되는지 검증합니다.",
   "dependsOn": [
