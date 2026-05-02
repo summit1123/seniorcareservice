@@ -173,9 +173,11 @@ def decision_flow_svg() -> str:
     for item in decisions:
         body.append(label_box(*item))
 
-    body.append(arrow(815, 268, 255, 343))
-    body.append(arrow(825, 268, 600, 343))
-    body.append(arrow(835, 268, 945, 343))
+    body.append(f'<line x1="823" y1="268" x2="823" y2="316" stroke="{BLACK}" stroke-width="1.4"/>')
+    body.append(f'<line x1="255" y1="316" x2="945" y2="316" stroke="{BLACK}" stroke-width="1.4"/>')
+    body.append(f'<line x1="255" y1="316" x2="255" y2="343" stroke="{BLACK}" stroke-width="1.4"/>')
+    body.append(f'<line x1="600" y1="316" x2="600" y2="343" stroke="{BLACK}" stroke-width="1.4"/>')
+    body.append(f'<line x1="945" y1="316" x2="945" y2="343" stroke="{BLACK}" stroke-width="1.4"/>')
 
     body.append(text(82, 540, "핵심 문장:", size=18, weight=800, color=BLACK))
     body.append(text(185, 540, "보험료 패널티가 아니라, 추가 혜택 조정과 예방 케어 안내로 연결한다.", size=18, color=TEXT))
