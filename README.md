@@ -87,6 +87,12 @@ python3 -m src.run_pipeline
 python3 scripts/generate_analysis_outputs.py
 ```
 
+TAAS 사고통계 가중치 생성:
+
+```bash
+python3 scripts/build_taas_weights.py
+```
+
 생성되는 기본 자료:
 
 ```text
@@ -96,4 +102,5 @@ reports/figures/03_decision_flow.svg
 reports/figures/04_driver_score_comparison.svg
 reports/figures/05_decision_result_summary.svg
 reports/model_demo_summary.md
+data/processed/taas_weight_table.csv
 ```
