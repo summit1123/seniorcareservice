@@ -1,23 +1,27 @@
 {
   "id": "002",
-  "title": "첫 실행 계획 작성하기",
+  "title": "AI 점수와 판단 결과 만들기",
   "status": "todo",
   "priority": "p0",
-  "summary": "브리프를 실제로 실행 가능한 계획과 구체적 디자인 방향으로 바꿉니다.",
+  "summary": "생활권 생성 feature와 운전행동 feature를 이용해 평소패턴 변화 감지, 점수 계산, 리워드/케어 판단을 만듭니다.",
   "dependsOn": [
     "001"
   ],
   "deliverables": [
-    ".codex-loop/prd/PRD.md",
-    ".codex-loop/tasks/TASK-002.json"
+    "src/models/pattern_model.py",
+    "src/models/score_rules.py",
+    "src/product/decision_rules.py",
+    "data/processed/score_table.csv",
+    "data/processed/decision_table.csv"
   ],
   "acceptance": [
-    "다음 구현 단위가 실제 의존성과 함께 순서대로 드러나 있습니다.",
-    "핵심 사용자 흐름과 시각 방향이 generic한 AI 스타일 없이 구현 가능한 수준으로 정리되어 있습니다.",
-    "열린 질문은 소수의 명시적 결정 항목으로 줄어들어 있습니다."
+    "Isolation Forest 기반 pattern_change_score가 생성됩니다.",
+    "Safe Driving Score, Familiar Zone Score, Out-Zone Behavior Risk가 계산됩니다.",
+    "최종 decision은 추가 리워드, 기본 유지, 예방 케어 중 하나로 나옵니다.",
+    "reason_1, reason_2, reason_3가 사람이 읽을 수 있는 문장으로 생성됩니다."
   ],
   "notes": [
-    "loop가 실제로 실행할 수 있을 정도로 계획을 짧고 선명하게 유지하세요.",
-    "UI가 중요하면 empty, loading, error, success 상태까지 적어주세요."
+    "AI가 보험료를 직접 결정한다고 표현하지 않습니다.",
+    "위험은 벌점이 아니라 예방 케어로 연결합니다."
   ]
 }

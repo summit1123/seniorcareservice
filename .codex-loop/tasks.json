@@ -1,28 +1,28 @@
 {
-  "project": "Codex Ralph Loop 작업공간",
+  "project": "생활권 기반 시니어 안심주행 특약",
   "selection": "priority-order",
   "tasks": [
     {
       "id": "001",
-      "title": "빌드 브리프를 정리하고 확정하기",
+      "title": "Trip 샘플 데이터와 feature pipeline 만들기",
       "status": "todo",
       "priority": "p0",
       "file": "tasks/TASK-001.json"
     },
     {
       "id": "002",
-      "title": "첫 실행 계획 작성하기",
+      "title": "AI 점수와 판단 결과 만들기",
       "status": "todo",
       "priority": "p0",
       "file": "tasks/TASK-002.json"
     },
     {
       "id": "003",
-      "title": "첫 번째 수직 슬라이스 구현 및 검증하기",
+      "title": "제출용 시각화 자료와 리포트 만들기",
       "status": "todo",
-      "priority": "p1",
+      "priority": "p0",
       "file": "tasks/TASK-003.json"
     }
   ],
-  "source": "bootstrap-template"
+  "source": "seniorcareservice-project-plan"
 }

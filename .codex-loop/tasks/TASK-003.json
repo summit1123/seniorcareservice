@@ -1,24 +1,27 @@
 {
   "id": "003",
-  "title": "첫 번째 수직 슬라이스 구현 및 검증하기",
+  "title": "제출용 시각화 자료와 리포트 만들기",
   "status": "todo",
-  "priority": "p1",
-  "summary": "믿을 수 있는 첫 슬라이스를 실제로 만들고, 검증 증거까지 남깁니다.",
+  "priority": "p0",
+  "summary": "모델 구조와 결과를 심사위원이 빠르게 이해할 수 있는 figure, report, proposal source로 정리합니다.",
   "dependsOn": [
     "001",
     "002"
   ],
   "deliverables": [
-    "실제 프로젝트 파일",
-    ".codex-loop/config.json 안의 로컬 검증 명령"
+    "reports/figures/01_ai_pipeline.svg",
+    "reports/figures/02_score_structure.svg",
+    "reports/figures/03_decision_flow.svg",
+    "reports/model_demo_summary.md",
+    "docs/submissions/proposal.md"
   ],
   "acceptance": [
-    "사용자가 의미 있는 한 가지 워크플로를 end-to-end로 완료할 수 있습니다.",
-    "기본 검증과 실패 처리 흐름이 존재합니다.",
-    "이 슬라이스는 loop 안에서 돌릴 수 있는 실제 checks, tests, screenshots로 뒷받침됩니다."
+    "시각화는 장식이 아니라 데이터, 모델, 판단 흐름을 설명합니다.",
+    "검정 중심의 깔끔한 문서 톤을 유지합니다.",
+    "proposal source review와 PDF render/review 흐름에 연결됩니다."
   ],
   "notes": [
-    "실행 가능한 슬라이스가 가능한데 scaffolding에서 멈추지 마세요.",
-    "done이라고 부르기 전에 실제로 동작한다는 증거를 모으세요."
+    "빈 박스나 장식용 도형으로 분량을 채우지 않습니다.",
+    "PDF는 최종 패키징 결과일 뿐 source of truth가 아닙니다."
   ]
 }
