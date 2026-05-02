@@ -50,7 +50,11 @@
     "seed_local_recovery": true
   },
   "checks": {
-    "commands": [],
+    "commands": [
+      "python3 scripts/generate_sample_trip_data.py",
+      "python3 -m src.run_pipeline",
+      "python3 scripts/generate_analysis_outputs.py"
+    ],
     "stop_on_failure": true
   },
   "review": {
