@@ -4,6 +4,8 @@
 
 시니어 운전자의 익숙한 생활권과 평소 운전패턴을 기준으로 최근 변화가 커진 고객을 조기에 발견하고, 추가 리워드 또는 예방 케어 안내로 연결하는 자동차보험 특약 견본입니다.
 
+차별점은 “얼마나 적게 탔는가”가 아니라 “익숙한 생활권에서 평소처럼 안정적으로 운전했는가, 그리고 최근에 위험한 변화가 생겼는가”를 AI가 분리한다는 점입니다.
+
 ## 심사 관점의 핵심 판단
 
 | 판단 항목 | 기존 안전운전 특약의 한계 | 제안 구조의 보완점 | 현재 제출 패키지의 근거 |
@@ -12,6 +14,14 @@
 | AI 실현 가능성 | 사고 라벨이 없으면 개인별 사고 예측 모델을 만들기 어렵다 | 사고 예측이 아니라 평소패턴 변화 감지로 문제를 재정의한다 | `pattern_change_score.csv`, `src/models/pattern_model.py` |
 | 상품 연결성 | 위험 고객을 벌점처럼 분리하면 시니어 친화성이 낮다 | 위험 신호를 보험료 인상이 아니라 예방 케어 안내로 연결한다 | `decision_table.csv`, [모델 견본 결과 요약](../../reports/model_demo_summary.md) |
 | 데이터 수급 | 실제 고객 앱 데이터 확보 전에는 검증이 지연된다 | 공공 사업용차량 CSV로 feature pipeline 연결성을 먼저 검증한다 | `scripts/validate_trip_csv_mapping.py` |
+
+## AI 활용 포인트
+
+| AI 처리 | 모델 역할 | 심사위원 질문에 대한 답 |
+|---|---|---|
+| DBSCAN 생활권 생성 | baseline 기간의 출발·도착 좌표를 밀도 기반으로 묶어 고객별 반복 생활권 중심을 만든다 | 고객의 익숙한 병원, 시장, 가족 방문지 같은 반복 이동을 마일리지와 별도 feature로 전환했다 |
+| 평소패턴 이상탐지 | 최근 trip vector가 고객 자신의 baseline보다 얼마나 달라졌는지 계산하고 `pattern_change_score`와 `anomaly_flag`를 남긴다 | 개인 사고 라벨 없이도 “평소와 달라진 운전”을 찾는 구현 가능한 AI 문제로 재정의했다 |
+| 설명 리포트 생성 | score, care trigger, reason code, top change signal을 함께 남겨 직원용 리포트와 고객 안내 문구로 연결한다 | AI 결과가 블랙박스 점수에 머물지 않고 왜 추가 리워드 또는 예방 케어인지 설명된다 |
 
 ## 지금 중요한 이유
 
@@ -26,7 +36,7 @@
 | 문제 | 현장에서 발생하는 어려움 | 제출 패키지의 해결 방향 |
 |---|---|---|
 | 생활권 맥락 부족 | 고령 운전자의 안정적 반복 운전을 “짧게 탔다” 또는 “점수가 높다”로만 평가한다 | 반복 출발지, 반복 목적지, 반복 경로를 생활권 feature로 전환한다 |
-| 사고 라벨 의존 | 개인 단위 사고 라벨 없이 고성능 예측 모델을 주장하면 실현 가능성이 약해진다 | Isolation Forest 성격의 이상 변화 감지와 규칙 기반 score를 결합한다 |
+| 사고 라벨 의존 | 개인 단위 사고 라벨 없이 고성능 예측 모델을 주장하면 실현 가능성이 약해진다 | baseline-distance 이상탐지로 시작하고, 파일럿 단계에서 Isolation Forest로 교체 가능한 score 계약을 둔다 |
 | 고객 커뮤니케이션 리스크 | 위험 신호가 곧바로 불이익처럼 전달되면 특약 수용성이 낮아진다 | 판단 결과를 추가 리워드, 기본 유지, 예방 케어로 제한한다 |
 
 이 구조는 생활권 밖 주행 자체를 자동 위험으로 보지 않습니다. 생활권 밖 주행은 병원, 가족 돌봄, 장보기처럼 정상적인 이유가 있을 수 있습니다. 제안 모델은 생활권 밖 주행과 위험운전 행동, 야간 비율, 평소 대비 변화가 동시에 커지는 경우에만 예방 케어 후보로 분리합니다.
@@ -40,9 +50,9 @@ _그림 1. Trip CSV에서 생활권 feature, 평소패턴 변화 감지, score t
 | 단계 | 입력 | 처리 | 산출물 |
 |---|---|---|---|
 | Trip 입력 | driver_id, trip_id, 시각, 좌표, 거리, 위험운전 이벤트 | 필수 컬럼 검증, 타입 변환, 결측·음수 값 확인 | `data/raw/trip_sample.csv` |
-| 생활권 생성 | 출발/도착 좌표, baseline 기간 trip | 반복 목적지와 반복 경로를 grid 단위로 묶음 | `zone_feature_table.csv` |
+| 생활권 생성 | 출발/도착 좌표, baseline 기간 trip | DBSCAN 방식 밀도 기반 클러스터링으로 반복 생활권 중심 생성 | `zone_feature_table.csv` |
 | 운전행동 feature | 과속, 급가속, 급감속, 급회전, 야간 주행 | 100km당 이벤트 수와 최근 기간 비율 계산 | `driving_feature_table.csv` |
-| 평소패턴 변화 감지 | baseline trip vector, recent trip vector | 최근 운전이 평소보다 얼마나 달라졌는지 점수화 | `pattern_change_score.csv` |
+| 평소패턴 변화 감지 | baseline trip vector, recent trip vector | baseline 대비 양의 변화 신호를 이상탐지 점수와 주요 변화 feature로 기록 | `pattern_change_score.csv` |
 | 점수 계산 | 생활권 안정성, 위험행동, 변화 점수 | Safe Driving, Familiar Zone, Pattern Change, Out-Zone Risk 계산 | `score_table.csv` |
 | 상품 판단 | score table | 추가 리워드, 기본 유지, 예방 케어 중 하나로 분류 | `decision_table.csv` |
 

@@ -1,4 +1,4 @@
-driver_id,pattern_change_score,anomaly_flag,pattern_model_backend
-driver_001,5.55,0,baseline_distance_fallback
-driver_002,32.47,0,baseline_distance_fallback
-driver_003,100.0,1,baseline_distance_fallback
+driver_id,pattern_change_score,anomaly_flag,pattern_model_backend,top_change_signal,top_change_contribution
+driver_001,5.55,0,baseline_distance_anomaly,harsh_brake_increase,0.435
+driver_002,32.47,0,baseline_distance_anomaly,out_zone_increase,2.24
+driver_003,100.0,1,baseline_distance_anomaly,speeding_increase,4.6154

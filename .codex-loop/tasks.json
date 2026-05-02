@@ -33,7 +33,7 @@
     {
       "id": "005",
       "title": "수상 전략 관점에서 AI 설계 재검토하기",
-      "status": "in_progress",
+      "status": "completed",
       "priority": "p0",
       "file": "tasks/TASK-005.json"
     }

@@ -27,7 +27,7 @@
 1. Trip 데이터에서 시작/종료 좌표, 주행거리, 운전행동 이벤트를 읽는다.
 2. 생활권 생성 AI가 고객별 반복 목적지와 반복 주행 패턴을 찾는다.
 3. 운전행동 feature를 100km 기준으로 정규화한다.
-4. Isolation Forest가 최근 운전이 평소와 얼마나 다른지 감지한다.
+4. 평소패턴 이상탐지 모델이 최근 운전이 평소와 얼마나 다른지 감지한다.
 5. Safe Driving Score, Familiar Zone Score, Pattern Change Score, Out-Zone Behavior Risk를 계산한다.
 6. 추가 리워드, 기본 유지, 예방 케어 중 하나로 판단한다.
 7. 결과를 figure와 리포트로 만들어 proposal source에 연결한다.
@@ -54,8 +54,8 @@
 
 ## AI 동작 규칙
 
-- DBSCAN/HDBSCAN은 생활권 후보를 생성한다.
-- Isolation Forest는 사고 라벨 없이 평소패턴 변화를 감지한다.
+- DBSCAN 방식 밀도 기반 클러스터링은 생활권 후보를 생성한다.
+- 현재 견본은 외부 의존성 없는 baseline-distance anomaly scoring으로 평소패턴 변화를 감지한다. 파일럿 단계에서는 같은 feature 계약으로 Isolation Forest를 교체 후보로 둔다.
 - TAAS 또는 공공 사고통계는 개인 예측 라벨이 아니라 위험행동 가중치 근거로만 사용한다.
 - LLM은 보험료나 케어 여부를 직접 결정하지 않는다. 설명문 생성 또는 리포트 문구 보조에만 쓴다.
 

@@ -129,6 +129,7 @@ data/processed/model_feature_table.csv
 | 컬럼 | 설명 |
 |---|---|
 | driver_id | 익명화된 운전자 ID |
+| zone_model_backend | 생활권 생성에 사용한 밀도 기반 클러스터링 백엔드 |
 | total_km | 총 주행거리 |
 | trip_count | Trip 수 |
 | avg_trip_km | 평균 Trip 거리 |
@@ -141,6 +142,25 @@ data/processed/model_feature_table.csv
 | route_repeat_ratio | 반복 경로 비율 |
 | new_destination_count | 신규 목적지 수 |
 | zone_stability_score | 생활권 안정성 점수 |
+
+## 5.1 평소패턴 변화 감지 테이블 컬럼
+
+파일명:
+
+```text
+data/processed/pattern_change_score.csv
+```
+
+컬럼:
+
+| 컬럼 | 설명 |
+|---|---|
+| driver_id | 익명화된 운전자 ID |
+| pattern_change_score | 최근 주행이 baseline 대비 얼마나 달라졌는지 나타내는 0~100 점수 |
+| anomaly_flag | 변화 점수가 예방 케어 후보 기준 이상인지 여부 |
+| pattern_model_backend | 이상탐지 점수를 만든 모델 백엔드 |
+| top_change_signal | 최근 변화 점수에 가장 크게 기여한 feature 신호 |
+| top_change_contribution | 주요 변화 신호의 평균 기여도 |
 
 ## 6. 최종 판단 테이블 컬럼
 

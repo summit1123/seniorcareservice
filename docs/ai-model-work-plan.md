@@ -18,6 +18,24 @@ score_table.csv
 decision_table.csv
 ```
 
+## 1.1 수상 전략 재검토 결과
+
+AI 활용 대회와 보험 공모전 맥락에서 가장 강한 답변은 사고 예측 모델이 아니라 생활권 생성, 평소패턴 이상탐지, 설명 가능한 판단 리포트를 하나의 재현 가능한 pipeline으로 묶는 것입니다.
+
+| 선택지 | 재검토 판단 | 이유 |
+|---|---|---|
+| 개인별 사고 예측 | 제외 | 개인 사고 라벨이 없고, 공모전 견본에서 과장으로 보일 위험이 큽니다 |
+| 연령 기반 위험군 분류 | 제외 | 시니어 고객을 하나의 위험군으로 묶어 상품 수용성과 윤리성이 약합니다 |
+| DBSCAN 생활권 생성 | 채택 | 반복 목적지와 반복 경로를 고객별 feature로 만들 수 있어 기존 마일리지 특약과 차별화됩니다 |
+| 평소패턴 이상탐지 | 채택 | 사고 라벨 없이도 최근 운전 변화와 위험행동 증가를 분리할 수 있습니다 |
+| 설명 리포트 | 채택 | score, care trigger, reason code, top change signal을 남겨 심사위원이 AI 판단 근거를 확인할 수 있습니다 |
+
+심사 답변용 한 문장은 발표와 제안서에 공통으로 사용합니다.
+
+```text
+기존 마일리지·착한운전 특약이 거리와 일반 안전점수 중심이라면, 본 제안은 DBSCAN 생활권과 평소패턴 이상탐지를 결합해 익숙한 생활권 안에서의 안정 운전은 추가 리워드로, 평소와 다른 위험 변화는 예방 케어로 분리합니다.
+```
+
 ## 2. 전체 파이프라인
 
 ```text
@@ -90,13 +108,14 @@ data : Trip 샘플 데이터 추가
 사용 모델:
 
 ```text
-DBSCAN
+DBSCAN 방식 밀도 기반 클러스터링
 ```
 
 작업:
 
 - GPS 좌표를 grid로 변환
 - driver_id별 출발/도착 지점 clustering
+- `zone_model_backend=dbscan_density_cluster` 기록
 - Trip별 in_zone_flag, out_zone_flag 생성
 - 운전자별 in_zone_ratio, out_zone_ratio 계산
 
@@ -175,8 +194,10 @@ feat : 모델 feature table 생성 추가
 사용 모델:
 
 ```text
-Isolation Forest
+baseline-distance anomaly scoring
 ```
+
+현재 제출 견본은 외부 의존성 없이 실행되는 baseline-distance 이상탐지를 사용합니다. 실제 서비스 파일럿에서는 같은 입력 feature를 Isolation Forest 또는 HDBSCAN 기반 이상탐지로 교체해도 `pattern_change_score`, `anomaly_flag`, `top_change_signal` 계약을 유지합니다.
 
 입력 feature:
 
@@ -196,6 +217,7 @@ new_destination_count
 ```text
 pattern_change_score
 anomaly_flag
+top_change_signal
 ```
 
 산출물:
@@ -203,7 +225,6 @@ anomaly_flag
 ```text
 data/processed/pattern_change_score.csv
 src/models/pattern_model.py
-notebooks/01_pattern_model_demo.ipynb
 ```
 
 예상 커밋:

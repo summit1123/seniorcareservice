@@ -24,22 +24,54 @@ def close_to_any(point: Point, centers: list[Point], eps: float) -> bool:
     return any(distance(point, center) <= eps for center in centers)
 
 
-def cluster_points(points: list[Point], eps: float = 0.012, min_samples: int = 3) -> list[Point]:
-    clusters: list[list[Point]] = []
-    for point in points:
-        matched_index = None
-        for idx, cluster in enumerate(clusters):
-            center = cluster_center(cluster)
-            if distance(point, center) <= eps:
-                matched_index = idx
-                break
-        if matched_index is None:
-            clusters.append([point])
-        else:
-            clusters[matched_index].append(point)
+def region_query(points: list[Point], point_index: int, eps: float) -> list[int]:
+    point = points[point_index]
+    return [idx for idx, candidate in enumerate(points) if distance(point, candidate) <= eps]
 
-    centers = [cluster_center(cluster) for cluster in clusters if len(cluster) >= min_samples]
-    return centers
+
+def dbscan_clusters(points: list[Point], eps: float = 0.012, min_samples: int = 3) -> list[list[Point]]:
+    labels: list[int | None] = [None for _ in points]
+    cluster_id = 0
+
+    for point_index in range(len(points)):
+        if labels[point_index] is not None:
+            continue
+
+        neighbors = region_query(points, point_index, eps)
+        if len(neighbors) < min_samples:
+            labels[point_index] = -1
+            continue
+
+        labels[point_index] = cluster_id
+        seeds = list(neighbors)
+        seed_lookup = set(seeds)
+        cursor = 0
+
+        while cursor < len(seeds):
+            neighbor_index = seeds[cursor]
+            if labels[neighbor_index] == -1:
+                labels[neighbor_index] = cluster_id
+            elif labels[neighbor_index] is None:
+                labels[neighbor_index] = cluster_id
+                expanded = region_query(points, neighbor_index, eps)
+                if len(expanded) >= min_samples:
+                    for expanded_index in expanded:
+                        if expanded_index not in seed_lookup:
+                            seeds.append(expanded_index)
+                            seed_lookup.add(expanded_index)
+            cursor += 1
+
+        cluster_id += 1
+
+    clusters: list[list[Point]] = [[] for _ in range(cluster_id)]
+    for point, label in zip(points, labels):
+        if label is not None and label >= 0:
+            clusters[label].append(point)
+    return clusters
+
+
+def cluster_points(points: list[Point], eps: float = 0.012, min_samples: int = 3) -> list[Point]:
+    return [cluster_center(cluster) for cluster in dbscan_clusters(points, eps=eps, min_samples=min_samples)]
 
 
 def cluster_center(points: list[Point]) -> Point:
@@ -109,6 +141,7 @@ def build_zone_feature_table(trips: list[dict[str, Any]]) -> list[dict[str, Any]
         rows.append(
             {
                 "driver_id": driver_id,
+                "zone_model_backend": "dbscan_density_cluster",
                 "in_zone_ratio": round(in_zone_ratio, 4),
                 "out_zone_ratio": round(1 - in_zone_ratio, 4),
                 "route_repeat_ratio": round(route_repeat_ratio, 4),

@@ -1,8 +1,8 @@
-"""Pattern-change scoring model.
+"""Pattern-change anomaly scoring for the proposal demo.
 
-The preferred backend is sklearn IsolationForest when available. The repository
-also includes a deterministic fallback so the demo pipeline runs on a clean
-Python installation.
+The model compares recent trip vectors with each driver's baseline vectors and
+keeps the strongest positive change signal so the report can explain why a
+customer was separated for reward, default monitoring, or preventive care.
 """
 
 from __future__ import annotations
@@ -27,6 +27,15 @@ FEATURE_WEIGHTS = {
     "speeding_per_100km": 1.6,
     "harsh_brake_per_100km": 1.4,
     "sharp_turn_per_100km": 1.0,
+}
+
+FEATURE_LABELS = {
+    "trip_distance_km": "trip_distance_increase",
+    "out_zone_flag": "out_zone_increase",
+    "night_flag": "night_driving_increase",
+    "speeding_per_100km": "speeding_increase",
+    "harsh_brake_per_100km": "harsh_brake_increase",
+    "sharp_turn_per_100km": "sharp_turn_increase",
 }
 
 MIN_SCALES = {
@@ -67,6 +76,32 @@ def baseline_stats(vectors: list[dict[str, float]]) -> dict[str, tuple[float, fl
     return stats
 
 
+def score_recent_vectors(
+    recent: list[dict[str, float]],
+    stats: dict[str, tuple[float, float]],
+) -> tuple[float, str, float]:
+    if not recent:
+        return 0.0, "no_recent_trip", 0.0
+
+    trip_scores: list[float] = []
+    feature_totals = {feature: 0.0 for feature in FEATURE_WEIGHTS}
+    for vector in recent:
+        weighted_distance = 0.0
+        total_weight = 0.0
+        for feature, weight in FEATURE_WEIGHTS.items():
+            avg, scale = stats[feature]
+            positive_delta = max(0.0, vector[feature] - avg)
+            contribution = weight * (positive_delta / scale)
+            feature_totals[feature] += contribution
+            weighted_distance += contribution
+            total_weight += weight
+        trip_scores.append(weighted_distance / total_weight)
+
+    top_feature = max(feature_totals, key=feature_totals.get)
+    top_contribution = feature_totals[top_feature] / len(recent)
+    return min(100.0, mean(trip_scores) * 85), FEATURE_LABELS[top_feature], top_contribution
+
+
 def fallback_pattern_scores(rows: list[dict[str, str]]) -> list[dict[str, Any]]:
     by_driver: dict[str, list[dict[str, str]]] = {}
     for row in rows:
@@ -77,26 +112,15 @@ def fallback_pattern_scores(rows: list[dict[str, str]]) -> list[dict[str, Any]]:
         baseline = [trip_vector(row) for row in driver_rows if row["period"] == "baseline"]
         recent = [trip_vector(row) for row in driver_rows if row["period"] == "recent"]
         stats = baseline_stats(baseline)
-        if not recent:
-            score = 0.0
-        else:
-            trip_scores = []
-            for vector in recent:
-                weighted_distance = 0.0
-                total_weight = 0.0
-                for feature, weight in FEATURE_WEIGHTS.items():
-                    avg, scale = stats[feature]
-                    positive_delta = max(0.0, vector[feature] - avg)
-                    weighted_distance += weight * (positive_delta / scale)
-                    total_weight += weight
-                trip_scores.append(weighted_distance / total_weight)
-            score = min(100.0, mean(trip_scores) * 85)
+        score, top_signal, top_contribution = score_recent_vectors(recent, stats)
         output.append(
             {
                 "driver_id": driver_id,
                 "pattern_change_score": round(score, 2),
                 "anomaly_flag": int(score >= 60),
-                "pattern_model_backend": "baseline_distance_fallback",
+                "pattern_model_backend": "baseline_distance_anomaly",
+                "top_change_signal": top_signal,
+                "top_change_contribution": round(top_contribution, 4),
             }
         )
     return output

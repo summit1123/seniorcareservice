@@ -10,6 +10,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 SCORE_TABLE = ROOT / "data" / "processed" / "score_table.csv"
 DECISION_TABLE = ROOT / "data" / "processed" / "decision_table.csv"
+PATTERN_TABLE = ROOT / "data" / "processed" / "pattern_change_score.csv"
 FIGURE_DIR = ROOT / "reports" / "figures"
 REPORT_PATH = ROOT / "reports" / "model_demo_summary.md"
 
@@ -20,6 +21,16 @@ MUTED = "#666666"
 LINE = "#BBBBBB"
 FILL = "#F7F7F7"
 WHITE = "#FFFFFF"
+
+SIGNAL_LABELS = {
+    "trip_distance_increase": "주행거리 증가",
+    "out_zone_increase": "생활권 밖 주행 증가",
+    "night_driving_increase": "야간 주행 증가",
+    "speeding_increase": "과속 증가",
+    "harsh_brake_increase": "급감속 증가",
+    "sharp_turn_increase": "급회전 증가",
+    "no_recent_trip": "최근 주행 없음",
+}
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -51,6 +62,11 @@ def base_svg(width: int, height: int, title: str, subtitle: str, body: str) -> s
 def write_svg(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
+
+
+def signal_label(signal: str) -> str:
+    label = SIGNAL_LABELS.get(signal, signal)
+    return f"{label} (`{signal}`)"
 
 
 def score_comparison_svg(score_rows: list[dict[str, str]]) -> str:
@@ -131,10 +147,23 @@ def decision_summary_svg(decision_rows: list[dict[str, str]]) -> str:
     )
 
 
-def write_summary_report(score_rows: list[dict[str, str]], decision_rows: list[dict[str, str]]) -> None:
+def write_summary_report(
+    score_rows: list[dict[str, str]],
+    decision_rows: list[dict[str, str]],
+    pattern_rows: list[dict[str, str]],
+) -> None:
     decision_by_driver = {row["driver_id"]: row for row in decision_rows}
+    pattern_by_driver = {row["driver_id"]: row for row in pattern_rows}
     lines = [
         "# 모델 견본 결과 요약",
+        "",
+        "## 심사위원 질문 대응",
+        "",
+        "| 질문 | 제출 패키지의 답변 | 확인 산출물 |",
+        "|---|---|---|",
+        "| AI가 무엇을 했는가 | DBSCAN 방식 밀도 기반 클러스터링으로 고객별 생활권 중심을 만들고, 최근 trip vector가 baseline보다 얼마나 달라졌는지 이상탐지 점수로 계산했다 | `zone_feature_table.csv`, `pattern_change_score.csv` |",
+        "| 왜 사고 예측이 아닌가 | 개인 사고 라벨 없이 과장된 예측을 하지 않고, 평소패턴 변화와 위험행동 증가를 분리해 예방 케어 후보만 찾는다 | `score_table.csv`, `decision_table.csv` |",
+        "| 결과를 어떻게 설명하는가 | 고객별 score, care trigger, reason code, top change signal을 함께 남겨 직원용 리포트와 고객 안내 문구로 전환할 수 있게 했다 | `decision_table.csv`, `reports/model_demo_summary.md` |",
         "",
         "## 실행 결과",
         "",
@@ -147,6 +176,22 @@ def write_summary_report(score_rows: list[dict[str, str]], decision_rows: list[d
             f"| {row['driver_id']} | {float(row['safe_driving_score']):.1f} | "
             f"{float(row['familiar_zone_score']):.1f} | {float(row['pattern_change_score']):.1f} | "
             f"{float(row['out_zone_behavior_risk']):.1f} | {decision} |"
+        )
+
+    lines.extend(
+        [
+            "",
+            "## 이상탐지 설명 신호",
+            "",
+            "| 고객 | 변화 점수 | 이상 여부 | 주요 변화 신호 | 모델 백엔드 |",
+            "|---|---:|---:|---|---|",
+        ]
+    )
+    for row in score_rows:
+        pattern = pattern_by_driver[row["driver_id"]]
+        lines.append(
+            f"| {row['driver_id']} | {float(pattern['pattern_change_score']):.1f} | "
+            f"{pattern['anomaly_flag']} | {signal_label(pattern['top_change_signal'])} | {pattern['pattern_model_backend']} |"
         )
 
     lines.extend(
@@ -167,7 +212,7 @@ def write_summary_report(score_rows: list[dict[str, str]], decision_rows: list[d
             "",
             "## 발표에 사용할 문장",
             "",
-            "이 모델은 사고 발생을 직접 예측하기보다, 고객의 평소 생활권과 운전패턴을 기준으로 최근 변화가 커진 고객을 찾아 추가 리워드 또는 예방 케어로 연결합니다.",
+            "기존 마일리지·착한운전 특약이 거리와 일반 안전점수 중심이라면, 이 모델은 DBSCAN 생활권과 평소패턴 이상탐지를 결합해 익숙한 생활권 안에서의 안정 운전은 추가 리워드로, 평소와 다른 위험 변화는 예방 케어로 분리합니다.",
         ]
     )
     REPORT_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -176,6 +221,7 @@ def write_summary_report(score_rows: list[dict[str, str]], decision_rows: list[d
 def generate_analysis_outputs() -> dict[str, Path]:
     score_rows = read_csv(SCORE_TABLE)
     decision_rows = read_csv(DECISION_TABLE)
+    pattern_rows = read_csv(PATTERN_TABLE)
     outputs = {
         "score_comparison": FIGURE_DIR / "04_driver_score_comparison.svg",
         "decision_summary": FIGURE_DIR / "05_decision_result_summary.svg",
@@ -183,7 +229,7 @@ def generate_analysis_outputs() -> dict[str, Path]:
     }
     write_svg(outputs["score_comparison"], score_comparison_svg(score_rows))
     write_svg(outputs["decision_summary"], decision_summary_svg(decision_rows))
-    write_summary_report(score_rows, decision_rows)
+    write_summary_report(score_rows, decision_rows, pattern_rows)
     return outputs
 
 

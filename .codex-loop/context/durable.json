@@ -1,7 +1,9 @@
 {
-  "facts": [],
+  "facts": [
+    "2026-05-03: task 005 완료. DBSCAN 생활권 생성, baseline-distance 평소패턴 이상탐지, top_change_signal 설명 리포트, TAAS 사용 경계, 기존 특약 대비 차별 문장을 source와 산출물에 반영했고 source review/preflight/pipeline 검증이 통과했다."
+  ],
   "constraints": [],
   "style": [],
   "contracts": [],
-  "updatedAt": null
+  "updatedAt": "2026-05-03T04:51:44+09:00"
 }

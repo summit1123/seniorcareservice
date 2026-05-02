@@ -23,7 +23,7 @@ def write_csv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str] | No
     else:
         fieldnames = fieldnames or list(rows[0].keys())
     with path.open("w", newline="", encoding="utf-8") as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
