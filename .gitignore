@@ -18,6 +18,7 @@ reports/*.png
 reports/*.html
 
 *.log
+tmp/
 
 # Codex Ralph loop
 .codex-loop/history/*
@@ -39,4 +40,3 @@ reports/*.html
 .codex-loop/preflight/REPORT.md
 output/html/*
 output/pdf/*
-
