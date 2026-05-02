@@ -1,0 +1,4 @@
+driver_id,safe_driving_score,familiar_zone_score,pattern_change_score,out_zone_behavior_risk,care_trigger_score,care_trigger,decision,reason_1,reason_2,reason_3
+driver_001,90.91,100.0,5.55,7.88,7.07,0,추가 리워드,생활권 중심 주행 비율이 높음,과속·급감속 등 위험행동이 낮음,최근 운전패턴이 평소와 유사함
+driver_002,92.21,53.45,32.47,38.83,29.76,0,기본 유지,일부 생활권 밖 주행은 있으나 고위험 변화는 제한적,기존 마일리지/안전운전 혜택 판단은 유지 가능,추가 데이터 확보 후 재평가 가능
+driver_003,11.75,6.5,100.0,100.0,97.65,1,예방 케어,최근 운전패턴이 평소와 크게 달라짐,생활권 밖 주행과 위험행동이 함께 증가함,차량 점검 또는 안전운전 리포트 안내 필요
