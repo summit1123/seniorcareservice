@@ -1,0 +1,4 @@
+driver_id,in_zone_ratio,out_zone_ratio,route_repeat_ratio,new_destination_count,zone_stability_score
+driver_001,1.0,0.0,1.0,0,100.0
+driver_002,0.5065,0.4935,0.6,0,53.45
+driver_003,0.15,0.85,0.2,2,6.5

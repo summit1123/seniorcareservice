@@ -1,0 +1,4 @@
+driver_id,total_km,trip_count,avg_trip_km,night_ratio,speeding_per_100km,harsh_accel_per_100km,harsh_brake_per_100km,sharp_turn_per_100km,in_zone_ratio,out_zone_ratio,route_repeat_ratio,new_destination_count,zone_stability_score,out_zone_ratio_delta,speeding_delta_per_100km,harsh_brake_delta_per_100km,night_ratio_delta
+driver_001,33.0,5,6.6,0.0,0.0,0.0,3.0303,0.0,1.0,0.0,1.0,0,100.0,0.0,0.0,-0.6666,0.0
+driver_002,38.5,5,7.7,0.0,0.0,0.0,2.5974,0.0,0.5065,0.4935,0.6,0,53.45,0.4935,0.0,-1.0995,0.0
+driver_003,100.0,5,20.0,0.45,9.0,3.0,8.0,7.0,0.15,0.85,0.2,2,6.5,0.5543,9.0,4.3031,0.45
