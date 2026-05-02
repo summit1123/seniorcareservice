@@ -152,6 +152,13 @@ def write_summary_report(score_rows: list[dict[str, str]], decision_rows: list[d
     lines.extend(
         [
             "",
+            "## 데이터 기준",
+            "",
+            "- 입력 CSV는 `docs/data-contract.md`의 표준 Trip schema를 기준으로 검증한다.",
+            "- 팀원이 받은 공공 사업용차량 CSV는 `scripts/validate_trip_csv_mapping.py`로 원본 컬럼 매핑, 필수 컬럼 누락, 파이프라인 실행 가능 여부를 먼저 확인한다.",
+            "- 원본 차량 식별자는 `driver_###` 형식으로 익명화하고, 원본 좌표는 생활권 feature 생성 뒤 최종 모델 feature table에 직접 남기지 않는다.",
+            "- 현재 수치는 실제 보험료 산정값이 아니라 생활권 생성, 평소패턴 변화 감지, 예방 케어 판단 구조의 구현 견본이다.",
+            "",
             "## 해석",
             "",
             "- `driver_001`은 생활권 중심 주행과 낮은 위험행동으로 추가 리워드 대상이다.",

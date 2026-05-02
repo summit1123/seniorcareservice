@@ -7,26 +7,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from src.data.column_mapping import STANDARD_COLUMNS
 
-REQUIRED_COLUMNS = [
-    "driver_id",
-    "trip_id",
-    "trip_start_time",
-    "trip_end_time",
-    "start_gps_x",
-    "start_gps_y",
-    "end_gps_x",
-    "end_gps_y",
-    "trip_distance_km",
-    "trip_duration_min",
-    "avg_speed",
-    "max_speed",
-    "speeding_count",
-    "harsh_accel_count",
-    "harsh_brake_count",
-    "sharp_turn_count",
-    "stop_count",
-]
+REQUIRED_COLUMNS = STANDARD_COLUMNS
 
 FLOAT_COLUMNS = {
     "start_gps_x",
