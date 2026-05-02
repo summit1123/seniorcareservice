@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#111111"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="1200" height="520" fill="#FFFFFF"/>
+  <text x="48" y="58" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="30" font-weight="800" fill="#111111">점수 구조</text>
+  <text x="48" y="92" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="17" font-weight="400" fill="#666666">운전 안정성, 생활권 안정성, 패턴 변화, 생활권 밖 위험행동을 분리해 판단한다.</text>
+  <rect x="455" y="156" width="290" height="116" rx="4" fill="#F7F7F7" stroke="#B8B8B8" stroke-width="1"/>
+<text x="473" y="190" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" fill="#111111">최종 판단</text>
+<text x="473" y="220" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">추가 리워드</text>
+<text x="473" y="242" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">기본 유지</text>
+<text x="473" y="264" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">예방 케어</text>
+<rect x="62" y="138" width="300" height="112" rx="4" fill="#F7F7F7" stroke="#B8B8B8" stroke-width="1"/>
+<text x="80" y="172" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" fill="#111111">Safe Driving Score</text>
+<text x="80" y="202" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">과속, 급가속, 급감속</text>
+<text x="80" y="224" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">급회전, 안전운전점수</text>
+<rect x="62" y="330" width="300" height="112" rx="4" fill="#F7F7F7" stroke="#B8B8B8" stroke-width="1"/>
+<text x="80" y="364" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" fill="#111111">Familiar Zone Score</text>
+<text x="80" y="394" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">생활권 내 주행 비율</text>
+<text x="80" y="416" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">반복 경로, 신규 목적지</text>
+<rect x="838" y="138" width="300" height="112" rx="4" fill="#F7F7F7" stroke="#B8B8B8" stroke-width="1"/>
+<text x="856" y="172" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" fill="#111111">Pattern Change Score</text>
+<text x="856" y="202" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">최근 주행과 평소 패턴 차이</text>
+<text x="856" y="224" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">Isolation Forest 결과</text>
+<rect x="838" y="330" width="300" height="112" rx="4" fill="#F7F7F7" stroke="#B8B8B8" stroke-width="1"/>
+<text x="856" y="364" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" fill="#111111">Out-Zone Behavior Risk</text>
+<text x="856" y="394" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">생활권 밖 위험행동</text>
+<text x="856" y="416" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">야간/과속/급감속 변화</text>
+<line x1="362" y1="194" x2="455" y2="204" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="362" y1="386" x2="455" y2="224" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="838" y1="194" x2="745" y2="204" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="838" y1="386" x2="745" y2="224" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="390" y="315" width="420" height="106" rx="4" fill="#EFEFEF" stroke="#B8B8B8" stroke-width="1"/>
+<text x="416" y="350" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="21" font-weight="800" fill="#111111">판단 원칙</text>
+<text x="416" y="382" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">생활권 밖이라는 이유만으로 위험 처리하지 않는다.</text>
+<text x="416" y="405" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">위험행동 증가와 평소패턴 변화가 함께 있을 때 케어 신호로 본다.</text>
+</svg>

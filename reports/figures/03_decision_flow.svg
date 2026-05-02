@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="610" viewBox="0 0 1200 610">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#111111"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="1200" height="610" fill="#FFFFFF"/>
+  <text x="48" y="58" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="30" font-weight="800" fill="#111111">상품 판단 흐름</text>
+  <text x="48" y="92" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="17" font-weight="400" fill="#666666">마일리지 제도 위에 생활권 안정성과 평소패턴 변화를 추가 보정한다.</text>
+  <rect x="72" y="150" width="240" height="118" rx="4" fill="#F7F7F7" stroke="#B8B8B8" stroke-width="1"/>
+<text x="90" y="184" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" fill="#111111">입력</text>
+<text x="90" y="214" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">마일리지 조건</text>
+<text x="90" y="236" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">생활권 feature</text>
+<text x="90" y="258" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">위험운전 feature</text>
+<rect x="380" y="150" width="250" height="118" rx="4" fill="#F7F7F7" stroke="#B8B8B8" stroke-width="1"/>
+<text x="398" y="184" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" fill="#111111">AI 점수 계산</text>
+<text x="398" y="214" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">Safe Driving</text>
+<text x="398" y="236" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">Familiar Zone</text>
+<text x="398" y="258" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">Pattern Change</text>
+<rect x="698" y="150" width="250" height="118" rx="4" fill="#F7F7F7" stroke="#B8B8B8" stroke-width="1"/>
+<text x="716" y="184" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" fill="#111111">판단 규칙</text>
+<text x="716" y="214" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">안정 주행</text>
+<text x="716" y="236" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">보통 변화</text>
+<text x="716" y="258" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">위험 변화</text>
+<line x1="324" y1="209" x2="368" y2="209" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="642" y1="209" x2="686" y2="209" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="120" y="355" width="270" height="122" rx="4" fill="#FFFFFF" stroke="#B8B8B8" stroke-width="1"/>
+<text x="136" y="385" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="18" font-weight="700" fill="#111111">A. 추가 리워드</text>
+<text x="136" y="413" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">생활권 중심 주행</text>
+<text x="136" y="433" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">위험행동 낮음</text>
+<text x="136" y="453" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">패턴 변화 낮음</text>
+<rect x="465" y="355" width="270" height="122" rx="4" fill="#FFFFFF" stroke="#B8B8B8" stroke-width="1"/>
+<text x="481" y="385" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="18" font-weight="700" fill="#111111">B. 기본 유지</text>
+<text x="481" y="413" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">생활권 밖 주행 있음</text>
+<text x="481" y="433" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">위험행동 변화 없음</text>
+<text x="481" y="453" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">기존 혜택 유지</text>
+<rect x="810" y="355" width="270" height="122" rx="4" fill="#FFFFFF" stroke="#B8B8B8" stroke-width="1"/>
+<text x="826" y="385" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="18" font-weight="700" fill="#111111">C. 예방 케어</text>
+<text x="826" y="413" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">생활권 밖 주행 증가</text>
+<text x="826" y="433" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">급감속/과속 증가</text>
+<text x="826" y="453" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">차량점검/리포트 안내</text>
+<line x1="823" y1="268" x2="823" y2="316" stroke="#111111" stroke-width="1.4"/>
+<line x1="255" y1="316" x2="945" y2="316" stroke="#111111" stroke-width="1.4"/>
+<line x1="255" y1="316" x2="255" y2="343" stroke="#111111" stroke-width="1.4"/>
+<line x1="600" y1="316" x2="600" y2="343" stroke="#111111" stroke-width="1.4"/>
+<line x1="945" y1="316" x2="945" y2="343" stroke="#111111" stroke-width="1.4"/>
+<text x="82" y="540" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="18" font-weight="800" fill="#111111">핵심 문장:</text>
+<text x="185" y="540" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="18" font-weight="400" fill="#222222">보험료 패널티가 아니라, 추가 혜택 조정과 예방 케어 안내로 연결한다.</text>
+</svg>

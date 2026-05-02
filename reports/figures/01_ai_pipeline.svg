@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="540" viewBox="0 0 1200 540">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#111111"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="1200" height="540" fill="#FFFFFF"/>
+  <text x="48" y="58" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="30" font-weight="800" fill="#111111">AI 활용 구조</text>
+  <text x="48" y="92" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="17" font-weight="400" fill="#666666">생활권과 평소 운전패턴을 학습하고, 위험 변화는 예방 케어로 연결한다.</text>
+  <rect x="48" y="150" width="160" height="110" rx="4" fill="#F7F7F7" stroke="#B8B8B8" stroke-width="1"/>
+<text x="66" y="184" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" fill="#111111">Trip 데이터</text>
+<text x="66" y="214" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">GPS</text>
+<text x="66" y="236" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">거리/시간</text>
+<text x="66" y="258" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">위험운전</text>
+<line x1="220" y1="205" x2="238" y2="205" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="250" y="150" width="180" height="110" rx="4" fill="#F7F7F7" stroke="#B8B8B8" stroke-width="1"/>
+<text x="268" y="184" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" fill="#111111">생활권 생성 AI</text>
+<text x="268" y="214" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">DBSCAN</text>
+<text x="268" y="236" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">반복 목적지</text>
+<text x="268" y="258" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">in/out zone</text>
+<line x1="442" y1="205" x2="460" y2="205" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="472" y="150" width="180" height="110" rx="4" fill="#F7F7F7" stroke="#B8B8B8" stroke-width="1"/>
+<text x="490" y="184" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" fill="#111111">운전행동 Feature</text>
+<text x="490" y="214" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">과속/100km</text>
+<text x="490" y="236" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">급감속/100km</text>
+<text x="490" y="258" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">급회전/100km</text>
+<line x1="664" y1="205" x2="682" y2="205" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="694" y="150" width="210" height="110" rx="4" fill="#F7F7F7" stroke="#B8B8B8" stroke-width="1"/>
+<text x="712" y="184" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" fill="#111111">평소패턴 감지 AI</text>
+<text x="712" y="214" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">Isolation Forest</text>
+<text x="712" y="236" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">최근 변화 감지</text>
+<text x="712" y="258" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">anomaly flag</text>
+<line x1="916" y1="205" x2="934" y2="205" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="946" y="150" width="190" height="110" rx="4" fill="#F7F7F7" stroke="#B8B8B8" stroke-width="1"/>
+<text x="964" y="184" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" fill="#111111">점수/판단</text>
+<text x="964" y="214" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">Safe Driving</text>
+<text x="964" y="236" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">Familiar Zone</text>
+<text x="964" y="258" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">Care Trigger</text>
+<rect x="70" y="325" width="320" height="142" rx="4" fill="#FFFFFF" stroke="#B8B8B8" stroke-width="1"/>
+<text x="86" y="355" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="18" font-weight="700" fill="#111111">AI가 학습하는 것</text>
+<text x="86" y="383" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">고객별 반복 주행 패턴</text>
+<text x="86" y="403" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">생활권 안/밖 주행 비율</text>
+<text x="86" y="423" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">평소 대비 위험행동 변화</text>
+<rect x="440" y="325" width="320" height="142" rx="4" fill="#FFFFFF" stroke="#B8B8B8" stroke-width="1"/>
+<text x="456" y="355" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="18" font-weight="700" fill="#111111">TAAS의 역할</text>
+<text x="456" y="383" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">개인 사고 예측 라벨이 아님</text>
+<text x="456" y="403" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">위험행동 가중치 근거</text>
+<text x="456" y="423" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">과속/야간/노인운전자 보정</text>
+<rect x="810" y="325" width="320" height="142" rx="4" fill="#FFFFFF" stroke="#B8B8B8" stroke-width="1"/>
+<text x="826" y="355" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="18" font-weight="700" fill="#111111">상품 적용</text>
+<text x="826" y="383" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">마일리지 할인은 유지</text>
+<text x="826" y="403" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">안정 주행은 추가 리워드</text>
+<text x="826" y="423" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">위험 변화는 예방 케어</text>
+</svg>
