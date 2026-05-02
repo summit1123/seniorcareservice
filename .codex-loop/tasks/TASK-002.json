@@ -1,0 +1,23 @@
+{
+  "id": "002",
+  "title": "첫 실행 계획 작성하기",
+  "status": "todo",
+  "priority": "p0",
+  "summary": "브리프를 실제로 실행 가능한 계획과 구체적 디자인 방향으로 바꿉니다.",
+  "dependsOn": [
+    "001"
+  ],
+  "deliverables": [
+    ".codex-loop/prd/PRD.md",
+    ".codex-loop/tasks/TASK-002.json"
+  ],
+  "acceptance": [
+    "다음 구현 단위가 실제 의존성과 함께 순서대로 드러나 있습니다.",
+    "핵심 사용자 흐름과 시각 방향이 generic한 AI 스타일 없이 구현 가능한 수준으로 정리되어 있습니다.",
+    "열린 질문은 소수의 명시적 결정 항목으로 줄어들어 있습니다."
+  ],
+  "notes": [
+    "loop가 실제로 실행할 수 있을 정도로 계획을 짧고 선명하게 유지하세요.",
+    "UI가 중요하면 empty, loading, error, success 상태까지 적어주세요."
+  ]
+}

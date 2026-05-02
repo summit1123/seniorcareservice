@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ROOT=\"$(git rev-parse --show-toplevel 2>/dev/null || pwd)\"; python3 \"$ROOT/.codex/hooks/ralph_stop.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

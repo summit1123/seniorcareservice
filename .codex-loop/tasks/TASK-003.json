@@ -1,0 +1,24 @@
+{
+  "id": "003",
+  "title": "첫 번째 수직 슬라이스 구현 및 검증하기",
+  "status": "todo",
+  "priority": "p1",
+  "summary": "믿을 수 있는 첫 슬라이스를 실제로 만들고, 검증 증거까지 남깁니다.",
+  "dependsOn": [
+    "001",
+    "002"
+  ],
+  "deliverables": [
+    "실제 프로젝트 파일",
+    ".codex-loop/config.json 안의 로컬 검증 명령"
+  ],
+  "acceptance": [
+    "사용자가 의미 있는 한 가지 워크플로를 end-to-end로 완료할 수 있습니다.",
+    "기본 검증과 실패 처리 흐름이 존재합니다.",
+    "이 슬라이스는 loop 안에서 돌릴 수 있는 실제 checks, tests, screenshots로 뒷받침됩니다."
+  ],
+  "notes": [
+    "실행 가능한 슬라이스가 가능한데 scaffolding에서 멈추지 마세요.",
+    "done이라고 부르기 전에 실제로 동작한다는 증거를 모으세요."
+  ]
+}

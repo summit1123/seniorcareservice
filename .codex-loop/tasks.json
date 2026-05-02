@@ -1,0 +1,28 @@
+{
+  "project": "Codex Ralph Loop 작업공간",
+  "selection": "priority-order",
+  "tasks": [
+    {
+      "id": "001",
+      "title": "빌드 브리프를 정리하고 확정하기",
+      "status": "todo",
+      "priority": "p0",
+      "file": "tasks/TASK-001.json"
+    },
+    {
+      "id": "002",
+      "title": "첫 실행 계획 작성하기",
+      "status": "todo",
+      "priority": "p0",
+      "file": "tasks/TASK-002.json"
+    },
+    {
+      "id": "003",
+      "title": "첫 번째 수직 슬라이스 구현 및 검증하기",
+      "status": "todo",
+      "priority": "p1",
+      "file": "tasks/TASK-003.json"
+    }
+  ],
+  "source": "bootstrap-template"
+}
