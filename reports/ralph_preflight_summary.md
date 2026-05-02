@@ -7,6 +7,7 @@
 - `python3 scripts/preflight.py run` 실행 완료
 - 차단 이슈 없이 사전 점검 통과
 - `.codex-loop/preflight/status.json`과 `.codex-loop/preflight/REPORT.md` 생성 확인
+- 2026-05-03 추가 확인: 샘플 데이터 생성, 모델 파이프라인, 분석 결과 시각화 생성 명령이 모두 정상 실행됨
 
 ## Context Refresh
 
