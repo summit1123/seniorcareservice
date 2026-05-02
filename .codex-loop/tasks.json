@@ -5,23 +5,30 @@
     {
       "id": "001",
       "title": "Trip 샘플 데이터와 feature pipeline 만들기",
-      "status": "todo",
+      "status": "completed",
       "priority": "p0",
       "file": "tasks/TASK-001.json"
     },
     {
       "id": "002",
       "title": "AI 점수와 판단 결과 만들기",
-      "status": "todo",
+      "status": "completed",
       "priority": "p0",
       "file": "tasks/TASK-002.json"
     },
     {
       "id": "003",
       "title": "제출용 시각화 자료와 리포트 만들기",
-      "status": "todo",
+      "status": "completed",
       "priority": "p0",
       "file": "tasks/TASK-003.json"
+    },
+    {
+      "id": "004",
+      "title": "팀원 실제 CSV 수신 후 컬럼 매핑 검증하기",
+      "status": "todo",
+      "priority": "p0",
+      "file": "tasks/TASK-004.json"
     }
   ],
   "source": "seniorcareservice-project-plan"

@@ -1,0 +1,29 @@
+{
+  "id": "004",
+  "title": "팀원 실제 CSV 수신 후 컬럼 매핑 검증하기",
+  "status": "todo",
+  "priority": "p0",
+  "summary": "팀원이 공공데이터포털에서 받은 실제 CSV를 data/raw/에 넣었을 때 현재 모델 파이프라인에 바로 연결되는지 검증합니다.",
+  "dependsOn": [
+    "001",
+    "002",
+    "003"
+  ],
+  "deliverables": [
+    "docs/data-contract.md",
+    "data/raw/trip_sample.csv",
+    "data/processed/model_feature_table.csv",
+    "data/processed/decision_table.csv",
+    "reports/model_demo_summary.md"
+  ],
+  "acceptance": [
+    "실제 CSV 원본 컬럼과 모델 표준 컬럼의 매핑표가 확인됩니다.",
+    "필수 컬럼 누락 시 어떤 컬럼을 보완해야 하는지 메시지가 나옵니다.",
+    "실제 CSV로 run_pipeline이 실행되거나, 실행 불가 사유가 명확히 기록됩니다.",
+    "분석 결과 시각화가 실제 CSV 결과 기준으로 재생성됩니다."
+  ],
+  "notes": [
+    "실제 데이터가 사업용 차량 데이터라는 한계를 유지합니다.",
+    "원본 좌표는 최종 모델 feature table에 직접 남기지 않습니다."
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "id": "001",
   "title": "Trip 샘플 데이터와 feature pipeline 만들기",
-  "status": "todo",
+  "status": "completed",
   "priority": "p0",
   "summary": "공공 사업용차량 Trip 데이터 구조를 기준으로 모델 입력 feature table을 생성합니다.",
   "dependsOn": [],

@@ -1,7 +1,7 @@
 {
   "id": "002",
   "title": "AI 점수와 판단 결과 만들기",
-  "status": "todo",
+  "status": "completed",
   "priority": "p0",
   "summary": "생활권 생성 feature와 운전행동 feature를 이용해 평소패턴 변화 감지, 점수 계산, 리워드/케어 판단을 만듭니다.",
   "dependsOn": [

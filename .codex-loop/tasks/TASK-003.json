@@ -1,7 +1,7 @@
 {
   "id": "003",
   "title": "제출용 시각화 자료와 리포트 만들기",
-  "status": "todo",
+  "status": "completed",
   "priority": "p0",
   "summary": "모델 구조와 결과를 심사위원이 빠르게 이해할 수 있는 figure, report, proposal source로 정리합니다.",
   "dependsOn": [
