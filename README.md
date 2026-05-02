@@ -75,10 +75,25 @@ Ralph 실행:
 python3 scripts/generate_visual_assets.py
 ```
 
+모델 파이프라인 실행:
+
+```bash
+python3 -m src.run_pipeline
+```
+
+분석 결과 시각화 생성:
+
+```bash
+python3 scripts/generate_analysis_outputs.py
+```
+
 생성되는 기본 자료:
 
 ```text
 reports/figures/01_ai_pipeline.svg
 reports/figures/02_score_structure.svg
 reports/figures/03_decision_flow.svg
+reports/figures/04_driver_score_comparison.svg
+reports/figures/05_decision_result_summary.svg
+reports/model_demo_summary.md
 ```
