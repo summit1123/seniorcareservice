@@ -26,7 +26,7 @@
     {
       "id": "004",
       "title": "팀원 실제 CSV 수신 후 컬럼 매핑 검증하기",
-      "status": "todo",
+      "status": "in_progress",
       "priority": "p0",
       "file": "tasks/TASK-004.json"
     }

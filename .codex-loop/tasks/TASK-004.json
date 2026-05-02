@@ -1,7 +1,7 @@
 {
   "id": "004",
   "title": "팀원 실제 CSV 수신 후 컬럼 매핑 검증하기",
-  "status": "todo",
+  "status": "in_progress",
   "priority": "p0",
   "summary": "팀원이 공공데이터포털에서 받은 실제 CSV를 data/raw/에 넣었을 때 현재 모델 파이프라인에 바로 연결되는지 검증합니다.",
   "dependsOn": [
@@ -24,6 +24,30 @@
   ],
   "notes": [
     "실제 데이터가 사업용 차량 데이터라는 한계를 유지합니다.",
-    "원본 좌표는 최종 모델 feature table에 직접 남기지 않습니다."
+    "원본 좌표는 최종 모델 feature table에 직접 남기지 않습니다.",
+    "2026-05-03: 실제 원본 CSV는 아직 repo에 없으므로 task는 완료 처리하지 않습니다.",
+    "2026-05-03: `scripts/validate_trip_csv_mapping.py`를 추가해 원본 컬럼 매핑, 누락 컬럼 메시지, 표준화, 파이프라인/시각화 재생성 경로를 만들었습니다.",
+    "2026-05-03: `data/raw/trip_sample.csv` 기준 매핑 검증과 pipeline 실행은 통과했습니다.",
+    "2026-05-03: 결함 있는 기존 processed CSV를 검증 대상으로 실행해 필수 컬럼 누락 메시지와 실행 불가 사유를 확인했습니다."
+  ],
+  "progress": [
+    {
+      "date": "2026-05-03",
+      "status": "done",
+      "item": "표준 Trip schema와 공공 CSV 후보 컬럼 매핑 검증 CLI 추가"
+    },
+    {
+      "date": "2026-05-03",
+      "status": "done",
+      "item": "표준 샘플 CSV로 매핑 검증, pipeline 실행, 시각화 재생성 확인"
+    },
+    {
+      "date": "2026-05-03",
+      "status": "waiting",
+      "item": "팀원이 받은 실제 공공데이터포털 CSV 수신 후 같은 검증 명령을 실행해야 함"
+    }
+  ],
+  "blockedBy": [
+    "팀원 실제 CSV 원본 파일이 아직 data/raw/에 없습니다."
   ]
 }

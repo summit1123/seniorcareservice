@@ -59,6 +59,36 @@ data/raw/trip_sample.csv
 | sharp_turn_count | 급좌회전건수 + 급우회전건수 |
 | stop_count | 운행중정지건수 |
 
+### 3.1 실제 CSV 수신 후 검증 명령
+
+팀원이 받은 원본 CSV를 `data/raw/`에 넣은 뒤 아래 명령을 실행합니다.
+
+```bash
+python3 scripts/validate_trip_csv_mapping.py data/raw/<원본파일명>.csv --run-pipeline --generate-visuals
+```
+
+검증 스크립트는 다음 순서로 판단합니다.
+
+| 단계 | 확인 내용 | 산출물 또는 실패 메시지 |
+|---|---|---|
+| 헤더 감지 | UTF-8, UTF-8 BOM, CP949, EUC-KR 인코딩과 CSV 구분자를 확인 | `.codex-loop/artifacts/csv-mapping/*-mapping-report.md` |
+| 컬럼 매핑 | 원본 컬럼이 모델 표준 컬럼으로 직접 매핑되는지 확인 | 표준 컬럼별 `직접 매핑`, `생성`, `누락` 상태 |
+| 보완 가능성 | `trip_id`, `trip_duration_min`, `avg_speed`, `sharp_turn_count`처럼 생성 가능한 컬럼을 계산 | 생성 규칙 기록 |
+| 파이프라인 연결 | 매핑이 통과하면 feature, score, decision, figure를 재생성 | `data/processed/*.csv`, `reports/figures/*.svg`, `reports/model_demo_summary.md` |
+| 실행 불가 사유 | 필수 컬럼이 없으면 파이프라인을 멈춤 | `필수 컬럼 누락: ...` |
+
+### 3.2 자동 생성 가능한 컬럼
+
+| 표준 컬럼 | 생성 조건 | 생성 방식 |
+|---|---|---|
+| driver_id | 차량번호 또는 회사코드 + 차량번호 존재 | 원본 식별자를 노출하지 않고 `driver_###`로 익명화 |
+| trip_id | 차량 식별자와 운행 시작 시각 존재 | 행 번호와 익명 driver_id 기반으로 생성 |
+| trip_duration_min | 시작/종료 시각 존재 | 두 시각의 차이를 분 단위로 계산 |
+| avg_speed | 운행거리와 운행시간 존재 | 거리 / 시간으로 계산 |
+| sharp_turn_count | 급좌회전건수와 급우회전건수 존재 | 두 컬럼을 합산 |
+
+자동 생성은 파이프라인 연결성을 높이기 위한 정규화 절차입니다. 보험 상품 판단 로직을 바꾸거나 누락 데이터를 임의로 추정하는 절차가 아닙니다.
+
 ## 4. 처리 기준
 
 ### 4.1 ID 처리
@@ -160,3 +190,5 @@ stop_count
 ```
 
 원본 좌표는 생활권 생성용으로만 쓰고, 최종 모델에는 생활권 안/밖 비율과 위험운전 요약값을 넣습니다.
+
+실제 CSV가 들어오면 모델 담당자는 먼저 매핑 리포트를 남깁니다. 리포트가 통과하지 못한 경우에는 누락 컬럼을 보완한 뒤 다시 실행하며, 원본 데이터를 직접 수정하지 않고 표준화된 중간 CSV를 생성해 파이프라인에 연결합니다.
