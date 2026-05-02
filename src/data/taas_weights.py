@@ -68,6 +68,13 @@ def build_year_weight(rows: list[dict[str, str]], year: str) -> dict[str, Any]:
     elderly_accident_rows = rows_for(rows, year, ELDERLY_ACCIDENT_CATEGORY)
 
     total_accidents = sum(number(row["사고건수"]) for row in total_rows)
+    total_deaths = sum(number(row["사망자수"]) for row in total_rows)
+    night_accidents = sum(number(row["사고건수"]) for row in night_rows)
+    night_deaths = sum(number(row["사망자수"]) for row in night_rows)
+    elderly_driver_accidents = sum(number(row["사고건수"]) for row in elderly_driver_rows)
+    elderly_driver_deaths = sum(number(row["사망자수"]) for row in elderly_driver_rows)
+    elderly_accidents = sum(number(row["사고건수"]) for row in elderly_accident_rows)
+    elderly_deaths = sum(number(row["사망자수"]) for row in elderly_accident_rows)
     total_fatality = weighted_fatality_rate(total_rows)
     night_fatality = weighted_fatality_rate(night_rows)
     elderly_driver_fatality = weighted_fatality_rate(elderly_driver_rows)
@@ -78,6 +85,19 @@ def build_year_weight(rows: list[dict[str, str]], year: str) -> dict[str, Any]:
         "aggregation_scope": "sido_total_rows_only",
         "region_count": len(total_rows),
         "total_acc_cnt": int(total_accidents),
+        "total_dth_cnt": int(total_deaths),
+        "night_acc_cnt": int(night_accidents),
+        "night_dth_cnt": int(night_deaths),
+        "elderly_driver_acc_cnt": int(elderly_driver_accidents),
+        "elderly_driver_dth_cnt": int(elderly_driver_deaths),
+        "elderly_accident_acc_cnt": int(elderly_accidents),
+        "elderly_accident_dth_cnt": int(elderly_deaths),
+        "night_accident_share": round(ratio(night_accidents, total_accidents), 4),
+        "night_death_share": round(ratio(night_deaths, total_deaths), 4),
+        "elderly_driver_accident_share": round(ratio(elderly_driver_accidents, total_accidents), 4),
+        "elderly_driver_death_share": round(ratio(elderly_driver_deaths, total_deaths), 4),
+        "elderly_accident_share": round(ratio(elderly_accidents, total_accidents), 4),
+        "elderly_accident_death_share": round(ratio(elderly_deaths, total_deaths), 4),
         "total_fatality_rate": round(total_fatality, 4),
         "night_fatality_rate": round(night_fatality, 4),
         "elderly_driver_fatality_rate": round(elderly_driver_fatality, 4),

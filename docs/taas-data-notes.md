@@ -36,7 +36,7 @@ aggregation_scope = sido_total_rows_only
 |---|---|
 | `전체` | 법규위반/사고유형 비중 계산 |
 | `야간사고` | 야간 치사율 보정 |
-| `고령운전사고` | 고령 운전자 치사율 보정 |
+| `고령운전사고` | 고령 운전자 사고 비중, 사망 비중, 치사율 보정 |
 | `노인사고` | 참고용 고령 사고 치사율 |
 
 ## 생성되는 가중치
@@ -51,6 +51,8 @@ aggregation_scope = sido_total_rows_only
 | `single_vehicle_weight` | 전체사고 중 차량단독 사고 비중 |
 | `night_fatality_weight` | 야간사고 치사율 / 전체사고 치사율 |
 | `elderly_driver_fatality_weight` | 고령운전사고 치사율 / 전체사고 치사율 |
+| `elderly_driver_accident_share` | 전체사고 중 고령운전사고 비중 |
+| `elderly_driver_death_share` | 전체 사망자 중 고령운전사고 사망자 비중 |
 
 ## 주의점
 
