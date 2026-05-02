@@ -46,3 +46,39 @@ docs : AI 모델 작업계획 추가
 feat : 생활권 생성 feature 계산 추가
 test : 점수 계산 테스트 추가
 ```
+
+## Ralph / SummitHarness
+
+이 저장소는 SummitHarness 기반 Ralph loop를 사용할 수 있도록 bootstrap되어 있습니다.
+
+환경 점검:
+
+```bash
+python3 scripts/preflight.py run
+```
+
+컨텍스트 갱신:
+
+```bash
+python3 scripts/context_engine.py refresh --source setup
+```
+
+Ralph 실행:
+
+```bash
+./ralph.sh
+```
+
+시각화 자료 생성:
+
+```bash
+python3 scripts/generate_visual_assets.py
+```
+
+생성되는 기본 자료:
+
+```text
+reports/figures/01_ai_pipeline.svg
+reports/figures/02_score_structure.svg
+reports/figures/03_decision_flow.svg
+```
