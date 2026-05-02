@@ -10,8 +10,10 @@ env/
 
 data/raw/*
 !data/raw/.gitkeep
+!data/raw/trip_sample.csv
 data/processed/*
 !data/processed/.gitkeep
+!data/processed/*.csv
 
 reports/*.pdf
 reports/*.png
