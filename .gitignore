@@ -11,6 +11,7 @@ env/
 data/raw/*
 !data/raw/.gitkeep
 !data/raw/trip_sample.csv
+!data/raw/taas_stt_2010_2024.csv
 data/processed/*
 !data/processed/.gitkeep
 !data/processed/*.csv
