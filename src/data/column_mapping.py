@@ -335,9 +335,9 @@ def normalize_rows(path: Path, result: MappingResult) -> list[dict[str, str]]:
         duration_mapping = result.mapping["trip_duration_min"]
         if duration_mapping.startswith("derived:"):
             minutes = (parse_standard_time(end_time) - parse_standard_time(start_time)).total_seconds() / 60
-            output["trip_duration_min"] = str(int(round(minutes)))
+            output["trip_duration_min"] = f"{minutes:.2f}"
         else:
-            output["trip_duration_min"] = integer_string(value(row, duration_mapping))
+            output["trip_duration_min"] = str(numeric_value(value(row, duration_mapping)))
 
         avg_speed_mapping = result.mapping["avg_speed"]
         if avg_speed_mapping.startswith("derived:"):

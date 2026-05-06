@@ -30,6 +30,7 @@ SIGNAL_LABELS = {
     "harsh_brake_increase": "급감속 증가",
     "sharp_turn_increase": "급회전 증가",
     "no_recent_trip": "최근 주행 없음",
+    "no_baseline_trip": "평소 기준 주행 부족",
 }
 
 
@@ -96,8 +97,17 @@ def score_comparison_svg(score_rows: list[dict[str, str]]) -> str:
             body.append(text(828, bar_y + 21, f"{value:.1f}", size=15, weight=700, color=BLACK))
         y += 154
 
-    body.append(text(58, 620, "해석", size=18, weight=800, color=BLACK))
-    body.append(text(118, 620, "driver_003은 패턴 변화와 생활권 밖 위험이 동시에 높아 예방 케어 대상으로 분리된다.", size=17))
+    if score_rows:
+        top_pattern = max(score_rows, key=lambda row: float(row["pattern_change_score"]))
+        body.append(text(58, 620, "해석", size=18, weight=800, color=BLACK))
+        body.append(
+            text(
+                118,
+                620,
+                f"{top_pattern['driver_id']}은 패턴 변화 점수가 가장 높아 직원용 리포트에서 우선 확인한다.",
+                size=17,
+            )
+        )
     return base_svg(
         1100,
         680,
@@ -154,6 +164,10 @@ def write_summary_report(
 ) -> None:
     decision_by_driver = {row["driver_id"]: row for row in decision_rows}
     pattern_by_driver = {row["driver_id"]: row for row in pattern_rows}
+    decision_counts: dict[str, int] = {}
+    for row in decision_rows:
+        decision_counts[row["decision"]] = decision_counts.get(row["decision"], 0) + 1
+    summary_text = ", ".join(f"{name} {count}명" for name, count in sorted(decision_counts.items())) or "판단 대상 없음"
     lines = [
         "# 모델 견본 결과 요약",
         "",
@@ -206,9 +220,9 @@ def write_summary_report(
             "",
             "## 해석",
             "",
-            "- `driver_001`은 생활권 중심 주행과 낮은 위험행동으로 추가 리워드 대상이다.",
-            "- `driver_002`는 생활권 밖 주행이 일부 있지만 위험행동 변화가 크지 않아 기본 유지 대상이다.",
-            "- `driver_003`은 생활권 밖 주행, 위험행동, 평소패턴 변화가 동시에 높아 예방 케어 대상이다.",
+            f"- 이번 실행에서는 총 {len(decision_rows)}명의 판단 결과가 생성되었고, 결과 분포는 {summary_text}입니다.",
+            "- 같은 운전자에 대해 baseline과 recent trip이 모두 있는 경우에만 생활권 안정성과 평소패턴 변화 해석이 유효합니다.",
+            "- 단일 trip만 있는 운전자는 생활권 학습과 평소 대비 변화 감지에 필요한 기준 데이터가 부족하므로 최종 판단표에서 제외됩니다.",
             "",
             "## 발표에 사용할 문장",
             "",

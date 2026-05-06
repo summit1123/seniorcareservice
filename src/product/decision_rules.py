@@ -49,7 +49,7 @@ def decide(row: dict[str, str]) -> dict[str, Any]:
             "기존 마일리지/안전운전 혜택 판단은 유지 가능",
             "추가 데이터 확보 후 재평가 가능",
         ]
-        trigger = int(care >= 65)
+        trigger = 0
 
     return {
         "driver_id": row["driver_id"],

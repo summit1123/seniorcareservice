@@ -1,4 +1,7 @@
 driver_id,safe_driving_score,familiar_zone_score,pattern_change_score,out_zone_behavior_risk,care_trigger_score
-driver_001,90.91,100.0,5.55,7.88,7.07
-driver_002,92.21,53.45,32.47,38.83,29.76
-driver_003,11.75,6.5,100.0,100.0,97.65
+driver_074,8.89,0.0,74.16,26.11,60.73
+driver_075,27.22,80.0,31.55,22.22,36.53
+driver_076,11.36,0.0,35.47,97.1,67.67
+driver_077,26.44,60.0,18.52,8.97,26.19
+driver_078,8.18,70.0,90.94,44.27,74.78
+driver_079,42.0,0.0,1.43,0.0,12.24

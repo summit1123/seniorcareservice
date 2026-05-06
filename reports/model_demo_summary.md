@@ -12,17 +12,23 @@
 
 | 고객 | Safe Driving | Familiar Zone | Pattern Change | Out-Zone Risk | 최종 판단 |
 |---|---:|---:|---:|---:|---|
-| driver_001 | 90.9 | 100.0 | 5.5 | 7.9 | 추가 리워드 |
-| driver_002 | 92.2 | 53.5 | 32.5 | 38.8 | 기본 유지 |
-| driver_003 | 11.8 | 6.5 | 100.0 | 100.0 | 예방 케어 |
+| driver_074 | 8.9 | 0.0 | 74.2 | 26.1 | 기본 유지 |
+| driver_075 | 27.2 | 80.0 | 31.6 | 22.2 | 기본 유지 |
+| driver_076 | 11.4 | 0.0 | 35.5 | 97.1 | 기본 유지 |
+| driver_077 | 26.4 | 60.0 | 18.5 | 9.0 | 기본 유지 |
+| driver_078 | 8.2 | 70.0 | 90.9 | 44.3 | 기본 유지 |
+| driver_079 | 42.0 | 0.0 | 1.4 | 0.0 | 기본 유지 |
 
 ## 이상탐지 설명 신호
 
 | 고객 | 변화 점수 | 이상 여부 | 주요 변화 신호 | 모델 백엔드 |
 |---|---:|---:|---|---|
-| driver_001 | 5.5 | 0 | 급감속 증가 (`harsh_brake_increase`) | baseline_distance_anomaly |
-| driver_002 | 32.5 | 0 | 생활권 밖 주행 증가 (`out_zone_increase`) | baseline_distance_anomaly |
-| driver_003 | 100.0 | 1 | 과속 증가 (`speeding_increase`) | baseline_distance_anomaly |
+| driver_074 | 74.2 | 1 | 급감속 증가 (`harsh_brake_increase`) | baseline_distance_anomaly |
+| driver_075 | 31.6 | 0 | 급감속 증가 (`harsh_brake_increase`) | baseline_distance_anomaly |
+| driver_076 | 35.5 | 0 | 급감속 증가 (`harsh_brake_increase`) | baseline_distance_anomaly |
+| driver_077 | 18.5 | 0 | 급감속 증가 (`harsh_brake_increase`) | baseline_distance_anomaly |
+| driver_078 | 90.9 | 1 | 급감속 증가 (`harsh_brake_increase`) | baseline_distance_anomaly |
+| driver_079 | 1.4 | 0 | 급회전 증가 (`sharp_turn_increase`) | baseline_distance_anomaly |
 
 ## 데이터 기준
 
@@ -33,9 +39,9 @@
 
 ## 해석
 
-- `driver_001`은 생활권 중심 주행과 낮은 위험행동으로 추가 리워드 대상이다.
-- `driver_002`는 생활권 밖 주행이 일부 있지만 위험행동 변화가 크지 않아 기본 유지 대상이다.
-- `driver_003`은 생활권 밖 주행, 위험행동, 평소패턴 변화가 동시에 높아 예방 케어 대상이다.
+- 이번 실행에서는 총 6명의 판단 결과가 생성되었고, 결과 분포는 기본 유지 6명입니다.
+- 같은 운전자에 대해 baseline과 recent trip이 모두 있는 경우에만 생활권 안정성과 평소패턴 변화 해석이 유효합니다.
+- 단일 trip만 있는 운전자는 생활권 학습과 평소 대비 변화 감지에 필요한 기준 데이터가 부족하므로 최종 판단표에서 제외됩니다.
 
 ## 발표에 사용할 문장
 

@@ -105,8 +105,15 @@ python3 scripts/validate_trip_csv_mapping.py data/raw/<원본파일명>.csv --ru
 ### 4.3 거리와 시간
 
 - `trip_distance_km`는 km 단위로 통일합니다.
-- `trip_duration_min`는 분 단위로 통일합니다.
+- `trip_duration_min`는 분 단위로 통일합니다. 정수와 소수 모두 허용합니다.
 - 0km 이하 주행, 0분 이하 주행은 제외하거나 별도 확인 대상으로 둡니다.
+
+### 4.3.1 baseline/recent 분리
+
+- 생활권 생성과 평소패턴 변화 감지는 같은 운전자 또는 차량의 반복 Trip이 있어야 의미가 있습니다.
+- 여러 월의 데이터가 있으면 마지막 월을 recent, 이전 월을 baseline으로 봅니다.
+- 한 달 데이터만 있으면 같은 driver_id 안에서 시간순으로 앞부분을 baseline, 뒷부분을 recent로 나눕니다.
+- 단일 Trip만 있는 driver_id는 평소 대비 변화 감지에 필요한 기준 데이터가 부족하므로 최종 판단표에서 제외될 수 있습니다.
 
 ### 4.4 위험운전 이벤트
 

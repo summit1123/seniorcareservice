@@ -113,6 +113,12 @@ def label_trips_with_zones(trips: list[dict[str, Any]], zones: ZoneMap, eps: flo
     for trip in trips:
         driver_id = trip["driver_id"]
         centers = zones.get(driver_id, [])
+        if not centers:
+            trip["in_zone_flag"] = 0
+            trip["out_zone_flag"] = 0
+            trip["route_repeat_flag"] = int(trip["route_key"] in baseline_routes.get(driver_id, set()))
+            trip["new_destination_flag"] = 0
+            continue
         start = (trip["start_gps_x"], trip["start_gps_y"])
         end = (trip["end_gps_x"], trip["end_gps_y"])
         start_in_zone = close_to_any(start, centers, eps)
@@ -132,9 +138,11 @@ def build_zone_feature_table(trips: list[dict[str, Any]]) -> list[dict[str, Any]
             continue
         total_km = sum(trip["trip_distance_km"] for trip in recent)
         in_zone_km = sum(trip["trip_distance_km"] for trip in recent if trip["in_zone_flag"])
+        out_zone_km = sum(trip["trip_distance_km"] for trip in recent if trip["out_zone_flag"])
         route_repeat_count = sum(trip["route_repeat_flag"] for trip in recent)
         new_destinations = {trip["end_grid"] for trip in recent if trip["new_destination_flag"]}
         in_zone_ratio = in_zone_km / total_km if total_km else 0.0
+        out_zone_ratio = out_zone_km / total_km if total_km else 0.0
         route_repeat_ratio = route_repeat_count / len(recent) if recent else 0.0
         new_destination_count = len(new_destinations)
         zone_stability_score = max(0.0, min(100.0, 70 * in_zone_ratio + 30 * route_repeat_ratio - 5 * new_destination_count))
@@ -143,7 +151,7 @@ def build_zone_feature_table(trips: list[dict[str, Any]]) -> list[dict[str, Any]
                 "driver_id": driver_id,
                 "zone_model_backend": "dbscan_density_cluster",
                 "in_zone_ratio": round(in_zone_ratio, 4),
-                "out_zone_ratio": round(1 - in_zone_ratio, 4),
+                "out_zone_ratio": round(out_zone_ratio, 4),
                 "route_repeat_ratio": round(route_repeat_ratio, 4),
                 "new_destination_count": new_destination_count,
                 "zone_stability_score": round(zone_stability_score, 2),

@@ -17,12 +17,12 @@ FLOAT_COLUMNS = {
     "end_gps_x",
     "end_gps_y",
     "trip_distance_km",
+    "trip_duration_min",
     "avg_speed",
     "max_speed",
 }
 
 INT_COLUMNS = {
-    "trip_duration_min",
     "speeding_count",
     "harsh_accel_count",
     "harsh_brake_count",
@@ -74,9 +74,21 @@ def assign_periods(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         return rows
 
     months = sorted({row["trip_start_dt"].strftime("%Y-%m") for row in rows})
-    recent_month = months[-1]
-    for row in rows:
-        row["period"] = "recent" if row["trip_start_dt"].strftime("%Y-%m") == recent_month else "baseline"
+    if len(months) > 1:
+        recent_month = months[-1]
+        for row in rows:
+            row["period"] = "recent" if row["trip_start_dt"].strftime("%Y-%m") == recent_month else "baseline"
+        return rows
+
+    grouped = group_by_driver(rows)
+    for driver_rows in grouped.values():
+        sorted_rows = sorted(driver_rows, key=lambda row: (row["trip_start_dt"], row["trip_id"]))
+        if len(sorted_rows) < 2:
+            sorted_rows[0]["period"] = "baseline"
+            continue
+        baseline_count = min(len(sorted_rows) - 1, max(1, int(len(sorted_rows) * 0.7)))
+        for index, row in enumerate(sorted_rows):
+            row["period"] = "baseline" if index < baseline_count else "recent"
     return rows
 
 

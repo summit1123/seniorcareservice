@@ -111,6 +111,18 @@ def fallback_pattern_scores(rows: list[dict[str, str]]) -> list[dict[str, Any]]:
     for driver_id, driver_rows in sorted(by_driver.items()):
         baseline = [trip_vector(row) for row in driver_rows if row["period"] == "baseline"]
         recent = [trip_vector(row) for row in driver_rows if row["period"] == "recent"]
+        if not baseline:
+            output.append(
+                {
+                    "driver_id": driver_id,
+                    "pattern_change_score": 0.0,
+                    "anomaly_flag": 0,
+                    "pattern_model_backend": "insufficient_baseline",
+                    "top_change_signal": "no_baseline_trip",
+                    "top_change_contribution": 0.0,
+                }
+            )
+            continue
         stats = baseline_stats(baseline)
         score, top_signal, top_contribution = score_recent_vectors(recent, stats)
         output.append(
