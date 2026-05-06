@@ -26,8 +26,8 @@
 <text x="828" y="317" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="700" fill="#111111">27.2</text>
 <text x="188" y="351" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">생활권 안정성</text>
 <rect x="330" y="335" width="480.00" height="18" rx="3" fill="#F2F2F2" stroke="#E0E0E0" stroke-width="1"/>
-<rect x="330" y="335" width="384.00" height="18" rx="3" fill="#CFCFCF" stroke="#CFCFCF" stroke-width="1"/>
-<text x="828" y="351" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="700" fill="#111111">80.0</text>
+<rect x="330" y="335" width="336.00" height="18" rx="3" fill="#CFCFCF" stroke="#CFCFCF" stroke-width="1"/>
+<text x="828" y="351" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="700" fill="#111111">70.0</text>
 <text x="188" y="385" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">패턴 변화</text>
 <rect x="330" y="369" width="480.00" height="18" rx="3" fill="#F2F2F2" stroke="#E0E0E0" stroke-width="1"/>
 <rect x="330" y="369" width="151.44" height="18" rx="3" fill="#777777" stroke="#777777" stroke-width="1"/>
@@ -77,8 +77,8 @@
 <text x="828" y="779" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="700" fill="#111111">8.2</text>
 <text x="188" y="813" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">생활권 안정성</text>
 <rect x="330" y="797" width="480.00" height="18" rx="3" fill="#F2F2F2" stroke="#E0E0E0" stroke-width="1"/>
-<rect x="330" y="797" width="336.00" height="18" rx="3" fill="#CFCFCF" stroke="#CFCFCF" stroke-width="1"/>
-<text x="828" y="813" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="700" fill="#111111">70.0</text>
+<rect x="330" y="797" width="216.00" height="18" rx="3" fill="#CFCFCF" stroke="#CFCFCF" stroke-width="1"/>
+<text x="828" y="813" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="700" fill="#111111">45.0</text>
 <text x="188" y="847" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">패턴 변화</text>
 <rect x="330" y="831" width="480.00" height="18" rx="3" fill="#F2F2F2" stroke="#E0E0E0" stroke-width="1"/>
 <rect x="330" y="831" width="436.51" height="18" rx="3" fill="#777777" stroke="#777777" stroke-width="1"/>

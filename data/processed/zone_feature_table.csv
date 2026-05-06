@@ -1,7 +1,7 @@
-driver_id,zone_model_backend,in_zone_ratio,out_zone_ratio,route_repeat_ratio,new_destination_count,zone_stability_score
-driver_074,dbscan_density_cluster,0.0,0.0,0.0,0,0.0
-driver_075,dbscan_density_cluster,1.0,0.0,0.5,1,80.0
-driver_076,dbscan_density_cluster,0.0,1.0,0.0,1,0.0
-driver_077,dbscan_density_cluster,1.0,0.0,0.0,2,60.0
-driver_078,dbscan_density_cluster,1.0,0.0,0.0,0,70.0
-driver_079,dbscan_density_cluster,0.0,0.0,0.0,0,0.0
+driver_id,zone_model_backend,zone_buffer_m,core_zone_ratio,buffer_zone_ratio,in_zone_ratio,out_zone_ratio,route_repeat_ratio,new_destination_count,zone_stability_score
+driver_074,dbscan_density_cluster,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0
+driver_075,dbscan_density_cluster,500.0,1.0,0.0,1.0,0.0,0.5,1,70.0
+driver_076,dbscan_density_cluster,2000.0,0.0,0.0,0.0,1.0,0.0,1,0.0
+driver_077,dbscan_density_cluster,2000.0,1.0,0.0,1.0,0.0,0.0,2,60.0
+driver_078,dbscan_density_cluster,2000.0,0.5,0.5,1.0,0.0,0.0,0,45.0
+driver_079,dbscan_density_cluster,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0

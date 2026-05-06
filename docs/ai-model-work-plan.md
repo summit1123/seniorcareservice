@@ -26,14 +26,14 @@ AI 활용 대회와 보험 공모전 맥락에서 가장 강한 답변은 사고
 |---|---|---|
 | 개인별 사고 예측 | 제외 | 개인 사고 라벨이 없고, 공모전 견본에서 과장으로 보일 위험이 큽니다 |
 | 연령 기반 위험군 분류 | 제외 | 시니어 고객을 하나의 위험군으로 묶어 상품 수용성과 윤리성이 약합니다 |
-| DBSCAN 생활권 생성 | 채택 | 반복 목적지와 반복 경로를 고객별 feature로 만들 수 있어 기존 마일리지 특약과 차별화됩니다 |
+| DBSCAN 생활권 생성 + P90 버퍼 | 채택 | 반복 목적지 중심과 생활권 버퍼를 고객별 feature로 만들 수 있어 기존 마일리지 특약과 차별화됩니다 |
 | 평소패턴 이상탐지 | 채택 | 사고 라벨 없이도 최근 운전 변화와 위험행동 증가를 분리할 수 있습니다 |
 | 설명 리포트 | 채택 | score, care trigger, reason code, top change signal을 남겨 심사위원이 AI 판단 근거를 확인할 수 있습니다 |
 
 심사 답변용 한 문장은 발표와 제안서에 공통으로 사용합니다.
 
 ```text
-기존 마일리지·착한운전 특약이 거리와 일반 안전점수 중심이라면, 본 제안은 DBSCAN 생활권과 평소패턴 이상탐지를 결합해 익숙한 생활권 안에서의 안정 운전은 추가 리워드로, 평소와 다른 위험 변화는 예방 케어로 분리합니다.
+기존 마일리지·착한운전 특약이 거리와 일반 안전점수 중심이라면, 본 제안은 DBSCAN 생활권 중심과 P90 생활권 버퍼, 평소패턴 이상탐지를 결합해 익숙한 생활권 안의 안정 운전은 추가 리워드로, 버퍼 밖 위험 변화는 예방 케어로 분리합니다.
 ```
 
 ## 2. 전체 파이프라인
@@ -108,7 +108,7 @@ data : Trip 샘플 데이터 추가
 사용 모델:
 
 ```text
-DBSCAN 방식 밀도 기반 클러스터링
+DBSCAN 방식 밀도 기반 클러스터링 + P90 생활권 버퍼
 ```
 
 작업:
@@ -116,8 +116,10 @@ DBSCAN 방식 밀도 기반 클러스터링
 - GPS 좌표를 grid로 변환
 - driver_id별 출발/도착 지점 clustering
 - `zone_model_backend=dbscan_density_cluster` 기록
-- Trip별 in_zone_flag, out_zone_flag 생성
-- 운전자별 in_zone_ratio, out_zone_ratio 계산
+- baseline 목적지 이탈거리의 P90으로 고객별 생활권 버퍼 계산
+- 생활권 버퍼는 파일럿 초기 기준으로 `max(500m, min(P90, 2km))` 적용
+- Trip별 core_zone_flag, buffer_zone_flag, outer_zone_flag 생성
+- 운전자별 core_zone_ratio, buffer_zone_ratio, in_zone_ratio, out_zone_ratio 계산
 
 산출물:
 
@@ -204,6 +206,8 @@ baseline-distance anomaly scoring
 ```text
 in_zone_ratio
 out_zone_ratio
+core_zone_ratio
+buffer_zone_ratio
 speeding_per_100km
 harsh_accel_per_100km
 harsh_brake_per_100km

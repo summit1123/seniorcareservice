@@ -175,7 +175,7 @@ def write_summary_report(
         "",
         "| 질문 | 제출 패키지의 답변 | 확인 산출물 |",
         "|---|---|---|",
-        "| AI가 무엇을 했는가 | DBSCAN 방식 밀도 기반 클러스터링으로 고객별 생활권 중심을 만들고, 최근 trip vector가 baseline보다 얼마나 달라졌는지 이상탐지 점수로 계산했다 | `zone_feature_table.csv`, `pattern_change_score.csv` |",
+        "| AI가 무엇을 했는가 | DBSCAN 방식 밀도 기반 클러스터링으로 고객별 생활권 중심을 만들고, baseline 목적지 이탈거리 P90을 반영한 생활권 버퍼로 core/buffer/outer를 분리했다 | `zone_feature_table.csv`, `trip_feature_table.csv` |",
         "| 왜 사고 예측이 아닌가 | 개인 사고 라벨 없이 과장된 예측을 하지 않고, 평소패턴 변화와 위험행동 증가를 분리해 예방 케어 후보만 찾는다 | `score_table.csv`, `decision_table.csv` |",
         "| 결과를 어떻게 설명하는가 | 고객별 score, care trigger, reason code, top change signal을 함께 남겨 직원용 리포트와 고객 안내 문구로 전환할 수 있게 했다 | `decision_table.csv`, `reports/model_demo_summary.md` |",
         "",
@@ -226,7 +226,7 @@ def write_summary_report(
             "",
             "## 발표에 사용할 문장",
             "",
-            "기존 마일리지·착한운전 특약이 거리와 일반 안전점수 중심이라면, 이 모델은 DBSCAN 생활권과 평소패턴 이상탐지를 결합해 익숙한 생활권 안에서의 안정 운전은 추가 리워드로, 평소와 다른 위험 변화는 예방 케어로 분리합니다.",
+            "기존 마일리지·착한운전 특약이 거리와 일반 안전점수 중심이라면, 이 모델은 DBSCAN 생활권 중심과 P90 생활권 버퍼, 평소패턴 이상탐지를 결합해 익숙한 생활권 안의 안정 운전은 추가 리워드로, 버퍼 밖 위험 변화는 예방 케어로 분리합니다.",
         ]
     )
     REPORT_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")

@@ -1,7 +1,7 @@
-driver_id,total_km,trip_count,avg_trip_km,night_ratio,speeding_per_100km,harsh_accel_per_100km,harsh_brake_per_100km,sharp_turn_per_100km,zone_model_backend,in_zone_ratio,out_zone_ratio,route_repeat_ratio,new_destination_count,zone_stability_score,out_zone_ratio_delta,speeding_delta_per_100km,harsh_brake_delta_per_100km,night_ratio_delta
-driver_074,90.0,2,45.0,0.0,3.3333,20.0,5.5556,5.5556,dbscan_density_cluster,0.0,0.0,0.0,0,0.0,0.0,3.3333,5.5556,-1.0
-driver_075,90.0,2,45.0,0.0,2.2222,14.4444,5.5556,5.5556,dbscan_density_cluster,1.0,0.0,0.5,1,80.0,0.0,0.7516,4.085,-0.3309
-driver_076,44.0,1,44.0,0.0,0.0,13.6364,18.1818,0.0,dbscan_density_cluster,0.0,1.0,0.0,1,0.0,0.4943,-1.1494,3.2393,0.0
-driver_077,87.0,2,43.5,0.0,0.0,20.6897,3.4483,5.7471,dbscan_density_cluster,1.0,0.0,0.0,2,60.0,-0.3433,0.0,0.4632,-0.5075
-driver_078,110.0,2,55.0,0.0,4.5455,9.0909,10.9091,9.0909,dbscan_density_cluster,1.0,0.0,0.0,0,70.0,-0.3699,3.3894,9.175,-0.5549
-driver_079,25.0,1,25.0,0.0,0.0,20.0,0.0,4.0,dbscan_density_cluster,0.0,0.0,0.0,0,0.0,0.0,0.0,-3.6364,-1.0
+driver_id,total_km,trip_count,avg_trip_km,night_ratio,speeding_per_100km,harsh_accel_per_100km,harsh_brake_per_100km,sharp_turn_per_100km,zone_model_backend,zone_buffer_m,core_zone_ratio,buffer_zone_ratio,in_zone_ratio,out_zone_ratio,route_repeat_ratio,new_destination_count,zone_stability_score,out_zone_ratio_delta,speeding_delta_per_100km,harsh_brake_delta_per_100km,night_ratio_delta
+driver_074,90.0,2,45.0,0.0,3.3333,20.0,5.5556,5.5556,dbscan_density_cluster,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,3.3333,5.5556,-1.0
+driver_075,90.0,2,45.0,0.0,2.2222,14.4444,5.5556,5.5556,dbscan_density_cluster,500.0,1.0,0.0,1.0,0.0,0.5,1,70.0,0.0,0.7516,4.085,-0.3309
+driver_076,44.0,1,44.0,0.0,0.0,13.6364,18.1818,0.0,dbscan_density_cluster,2000.0,0.0,0.0,0.0,1.0,0.0,1,0.0,0.4943,-1.1494,3.2393,0.0
+driver_077,87.0,2,43.5,0.0,0.0,20.6897,3.4483,5.7471,dbscan_density_cluster,2000.0,1.0,0.0,1.0,0.0,0.0,2,60.0,-0.3433,0.0,0.4632,-0.5075
+driver_078,110.0,2,55.0,0.0,4.5455,9.0909,10.9091,9.0909,dbscan_density_cluster,2000.0,0.5,0.5,1.0,0.0,0.0,0,45.0,-0.3699,3.3894,9.175,-0.5549
+driver_079,25.0,1,25.0,0.0,0.0,20.0,0.0,4.0,dbscan_density_cluster,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,-3.6364,-1.0

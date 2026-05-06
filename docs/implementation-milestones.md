@@ -70,8 +70,9 @@ data/processed/zone_feature_table.csv
 
 - GPS grid 변환
 - DBSCAN clustering
-- in_zone_ratio 계산
-- out_zone_ratio 계산
+- baseline 목적지 이탈거리 P90 기반 생활권 버퍼 계산
+- core_zone_ratio, buffer_zone_ratio 계산
+- in_zone_ratio, out_zone_ratio 계산
 - route_repeat_ratio 계산
 
 ### 2.4 운전행동 feature

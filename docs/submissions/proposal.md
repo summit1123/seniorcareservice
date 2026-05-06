@@ -19,7 +19,7 @@
 
 | AI 처리 | 모델 역할 | 심사위원 질문에 대한 답 |
 |---|---|---|
-| DBSCAN 생활권 생성 | baseline 기간의 출발·도착 좌표를 밀도 기반으로 묶어 고객별 반복 생활권 중심을 만든다 | 고객의 익숙한 병원, 시장, 가족 방문지 같은 반복 이동을 마일리지와 별도 feature로 전환했다 |
+| DBSCAN 생활권 생성 | baseline 기간의 출발·도착 좌표를 밀도 기반으로 묶어 고객별 반복 생활권 중심을 만들고 P90 버퍼로 자연스러운 주변 이동을 허용한다 | 고객의 익숙한 병원, 시장, 가족 방문지와 주차·주변 시설 방문을 마일리지와 별도 feature로 전환했다 |
 | 평소패턴 이상탐지 | 최근 trip vector가 고객 자신의 baseline보다 얼마나 달라졌는지 계산하고 `pattern_change_score`와 `anomaly_flag`를 남긴다 | 개인 사고 라벨 없이도 “평소와 달라진 운전”을 찾는 구현 가능한 AI 문제로 재정의했다 |
 | 설명 리포트 생성 | score, care trigger, reason code, top change signal을 함께 남겨 직원용 리포트와 고객 안내 문구로 연결한다 | AI 결과가 블랙박스 점수에 머물지 않고 왜 추가 리워드 또는 예방 케어인지 설명된다 |
 
@@ -50,7 +50,7 @@ _그림 1. Trip CSV에서 생활권 feature, 평소패턴 변화 감지, score t
 | 단계 | 입력 | 처리 | 산출물 |
 |---|---|---|---|
 | Trip 입력 | driver_id, trip_id, 시각, 좌표, 거리, 위험운전 이벤트 | 필수 컬럼 검증, 타입 변환, 결측·음수 값 확인 | `data/raw/trip_sample.csv` |
-| 생활권 생성 | 출발/도착 좌표, baseline 기간 trip | DBSCAN 방식 밀도 기반 클러스터링으로 반복 생활권 중심 생성 | `zone_feature_table.csv` |
+| 생활권 생성 | 출발/도착 좌표, baseline 기간 trip | DBSCAN으로 반복 생활권 중심을 만들고 `max(500m, min(P90, 2km))` 버퍼로 core/buffer/outer 분리 | `zone_feature_table.csv` |
 | 운전행동 feature | 과속, 급가속, 급감속, 급회전, 야간 주행 | 100km당 이벤트 수와 최근 기간 비율 계산 | `driving_feature_table.csv` |
 | 평소패턴 변화 감지 | baseline trip vector, recent trip vector | baseline 대비 양의 변화 신호를 이상탐지 점수와 주요 변화 feature로 기록 | `pattern_change_score.csv` |
 | 점수 계산 | 생활권 안정성, 위험행동, 변화 점수 | Safe Driving, Familiar Zone, Pattern Change, Out-Zone Risk 계산 | `score_table.csv` |

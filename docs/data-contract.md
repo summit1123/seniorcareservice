@@ -137,6 +137,7 @@ data/processed/model_feature_table.csv
 |---|---|
 | driver_id | 익명화된 운전자 ID |
 | zone_model_backend | 생활권 생성에 사용한 밀도 기반 클러스터링 백엔드 |
+| zone_buffer_m | baseline 목적지 이탈거리 P90을 반영한 생활권 버퍼 반경 |
 | total_km | 총 주행거리 |
 | trip_count | Trip 수 |
 | avg_trip_km | 평균 Trip 거리 |
@@ -144,8 +145,10 @@ data/processed/model_feature_table.csv
 | harsh_accel_per_100km | 100km당 급가속건수 |
 | harsh_brake_per_100km | 100km당 급감속건수 |
 | sharp_turn_per_100km | 100km당 급회전건수 |
-| in_zone_ratio | 생활권 안 주행 비율 |
-| out_zone_ratio | 생활권 밖 주행 비율 |
+| core_zone_ratio | DBSCAN 중심 주변 최소 500m 핵심 생활권 주행 비율 |
+| buffer_zone_ratio | 핵심 생활권 밖이지만 P90 버퍼 안 주행 비율 |
+| in_zone_ratio | 핵심 또는 버퍼 생활권 안 주행 비율 |
+| out_zone_ratio | P90 버퍼 밖 외부 주행 비율 |
 | route_repeat_ratio | 반복 경로 비율 |
 | new_destination_count | 신규 목적지 수 |
 | zone_stability_score | 생활권 안정성 점수 |
@@ -216,6 +219,6 @@ sharp_turn_count
 stop_count
 ```
 
-원본 좌표는 생활권 생성용으로만 쓰고, 최종 모델에는 생활권 안/밖 비율과 위험운전 요약값을 넣습니다.
+원본 좌표는 생활권 생성용으로만 쓰고, 최종 모델에는 핵심/버퍼/외부 생활권 비율과 위험운전 요약값을 넣습니다.
 
 실제 CSV가 들어오면 모델 담당자는 먼저 매핑 리포트를 남깁니다. 리포트가 통과하지 못한 경우에는 누락 컬럼을 보완한 뒤 다시 실행하며, 원본 데이터를 직접 수정하지 않고 표준화된 중간 CSV를 생성해 파이프라인에 연결합니다.

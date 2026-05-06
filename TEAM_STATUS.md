@@ -54,11 +54,25 @@ Trip CSV
 
 | AI 활용 | 설명 | 산출물 |
 |---|---|---|
-| DBSCAN 생활권 생성 | baseline 기간의 출발지/도착지를 묶어 고객별 반복 생활권을 찾습니다 | `zone_feature_table.csv` |
+| DBSCAN 생활권 생성 + 버퍼 | baseline 기간의 출발지/도착지를 묶어 반복 생활권 중심을 찾고 P90 버퍼로 주변 이동을 허용합니다 | `zone_feature_table.csv` |
 | 평소패턴 이상탐지 | 최근 주행이 평소보다 얼마나 달라졌는지 점수화합니다 | `pattern_change_score.csv` |
 | XAI reason code | 왜 추가 리워드/예방 케어인지 주요 이유를 남깁니다 | `decision_table.csv`, `model_demo_summary.md` |
 
-중요한 점은 **생활권 밖 주행 자체를 위험으로 보지 않는다는 것**입니다.
+생활권은 단일 좌표가 아니라 아래처럼 나눕니다.
+
+```text
+core zone = 반복 생활권 중심 주변 최소 500m
+buffer zone = 고객별 baseline 목적지 이탈거리 P90 안쪽
+outer zone = 버퍼 밖 외부 주행
+```
+
+버퍼 반경은 파일럿 기준으로 아래처럼 계산합니다.
+
+```text
+생활권 버퍼 = max(500m, min(P90, 2km))
+```
+
+중요한 점은 **outer zone 주행 자체를 위험으로 보지 않는다는 것**입니다.
 
 생활권 밖 주행은 병원, 가족 방문, 장보기처럼 정상적인 이유가 있을 수 있습니다. 따라서 우리 모델은 아래 조건이 함께 나타날 때만 예방 케어 신호로 봅니다.
 
