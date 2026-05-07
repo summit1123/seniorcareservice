@@ -1,0 +1,2671 @@
+{
+  "schema_version": "senior-scenario-config/v1",
+  "simulation_seed": 20260507,
+  "source_persona_template": "data/fixtures/persona_templates.yaml",
+  "source_customer_fixture": "data/fixtures/senior_customers.json",
+  "source_parameter_fixture": "data/fixtures/customer_driving_parameters.json",
+  "customer_count": 30,
+  "customer_count_per_persona": 5,
+  "observation_period": {
+    "baseline_days": 60,
+    "recent_days": 30
+  },
+  "persona_generation_rules": {
+    "in_zone_risky_low_mileage": {
+      "display_name_ko": "생활권 안 저주행 위험행동형",
+      "product_role": "생활권 안 주행이라도 과속/급감속이 있으면 감점되는지 확인하는 엣지케이스",
+      "baseline_60_day_rule": {
+        "trip_count_range": [
+          24,
+          36
+        ],
+        "outer_trip_ratio_range": [
+          0.0,
+          0.06
+        ],
+        "night_drive_ratio_range": [
+          0.0,
+          0.05
+        ],
+        "risk_event_rate_per_100km_range": [
+          2.0,
+          4.5
+        ],
+        "primary_zones": [
+          "core",
+          "buffer"
+        ],
+        "typical_destinations": [
+          "market",
+          "clinic",
+          "home"
+        ]
+      },
+      "recent_30_day_rule": {
+        "trip_count_range": [
+          10,
+          18
+        ],
+        "outer_trip_ratio_range": [
+          0.0,
+          0.08
+        ],
+        "night_drive_ratio_range": [
+          0.0,
+          0.08
+        ],
+        "risk_event_rate_per_100km_range": [
+          4.5,
+          8.0
+        ]
+      },
+      "expected_care_decision": "standard",
+      "risk_change_target": false,
+      "expected_reason_codes": [
+        "IN_ZONE_RISK_EVENTS",
+        "LOW_MILEAGE",
+        "FAVORABLE_WITHHELD_FOR_RISK"
+      ]
+    },
+    "irregular_family_support": {
+      "display_name_ko": "가족 돌봄 불규칙 외부 이동형",
+      "product_role": "불규칙 외부 이동이 있어도 위험행동과 야간 증가가 동반되는지 분리 평가하는 엣지케이스",
+      "baseline_60_day_rule": {
+        "trip_count_range": [
+          24,
+          38
+        ],
+        "outer_trip_ratio_range": [
+          0.1,
+          0.22
+        ],
+        "night_drive_ratio_range": [
+          0.02,
+          0.08
+        ],
+        "risk_event_rate_per_100km_range": [
+          0.8,
+          2.4
+        ],
+        "primary_zones": [
+          "core",
+          "buffer",
+          "outer"
+        ],
+        "typical_destinations": [
+          "family",
+          "market",
+          "home"
+        ]
+      },
+      "recent_30_day_rule": {
+        "trip_count_range": [
+          12,
+          22
+        ],
+        "outer_trip_ratio_range": [
+          0.2,
+          0.38
+        ],
+        "night_drive_ratio_range": [
+          0.04,
+          0.12
+        ],
+        "risk_event_rate_per_100km_range": [
+          1.0,
+          3.0
+        ]
+      },
+      "expected_care_decision": "standard",
+      "risk_change_target": false,
+      "expected_reason_codes": [
+        "FAMILY_SUPPORT_CONTEXT",
+        "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+        "NO_STRONG_RISK_CHANGE"
+      ]
+    },
+    "medical_visit_pattern": {
+      "display_name_ko": "병원 방문 반복 외부 목적지형",
+      "product_role": "반복 의료 목적 외부 이동을 신규 위험변화로 오판하지 않는지 확인하는 케어 맥락군",
+      "baseline_60_day_rule": {
+        "trip_count_range": [
+          26,
+          40
+        ],
+        "outer_trip_ratio_range": [
+          0.14,
+          0.26
+        ],
+        "night_drive_ratio_range": [
+          0.0,
+          0.04
+        ],
+        "risk_event_rate_per_100km_range": [
+          0.2,
+          1.8
+        ],
+        "primary_zones": [
+          "buffer",
+          "outer"
+        ],
+        "typical_destinations": [
+          "clinic",
+          "home"
+        ]
+      },
+      "recent_30_day_rule": {
+        "trip_count_range": [
+          12,
+          20
+        ],
+        "outer_trip_ratio_range": [
+          0.16,
+          0.3
+        ],
+        "night_drive_ratio_range": [
+          0.0,
+          0.05
+        ],
+        "risk_event_rate_per_100km_range": [
+          0.2,
+          2.0
+        ]
+      },
+      "expected_care_decision": "standard",
+      "risk_change_target": false,
+      "expected_reason_codes": [
+        "REPEATED_MEDICAL_DESTINATION",
+        "OUT_ZONE_STABLE_PATTERN",
+        "LOW_NIGHT_DRIVING"
+      ]
+    },
+    "recent_outer_risk_change": {
+      "display_name_ko": "최근 생활권 밖 위험변화형",
+      "product_role": "기존 마일리지 산식이 놓칠 수 있는 저주행 위험변화 핵심 포착 대상군",
+      "baseline_60_day_rule": {
+        "trip_count_range": [
+          22,
+          34
+        ],
+        "outer_trip_ratio_range": [
+          0.02,
+          0.1
+        ],
+        "night_drive_ratio_range": [
+          0.0,
+          0.04
+        ],
+        "risk_event_rate_per_100km_range": [
+          0.0,
+          1.2
+        ],
+        "primary_zones": [
+          "core",
+          "buffer",
+          "outer"
+        ],
+        "typical_destinations": [
+          "unknown_outer",
+          "family",
+          "clinic"
+        ]
+      },
+      "recent_30_day_rule": {
+        "trip_count_range": [
+          10,
+          18
+        ],
+        "outer_trip_ratio_range": [
+          0.28,
+          0.48
+        ],
+        "night_drive_ratio_range": [
+          0.18,
+          0.36
+        ],
+        "risk_event_rate_per_100km_range": [
+          4.0,
+          8.5
+        ]
+      },
+      "expected_care_decision": "preventive_care",
+      "risk_change_target": true,
+      "expected_reason_codes": [
+        "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+        "OUT_ZONE_RATIO_INCREASE",
+        "NIGHT_DRIVING_INCREASE",
+        "HARSH_BRAKE_INCREASE"
+      ]
+    },
+    "stable_local_low_mileage": {
+      "display_name_ko": "생활권 안 저주행 안정형",
+      "product_role": "기존 거리 중심 산식과 제안 통합 산식 모두 우량으로 분류되어야 하는 기준 우량군",
+      "baseline_60_day_rule": {
+        "trip_count_range": [
+          22,
+          32
+        ],
+        "outer_trip_ratio_range": [
+          0.0,
+          0.08
+        ],
+        "night_drive_ratio_range": [
+          0.0,
+          0.03
+        ],
+        "risk_event_rate_per_100km_range": [
+          0.0,
+          1.0
+        ],
+        "primary_zones": [
+          "core",
+          "buffer"
+        ],
+        "typical_destinations": [
+          "market",
+          "clinic",
+          "home"
+        ]
+      },
+      "recent_30_day_rule": {
+        "trip_count_range": [
+          10,
+          16
+        ],
+        "outer_trip_ratio_range": [
+          0.0,
+          0.1
+        ],
+        "night_drive_ratio_range": [
+          0.0,
+          0.04
+        ],
+        "risk_event_rate_per_100km_range": [
+          0.0,
+          1.2
+        ]
+      },
+      "expected_care_decision": "favorable",
+      "risk_change_target": false,
+      "expected_reason_codes": [
+        "LOW_MILEAGE",
+        "STABLE_IN_ZONE_DRIVING",
+        "LOW_RISK_EVENTS"
+      ]
+    },
+    "stable_outer_safe": {
+      "display_name_ko": "생활권 밖 안정 주행형",
+      "product_role": "생활권 밖 주행 자체를 과도하게 불리하게 보지 않는지 확인하는 공정성/오분류 방지군",
+      "baseline_60_day_rule": {
+        "trip_count_range": [
+          28,
+          42
+        ],
+        "outer_trip_ratio_range": [
+          0.18,
+          0.3
+        ],
+        "night_drive_ratio_range": [
+          0.0,
+          0.05
+        ],
+        "risk_event_rate_per_100km_range": [
+          0.0,
+          1.4
+        ],
+        "primary_zones": [
+          "core",
+          "buffer",
+          "outer"
+        ],
+        "typical_destinations": [
+          "family",
+          "clinic",
+          "leisure"
+        ]
+      },
+      "recent_30_day_rule": {
+        "trip_count_range": [
+          12,
+          20
+        ],
+        "outer_trip_ratio_range": [
+          0.18,
+          0.34
+        ],
+        "night_drive_ratio_range": [
+          0.0,
+          0.06
+        ],
+        "risk_event_rate_per_100km_range": [
+          0.0,
+          1.6
+        ]
+      },
+      "expected_care_decision": "standard",
+      "risk_change_target": false,
+      "expected_reason_codes": [
+        "OUT_ZONE_SAFE",
+        "LOW_NIGHT_DRIVING",
+        "LOW_RISK_EVENTS"
+      ]
+    }
+  },
+  "customer_scenario_rules": [
+    {
+      "customer_id": "cust_001",
+      "persona_type": "stable_local_low_mileage",
+      "scenario_id": "scenario_stable_local_low_mileage_01",
+      "scenario_variant": "market_loop",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 26,
+        "distance_km_per_trip_range": [
+          14.57,
+          25.9
+        ],
+        "zone_mix": {
+          "core": 0.76,
+          "buffer": 0.2,
+          "outer": 0.04
+        },
+        "night_drive_ratio": 0.01,
+        "risk_event_rate_per_100km": 0.3,
+        "time_window_weights": {
+          "morning": 0.42,
+          "afternoon": 0.38,
+          "evening": 0.19,
+          "night": 0.01
+        },
+        "destination_weights": {
+          "market": 0.42,
+          "clinic": 0.28,
+          "home": 0.3
+        },
+        "route_variability": "low"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 12,
+        "distance_km_per_trip_range": [
+          15.78,
+          28.05
+        ],
+        "zone_mix": {
+          "core": 0.74,
+          "buffer": 0.21,
+          "outer": 0.05
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 0.5,
+        "time_window_weights": {
+          "morning": 0.37,
+          "afternoon": 0.35,
+          "evening": 0.26,
+          "night": 0.02
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.01,
+        "night_ratio_delta": 0.01,
+        "risk_rate_delta_per_100km": 0.2,
+        "risk_change_target": false,
+        "expected_care_decision": "favorable",
+        "expected_reason_codes": [
+          "LOW_MILEAGE",
+          "STABLE_IN_ZONE_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "favorable",
+        "expected_reason_codes": [
+          "LOW_MILEAGE",
+          "STABLE_IN_ZONE_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_002",
+      "persona_type": "stable_local_low_mileage",
+      "scenario_id": "scenario_stable_local_low_mileage_02",
+      "scenario_variant": "clinic_short_loop",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 24,
+        "distance_km_per_trip_range": [
+          13.81,
+          24.55
+        ],
+        "zone_mix": {
+          "core": 0.74,
+          "buffer": 0.23,
+          "outer": 0.03
+        },
+        "night_drive_ratio": 0.0,
+        "risk_event_rate_per_100km": 0.2,
+        "time_window_weights": {
+          "morning": 0.42,
+          "afternoon": 0.38,
+          "evening": 0.2,
+          "night": 0.0
+        },
+        "destination_weights": {
+          "market": 0.42,
+          "clinic": 0.28,
+          "home": 0.3
+        },
+        "route_variability": "low"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 11,
+        "distance_km_per_trip_range": [
+          15.06,
+          26.78
+        ],
+        "zone_mix": {
+          "core": 0.72,
+          "buffer": 0.24,
+          "outer": 0.04
+        },
+        "night_drive_ratio": 0.01,
+        "risk_event_rate_per_100km": 0.4,
+        "time_window_weights": {
+          "morning": 0.38,
+          "afternoon": 0.36,
+          "evening": 0.25,
+          "night": 0.01
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.01,
+        "night_ratio_delta": 0.01,
+        "risk_rate_delta_per_100km": 0.2,
+        "risk_change_target": false,
+        "expected_care_decision": "favorable",
+        "expected_reason_codes": [
+          "LOW_MILEAGE",
+          "STABLE_IN_ZONE_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "favorable",
+        "expected_reason_codes": [
+          "LOW_MILEAGE",
+          "STABLE_IN_ZONE_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_003",
+      "persona_type": "stable_local_low_mileage",
+      "scenario_id": "scenario_stable_local_low_mileage_03",
+      "scenario_variant": "home_buffer_loop",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 31,
+        "distance_km_per_trip_range": [
+          15.65,
+          27.83
+        ],
+        "zone_mix": {
+          "core": 0.78,
+          "buffer": 0.16,
+          "outer": 0.06
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 0.6,
+        "time_window_weights": {
+          "morning": 0.41,
+          "afternoon": 0.37,
+          "evening": 0.2,
+          "night": 0.02
+        },
+        "destination_weights": {
+          "market": 0.42,
+          "clinic": 0.28,
+          "home": 0.3
+        },
+        "route_variability": "low"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 15,
+        "distance_km_per_trip_range": [
+          16.18,
+          28.76
+        ],
+        "zone_mix": {
+          "core": 0.76,
+          "buffer": 0.18,
+          "outer": 0.06
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 0.8,
+        "time_window_weights": {
+          "morning": 0.37,
+          "afternoon": 0.35,
+          "evening": 0.26,
+          "night": 0.02
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.0,
+        "night_ratio_delta": 0.0,
+        "risk_rate_delta_per_100km": 0.2,
+        "risk_change_target": false,
+        "expected_care_decision": "favorable",
+        "expected_reason_codes": [
+          "LOW_MILEAGE",
+          "STABLE_IN_ZONE_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "favorable",
+        "expected_reason_codes": [
+          "LOW_MILEAGE",
+          "STABLE_IN_ZONE_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_004",
+      "persona_type": "stable_local_low_mileage",
+      "scenario_id": "scenario_stable_local_low_mileage_04",
+      "scenario_variant": "low_frequency_weekday",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 22,
+        "distance_km_per_trip_range": [
+          13.99,
+          24.87
+        ],
+        "zone_mix": {
+          "core": 0.7,
+          "buffer": 0.28,
+          "outer": 0.02
+        },
+        "night_drive_ratio": 0.0,
+        "risk_event_rate_per_100km": 0.1,
+        "time_window_weights": {
+          "morning": 0.42,
+          "afternoon": 0.38,
+          "evening": 0.2,
+          "night": 0.0
+        },
+        "destination_weights": {
+          "market": 0.42,
+          "clinic": 0.28,
+          "home": 0.3
+        },
+        "route_variability": "low"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 10,
+        "distance_km_per_trip_range": [
+          15.39,
+          27.35
+        ],
+        "zone_mix": {
+          "core": 0.68,
+          "buffer": 0.29,
+          "outer": 0.03
+        },
+        "night_drive_ratio": 0.01,
+        "risk_event_rate_per_100km": 0.3,
+        "time_window_weights": {
+          "morning": 0.38,
+          "afternoon": 0.36,
+          "evening": 0.25,
+          "night": 0.01
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.01,
+        "night_ratio_delta": 0.01,
+        "risk_rate_delta_per_100km": 0.2,
+        "risk_change_target": false,
+        "expected_care_decision": "favorable",
+        "expected_reason_codes": [
+          "LOW_MILEAGE",
+          "STABLE_IN_ZONE_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "favorable",
+        "expected_reason_codes": [
+          "LOW_MILEAGE",
+          "STABLE_IN_ZONE_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_005",
+      "persona_type": "stable_local_low_mileage",
+      "scenario_id": "scenario_stable_local_low_mileage_05",
+      "scenario_variant": "low_frequency_weekend",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 28,
+        "distance_km_per_trip_range": [
+          15.22,
+          27.05
+        ],
+        "zone_mix": {
+          "core": 0.82,
+          "buffer": 0.13,
+          "outer": 0.05
+        },
+        "night_drive_ratio": 0.01,
+        "risk_event_rate_per_100km": 0.5,
+        "time_window_weights": {
+          "morning": 0.42,
+          "afternoon": 0.38,
+          "evening": 0.19,
+          "night": 0.01
+        },
+        "destination_weights": {
+          "market": 0.42,
+          "clinic": 0.28,
+          "home": 0.3
+        },
+        "route_variability": "low"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 14,
+        "distance_km_per_trip_range": [
+          15.22,
+          27.05
+        ],
+        "zone_mix": {
+          "core": 0.8,
+          "buffer": 0.14,
+          "outer": 0.06
+        },
+        "night_drive_ratio": 0.03,
+        "risk_event_rate_per_100km": 0.7,
+        "time_window_weights": {
+          "morning": 0.37,
+          "afternoon": 0.35,
+          "evening": 0.25,
+          "night": 0.03
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.01,
+        "night_ratio_delta": 0.02,
+        "risk_rate_delta_per_100km": 0.2,
+        "risk_change_target": false,
+        "expected_care_decision": "favorable",
+        "expected_reason_codes": [
+          "LOW_MILEAGE",
+          "STABLE_IN_ZONE_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "favorable",
+        "expected_reason_codes": [
+          "LOW_MILEAGE",
+          "STABLE_IN_ZONE_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_006",
+      "persona_type": "stable_outer_safe",
+      "scenario_id": "scenario_stable_outer_safe_01",
+      "scenario_variant": "family_visit_safe",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 34,
+        "distance_km_per_trip_range": [
+          22.63,
+          40.23
+        ],
+        "zone_mix": {
+          "core": 0.46,
+          "buffer": 0.28,
+          "outer": 0.26
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 0.7,
+        "time_window_weights": {
+          "morning": 0.41,
+          "afternoon": 0.37,
+          "evening": 0.2,
+          "night": 0.02
+        },
+        "destination_weights": {
+          "family": 0.5,
+          "clinic": 0.2,
+          "leisure": 0.3
+        },
+        "route_variability": "medium"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 16,
+        "distance_km_per_trip_range": [
+          24.04,
+          42.74
+        ],
+        "zone_mix": {
+          "core": 0.44,
+          "buffer": 0.29,
+          "outer": 0.27
+        },
+        "night_drive_ratio": 0.03,
+        "risk_event_rate_per_100km": 0.9,
+        "time_window_weights": {
+          "morning": 0.37,
+          "afternoon": 0.35,
+          "evening": 0.25,
+          "night": 0.03
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.01,
+        "night_ratio_delta": 0.01,
+        "risk_rate_delta_per_100km": 0.2,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "OUT_ZONE_SAFE",
+          "LOW_NIGHT_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "OUT_ZONE_SAFE",
+          "LOW_NIGHT_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_007",
+      "persona_type": "stable_outer_safe",
+      "scenario_id": "scenario_stable_outer_safe_02",
+      "scenario_variant": "daytime_outer_clinic",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 30,
+        "distance_km_per_trip_range": [
+          23.28,
+          41.38
+        ],
+        "zone_mix": {
+          "core": 0.5,
+          "buffer": 0.27,
+          "outer": 0.23
+        },
+        "night_drive_ratio": 0.01,
+        "risk_event_rate_per_100km": 0.5,
+        "time_window_weights": {
+          "morning": 0.42,
+          "afternoon": 0.38,
+          "evening": 0.19,
+          "night": 0.01
+        },
+        "destination_weights": {
+          "clinic": 0.55,
+          "family": 0.25,
+          "leisure": 0.2
+        },
+        "route_variability": "medium"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 14,
+        "distance_km_per_trip_range": [
+          24.94,
+          44.34
+        ],
+        "zone_mix": {
+          "core": 0.48,
+          "buffer": 0.28,
+          "outer": 0.24
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 0.8,
+        "time_window_weights": {
+          "morning": 0.37,
+          "afternoon": 0.35,
+          "evening": 0.26,
+          "night": 0.02
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.01,
+        "night_ratio_delta": 0.01,
+        "risk_rate_delta_per_100km": 0.3,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "OUT_ZONE_SAFE",
+          "LOW_NIGHT_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "OUT_ZONE_SAFE",
+          "LOW_NIGHT_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_008",
+      "persona_type": "stable_outer_safe",
+      "scenario_id": "scenario_stable_outer_safe_03",
+      "scenario_variant": "leisure_daytrip_safe",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 41,
+        "distance_km_per_trip_range": [
+          23.67,
+          42.08
+        ],
+        "zone_mix": {
+          "core": 0.42,
+          "buffer": 0.3,
+          "outer": 0.28
+        },
+        "night_drive_ratio": 0.03,
+        "risk_event_rate_per_100km": 1.0,
+        "time_window_weights": {
+          "morning": 0.41,
+          "afternoon": 0.37,
+          "evening": 0.19,
+          "night": 0.03
+        },
+        "destination_weights": {
+          "leisure": 0.5,
+          "family": 0.3,
+          "clinic": 0.2
+        },
+        "route_variability": "medium"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 19,
+        "distance_km_per_trip_range": [
+          25.54,
+          45.4
+        ],
+        "zone_mix": {
+          "core": 0.4,
+          "buffer": 0.3,
+          "outer": 0.3
+        },
+        "night_drive_ratio": 0.04,
+        "risk_event_rate_per_100km": 1.2,
+        "time_window_weights": {
+          "morning": 0.36,
+          "afternoon": 0.35,
+          "evening": 0.25,
+          "night": 0.04
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.02,
+        "night_ratio_delta": 0.01,
+        "risk_rate_delta_per_100km": 0.2,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "OUT_ZONE_SAFE",
+          "LOW_NIGHT_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "OUT_ZONE_SAFE",
+          "LOW_NIGHT_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_009",
+      "persona_type": "stable_outer_safe",
+      "scenario_id": "scenario_stable_outer_safe_04",
+      "scenario_variant": "repeat_outer_destination",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 36,
+        "distance_km_per_trip_range": [
+          23.34,
+          41.5
+        ],
+        "zone_mix": {
+          "core": 0.45,
+          "buffer": 0.29,
+          "outer": 0.26
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 0.8,
+        "time_window_weights": {
+          "morning": 0.41,
+          "afternoon": 0.37,
+          "evening": 0.2,
+          "night": 0.02
+        },
+        "destination_weights": {
+          "family": 0.45,
+          "clinic": 0.35,
+          "leisure": 0.2
+        },
+        "route_variability": "medium"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 17,
+        "distance_km_per_trip_range": [
+          24.72,
+          43.94
+        ],
+        "zone_mix": {
+          "core": 0.44,
+          "buffer": 0.27,
+          "outer": 0.29
+        },
+        "night_drive_ratio": 0.03,
+        "risk_event_rate_per_100km": 1.0,
+        "time_window_weights": {
+          "morning": 0.37,
+          "afternoon": 0.35,
+          "evening": 0.25,
+          "night": 0.03
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.03,
+        "night_ratio_delta": 0.01,
+        "risk_rate_delta_per_100km": 0.2,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "OUT_ZONE_SAFE",
+          "LOW_NIGHT_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "OUT_ZONE_SAFE",
+          "LOW_NIGHT_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_010",
+      "persona_type": "stable_outer_safe",
+      "scenario_id": "scenario_stable_outer_safe_05",
+      "scenario_variant": "outer_buffer_mix",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 29,
+        "distance_km_per_trip_range": [
+          22.85,
+          40.63
+        ],
+        "zone_mix": {
+          "core": 0.52,
+          "buffer": 0.25,
+          "outer": 0.23
+        },
+        "night_drive_ratio": 0.01,
+        "risk_event_rate_per_100km": 0.6,
+        "time_window_weights": {
+          "morning": 0.42,
+          "afternoon": 0.38,
+          "evening": 0.19,
+          "night": 0.01
+        },
+        "destination_weights": {
+          "clinic": 0.3,
+          "family": 0.35,
+          "leisure": 0.35
+        },
+        "route_variability": "medium"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 13,
+        "distance_km_per_trip_range": [
+          25.49,
+          45.32
+        ],
+        "zone_mix": {
+          "core": 0.49,
+          "buffer": 0.24,
+          "outer": 0.27
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 0.9,
+        "time_window_weights": {
+          "morning": 0.37,
+          "afternoon": 0.35,
+          "evening": 0.26,
+          "night": 0.02
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.04,
+        "night_ratio_delta": 0.01,
+        "risk_rate_delta_per_100km": 0.3,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "OUT_ZONE_SAFE",
+          "LOW_NIGHT_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "OUT_ZONE_SAFE",
+          "LOW_NIGHT_DRIVING",
+          "LOW_RISK_EVENTS"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_011",
+      "persona_type": "recent_outer_risk_change",
+      "scenario_id": "scenario_recent_outer_risk_change_01",
+      "scenario_variant": "new_night_outer_route",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 26,
+        "distance_km_per_trip_range": [
+          17.75,
+          31.56
+        ],
+        "zone_mix": {
+          "core": 0.76,
+          "buffer": 0.18,
+          "outer": 0.06
+        },
+        "night_drive_ratio": 0.01,
+        "risk_event_rate_per_100km": 0.5,
+        "time_window_weights": {
+          "morning": 0.42,
+          "afternoon": 0.38,
+          "evening": 0.19,
+          "night": 0.01
+        },
+        "destination_weights": {
+          "unknown_outer": 0.5,
+          "family": 0.3,
+          "clinic": 0.2
+        },
+        "route_variability": "high"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 13,
+        "distance_km_per_trip_range": [
+          17.75,
+          31.56
+        ],
+        "zone_mix": {
+          "core": 0.4,
+          "buffer": 0.25,
+          "outer": 0.35
+        },
+        "night_drive_ratio": 0.24,
+        "risk_event_rate_per_100km": 5.8,
+        "time_window_weights": {
+          "morning": 0.29,
+          "afternoon": 0.27,
+          "evening": 0.2,
+          "night": 0.24
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.29,
+        "night_ratio_delta": 0.23,
+        "risk_rate_delta_per_100km": 5.3,
+        "risk_change_target": true,
+        "expected_care_decision": "preventive_care",
+        "expected_reason_codes": [
+          "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+          "OUT_ZONE_RATIO_INCREASE",
+          "NIGHT_DRIVING_INCREASE",
+          "HARSH_BRAKE_INCREASE"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": true,
+        "expected_care_decision": "preventive_care",
+        "expected_reason_codes": [
+          "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+          "OUT_ZONE_RATIO_INCREASE",
+          "NIGHT_DRIVING_INCREASE",
+          "HARSH_BRAKE_INCREASE"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_012",
+      "persona_type": "recent_outer_risk_change",
+      "scenario_id": "scenario_recent_outer_risk_change_02",
+      "scenario_variant": "recent_family_emergency",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 29,
+        "distance_km_per_trip_range": [
+          17.55,
+          31.2
+        ],
+        "zone_mix": {
+          "core": 0.78,
+          "buffer": 0.14,
+          "outer": 0.08
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 0.7,
+        "time_window_weights": {
+          "morning": 0.41,
+          "afternoon": 0.37,
+          "evening": 0.2,
+          "night": 0.02
+        },
+        "destination_weights": {
+          "family": 0.55,
+          "unknown_outer": 0.25,
+          "clinic": 0.2
+        },
+        "route_variability": "high"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 15,
+        "distance_km_per_trip_range": [
+          16.96,
+          30.16
+        ],
+        "zone_mix": {
+          "core": 0.38,
+          "buffer": 0.22,
+          "outer": 0.4
+        },
+        "night_drive_ratio": 0.28,
+        "risk_event_rate_per_100km": 6.4,
+        "time_window_weights": {
+          "morning": 0.27,
+          "afternoon": 0.26,
+          "evening": 0.19,
+          "night": 0.28
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.32,
+        "night_ratio_delta": 0.26,
+        "risk_rate_delta_per_100km": 5.7,
+        "risk_change_target": true,
+        "expected_care_decision": "preventive_care",
+        "expected_reason_codes": [
+          "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+          "OUT_ZONE_RATIO_INCREASE",
+          "NIGHT_DRIVING_INCREASE",
+          "HARSH_BRAKE_INCREASE"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": true,
+        "expected_care_decision": "preventive_care",
+        "expected_reason_codes": [
+          "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+          "OUT_ZONE_RATIO_INCREASE",
+          "NIGHT_DRIVING_INCREASE",
+          "HARSH_BRAKE_INCREASE"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_013",
+      "persona_type": "recent_outer_risk_change",
+      "scenario_id": "scenario_recent_outer_risk_change_03",
+      "scenario_variant": "unknown_outer_cluster",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 25,
+        "distance_km_per_trip_range": [
+          17.04,
+          30.3
+        ],
+        "zone_mix": {
+          "core": 0.72,
+          "buffer": 0.2,
+          "outer": 0.08
+        },
+        "night_drive_ratio": 0.01,
+        "risk_event_rate_per_100km": 0.4,
+        "time_window_weights": {
+          "morning": 0.42,
+          "afternoon": 0.38,
+          "evening": 0.19,
+          "night": 0.01
+        },
+        "destination_weights": {
+          "unknown_outer": 0.65,
+          "family": 0.2,
+          "clinic": 0.15
+        },
+        "route_variability": "high"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 12,
+        "distance_km_per_trip_range": [
+          17.75,
+          31.56
+        ],
+        "zone_mix": {
+          "core": 0.34,
+          "buffer": 0.24,
+          "outer": 0.42
+        },
+        "night_drive_ratio": 0.31,
+        "risk_event_rate_per_100km": 7.2,
+        "time_window_weights": {
+          "morning": 0.26,
+          "afternoon": 0.25,
+          "evening": 0.18,
+          "night": 0.31
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.34,
+        "night_ratio_delta": 0.3,
+        "risk_rate_delta_per_100km": 6.8,
+        "risk_change_target": true,
+        "expected_care_decision": "preventive_care",
+        "expected_reason_codes": [
+          "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+          "OUT_ZONE_RATIO_INCREASE",
+          "NIGHT_DRIVING_INCREASE",
+          "HARSH_BRAKE_INCREASE"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": true,
+        "expected_care_decision": "preventive_care",
+        "expected_reason_codes": [
+          "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+          "OUT_ZONE_RATIO_INCREASE",
+          "NIGHT_DRIVING_INCREASE",
+          "HARSH_BRAKE_INCREASE"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_014",
+      "persona_type": "recent_outer_risk_change",
+      "scenario_id": "scenario_recent_outer_risk_change_04",
+      "scenario_variant": "late_clinic_route",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 32,
+        "distance_km_per_trip_range": [
+          17.38,
+          30.9
+        ],
+        "zone_mix": {
+          "core": 0.75,
+          "buffer": 0.17,
+          "outer": 0.08
+        },
+        "night_drive_ratio": 0.03,
+        "risk_event_rate_per_100km": 0.9,
+        "time_window_weights": {
+          "morning": 0.41,
+          "afternoon": 0.37,
+          "evening": 0.19,
+          "night": 0.03
+        },
+        "destination_weights": {
+          "clinic": 0.5,
+          "unknown_outer": 0.3,
+          "family": 0.2
+        },
+        "route_variability": "high"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 17,
+        "distance_km_per_trip_range": [
+          16.36,
+          29.09
+        ],
+        "zone_mix": {
+          "core": 0.42,
+          "buffer": 0.24,
+          "outer": 0.34
+        },
+        "night_drive_ratio": 0.22,
+        "risk_event_rate_per_100km": 5.3,
+        "time_window_weights": {
+          "morning": 0.3,
+          "afternoon": 0.28,
+          "evening": 0.2,
+          "night": 0.22
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.26,
+        "night_ratio_delta": 0.19,
+        "risk_rate_delta_per_100km": 4.4,
+        "risk_change_target": true,
+        "expected_care_decision": "preventive_care",
+        "expected_reason_codes": [
+          "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+          "OUT_ZONE_RATIO_INCREASE",
+          "NIGHT_DRIVING_INCREASE",
+          "HARSH_BRAKE_INCREASE"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": true,
+        "expected_care_decision": "preventive_care",
+        "expected_reason_codes": [
+          "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+          "OUT_ZONE_RATIO_INCREASE",
+          "NIGHT_DRIVING_INCREASE",
+          "HARSH_BRAKE_INCREASE"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_015",
+      "persona_type": "recent_outer_risk_change",
+      "scenario_id": "scenario_recent_outer_risk_change_05",
+      "scenario_variant": "outer_speeding_braking",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 33,
+        "distance_km_per_trip_range": [
+          18.29,
+          32.52
+        ],
+        "zone_mix": {
+          "core": 0.74,
+          "buffer": 0.18,
+          "outer": 0.08
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 1.0,
+        "time_window_weights": {
+          "morning": 0.41,
+          "afternoon": 0.37,
+          "evening": 0.2,
+          "night": 0.02
+        },
+        "destination_weights": {
+          "unknown_outer": 0.45,
+          "family": 0.3,
+          "clinic": 0.25
+        },
+        "route_variability": "high"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 18,
+        "distance_km_per_trip_range": [
+          16.77,
+          29.81
+        ],
+        "zone_mix": {
+          "core": 0.36,
+          "buffer": 0.24,
+          "outer": 0.4
+        },
+        "night_drive_ratio": 0.33,
+        "risk_event_rate_per_100km": 8.0,
+        "time_window_weights": {
+          "morning": 0.25,
+          "afternoon": 0.24,
+          "evening": 0.18,
+          "night": 0.33
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.32,
+        "night_ratio_delta": 0.31,
+        "risk_rate_delta_per_100km": 7.0,
+        "risk_change_target": true,
+        "expected_care_decision": "preventive_care",
+        "expected_reason_codes": [
+          "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+          "OUT_ZONE_RATIO_INCREASE",
+          "NIGHT_DRIVING_INCREASE",
+          "HARSH_BRAKE_INCREASE"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": true,
+        "expected_care_decision": "preventive_care",
+        "expected_reason_codes": [
+          "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+          "OUT_ZONE_RATIO_INCREASE",
+          "NIGHT_DRIVING_INCREASE",
+          "HARSH_BRAKE_INCREASE"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_016",
+      "persona_type": "in_zone_risky_low_mileage",
+      "scenario_id": "scenario_in_zone_risky_low_mileage_01",
+      "scenario_variant": "market_harsh_brake",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 27,
+        "distance_km_per_trip_range": [
+          14.47,
+          25.72
+        ],
+        "zone_mix": {
+          "core": 0.79,
+          "buffer": 0.18,
+          "outer": 0.03
+        },
+        "night_drive_ratio": 0.01,
+        "risk_event_rate_per_100km": 2.8,
+        "time_window_weights": {
+          "morning": 0.42,
+          "afternoon": 0.38,
+          "evening": 0.19,
+          "night": 0.01
+        },
+        "destination_weights": {
+          "market": 0.55,
+          "clinic": 0.2,
+          "home": 0.25
+        },
+        "route_variability": "medium"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 12,
+        "distance_km_per_trip_range": [
+          16.27,
+          28.93
+        ],
+        "zone_mix": {
+          "core": 0.76,
+          "buffer": 0.2,
+          "outer": 0.04
+        },
+        "night_drive_ratio": 0.03,
+        "risk_event_rate_per_100km": 5.5,
+        "time_window_weights": {
+          "morning": 0.37,
+          "afternoon": 0.35,
+          "evening": 0.25,
+          "night": 0.03
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.01,
+        "night_ratio_delta": 0.02,
+        "risk_rate_delta_per_100km": 2.7,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "IN_ZONE_RISK_EVENTS",
+          "LOW_MILEAGE",
+          "FAVORABLE_WITHHELD_FOR_RISK"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "IN_ZONE_RISK_EVENTS",
+          "LOW_MILEAGE",
+          "FAVORABLE_WITHHELD_FOR_RISK"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_017",
+      "persona_type": "in_zone_risky_low_mileage",
+      "scenario_id": "scenario_in_zone_risky_low_mileage_02",
+      "scenario_variant": "clinic_speeding_core",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 34,
+        "distance_km_per_trip_range": [
+          14.62,
+          25.99
+        ],
+        "zone_mix": {
+          "core": 0.82,
+          "buffer": 0.14,
+          "outer": 0.04
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 3.2,
+        "time_window_weights": {
+          "morning": 0.41,
+          "afternoon": 0.37,
+          "evening": 0.2,
+          "night": 0.02
+        },
+        "destination_weights": {
+          "clinic": 0.45,
+          "market": 0.3,
+          "home": 0.25
+        },
+        "route_variability": "medium"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 16,
+        "distance_km_per_trip_range": [
+          15.53,
+          27.62
+        ],
+        "zone_mix": {
+          "core": 0.78,
+          "buffer": 0.18,
+          "outer": 0.04
+        },
+        "night_drive_ratio": 0.04,
+        "risk_event_rate_per_100km": 6.2,
+        "time_window_weights": {
+          "morning": 0.36,
+          "afternoon": 0.35,
+          "evening": 0.25,
+          "night": 0.04
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.0,
+        "night_ratio_delta": 0.02,
+        "risk_rate_delta_per_100km": 3.0,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "IN_ZONE_RISK_EVENTS",
+          "LOW_MILEAGE",
+          "FAVORABLE_WITHHELD_FOR_RISK"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "IN_ZONE_RISK_EVENTS",
+          "LOW_MILEAGE",
+          "FAVORABLE_WITHHELD_FOR_RISK"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_018",
+      "persona_type": "in_zone_risky_low_mileage",
+      "scenario_id": "scenario_in_zone_risky_low_mileage_03",
+      "scenario_variant": "buffer_sharp_turn",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 35,
+        "distance_km_per_trip_range": [
+          15.22,
+          27.05
+        ],
+        "zone_mix": {
+          "core": 0.7,
+          "buffer": 0.25,
+          "outer": 0.05
+        },
+        "night_drive_ratio": 0.03,
+        "risk_event_rate_per_100km": 3.8,
+        "time_window_weights": {
+          "morning": 0.41,
+          "afternoon": 0.37,
+          "evening": 0.19,
+          "night": 0.03
+        },
+        "destination_weights": {
+          "market": 0.4,
+          "clinic": 0.35,
+          "home": 0.25
+        },
+        "route_variability": "medium"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 17,
+        "distance_km_per_trip_range": [
+          15.66,
+          27.85
+        ],
+        "zone_mix": {
+          "core": 0.68,
+          "buffer": 0.26,
+          "outer": 0.06
+        },
+        "night_drive_ratio": 0.05,
+        "risk_event_rate_per_100km": 6.8,
+        "time_window_weights": {
+          "morning": 0.36,
+          "afternoon": 0.34,
+          "evening": 0.25,
+          "night": 0.05
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.01,
+        "night_ratio_delta": 0.02,
+        "risk_rate_delta_per_100km": 3.0,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "IN_ZONE_RISK_EVENTS",
+          "LOW_MILEAGE",
+          "FAVORABLE_WITHHELD_FOR_RISK"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "IN_ZONE_RISK_EVENTS",
+          "LOW_MILEAGE",
+          "FAVORABLE_WITHHELD_FOR_RISK"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_019",
+      "persona_type": "in_zone_risky_low_mileage",
+      "scenario_id": "scenario_in_zone_risky_low_mileage_04",
+      "scenario_variant": "recent_in_zone_risk_up",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 31,
+        "distance_km_per_trip_range": [
+          14.89,
+          26.47
+        ],
+        "zone_mix": {
+          "core": 0.76,
+          "buffer": 0.19,
+          "outer": 0.05
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 2.4,
+        "time_window_weights": {
+          "morning": 0.41,
+          "afternoon": 0.37,
+          "evening": 0.2,
+          "night": 0.02
+        },
+        "destination_weights": {
+          "market": 0.35,
+          "clinic": 0.35,
+          "home": 0.3
+        },
+        "route_variability": "medium"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 15,
+        "distance_km_per_trip_range": [
+          15.39,
+          27.35
+        ],
+        "zone_mix": {
+          "core": 0.74,
+          "buffer": 0.21,
+          "outer": 0.05
+        },
+        "night_drive_ratio": 0.06,
+        "risk_event_rate_per_100km": 7.4,
+        "time_window_weights": {
+          "morning": 0.36,
+          "afternoon": 0.34,
+          "evening": 0.24,
+          "night": 0.06
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.0,
+        "night_ratio_delta": 0.04,
+        "risk_rate_delta_per_100km": 5.0,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "IN_ZONE_RISK_EVENTS",
+          "LOW_MILEAGE",
+          "FAVORABLE_WITHHELD_FOR_RISK"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "IN_ZONE_RISK_EVENTS",
+          "LOW_MILEAGE",
+          "FAVORABLE_WITHHELD_FOR_RISK"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_020",
+      "persona_type": "in_zone_risky_low_mileage",
+      "scenario_id": "scenario_in_zone_risky_low_mileage_05",
+      "scenario_variant": "dense_stop_and_go",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 25,
+        "distance_km_per_trip_range": [
+          14.2,
+          25.25
+        ],
+        "zone_mix": {
+          "core": 0.84,
+          "buffer": 0.13,
+          "outer": 0.03
+        },
+        "night_drive_ratio": 0.01,
+        "risk_event_rate_per_100km": 3.5,
+        "time_window_weights": {
+          "morning": 0.42,
+          "afternoon": 0.38,
+          "evening": 0.19,
+          "night": 0.01
+        },
+        "destination_weights": {
+          "market": 0.5,
+          "clinic": 0.25,
+          "home": 0.25
+        },
+        "route_variability": "medium"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 11,
+        "distance_km_per_trip_range": [
+          16.14,
+          28.69
+        ],
+        "zone_mix": {
+          "core": 0.82,
+          "buffer": 0.15,
+          "outer": 0.03
+        },
+        "night_drive_ratio": 0.03,
+        "risk_event_rate_per_100km": 5.9,
+        "time_window_weights": {
+          "morning": 0.37,
+          "afternoon": 0.35,
+          "evening": 0.25,
+          "night": 0.03
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.0,
+        "night_ratio_delta": 0.02,
+        "risk_rate_delta_per_100km": 2.4,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "IN_ZONE_RISK_EVENTS",
+          "LOW_MILEAGE",
+          "FAVORABLE_WITHHELD_FOR_RISK"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "IN_ZONE_RISK_EVENTS",
+          "LOW_MILEAGE",
+          "FAVORABLE_WITHHELD_FOR_RISK"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_021",
+      "persona_type": "medical_visit_pattern",
+      "scenario_id": "scenario_medical_visit_pattern_01",
+      "scenario_variant": "weekly_clinic_outer",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 34,
+        "distance_km_per_trip_range": [
+          21.58,
+          38.37
+        ],
+        "zone_mix": {
+          "core": 0.4,
+          "buffer": 0.38,
+          "outer": 0.22
+        },
+        "night_drive_ratio": 0.01,
+        "risk_event_rate_per_100km": 0.9,
+        "time_window_weights": {
+          "morning": 0.42,
+          "afternoon": 0.38,
+          "evening": 0.19,
+          "night": 0.01
+        },
+        "destination_weights": {
+          "clinic": 0.7,
+          "home": 0.3
+        },
+        "route_variability": "low"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 16,
+        "distance_km_per_trip_range": [
+          22.93,
+          40.77
+        ],
+        "zone_mix": {
+          "core": 0.39,
+          "buffer": 0.37,
+          "outer": 0.24
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 1.1,
+        "time_window_weights": {
+          "morning": 0.37,
+          "afternoon": 0.35,
+          "evening": 0.26,
+          "night": 0.02
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.02,
+        "night_ratio_delta": 0.01,
+        "risk_rate_delta_per_100km": 0.2,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "REPEATED_MEDICAL_DESTINATION",
+          "OUT_ZONE_STABLE_PATTERN",
+          "LOW_NIGHT_DRIVING"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "REPEATED_MEDICAL_DESTINATION",
+          "OUT_ZONE_STABLE_PATTERN",
+          "LOW_NIGHT_DRIVING"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_022",
+      "persona_type": "medical_visit_pattern",
+      "scenario_id": "scenario_medical_visit_pattern_02",
+      "scenario_variant": "rehab_center_repeat",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 31,
+        "distance_km_per_trip_range": [
+          21.76,
+          38.69
+        ],
+        "zone_mix": {
+          "core": 0.42,
+          "buffer": 0.34,
+          "outer": 0.24
+        },
+        "night_drive_ratio": 0.01,
+        "risk_event_rate_per_100km": 1.0,
+        "time_window_weights": {
+          "morning": 0.42,
+          "afternoon": 0.38,
+          "evening": 0.19,
+          "night": 0.01
+        },
+        "destination_weights": {
+          "clinic": 0.75,
+          "home": 0.25
+        },
+        "route_variability": "low"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 15,
+        "distance_km_per_trip_range": [
+          22.49,
+          39.98
+        ],
+        "zone_mix": {
+          "core": 0.41,
+          "buffer": 0.34,
+          "outer": 0.25
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 1.2,
+        "time_window_weights": {
+          "morning": 0.37,
+          "afternoon": 0.35,
+          "evening": 0.26,
+          "night": 0.02
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.01,
+        "night_ratio_delta": 0.01,
+        "risk_rate_delta_per_100km": 0.2,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "REPEATED_MEDICAL_DESTINATION",
+          "OUT_ZONE_STABLE_PATTERN",
+          "LOW_NIGHT_DRIVING"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "REPEATED_MEDICAL_DESTINATION",
+          "OUT_ZONE_STABLE_PATTERN",
+          "LOW_NIGHT_DRIVING"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_023",
+      "persona_type": "medical_visit_pattern",
+      "scenario_id": "scenario_medical_visit_pattern_03",
+      "scenario_variant": "daytime_hospital_loop",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 38,
+        "distance_km_per_trip_range": [
+          21.49,
+          38.21
+        ],
+        "zone_mix": {
+          "core": 0.36,
+          "buffer": 0.39,
+          "outer": 0.25
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 1.2,
+        "time_window_weights": {
+          "morning": 0.41,
+          "afternoon": 0.37,
+          "evening": 0.2,
+          "night": 0.02
+        },
+        "destination_weights": {
+          "clinic": 0.8,
+          "home": 0.2
+        },
+        "route_variability": "low"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 19,
+        "distance_km_per_trip_range": [
+          21.49,
+          38.21
+        ],
+        "zone_mix": {
+          "core": 0.35,
+          "buffer": 0.38,
+          "outer": 0.27
+        },
+        "night_drive_ratio": 0.03,
+        "risk_event_rate_per_100km": 1.4,
+        "time_window_weights": {
+          "morning": 0.37,
+          "afternoon": 0.35,
+          "evening": 0.25,
+          "night": 0.03
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.02,
+        "night_ratio_delta": 0.01,
+        "risk_rate_delta_per_100km": 0.2,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "REPEATED_MEDICAL_DESTINATION",
+          "OUT_ZONE_STABLE_PATTERN",
+          "LOW_NIGHT_DRIVING"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "REPEATED_MEDICAL_DESTINATION",
+          "OUT_ZONE_STABLE_PATTERN",
+          "LOW_NIGHT_DRIVING"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_024",
+      "persona_type": "medical_visit_pattern",
+      "scenario_id": "scenario_medical_visit_pattern_04",
+      "scenario_variant": "buffer_pharmacy_link",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 28,
+        "distance_km_per_trip_range": [
+          20.29,
+          36.07
+        ],
+        "zone_mix": {
+          "core": 0.45,
+          "buffer": 0.36,
+          "outer": 0.19
+        },
+        "night_drive_ratio": 0.01,
+        "risk_event_rate_per_100km": 0.7,
+        "time_window_weights": {
+          "morning": 0.42,
+          "afternoon": 0.38,
+          "evening": 0.19,
+          "night": 0.01
+        },
+        "destination_weights": {
+          "clinic": 0.55,
+          "home": 0.45
+        },
+        "route_variability": "low"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 13,
+        "distance_km_per_trip_range": [
+          21.85,
+          38.85
+        ],
+        "zone_mix": {
+          "core": 0.44,
+          "buffer": 0.35,
+          "outer": 0.21
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 0.9,
+        "time_window_weights": {
+          "morning": 0.37,
+          "afternoon": 0.35,
+          "evening": 0.26,
+          "night": 0.02
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.02,
+        "night_ratio_delta": 0.01,
+        "risk_rate_delta_per_100km": 0.2,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "REPEATED_MEDICAL_DESTINATION",
+          "OUT_ZONE_STABLE_PATTERN",
+          "LOW_NIGHT_DRIVING"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "REPEATED_MEDICAL_DESTINATION",
+          "OUT_ZONE_STABLE_PATTERN",
+          "LOW_NIGHT_DRIVING"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_025",
+      "persona_type": "medical_visit_pattern",
+      "scenario_id": "scenario_medical_visit_pattern_05",
+      "scenario_variant": "caregiver_dropoff_repeat",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 37,
+        "distance_km_per_trip_range": [
+          20.79,
+          36.96
+        ],
+        "zone_mix": {
+          "core": 0.38,
+          "buffer": 0.4,
+          "outer": 0.22
+        },
+        "night_drive_ratio": 0.02,
+        "risk_event_rate_per_100km": 1.1,
+        "time_window_weights": {
+          "morning": 0.41,
+          "afternoon": 0.37,
+          "evening": 0.2,
+          "night": 0.02
+        },
+        "destination_weights": {
+          "clinic": 0.65,
+          "home": 0.35
+        },
+        "route_variability": "low"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 18,
+        "distance_km_per_trip_range": [
+          21.37,
+          37.99
+        ],
+        "zone_mix": {
+          "core": 0.37,
+          "buffer": 0.38,
+          "outer": 0.25
+        },
+        "night_drive_ratio": 0.03,
+        "risk_event_rate_per_100km": 1.3,
+        "time_window_weights": {
+          "morning": 0.37,
+          "afternoon": 0.35,
+          "evening": 0.25,
+          "night": 0.03
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.03,
+        "night_ratio_delta": 0.01,
+        "risk_rate_delta_per_100km": 0.2,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "REPEATED_MEDICAL_DESTINATION",
+          "OUT_ZONE_STABLE_PATTERN",
+          "LOW_NIGHT_DRIVING"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "REPEATED_MEDICAL_DESTINATION",
+          "OUT_ZONE_STABLE_PATTERN",
+          "LOW_NIGHT_DRIVING"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_026",
+      "persona_type": "irregular_family_support",
+      "scenario_id": "scenario_irregular_family_support_01",
+      "scenario_variant": "grandchild_pickup",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 31,
+        "distance_km_per_trip_range": [
+          23.67,
+          42.08
+        ],
+        "zone_mix": {
+          "core": 0.54,
+          "buffer": 0.3,
+          "outer": 0.16
+        },
+        "night_drive_ratio": 0.04,
+        "risk_event_rate_per_100km": 1.5,
+        "time_window_weights": {
+          "morning": 0.4,
+          "afternoon": 0.36,
+          "evening": 0.2,
+          "night": 0.04
+        },
+        "destination_weights": {
+          "family": 0.55,
+          "market": 0.25,
+          "home": 0.2
+        },
+        "route_variability": "high"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 16,
+        "distance_km_per_trip_range": [
+          22.93,
+          40.77
+        ],
+        "zone_mix": {
+          "core": 0.45,
+          "buffer": 0.29,
+          "outer": 0.26
+        },
+        "night_drive_ratio": 0.08,
+        "risk_event_rate_per_100km": 2.0,
+        "time_window_weights": {
+          "morning": 0.35,
+          "afternoon": 0.33,
+          "evening": 0.24,
+          "night": 0.08
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.1,
+        "night_ratio_delta": 0.04,
+        "risk_rate_delta_per_100km": 0.5,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "FAMILY_SUPPORT_CONTEXT",
+          "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+          "NO_STRONG_RISK_CHANGE"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "FAMILY_SUPPORT_CONTEXT",
+          "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+          "NO_STRONG_RISK_CHANGE"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_027",
+      "persona_type": "irregular_family_support",
+      "scenario_id": "scenario_irregular_family_support_02",
+      "scenario_variant": "family_errand_daytime",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 27,
+        "distance_km_per_trip_range": [
+          23.67,
+          42.08
+        ],
+        "zone_mix": {
+          "core": 0.58,
+          "buffer": 0.27,
+          "outer": 0.15
+        },
+        "night_drive_ratio": 0.03,
+        "risk_event_rate_per_100km": 1.2,
+        "time_window_weights": {
+          "morning": 0.41,
+          "afternoon": 0.37,
+          "evening": 0.19,
+          "night": 0.03
+        },
+        "destination_weights": {
+          "family": 0.45,
+          "market": 0.35,
+          "home": 0.2
+        },
+        "route_variability": "high"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 14,
+        "distance_km_per_trip_range": [
+          22.83,
+          40.58
+        ],
+        "zone_mix": {
+          "core": 0.5,
+          "buffer": 0.25,
+          "outer": 0.25
+        },
+        "night_drive_ratio": 0.06,
+        "risk_event_rate_per_100km": 1.6,
+        "time_window_weights": {
+          "morning": 0.36,
+          "afternoon": 0.34,
+          "evening": 0.24,
+          "night": 0.06
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.1,
+        "night_ratio_delta": 0.03,
+        "risk_rate_delta_per_100km": 0.4,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "FAMILY_SUPPORT_CONTEXT",
+          "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+          "NO_STRONG_RISK_CHANGE"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "FAMILY_SUPPORT_CONTEXT",
+          "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+          "NO_STRONG_RISK_CHANGE"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_028",
+      "persona_type": "irregular_family_support",
+      "scenario_id": "scenario_irregular_family_support_03",
+      "scenario_variant": "irregular_outer_safe",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 36,
+        "distance_km_per_trip_range": [
+          25.64,
+          45.59
+        ],
+        "zone_mix": {
+          "core": 0.5,
+          "buffer": 0.32,
+          "outer": 0.18
+        },
+        "night_drive_ratio": 0.05,
+        "risk_event_rate_per_100km": 1.8,
+        "time_window_weights": {
+          "morning": 0.4,
+          "afternoon": 0.36,
+          "evening": 0.19,
+          "night": 0.05
+        },
+        "destination_weights": {
+          "family": 0.5,
+          "market": 0.25,
+          "home": 0.25
+        },
+        "route_variability": "high"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 20,
+        "distance_km_per_trip_range": [
+          23.08,
+          41.03
+        ],
+        "zone_mix": {
+          "core": 0.43,
+          "buffer": 0.28,
+          "outer": 0.29
+        },
+        "night_drive_ratio": 0.09,
+        "risk_event_rate_per_100km": 2.2,
+        "time_window_weights": {
+          "morning": 0.35,
+          "afternoon": 0.33,
+          "evening": 0.23,
+          "night": 0.09
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.11,
+        "night_ratio_delta": 0.04,
+        "risk_rate_delta_per_100km": 0.4,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "FAMILY_SUPPORT_CONTEXT",
+          "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+          "NO_STRONG_RISK_CHANGE"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "FAMILY_SUPPORT_CONTEXT",
+          "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+          "NO_STRONG_RISK_CHANGE"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_029",
+      "persona_type": "irregular_family_support",
+      "scenario_id": "scenario_irregular_family_support_04",
+      "scenario_variant": "weekend_family_support",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 34,
+        "distance_km_per_trip_range": [
+          24.37,
+          43.32
+        ],
+        "zone_mix": {
+          "core": 0.55,
+          "buffer": 0.29,
+          "outer": 0.16
+        },
+        "night_drive_ratio": 0.04,
+        "risk_event_rate_per_100km": 1.6,
+        "time_window_weights": {
+          "morning": 0.4,
+          "afternoon": 0.36,
+          "evening": 0.2,
+          "night": 0.04
+        },
+        "destination_weights": {
+          "family": 0.6,
+          "market": 0.2,
+          "home": 0.2
+        },
+        "route_variability": "high"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 19,
+        "distance_km_per_trip_range": [
+          21.8,
+          38.76
+        ],
+        "zone_mix": {
+          "core": 0.48,
+          "buffer": 0.26,
+          "outer": 0.26
+        },
+        "night_drive_ratio": 0.1,
+        "risk_event_rate_per_100km": 2.4,
+        "time_window_weights": {
+          "morning": 0.34,
+          "afternoon": 0.32,
+          "evening": 0.24,
+          "night": 0.1
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.1,
+        "night_ratio_delta": 0.06,
+        "risk_rate_delta_per_100km": 0.8,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "FAMILY_SUPPORT_CONTEXT",
+          "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+          "NO_STRONG_RISK_CHANGE"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "FAMILY_SUPPORT_CONTEXT",
+          "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+          "NO_STRONG_RISK_CHANGE"
+        ]
+      }
+    },
+    {
+      "customer_id": "cust_030",
+      "persona_type": "irregular_family_support",
+      "scenario_id": "scenario_irregular_family_support_05",
+      "scenario_variant": "outer_trip_without_risk_spike",
+      "observation_period": {
+        "baseline_days": 60,
+        "recent_days": 30
+      },
+      "baseline_driving_pattern": {
+        "trip_count": 37,
+        "distance_km_per_trip_range": [
+          25.91,
+          46.06
+        ],
+        "zone_mix": {
+          "core": 0.52,
+          "buffer": 0.31,
+          "outer": 0.17
+        },
+        "night_drive_ratio": 0.05,
+        "risk_event_rate_per_100km": 2.0,
+        "time_window_weights": {
+          "morning": 0.4,
+          "afternoon": 0.36,
+          "evening": 0.19,
+          "night": 0.05
+        },
+        "destination_weights": {
+          "family": 0.48,
+          "market": 0.32,
+          "home": 0.2
+        },
+        "route_variability": "high"
+      },
+      "recent_30_day_rule": {
+        "trip_count": 21,
+        "distance_km_per_trip_range": [
+          22.83,
+          40.58
+        ],
+        "zone_mix": {
+          "core": 0.44,
+          "buffer": 0.28,
+          "outer": 0.28
+        },
+        "night_drive_ratio": 0.11,
+        "risk_event_rate_per_100km": 2.6,
+        "time_window_weights": {
+          "morning": 0.34,
+          "afternoon": 0.32,
+          "evening": 0.23,
+          "night": 0.11
+        }
+      },
+      "expected_recent_behavior_change": {
+        "outer_ratio_delta": 0.11,
+        "night_ratio_delta": 0.06,
+        "risk_rate_delta_per_100km": 0.6,
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "FAMILY_SUPPORT_CONTEXT",
+          "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+          "NO_STRONG_RISK_CHANGE"
+        ]
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": [
+          "FAMILY_SUPPORT_CONTEXT",
+          "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+          "NO_STRONG_RISK_CHANGE"
+        ]
+      }
+    }
+  ]
+}

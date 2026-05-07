@@ -1,0 +1,93 @@
+{
+  "schema_version": "senior-critic-rule-review/v1",
+  "generated_at": "2026-05-07T02:20:07+00:00",
+  "source_artifacts": {
+    "ab_results_input": "data/fixtures/ab_test_results.csv",
+    "view_model_input": "data/fixtures/evaluation_view_model.json"
+  },
+  "selected_policy": {
+    "candidate_id": "policy_30_30_20_20_p20_a75",
+    "weights": {
+      "w_mileage": 0.3,
+      "w_in_zone": 0.3,
+      "w_out_zone_safe": 0.2,
+      "w_out_zone_change": 0.2
+    },
+    "thresholds": {
+      "care_threshold": 41.14,
+      "care_threshold_percentile": 0.2,
+      "threshold_candidate_id": "threshold_p20_s85_a75_b65",
+      "care_threshold_source": "risk_change_score_top_percentile",
+      "care_threshold_expected_top_n": 6,
+      "tier_threshold": {
+        "S": 85,
+        "A": 75,
+        "B": 65,
+        "C": 0
+      }
+    },
+    "source_rank": 1
+  },
+  "metrics": {
+    "customer_count": 30,
+    "risk_change_target_count": 5,
+    "baseline_capture_count": 0,
+    "risk_change_capture_count": 5,
+    "baseline_low_mileage_high_risk_capture": 0.0,
+    "proposed_low_mileage_high_risk_capture": 1.0,
+    "non_target_false_positive_count": 1,
+    "false_negative_count": 0,
+    "total_misclassification_count": 1,
+    "agent_validation_pass_rate": 0.9667,
+    "passes_approval_gate": true
+  },
+  "findings": [],
+  "risks": [
+    {
+      "code": "PERSONA_MISCLASSIFICATION_REVIEW",
+      "severity": "medium",
+      "message": "in_zone_risky_low_mileage persona has 1 proposed-model misclassification(s).",
+      "evidence": {
+        "persona_type": "in_zone_risky_low_mileage",
+        "misclassification_count": 1
+      },
+      "required_follow_up": "Inspect customer-level reason codes and scenario assumptions for this persona."
+    },
+    {
+      "code": "SYNTHETIC_ONLY_GENERALIZATION_RISK",
+      "severity": "medium",
+      "message": "Current approval evidence is based on the 30-customer synthetic fixture only.",
+      "evidence": {
+        "fixture_customer_count": 30
+      },
+      "required_follow_up": "Before launch, rerun the same gate on a larger de-identified holdout fixture."
+    }
+  ],
+  "required_follow_ups": [
+    "Review misclassified `in_zone_risky_low_mileage` customers before using the candidate in demos."
+  ],
+  "persona_misclassification_counts": {
+    "in_zone_risky_low_mileage": 1
+  },
+  "validation": {
+    "passed": true,
+    "approval_gate_passed": true,
+    "verdict": "pass",
+    "blocking_finding_count": 0,
+    "finding_count": 0,
+    "risk_count": 2,
+    "required_follow_up_count": 1,
+    "criteria": {
+      "risk_change_capture_minimum": 4,
+      "non_target_false_positive_maximum": 3,
+      "total_misclassification_maximum": 4,
+      "agent_validation_pass_rate_minimum": 0.95
+    }
+  },
+  "reason_codes": [
+    "CRITIC_REVIEW_COMPLETED",
+    "CRITIC_APPROVAL_GATE_PASSED",
+    "CRITIC_RISKS_RECORDED",
+    "CRITIC_FOLLOW_UPS_RECORDED"
+  ]
+}

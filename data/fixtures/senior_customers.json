@@ -1,0 +1,309 @@
+{
+  "schema_version": "senior-customer-identities/v1",
+  "simulation_seed": 20260507,
+  "customer_count": 30,
+  "customer_count_per_persona": 5,
+  "source_persona_template": "data/fixtures/persona_templates.yaml",
+  "customers": [
+    {
+      "customer_id": "cust_001",
+      "driver_id": "driver_001",
+      "persona_type": "stable_local_low_mileage",
+      "scenario_id": "scenario_stable_local_low_mileage_01",
+      "scenario_variant": "market_loop",
+      "expected_care_decision": "favorable",
+      "expected_reason_codes": ["LOW_MILEAGE", "STABLE_IN_ZONE_DRIVING", "LOW_RISK_EVENTS"],
+      "living_zone_seed": {"center_gps_x": 126.978, "center_gps_y": 37.5665, "jitter_m": 280}
+    },
+    {
+      "customer_id": "cust_002",
+      "driver_id": "driver_002",
+      "persona_type": "stable_local_low_mileage",
+      "scenario_id": "scenario_stable_local_low_mileage_02",
+      "scenario_variant": "clinic_short_loop",
+      "expected_care_decision": "favorable",
+      "expected_reason_codes": ["LOW_MILEAGE", "STABLE_IN_ZONE_DRIVING", "LOW_RISK_EVENTS"],
+      "living_zone_seed": {"center_gps_x": 126.991, "center_gps_y": 37.5612, "jitter_m": 260}
+    },
+    {
+      "customer_id": "cust_003",
+      "driver_id": "driver_003",
+      "persona_type": "stable_local_low_mileage",
+      "scenario_id": "scenario_stable_local_low_mileage_03",
+      "scenario_variant": "home_buffer_loop",
+      "expected_care_decision": "favorable",
+      "expected_reason_codes": ["LOW_MILEAGE", "STABLE_IN_ZONE_DRIVING", "LOW_RISK_EVENTS"],
+      "living_zone_seed": {"center_gps_x": 127.012, "center_gps_y": 37.542, "jitter_m": 320}
+    },
+    {
+      "customer_id": "cust_004",
+      "driver_id": "driver_004",
+      "persona_type": "stable_local_low_mileage",
+      "scenario_id": "scenario_stable_local_low_mileage_04",
+      "scenario_variant": "low_frequency_weekday",
+      "expected_care_decision": "favorable",
+      "expected_reason_codes": ["LOW_MILEAGE", "STABLE_IN_ZONE_DRIVING", "LOW_RISK_EVENTS"],
+      "living_zone_seed": {"center_gps_x": 126.935, "center_gps_y": 37.505, "jitter_m": 300}
+    },
+    {
+      "customer_id": "cust_005",
+      "driver_id": "driver_005",
+      "persona_type": "stable_local_low_mileage",
+      "scenario_id": "scenario_stable_local_low_mileage_05",
+      "scenario_variant": "low_frequency_weekend",
+      "expected_care_decision": "favorable",
+      "expected_reason_codes": ["LOW_MILEAGE", "STABLE_IN_ZONE_DRIVING", "LOW_RISK_EVENTS"],
+      "living_zone_seed": {"center_gps_x": 127.045, "center_gps_y": 37.585, "jitter_m": 290}
+    },
+    {
+      "customer_id": "cust_006",
+      "driver_id": "driver_006",
+      "persona_type": "stable_outer_safe",
+      "scenario_id": "scenario_stable_outer_safe_01",
+      "scenario_variant": "family_visit_safe",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["OUT_ZONE_SAFE", "LOW_NIGHT_DRIVING", "LOW_RISK_EVENTS"],
+      "living_zone_seed": {"center_gps_x": 127.063, "center_gps_y": 37.514, "jitter_m": 360}
+    },
+    {
+      "customer_id": "cust_007",
+      "driver_id": "driver_007",
+      "persona_type": "stable_outer_safe",
+      "scenario_id": "scenario_stable_outer_safe_02",
+      "scenario_variant": "daytime_outer_clinic",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["OUT_ZONE_SAFE", "LOW_NIGHT_DRIVING", "LOW_RISK_EVENTS"],
+      "living_zone_seed": {"center_gps_x": 126.912, "center_gps_y": 37.482, "jitter_m": 340}
+    },
+    {
+      "customer_id": "cust_008",
+      "driver_id": "driver_008",
+      "persona_type": "stable_outer_safe",
+      "scenario_id": "scenario_stable_outer_safe_03",
+      "scenario_variant": "leisure_daytrip_safe",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["OUT_ZONE_SAFE", "LOW_NIGHT_DRIVING", "LOW_RISK_EVENTS"],
+      "living_zone_seed": {"center_gps_x": 127.102, "center_gps_y": 37.621, "jitter_m": 420}
+    },
+    {
+      "customer_id": "cust_009",
+      "driver_id": "driver_009",
+      "persona_type": "stable_outer_safe",
+      "scenario_id": "scenario_stable_outer_safe_04",
+      "scenario_variant": "repeat_outer_destination",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["OUT_ZONE_SAFE", "LOW_NIGHT_DRIVING", "LOW_RISK_EVENTS"],
+      "living_zone_seed": {"center_gps_x": 126.865, "center_gps_y": 37.548, "jitter_m": 370}
+    },
+    {
+      "customer_id": "cust_010",
+      "driver_id": "driver_010",
+      "persona_type": "stable_outer_safe",
+      "scenario_id": "scenario_stable_outer_safe_05",
+      "scenario_variant": "outer_buffer_mix",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["OUT_ZONE_SAFE", "LOW_NIGHT_DRIVING", "LOW_RISK_EVENTS"],
+      "living_zone_seed": {"center_gps_x": 127.025, "center_gps_y": 37.5, "jitter_m": 350}
+    },
+    {
+      "customer_id": "cust_011",
+      "driver_id": "driver_011",
+      "persona_type": "recent_outer_risk_change",
+      "scenario_id": "scenario_recent_outer_risk_change_01",
+      "scenario_variant": "new_night_outer_route",
+      "expected_care_decision": "preventive_care",
+      "expected_reason_codes": ["LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK", "OUT_ZONE_RATIO_INCREASE", "NIGHT_DRIVING_INCREASE", "HARSH_BRAKE_INCREASE"],
+      "living_zone_seed": {"center_gps_x": 126.9, "center_gps_y": 37.48, "jitter_m": 330}
+    },
+    {
+      "customer_id": "cust_012",
+      "driver_id": "driver_012",
+      "persona_type": "recent_outer_risk_change",
+      "scenario_id": "scenario_recent_outer_risk_change_02",
+      "scenario_variant": "recent_family_emergency",
+      "expected_care_decision": "preventive_care",
+      "expected_reason_codes": ["LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK", "OUT_ZONE_RATIO_INCREASE", "NIGHT_DRIVING_INCREASE", "HARSH_BRAKE_INCREASE"],
+      "living_zone_seed": {"center_gps_x": 127.02, "center_gps_y": 37.492, "jitter_m": 310}
+    },
+    {
+      "customer_id": "cust_013",
+      "driver_id": "driver_013",
+      "persona_type": "recent_outer_risk_change",
+      "scenario_id": "scenario_recent_outer_risk_change_03",
+      "scenario_variant": "unknown_outer_cluster",
+      "expected_care_decision": "preventive_care",
+      "expected_reason_codes": ["LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK", "OUT_ZONE_RATIO_INCREASE", "NIGHT_DRIVING_INCREASE", "HARSH_BRAKE_INCREASE"],
+      "living_zone_seed": {"center_gps_x": 126.884, "center_gps_y": 37.565, "jitter_m": 340}
+    },
+    {
+      "customer_id": "cust_014",
+      "driver_id": "driver_014",
+      "persona_type": "recent_outer_risk_change",
+      "scenario_id": "scenario_recent_outer_risk_change_04",
+      "scenario_variant": "late_clinic_route",
+      "expected_care_decision": "preventive_care",
+      "expected_reason_codes": ["LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK", "OUT_ZONE_RATIO_INCREASE", "NIGHT_DRIVING_INCREASE", "HARSH_BRAKE_INCREASE"],
+      "living_zone_seed": {"center_gps_x": 127.087, "center_gps_y": 37.57, "jitter_m": 360}
+    },
+    {
+      "customer_id": "cust_015",
+      "driver_id": "driver_015",
+      "persona_type": "recent_outer_risk_change",
+      "scenario_id": "scenario_recent_outer_risk_change_05",
+      "scenario_variant": "outer_speeding_braking",
+      "expected_care_decision": "preventive_care",
+      "expected_reason_codes": ["LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK", "OUT_ZONE_RATIO_INCREASE", "NIGHT_DRIVING_INCREASE", "HARSH_BRAKE_INCREASE"],
+      "living_zone_seed": {"center_gps_x": 126.956, "center_gps_y": 37.603, "jitter_m": 330}
+    },
+    {
+      "customer_id": "cust_016",
+      "driver_id": "driver_016",
+      "persona_type": "in_zone_risky_low_mileage",
+      "scenario_id": "scenario_in_zone_risky_low_mileage_01",
+      "scenario_variant": "market_harsh_brake",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["IN_ZONE_RISK_EVENTS", "LOW_MILEAGE", "FAVORABLE_WITHHELD_FOR_RISK"],
+      "living_zone_seed": {"center_gps_x": 126.913, "center_gps_y": 37.483, "jitter_m": 250}
+    },
+    {
+      "customer_id": "cust_017",
+      "driver_id": "driver_017",
+      "persona_type": "in_zone_risky_low_mileage",
+      "scenario_id": "scenario_in_zone_risky_low_mileage_02",
+      "scenario_variant": "clinic_speeding_core",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["IN_ZONE_RISK_EVENTS", "LOW_MILEAGE", "FAVORABLE_WITHHELD_FOR_RISK"],
+      "living_zone_seed": {"center_gps_x": 127.033, "center_gps_y": 37.493, "jitter_m": 270}
+    },
+    {
+      "customer_id": "cust_018",
+      "driver_id": "driver_018",
+      "persona_type": "in_zone_risky_low_mileage",
+      "scenario_id": "scenario_in_zone_risky_low_mileage_03",
+      "scenario_variant": "buffer_sharp_turn",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["IN_ZONE_RISK_EVENTS", "LOW_MILEAGE", "FAVORABLE_WITHHELD_FOR_RISK"],
+      "living_zone_seed": {"center_gps_x": 126.94, "center_gps_y": 37.52, "jitter_m": 300}
+    },
+    {
+      "customer_id": "cust_019",
+      "driver_id": "driver_019",
+      "persona_type": "in_zone_risky_low_mileage",
+      "scenario_id": "scenario_in_zone_risky_low_mileage_04",
+      "scenario_variant": "recent_in_zone_risk_up",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["IN_ZONE_RISK_EVENTS", "LOW_MILEAGE", "FAVORABLE_WITHHELD_FOR_RISK"],
+      "living_zone_seed": {"center_gps_x": 127.061, "center_gps_y": 37.552, "jitter_m": 290}
+    },
+    {
+      "customer_id": "cust_020",
+      "driver_id": "driver_020",
+      "persona_type": "in_zone_risky_low_mileage",
+      "scenario_id": "scenario_in_zone_risky_low_mileage_05",
+      "scenario_variant": "dense_stop_and_go",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["IN_ZONE_RISK_EVENTS", "LOW_MILEAGE", "FAVORABLE_WITHHELD_FOR_RISK"],
+      "living_zone_seed": {"center_gps_x": 126.998, "center_gps_y": 37.575, "jitter_m": 260}
+    },
+    {
+      "customer_id": "cust_021",
+      "driver_id": "driver_021",
+      "persona_type": "medical_visit_pattern",
+      "scenario_id": "scenario_medical_visit_pattern_01",
+      "scenario_variant": "weekly_clinic_outer",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["REPEATED_MEDICAL_DESTINATION", "OUT_ZONE_STABLE_PATTERN", "LOW_NIGHT_DRIVING"],
+      "living_zone_seed": {"center_gps_x": 127.075, "center_gps_y": 37.602, "jitter_m": 390}
+    },
+    {
+      "customer_id": "cust_022",
+      "driver_id": "driver_022",
+      "persona_type": "medical_visit_pattern",
+      "scenario_id": "scenario_medical_visit_pattern_02",
+      "scenario_variant": "rehab_center_repeat",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["REPEATED_MEDICAL_DESTINATION", "OUT_ZONE_STABLE_PATTERN", "LOW_NIGHT_DRIVING"],
+      "living_zone_seed": {"center_gps_x": 126.823, "center_gps_y": 37.512, "jitter_m": 380}
+    },
+    {
+      "customer_id": "cust_023",
+      "driver_id": "driver_023",
+      "persona_type": "medical_visit_pattern",
+      "scenario_id": "scenario_medical_visit_pattern_03",
+      "scenario_variant": "daytime_hospital_loop",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["REPEATED_MEDICAL_DESTINATION", "OUT_ZONE_STABLE_PATTERN", "LOW_NIGHT_DRIVING"],
+      "living_zone_seed": {"center_gps_x": 127.11, "center_gps_y": 37.48, "jitter_m": 410}
+    },
+    {
+      "customer_id": "cust_024",
+      "driver_id": "driver_024",
+      "persona_type": "medical_visit_pattern",
+      "scenario_id": "scenario_medical_visit_pattern_04",
+      "scenario_variant": "buffer_pharmacy_link",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["REPEATED_MEDICAL_DESTINATION", "OUT_ZONE_STABLE_PATTERN", "LOW_NIGHT_DRIVING"],
+      "living_zone_seed": {"center_gps_x": 126.955, "center_gps_y": 37.638, "jitter_m": 360}
+    },
+    {
+      "customer_id": "cust_025",
+      "driver_id": "driver_025",
+      "persona_type": "medical_visit_pattern",
+      "scenario_id": "scenario_medical_visit_pattern_05",
+      "scenario_variant": "caregiver_dropoff_repeat",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["REPEATED_MEDICAL_DESTINATION", "OUT_ZONE_STABLE_PATTERN", "LOW_NIGHT_DRIVING"],
+      "living_zone_seed": {"center_gps_x": 127.013, "center_gps_y": 37.664, "jitter_m": 400}
+    },
+    {
+      "customer_id": "cust_026",
+      "driver_id": "driver_026",
+      "persona_type": "irregular_family_support",
+      "scenario_id": "scenario_irregular_family_support_01",
+      "scenario_variant": "grandchild_pickup",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["FAMILY_SUPPORT_CONTEXT", "OUT_ZONE_INCREASE_WITH_LOW_RISK", "NO_STRONG_RISK_CHANGE"],
+      "living_zone_seed": {"center_gps_x": 126.881, "center_gps_y": 37.449, "jitter_m": 430}
+    },
+    {
+      "customer_id": "cust_027",
+      "driver_id": "driver_027",
+      "persona_type": "irregular_family_support",
+      "scenario_id": "scenario_irregular_family_support_02",
+      "scenario_variant": "family_errand_daytime",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["FAMILY_SUPPORT_CONTEXT", "OUT_ZONE_INCREASE_WITH_LOW_RISK", "NO_STRONG_RISK_CHANGE"],
+      "living_zone_seed": {"center_gps_x": 127.15, "center_gps_y": 37.413, "jitter_m": 390}
+    },
+    {
+      "customer_id": "cust_028",
+      "driver_id": "driver_028",
+      "persona_type": "irregular_family_support",
+      "scenario_id": "scenario_irregular_family_support_03",
+      "scenario_variant": "irregular_outer_safe",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["FAMILY_SUPPORT_CONTEXT", "OUT_ZONE_INCREASE_WITH_LOW_RISK", "NO_STRONG_RISK_CHANGE"],
+      "living_zone_seed": {"center_gps_x": 126.744, "center_gps_y": 37.667, "jitter_m": 460}
+    },
+    {
+      "customer_id": "cust_029",
+      "driver_id": "driver_029",
+      "persona_type": "irregular_family_support",
+      "scenario_id": "scenario_irregular_family_support_04",
+      "scenario_variant": "weekend_family_support",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["FAMILY_SUPPORT_CONTEXT", "OUT_ZONE_INCREASE_WITH_LOW_RISK", "NO_STRONG_RISK_CHANGE"],
+      "living_zone_seed": {"center_gps_x": 127.202, "center_gps_y": 37.59, "jitter_m": 420}
+    },
+    {
+      "customer_id": "cust_030",
+      "driver_id": "driver_030",
+      "persona_type": "irregular_family_support",
+      "scenario_id": "scenario_irregular_family_support_05",
+      "scenario_variant": "outer_trip_without_risk_spike",
+      "expected_care_decision": "standard",
+      "expected_reason_codes": ["FAMILY_SUPPORT_CONTEXT", "OUT_ZONE_INCREASE_WITH_LOW_RISK", "NO_STRONG_RISK_CHANGE"],
+      "living_zone_seed": {"center_gps_x": 126.786, "center_gps_y": 37.401, "jitter_m": 440}
+    }
+  ]
+}

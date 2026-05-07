@@ -1,0 +1,141 @@
+goal: FINAL_PRODUCT_DIRECTION.md의 시니어 특화 Senior Safe Mileage Score 제품을 Python 기반 로컬 웹앱으로 구현하여 정책 탐색, Agent-in-the-loop 검증, A/B 비교, 고객별 판정, XAI reason code, 보험사 직원용 LLM 리포트를 화면에서 확인 가능하게 만든다
+task_type: code
+brownfield_context:
+  project_type: greenfield
+  context_references: []
+  existing_patterns: []
+  existing_dependencies: []
+constraints:
+  - Python 기반 구현
+  - 기존 저장소의 Python 분석 파이프라인 우선 활용
+  - 단순 스크립트가 아닌 오케스트레이터 기반 멀티 에이전트 구조
+  - Persona Agent, Scenario Agent, AI Simulation Agent, Consistency Check Agent, Policy Search Agent, Evaluation Agent, Critic Agent, Report Agent 포함
+  - LangGraph 또는 OpenAI Agents SDK 사용 가능
+  - Python 기반 로컬 웹앱 또는 이에 준하는 화면 제공
+  - 합성 데이터 중심
+  - 6개 페르소나 x 5명 = 30명 시뮬레이션
+  - baseline 60일 + recent 30일의 90일 trip log 생성
+  - 시뮬레이션 산출물은 JSON/CSV fixture로 재현 가능하게 저장
+  - 실제 사고/클레임 데이터는 1차 범위에서 사용하지 않음
+  - 외부 OpenAI API 사용 가능
+  - OpenAI API에는 식별자 없는 요약 피처만 전달
+  - 고객명, 전화번호, 주소, 차량번호, 정확한 GPS 좌표, 원본 trip id 전송 금지
+  - OpenAI API 실패 시 LLM 리포트만 fallback 템플릿으로 대체하고 핵심 점수/검증/A-B 비교는 계속 진행
+acceptance_criteria:
+  - 6개 페르소나 x 5명, baseline 60일 + recent 30일의 90일 합성 trip log fixture가 생성됨
+  - 오케스트레이터 기반 멀티 Agent 구조가 Persona, Scenario, AI Simulation, Consistency Check, Policy Search, Evaluation, Critic, Report Agent를 실행함
+  - DBSCAN/P90 기반 생활권 분석이 수행됨
+  - Senior Safe Mileage Score 산정 엔진이 생활권 내 안정운전, 생활권 밖 안전운전, 생활권 밖 위험변화를 반영함
+  - 우대/기본/예방 케어 판정이 제공됨
+  - 6개 페르소나/엣지케이스 ground truth와 규칙 기반 proxy label을 조합한 hybrid 기준으로 평가됨
+  - 저주행 위험변화형 5명 중 최소 4명 이상을 올바르게 포착함
+  - 나머지 25명 중 오탐은 최대 3명 이하임
+  - 전체 30명 기준 misclassification_check 오분류는 최대 4건 이하임
+  - Agent 검증 통과율은 95% 이상임
+  - 기존 마일리지 산식과 제안 모델의 A/B 비교가 제공됨
+  - 정책 후보 탐색에서 가중치/기준값 후보와 선택 근거가 표시됨
+  - Agent-in-the-loop 검증 파이프라인 결과가 정책 탐색 화면의 근거/감사 탭으로 제공됨
+  - reason code와 LLM 리포트가 화면 품질 확인용 보조 결과로 제공됨
+  - OpenAI API 실패 시 핵심 점수/검증/A-B 비교는 중단되지 않음
+  - 정책/검증 대시보드가 첫 진입 화면으로 제공됨
+  - 주요 내비게이션은 Agent 시뮬레이션/검증, 정책 후보 탐색, A/B 비교, 고객별 판정/리포트 순서로 구성됨
+ontology_schema:
+  name: SeniorSafeMileageProduct
+  description: 시니어 운전자의 90일 합성 trip log를 기반으로 생활권, 운전 안정성, 위험변화, 정책 후보, Agent 검증, A/B 비교, 케어 판정, reason code, LLM 리포트를 통합 관리하는 제품 도메인 모델
+  fields:
+    - name: customer_id
+      type: string
+      description: 비식별 고객 식별자
+      required: true
+    - name: persona_type
+      type: string
+      description: 6개 페르소나 중 하나
+      required: true
+    - name: observation_period
+      type: object
+      description: baseline 60일과 recent 30일 관측기간
+      required: true
+    - name: trip_logs
+      type: array
+      description: 90일 합성 주행 기록
+      required: true
+    - name: living_zone
+      type: object
+      description: DBSCAN/P90 기반 생활권 분석 결과
+      required: true
+    - name: mileage_baseline_score
+      type: number
+      description: 기존 연환산 주행거리 중심 마일리지 산식 점수
+      required: true
+    - name: senior_safe_mileage_score
+      type: number
+      description: 제안 통합 마일리지 점수
+      required: true
+    - name: risk_change_score
+      type: number
+      description: 저주행 위험변화 탐지 점수
+      required: true
+    - name: policy_candidate
+      type: object
+      description: 가중치와 기준값 후보
+      required: true
+    - name: care_decision
+      type: string
+      description: 우대, 기본, 예방 케어 판정
+      required: true
+    - name: reason_codes
+      type: array
+      description: XAI 설명 코드 목록
+      required: true
+    - name: ab_comparison
+      type: object
+      description: 기존 산식 대비 제안 모델 성능 비교
+      required: true
+    - name: agent_validation
+      type: object
+      description: 멀티 에이전트 검증 결과와 통과 여부
+      required: true
+    - name: llm_report
+      type: object
+      description: 보험사 직원용 리포트 또는 fallback 리포트
+      required: true
+    - name: privacy_filtered_features
+      type: object
+      description: OpenAI API 전송이 허용된 식별자 없는 요약 피처
+      required: true
+evaluation_principles:
+  - name: A/B 우수성
+    description: 기존 마일리지 산식보다 저주행 위험변화 고객을 더 잘 포착하는지 평가
+    weight: 0.3
+  - name: Agent 검증 신뢰성
+    description: Agent-in-the-loop 검증 통과율과 Critic 검토 결과를 평가
+    weight: 0.25
+  - name: 오분류 통제
+    description: 6개 페르소나별 misclassification_check와 오탐 제한을 평가
+    weight: 0.2
+  - name: 제품 완성도
+    description: 정책 탐색, A/B 비교, 고객별 판정/리포트가 화면에서 연결된 흐름으로 확인되는지 평가
+    weight: 0.15
+  - name: 개인정보 보호
+    description: 외부 LLM API 전송 피처가 식별자 없는 요약 정보로 제한되는지 평가
+    weight: 0.1
+exit_conditions:
+  - name: ApprovalGatePassed
+    description: 30명 시뮬레이션 승인 게이트를 통과함
+    criteria: 저주행 위험변화형 5명 중 4명 이상 포착, 나머지 25명 중 오탐 3명 이하, 전체 오분류 4건 이하, Agent 검증 통과율 95% 이상
+  - name: ProductFlowComplete
+    description: 핵심 사용자 흐름이 화면에서 끝까지 동작함
+    criteria: 정책/검증 대시보드에서 Agent 검증, 정책 후보 탐색, A/B 비교, 고객별 판정/리포트까지 확인 가능
+  - name: FallbackVerified
+    description: OpenAI API 실패 대응이 검증됨
+    criteria: LLM 리포트는 fallback 템플릿으로 대체되고 핵심 점수/검증/A-B 비교는 계속 진행
+  - name: PrivacyVerified
+    description: 개인정보 필터링 정책이 지켜짐
+    criteria: 금지 식별자가 외부 API 요청에 포함되지 않고 허용 요약 피처만 전송됨
+metadata:
+  seed_id: seed_ef39d6ad9697
+  version: 1.0.0
+  created_at: "2026-05-06T16:44:15.943010Z"
+  ambiguity_score: 0.125
+  interview_id: interview_20260506_161549
+  parent_seed_id: null

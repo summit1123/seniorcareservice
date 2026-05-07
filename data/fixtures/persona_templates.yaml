@@ -1,0 +1,263 @@
+{
+  "schema_version": "senior-persona-templates/v1",
+  "simulation_seed": 20260507,
+  "customer_count_per_persona": 5,
+  "observation_period": {
+    "baseline_days": 60,
+    "recent_days": 30
+  },
+  "personas": [
+    {
+      "persona_type": "stable_local_low_mileage",
+      "display_name_ko": "생활권 안 저주행 안정형",
+      "product_role": "기존 거리 중심 산식과 제안 통합 산식 모두 우량으로 분류되어야 하는 기준 우량군",
+      "driving_behavior": {
+        "annualized_mileage_band_km": [2500, 4500],
+        "baseline_trip_count_range": [22, 32],
+        "recent_trip_count_range": [10, 16],
+        "primary_zones": ["core", "buffer"],
+        "typical_destinations": ["market", "clinic", "home"],
+        "outer_trip_ratio_baseline": [0.00, 0.08],
+        "outer_trip_ratio_recent": [0.00, 0.10],
+        "night_drive_ratio_baseline": [0.00, 0.03],
+        "night_drive_ratio_recent": [0.00, 0.04],
+        "risk_event_rate_per_100km_baseline": [0.0, 1.0],
+        "risk_event_rate_per_100km_recent": [0.0, 1.2]
+      },
+      "risk_traits": [
+        "저주행",
+        "반복 생활권",
+        "위험행동 낮음",
+        "baseline 대비 recent 변화 낮음"
+      ],
+      "care_context": {
+        "expected_care_decision": "favorable",
+        "care_message_focus": "생활권 안 반복 주행과 낮은 위험행동을 근거로 안정 저주행 고객으로 설명",
+        "false_positive_risk": "예방 케어로 잘못 분류되면 안정 고객 비용 효율 평가가 왜곡됨"
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "favorable",
+        "expected_reason_codes": ["LOW_MILEAGE", "STABLE_IN_ZONE_DRIVING", "LOW_RISK_EVENTS"]
+      },
+      "scenario_variants": [
+        "market_loop",
+        "clinic_short_loop",
+        "home_buffer_loop",
+        "low_frequency_weekday",
+        "low_frequency_weekend"
+      ]
+    },
+    {
+      "persona_type": "stable_outer_safe",
+      "display_name_ko": "생활권 밖 안정 주행형",
+      "product_role": "생활권 밖 주행 자체를 과도하게 불리하게 보지 않는지 확인하는 공정성/오분류 방지군",
+      "driving_behavior": {
+        "annualized_mileage_band_km": [5500, 8500],
+        "baseline_trip_count_range": [28, 42],
+        "recent_trip_count_range": [12, 20],
+        "primary_zones": ["core", "buffer", "outer"],
+        "typical_destinations": ["family", "clinic", "leisure"],
+        "outer_trip_ratio_baseline": [0.18, 0.30],
+        "outer_trip_ratio_recent": [0.18, 0.34],
+        "night_drive_ratio_baseline": [0.00, 0.05],
+        "night_drive_ratio_recent": [0.00, 0.06],
+        "risk_event_rate_per_100km_baseline": [0.0, 1.4],
+        "risk_event_rate_per_100km_recent": [0.0, 1.6]
+      },
+      "risk_traits": [
+        "생활권 밖 목적지 반복",
+        "위험행동 낮음",
+        "야간주행 낮음",
+        "외부 주행 증가폭 낮음"
+      ],
+      "care_context": {
+        "expected_care_decision": "standard",
+        "care_message_focus": "외부 주행은 있으나 반복 목적지와 안정 운전으로 예방 케어 대상은 아님",
+        "false_positive_risk": "생활권 밖 비율만으로 위험군 처리하면 모델 공정성이 약해짐"
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": ["OUT_ZONE_SAFE", "LOW_NIGHT_DRIVING", "LOW_RISK_EVENTS"]
+      },
+      "scenario_variants": [
+        "family_visit_safe",
+        "daytime_outer_clinic",
+        "leisure_daytrip_safe",
+        "repeat_outer_destination",
+        "outer_buffer_mix"
+      ]
+    },
+    {
+      "persona_type": "recent_outer_risk_change",
+      "display_name_ko": "최근 생활권 밖 위험변화형",
+      "product_role": "기존 마일리지 산식이 놓칠 수 있는 저주행 위험변화 핵심 포착 대상군",
+      "driving_behavior": {
+        "annualized_mileage_band_km": [3000, 5200],
+        "baseline_trip_count_range": [22, 34],
+        "recent_trip_count_range": [10, 18],
+        "primary_zones": ["core", "buffer", "outer"],
+        "typical_destinations": ["unknown_outer", "family", "clinic"],
+        "outer_trip_ratio_baseline": [0.02, 0.10],
+        "outer_trip_ratio_recent": [0.28, 0.48],
+        "night_drive_ratio_baseline": [0.00, 0.04],
+        "night_drive_ratio_recent": [0.18, 0.36],
+        "risk_event_rate_per_100km_baseline": [0.0, 1.2],
+        "risk_event_rate_per_100km_recent": [4.0, 8.5]
+      },
+      "risk_traits": [
+        "저주행",
+        "recent 외부 주행 급증",
+        "recent 야간주행 증가",
+        "과속/급감속 증가",
+        "기존 마일리지 우량 오판 가능"
+      ],
+      "care_context": {
+        "expected_care_decision": "preventive_care",
+        "care_message_focus": "저주행임에도 최근 생활권 밖 야간/위험행동이 함께 늘어난 예방 케어 신호",
+        "false_negative_risk": "핵심 타깃을 놓치면 A/B 우수성 승인 게이트를 통과하기 어려움"
+      },
+      "ground_truth": {
+        "risk_change_target": true,
+        "expected_care_decision": "preventive_care",
+        "expected_reason_codes": [
+          "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+          "OUT_ZONE_RATIO_INCREASE",
+          "NIGHT_DRIVING_INCREASE",
+          "HARSH_BRAKE_INCREASE"
+        ]
+      },
+      "scenario_variants": [
+        "new_night_outer_route",
+        "recent_family_emergency",
+        "unknown_outer_cluster",
+        "late_clinic_route",
+        "outer_speeding_braking"
+      ]
+    },
+    {
+      "persona_type": "in_zone_risky_low_mileage",
+      "display_name_ko": "생활권 안 저주행 위험행동형",
+      "product_role": "생활권 안 주행이라도 과속/급감속이 있으면 감점되는지 확인하는 엣지케이스",
+      "driving_behavior": {
+        "annualized_mileage_band_km": [2800, 4800],
+        "baseline_trip_count_range": [24, 36],
+        "recent_trip_count_range": [10, 18],
+        "primary_zones": ["core", "buffer"],
+        "typical_destinations": ["market", "clinic", "home"],
+        "outer_trip_ratio_baseline": [0.00, 0.06],
+        "outer_trip_ratio_recent": [0.00, 0.08],
+        "night_drive_ratio_baseline": [0.00, 0.05],
+        "night_drive_ratio_recent": [0.00, 0.08],
+        "risk_event_rate_per_100km_baseline": [2.0, 4.5],
+        "risk_event_rate_per_100km_recent": [4.5, 8.0]
+      },
+      "risk_traits": [
+        "저주행",
+        "생활권 중심",
+        "생활권 안 과속/급감속",
+        "생활권 안전 단정 금지 검증"
+      ],
+      "care_context": {
+        "expected_care_decision": "standard",
+        "care_message_focus": "생활권 내 주행이 많지만 위험행동이 있어 우대 판단은 보수적으로 설명",
+        "false_negative_risk": "생활권 안이라는 이유로 무조건 안정형 처리하면 모델 해석 원칙을 위반함"
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": ["IN_ZONE_RISK_EVENTS", "LOW_MILEAGE", "FAVORABLE_WITHHELD_FOR_RISK"]
+      },
+      "scenario_variants": [
+        "market_harsh_brake",
+        "clinic_speeding_core",
+        "buffer_sharp_turn",
+        "recent_in_zone_risk_up",
+        "dense_stop_and_go"
+      ]
+    },
+    {
+      "persona_type": "medical_visit_pattern",
+      "display_name_ko": "병원 방문 반복 외부 목적지형",
+      "product_role": "반복 의료 목적 외부 이동을 신규 위험변화로 오판하지 않는지 확인하는 케어 맥락군",
+      "driving_behavior": {
+        "annualized_mileage_band_km": [4500, 7000],
+        "baseline_trip_count_range": [26, 40],
+        "recent_trip_count_range": [12, 20],
+        "primary_zones": ["buffer", "outer"],
+        "typical_destinations": ["clinic", "home"],
+        "outer_trip_ratio_baseline": [0.14, 0.26],
+        "outer_trip_ratio_recent": [0.16, 0.30],
+        "night_drive_ratio_baseline": [0.00, 0.04],
+        "night_drive_ratio_recent": [0.00, 0.05],
+        "risk_event_rate_per_100km_baseline": [0.2, 1.8],
+        "risk_event_rate_per_100km_recent": [0.2, 2.0]
+      },
+      "risk_traits": [
+        "반복 외부 병원 목적지",
+        "주간 주행 중심",
+        "외부 비율은 있으나 변화폭 낮음",
+        "케어 맥락 설명 필요"
+      ],
+      "care_context": {
+        "expected_care_decision": "standard",
+        "care_message_focus": "정기 병원 방문처럼 반복 목적지가 있는 외부 이동은 변화 위험과 구분",
+        "false_positive_risk": "의료 목적 반복 이동을 위험변화로 오판하면 직원 설명 품질이 낮아짐"
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": ["REPEATED_MEDICAL_DESTINATION", "OUT_ZONE_STABLE_PATTERN", "LOW_NIGHT_DRIVING"]
+      },
+      "scenario_variants": [
+        "weekly_clinic_outer",
+        "rehab_center_repeat",
+        "daytime_hospital_loop",
+        "buffer_pharmacy_link",
+        "caregiver_dropoff_repeat"
+      ]
+    },
+    {
+      "persona_type": "irregular_family_support",
+      "display_name_ko": "가족 돌봄 불규칙 외부 이동형",
+      "product_role": "불규칙 외부 이동이 있어도 위험행동과 야간 증가가 동반되는지 분리 평가하는 엣지케이스",
+      "driving_behavior": {
+        "annualized_mileage_band_km": [5000, 8200],
+        "baseline_trip_count_range": [24, 38],
+        "recent_trip_count_range": [12, 22],
+        "primary_zones": ["core", "buffer", "outer"],
+        "typical_destinations": ["family", "market", "home"],
+        "outer_trip_ratio_baseline": [0.10, 0.22],
+        "outer_trip_ratio_recent": [0.20, 0.38],
+        "night_drive_ratio_baseline": [0.02, 0.08],
+        "night_drive_ratio_recent": [0.04, 0.12],
+        "risk_event_rate_per_100km_baseline": [0.8, 2.4],
+        "risk_event_rate_per_100km_recent": [1.0, 3.0]
+      },
+      "risk_traits": [
+        "가족 돌봄 외부 이동",
+        "외부 비율 변동",
+        "위험행동은 제한적",
+        "위험변화형과 혼동 가능"
+      ],
+      "care_context": {
+        "expected_care_decision": "standard",
+        "care_message_focus": "불규칙 가족 지원 이동은 있으나 위험행동 증가가 제한적이면 예방 케어로 단정하지 않음",
+        "false_positive_risk": "외부 이동 증가만으로 케어 대상 처리하면 오탐 제한 조건에 불리함"
+      },
+      "ground_truth": {
+        "risk_change_target": false,
+        "expected_care_decision": "standard",
+        "expected_reason_codes": ["FAMILY_SUPPORT_CONTEXT", "OUT_ZONE_INCREASE_WITH_LOW_RISK", "NO_STRONG_RISK_CHANGE"]
+      },
+      "scenario_variants": [
+        "grandchild_pickup",
+        "family_errand_daytime",
+        "irregular_outer_safe",
+        "weekend_family_support",
+        "outer_trip_without_risk_spike"
+      ]
+    }
+  ]
+}

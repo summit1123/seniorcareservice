@@ -1,0 +1,1054 @@
+{
+  "schema_version": "senior-trip-log-fixture/v1",
+  "simulation_seed": 20260507,
+  "start_date": "2026-01-01",
+  "observation_period": {
+    "baseline_days": 60,
+    "recent_days": 30,
+    "baseline_start_date": "2026-01-01",
+    "baseline_end_date": "2026-03-01",
+    "recent_start_date": "2026-03-02",
+    "recent_end_date": "2026-03-31",
+    "periods_non_overlapping": true
+  },
+  "customer_90_day_coverage_validation": {
+    "required_day_index_start": 1,
+    "required_baseline_day_index_end": 60,
+    "required_recent_day_index_start": 61,
+    "required_day_index_end": 90,
+    "complete_customer_count": 30,
+    "customer_count": 30,
+    "passed": true,
+    "customers": {
+      "cust_001": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 26,
+        "recent_trip_count": 12
+      },
+      "cust_002": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 24,
+        "recent_trip_count": 11
+      },
+      "cust_003": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 31,
+        "recent_trip_count": 15
+      },
+      "cust_004": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 22,
+        "recent_trip_count": 10
+      },
+      "cust_005": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 28,
+        "recent_trip_count": 14
+      },
+      "cust_006": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 34,
+        "recent_trip_count": 16
+      },
+      "cust_007": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 30,
+        "recent_trip_count": 14
+      },
+      "cust_008": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 41,
+        "recent_trip_count": 19
+      },
+      "cust_009": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 36,
+        "recent_trip_count": 17
+      },
+      "cust_010": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 29,
+        "recent_trip_count": 13
+      },
+      "cust_011": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 26,
+        "recent_trip_count": 13
+      },
+      "cust_012": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 29,
+        "recent_trip_count": 15
+      },
+      "cust_013": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 25,
+        "recent_trip_count": 12
+      },
+      "cust_014": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 32,
+        "recent_trip_count": 17
+      },
+      "cust_015": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 33,
+        "recent_trip_count": 18
+      },
+      "cust_016": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 27,
+        "recent_trip_count": 12
+      },
+      "cust_017": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 34,
+        "recent_trip_count": 16
+      },
+      "cust_018": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 35,
+        "recent_trip_count": 17
+      },
+      "cust_019": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 31,
+        "recent_trip_count": 15
+      },
+      "cust_020": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 25,
+        "recent_trip_count": 11
+      },
+      "cust_021": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 34,
+        "recent_trip_count": 16
+      },
+      "cust_022": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 31,
+        "recent_trip_count": 15
+      },
+      "cust_023": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 38,
+        "recent_trip_count": 19
+      },
+      "cust_024": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 28,
+        "recent_trip_count": 13
+      },
+      "cust_025": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 37,
+        "recent_trip_count": 18
+      },
+      "cust_026": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 31,
+        "recent_trip_count": 16
+      },
+      "cust_027": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 27,
+        "recent_trip_count": 14
+      },
+      "cust_028": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 36,
+        "recent_trip_count": 20
+      },
+      "cust_029": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 34,
+        "recent_trip_count": 19
+      },
+      "cust_030": {
+        "passed": true,
+        "observed_day_index_min": 1,
+        "observed_day_index_max": 90,
+        "required_boundary_day_indices": [
+          1,
+          60,
+          61,
+          90
+        ],
+        "missing_boundary_day_indices": [],
+        "baseline_start_date": "2026-01-01",
+        "baseline_end_date": "2026-03-01",
+        "recent_start_date": "2026-03-02",
+        "recent_end_date": "2026-03-31",
+        "periods_non_overlapping": true,
+        "baseline_trip_count": 37,
+        "recent_trip_count": 21
+      }
+    }
+  },
+  "baseline_coverage_validation": {
+    "required_day_index_start": 1,
+    "required_day_index_end": 60,
+    "complete_customer_count": 30,
+    "customer_count": 30,
+    "passed": true
+  },
+  "recent_coverage_validation": {
+    "required_day_index_start": 61,
+    "required_day_index_end": 90,
+    "complete_customer_count": 30,
+    "customer_count": 30,
+    "passed": true
+  },
+  "customer_count": 30,
+  "trip_count": 1389,
+  "persona_customer_counts": {
+    "in_zone_risky_low_mileage": 5,
+    "irregular_family_support": 5,
+    "medical_visit_pattern": 5,
+    "recent_outer_risk_change": 5,
+    "stable_local_low_mileage": 5,
+    "stable_outer_safe": 5
+  },
+  "recent_risk_increase_trip_count": 70,
+  "recent_risk_increase_trip_count_by_customer": {
+    "cust_011": 13,
+    "cust_012": 14,
+    "cust_013": 12,
+    "cust_014": 14,
+    "cust_015": 17
+  },
+  "downstream_signal_validation": {
+    "cust_001": {
+      "persona_type": "stable_local_low_mileage",
+      "passed": true,
+      "evidence_codes": [
+        "STABLE_IN_ZONE_LOW_RISK_PATTERN",
+        "NO_RECENT_OUT_ZONE_OR_NIGHT_SPIKE"
+      ],
+      "outer_ratio_delta": 0.0449,
+      "night_ratio_delta": 0.0,
+      "risk_rate_delta_per_100km": -0.015,
+      "recent_risk_signal_count": 2
+    },
+    "cust_002": {
+      "persona_type": "stable_local_low_mileage",
+      "passed": true,
+      "evidence_codes": [
+        "STABLE_IN_ZONE_LOW_RISK_PATTERN",
+        "NO_RECENT_OUT_ZONE_OR_NIGHT_SPIKE"
+      ],
+      "outer_ratio_delta": -0.0417,
+      "night_ratio_delta": 0.0,
+      "risk_rate_delta_per_100km": 0.1948,
+      "recent_risk_signal_count": 1
+    },
+    "cust_003": {
+      "persona_type": "stable_local_low_mileage",
+      "passed": true,
+      "evidence_codes": [
+        "STABLE_IN_ZONE_LOW_RISK_PATTERN",
+        "NO_RECENT_OUT_ZONE_OR_NIGHT_SPIKE"
+      ],
+      "outer_ratio_delta": 0.0022,
+      "night_ratio_delta": -0.0323,
+      "risk_rate_delta_per_100km": 0.2863,
+      "recent_risk_signal_count": 2
+    },
+    "cust_004": {
+      "persona_type": "stable_local_low_mileage",
+      "passed": true,
+      "evidence_codes": [
+        "STABLE_IN_ZONE_LOW_RISK_PATTERN",
+        "NO_RECENT_OUT_ZONE_OR_NIGHT_SPIKE"
+      ],
+      "outer_ratio_delta": -0.0455,
+      "night_ratio_delta": 0.0,
+      "risk_rate_delta_per_100km": 0.4515,
+      "recent_risk_signal_count": 6
+    },
+    "cust_005": {
+      "persona_type": "stable_local_low_mileage",
+      "passed": true,
+      "evidence_codes": [
+        "STABLE_IN_ZONE_LOW_RISK_PATTERN",
+        "NO_RECENT_OUT_ZONE_OR_NIGHT_SPIKE"
+      ],
+      "outer_ratio_delta": 0.0357,
+      "night_ratio_delta": 0.0,
+      "risk_rate_delta_per_100km": 0.1561,
+      "recent_risk_signal_count": 2
+    },
+    "cust_006": {
+      "persona_type": "stable_outer_safe",
+      "passed": true,
+      "evidence_codes": [
+        "REPEATED_OUT_ZONE_EXPOSURE",
+        "OUT_ZONE_LOW_RISK_CONTEXT"
+      ],
+      "outer_ratio_delta": -0.0147,
+      "night_ratio_delta": -0.0294,
+      "risk_rate_delta_per_100km": 0.2456,
+      "recent_risk_signal_count": 4
+    },
+    "cust_007": {
+      "persona_type": "stable_outer_safe",
+      "passed": true,
+      "evidence_codes": [
+        "REPEATED_OUT_ZONE_EXPOSURE",
+        "OUT_ZONE_LOW_RISK_CONTEXT"
+      ],
+      "outer_ratio_delta": -0.019,
+      "night_ratio_delta": 0.0,
+      "risk_rate_delta_per_100km": 0.3174,
+      "recent_risk_signal_count": 2
+    },
+    "cust_008": {
+      "persona_type": "stable_outer_safe",
+      "passed": true,
+      "evidence_codes": [
+        "REPEATED_OUT_ZONE_EXPOSURE",
+        "OUT_ZONE_LOW_RISK_CONTEXT"
+      ],
+      "outer_ratio_delta": 0.0231,
+      "night_ratio_delta": 0.0282,
+      "risk_rate_delta_per_100km": 0.1603,
+      "recent_risk_signal_count": 3
+    },
+    "cust_009": {
+      "persona_type": "stable_outer_safe",
+      "passed": true,
+      "evidence_codes": [
+        "REPEATED_OUT_ZONE_EXPOSURE",
+        "OUT_ZONE_LOW_RISK_CONTEXT"
+      ],
+      "outer_ratio_delta": 0.0441,
+      "night_ratio_delta": 0.031,
+      "risk_rate_delta_per_100km": 0.1581,
+      "recent_risk_signal_count": 2
+    },
+    "cust_010": {
+      "persona_type": "stable_outer_safe",
+      "passed": true,
+      "evidence_codes": [
+        "REPEATED_OUT_ZONE_EXPOSURE",
+        "OUT_ZONE_LOW_RISK_CONTEXT"
+      ],
+      "outer_ratio_delta": 0.0663,
+      "night_ratio_delta": 0.0,
+      "risk_rate_delta_per_100km": 0.2333,
+      "recent_risk_signal_count": 4
+    },
+    "cust_011": {
+      "persona_type": "recent_outer_risk_change",
+      "passed": true,
+      "evidence_codes": [
+        "OUT_ZONE_RATIO_INCREASE",
+        "NIGHT_DRIVING_INCREASE",
+        "RISK_EVENT_RATE_INCREASE",
+        "RECENT_ROUTE_DEVIATION_RISK_TRIPS"
+      ],
+      "outer_ratio_delta": 0.3462,
+      "night_ratio_delta": 0.2308,
+      "risk_rate_delta_per_100km": 5.4783,
+      "recent_risk_signal_count": 21
+    },
+    "cust_012": {
+      "persona_type": "recent_outer_risk_change",
+      "passed": true,
+      "evidence_codes": [
+        "OUT_ZONE_RATIO_INCREASE",
+        "NIGHT_DRIVING_INCREASE",
+        "RISK_EVENT_RATE_INCREASE",
+        "RECENT_ROUTE_DEVIATION_RISK_TRIPS"
+      ],
+      "outer_ratio_delta": 0.331,
+      "night_ratio_delta": 0.2667,
+      "risk_rate_delta_per_100km": 5.6443,
+      "recent_risk_signal_count": 20
+    },
+    "cust_013": {
+      "persona_type": "recent_outer_risk_change",
+      "passed": true,
+      "evidence_codes": [
+        "OUT_ZONE_RATIO_INCREASE",
+        "NIGHT_DRIVING_INCREASE",
+        "RISK_EVENT_RATE_INCREASE",
+        "RECENT_ROUTE_DEVIATION_RISK_TRIPS"
+      ],
+      "outer_ratio_delta": 0.3367,
+      "night_ratio_delta": 0.3333,
+      "risk_rate_delta_per_100km": 6.9357,
+      "recent_risk_signal_count": 20
+    },
+    "cust_014": {
+      "persona_type": "recent_outer_risk_change",
+      "passed": true,
+      "evidence_codes": [
+        "OUT_ZONE_RATIO_INCREASE",
+        "NIGHT_DRIVING_INCREASE",
+        "RISK_EVENT_RATE_INCREASE",
+        "RECENT_ROUTE_DEVIATION_RISK_TRIPS"
+      ],
+      "outer_ratio_delta": 0.2592,
+      "night_ratio_delta": 0.204,
+      "risk_rate_delta_per_100km": 4.4405,
+      "recent_risk_signal_count": 17
+    },
+    "cust_015": {
+      "persona_type": "recent_outer_risk_change",
+      "passed": true,
+      "evidence_codes": [
+        "OUT_ZONE_RATIO_INCREASE",
+        "NIGHT_DRIVING_INCREASE",
+        "RISK_EVENT_RATE_INCREASE",
+        "RECENT_ROUTE_DEVIATION_RISK_TRIPS"
+      ],
+      "outer_ratio_delta": 0.298,
+      "night_ratio_delta": 0.303,
+      "risk_rate_delta_per_100km": 6.9459,
+      "recent_risk_signal_count": 31
+    },
+    "cust_016": {
+      "persona_type": "in_zone_risky_low_mileage",
+      "passed": true,
+      "evidence_codes": [
+        "RECENT_IN_ZONE_RISK_EVENTS",
+        "IN_ZONE_BRAKING_ANNOTATION",
+        "RECENT_RISK_RATE_INCREASE"
+      ],
+      "outer_ratio_delta": 0.0463,
+      "night_ratio_delta": 0.0,
+      "risk_rate_delta_per_100km": 2.5139,
+      "recent_risk_signal_count": 5
+    },
+    "cust_017": {
+      "persona_type": "in_zone_risky_low_mileage",
+      "passed": true,
+      "evidence_codes": [
+        "RECENT_IN_ZONE_RISK_EVENTS",
+        "IN_ZONE_BRAKING_ANNOTATION",
+        "RECENT_RISK_RATE_INCREASE"
+      ],
+      "outer_ratio_delta": 0.0331,
+      "night_ratio_delta": 0.0331,
+      "risk_rate_delta_per_100km": 2.9189,
+      "recent_risk_signal_count": 7
+    },
+    "cust_018": {
+      "persona_type": "in_zone_risky_low_mileage",
+      "passed": true,
+      "evidence_codes": [
+        "RECENT_IN_ZONE_RISK_EVENTS",
+        "IN_ZONE_BRAKING_ANNOTATION",
+        "RECENT_RISK_RATE_INCREASE"
+      ],
+      "outer_ratio_delta": 0.0017,
+      "night_ratio_delta": 0.0303,
+      "risk_rate_delta_per_100km": 2.8705,
+      "recent_risk_signal_count": 11
+    },
+    "cust_019": {
+      "persona_type": "in_zone_risky_low_mileage",
+      "passed": true,
+      "evidence_codes": [
+        "RECENT_IN_ZONE_RISK_EVENTS",
+        "IN_ZONE_BRAKING_ANNOTATION",
+        "RECENT_RISK_RATE_INCREASE"
+      ],
+      "outer_ratio_delta": 0.0344,
+      "night_ratio_delta": 0.0344,
+      "risk_rate_delta_per_100km": 4.96,
+      "recent_risk_signal_count": 11
+    },
+    "cust_020": {
+      "persona_type": "in_zone_risky_low_mileage",
+      "passed": true,
+      "evidence_codes": [
+        "RECENT_IN_ZONE_RISK_EVENTS",
+        "IN_ZONE_BRAKING_ANNOTATION",
+        "RECENT_RISK_RATE_INCREASE"
+      ],
+      "outer_ratio_delta": -0.04,
+      "night_ratio_delta": 0.0,
+      "risk_rate_delta_per_100km": 2.3674,
+      "recent_risk_signal_count": 9
+    },
+    "cust_021": {
+      "persona_type": "medical_visit_pattern",
+      "passed": true,
+      "evidence_codes": [
+        "REPEATED_MEDICAL_OUTER_DESTINATION",
+        "MEDICAL_CONTEXT_ANNOTATION",
+        "LOW_NIGHT_MEDICAL_CONTEXT"
+      ],
+      "outer_ratio_delta": 0.0441,
+      "night_ratio_delta": 0.0,
+      "risk_rate_delta_per_100km": 0.3103,
+      "recent_risk_signal_count": 6
+    },
+    "cust_022": {
+      "persona_type": "medical_visit_pattern",
+      "passed": true,
+      "evidence_codes": [
+        "REPEATED_MEDICAL_OUTER_DESTINATION",
+        "MEDICAL_CONTEXT_ANNOTATION",
+        "LOW_NIGHT_MEDICAL_CONTEXT"
+      ],
+      "outer_ratio_delta": 0.0409,
+      "night_ratio_delta": 0.0,
+      "risk_rate_delta_per_100km": 0.0624,
+      "recent_risk_signal_count": 1
+    },
+    "cust_023": {
+      "persona_type": "medical_visit_pattern",
+      "passed": true,
+      "evidence_codes": [
+        "REPEATED_MEDICAL_OUTER_DESTINATION",
+        "MEDICAL_CONTEXT_ANNOTATION",
+        "LOW_NIGHT_MEDICAL_CONTEXT"
+      ],
+      "outer_ratio_delta": 0.0263,
+      "night_ratio_delta": -0.0263,
+      "risk_rate_delta_per_100km": 0.3031,
+      "recent_risk_signal_count": 4
+    },
+    "cust_024": {
+      "persona_type": "medical_visit_pattern",
+      "passed": true,
+      "evidence_codes": [
+        "REPEATED_MEDICAL_OUTER_DESTINATION",
+        "MEDICAL_CONTEXT_ANNOTATION",
+        "LOW_NIGHT_MEDICAL_CONTEXT"
+      ],
+      "outer_ratio_delta": 0.0522,
+      "night_ratio_delta": 0.0,
+      "risk_rate_delta_per_100km": 0.2933,
+      "recent_risk_signal_count": 4
+    },
+    "cust_025": {
+      "persona_type": "medical_visit_pattern",
+      "passed": true,
+      "evidence_codes": [
+        "REPEATED_MEDICAL_OUTER_DESTINATION",
+        "MEDICAL_CONTEXT_ANNOTATION",
+        "LOW_NIGHT_MEDICAL_CONTEXT"
+      ],
+      "outer_ratio_delta": 0.006,
+      "night_ratio_delta": 0.0285,
+      "risk_rate_delta_per_100km": 0.2677,
+      "recent_risk_signal_count": 2
+    },
+    "cust_026": {
+      "persona_type": "irregular_family_support",
+      "passed": true,
+      "evidence_codes": [
+        "FAMILY_SUPPORT_OUT_ZONE_INCREASE"
+      ],
+      "outer_ratio_delta": 0.0887,
+      "night_ratio_delta": 0.0302,
+      "risk_rate_delta_per_100km": 0.4374,
+      "recent_risk_signal_count": 10
+    },
+    "cust_027": {
+      "persona_type": "irregular_family_support",
+      "passed": true,
+      "evidence_codes": [
+        "FAMILY_SUPPORT_OUT_ZONE_INCREASE",
+        "FAMILY_ROUTE_VARIATION_CONTEXT",
+        "RECENT_ROUTE_DEVIATION_CONTEXT"
+      ],
+      "outer_ratio_delta": 0.1376,
+      "night_ratio_delta": 0.0344,
+      "risk_rate_delta_per_100km": 0.5228,
+      "recent_risk_signal_count": 9
+    },
+    "cust_028": {
+      "persona_type": "irregular_family_support",
+      "passed": true,
+      "evidence_codes": [
+        "FAMILY_SUPPORT_OUT_ZONE_INCREASE",
+        "FAMILY_ROUTE_VARIATION_CONTEXT",
+        "RECENT_ROUTE_DEVIATION_CONTEXT"
+      ],
+      "outer_ratio_delta": 0.1333,
+      "night_ratio_delta": 0.0444,
+      "risk_rate_delta_per_100km": 0.3066,
+      "recent_risk_signal_count": 13
+    },
+    "cust_029": {
+      "persona_type": "irregular_family_support",
+      "passed": true,
+      "evidence_codes": [
+        "FAMILY_SUPPORT_OUT_ZONE_INCREASE"
+      ],
+      "outer_ratio_delta": 0.1161,
+      "night_ratio_delta": 0.0759,
+      "risk_rate_delta_per_100km": 0.7695,
+      "recent_risk_signal_count": 4
+    },
+    "cust_030": {
+      "persona_type": "irregular_family_support",
+      "passed": true,
+      "evidence_codes": [
+        "FAMILY_SUPPORT_OUT_ZONE_INCREASE",
+        "FAMILY_ROUTE_VARIATION_CONTEXT"
+      ],
+      "outer_ratio_delta": 0.1236,
+      "night_ratio_delta": 0.0412,
+      "risk_rate_delta_per_100km": 0.6079,
+      "recent_risk_signal_count": 13
+    }
+  },
+  "risk_signal_counts": {
+    "night_driving_signal": 53,
+    "sudden_braking_signal": 236,
+    "route_deviation_signal": 42,
+    "reduced_activity_signal": 29,
+    "fatigue_indicator": 43
+  },
+  "output_fields": [
+    "customer_id",
+    "driver_id",
+    "persona_type",
+    "scenario_id",
+    "simulation_seed",
+    "observation_period",
+    "observation_day_index",
+    "service_date",
+    "trip_id",
+    "trip_sequence",
+    "trip_start_time",
+    "trip_end_time",
+    "start_gps_x",
+    "start_gps_y",
+    "end_gps_x",
+    "end_gps_y",
+    "zone_label",
+    "destination_type",
+    "trip_distance_km",
+    "trip_duration_min",
+    "avg_speed",
+    "max_speed",
+    "night_drive_flag",
+    "speeding_count",
+    "harsh_accel_count",
+    "harsh_brake_count",
+    "sharp_turn_count",
+    "stop_count",
+    "night_driving_signal",
+    "sudden_braking_signal",
+    "route_deviation_signal",
+    "reduced_activity_signal",
+    "fatigue_indicator",
+    "risk_signal_codes",
+    "persona_risk_annotation",
+    "synthetic_risk_tag"
+  ]
+}
