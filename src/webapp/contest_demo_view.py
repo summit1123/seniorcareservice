@@ -544,7 +544,7 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
         <a href="#plain-story">선택 고객 예시</a>
         <a href="#system-difference">시스템 차이</a>
         <a href="#living-zone-preview">생활권 지도</a>
-        <a href="#simulation-lab">판정 계산기</a>
+        <a href="#simulation-lab">고객별 판정</a>
         <a href="#test-questions">테스트 질문</a>
         <a href="#test-journey">실행 로그</a>
         <a href="#ab-proof">기존 방식 비교</a>
@@ -588,16 +588,15 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
     </section>
 
     <section id="simulation-lab" aria-labelledby="simulation-lab-heading">
-      <h2 id="simulation-lab-heading">이미 만든 데이터로 해보는 판정 계산기</h2>
+      <h2 id="simulation-lab-heading">고객별 판정 확인</h2>
       <div class="lab-grid">
         <div class="panel">
-          <h3>고객과 최근 조건을 바꾼 가정 계산</h3>
-          <p>여기는 새 90일 주행 로그를 다시 만들거나 Agent/OpenAI를 재호출하는 영역이 아닙니다. 이미 생성된 고객별 기준값에 입력한 최근 조건을 덮어써서, 기존 마일리지 방식과 제안 점수 산식의 판정만 다시 계산합니다.</p>
+          <h3>고객 선택</h3>
+          <p>30명 합성고객 중 한 명을 고르면, 그 고객의 원본 90일 주행기록 기준으로 기존 마일리지 방식과 제안 방식을 비교합니다. 숫자 입력은 기본 시연에서는 숨기고, 판정 기준 민감도를 볼 때만 사용합니다.</p>
           {_simulation_form(simulation)}
-          {_simulation_presets(simulation)}
         </div>
         <div class="panel">
-          <h3>가정 계산 결과</h3>
+          <h3>판정 결과</h3>
           {_simulation_result(simulation)}
         </div>
       </div>
@@ -1108,6 +1107,14 @@ def _build_simulation_view_model(
             )
         )
     )
+    assumption_keys = {
+        "annualized_recent_km",
+        "recent_out_zone_ratio_pct",
+        "night_delta_pct",
+        "risk_rate_delta_per_100km",
+        "risk_signal_count",
+    }
+    assumption_active = any(key in query for key in assumption_keys)
 
     recent_out_zone_ratio = recent_out_zone_ratio_pct / 100.0
     recent_in_zone_ratio = _clamp_float(1.0 - recent_out_zone_ratio, 0.0, 1.0)
@@ -1168,6 +1175,7 @@ def _build_simulation_view_model(
             "risk_change_score": float(scores.get("risk_change_score", 0.0)),
             "senior_safe_mileage_score": float(scores.get("senior_safe_mileage_score", 0.0)),
         },
+        "assumption_active": assumption_active,
         "result": {
             "baseline_decision": baseline_decision,
             "baseline_detected": baseline_detected,
@@ -1194,32 +1202,45 @@ def _build_simulation_view_model(
 
 def _simulation_form(simulation: dict[str, Any]) -> str:
     inputs = dict(simulation["inputs"])
+    customer_id = str(simulation["customer"]["customer_id"])
     return f"""<form class="lab-form" method="get" action="/#simulation-lab">
             <label>고객 선택
               <select name="customer_id">{simulation['customer_options']}</select>
             </label>
-            <div class="field-grid">
-              <label>최근 주행거리(1년 환산 km)
-                <input name="annualized_recent_km" type="number" min="0" max="30000" step="100" value="{escape(_format_number_input(inputs['annualized_recent_km']))}">
-              </label>
-              <label>최근 생활권 밖 주행 비중(%)
-                <input name="recent_out_zone_ratio_pct" type="number" min="0" max="100" step="1" value="{escape(_format_number_input(inputs['recent_out_zone_ratio_pct']))}">
-              </label>
-              <label>야간주행 증가(%p)
-                <input name="night_delta_pct" type="number" min="-50" max="100" step="1" value="{escape(_format_number_input(inputs['night_delta_pct']))}">
-              </label>
-              <label>위험행동 증가(100km당)
-                <input name="risk_rate_delta_per_100km" type="number" min="-20" max="30" step="0.5" value="{escape(_format_number_input(inputs['risk_rate_delta_per_100km']))}">
-              </label>
-              <label>최근 위험 신호 건수
-                <input name="risk_signal_count" type="number" min="0" max="80" step="1" value="{escape(str(inputs['risk_signal_count']))}">
-              </label>
-            </div>
             <div class="lab-actions">
-              <button class="button" type="submit">가정값으로 판정 계산</button>
-              <a class="button" href="/?customer_id={escape(str(simulation['customer']['customer_id']))}#simulation-lab">원본 조건으로 보기</a>
+              <button class="button" type="submit">선택 고객 보기</button>
+              <a class="button" href="#customer-universe">30명 전체 보기</a>
             </div>
-          </form>"""
+          </form>
+          <details class="lab-form">
+            <summary>선택 고객의 숫자를 임시로 바꿔보기</summary>
+            <p>선택 기능입니다. 원본 90일 데이터는 그대로 두고, 아래 값만 임시로 바꿨을 때 판정이 얼마나 민감하게 움직이는지 확인합니다.</p>
+            <form class="lab-form" method="get" action="/#simulation-lab">
+              <input type="hidden" name="customer_id" value="{escape(customer_id)}">
+              <div class="field-grid">
+                <label>최근 주행거리(1년 환산 km)
+                  <input name="annualized_recent_km" type="number" min="0" max="30000" step="100" value="{escape(_format_number_input(inputs['annualized_recent_km']))}">
+                </label>
+                <label>최근 생활권 밖 주행 비중(%)
+                  <input name="recent_out_zone_ratio_pct" type="number" min="0" max="100" step="1" value="{escape(_format_number_input(inputs['recent_out_zone_ratio_pct']))}">
+                </label>
+                <label>야간주행 증가(%p)
+                  <input name="night_delta_pct" type="number" min="-50" max="100" step="1" value="{escape(_format_number_input(inputs['night_delta_pct']))}">
+                </label>
+                <label>위험행동 증가(100km당)
+                  <input name="risk_rate_delta_per_100km" type="number" min="-20" max="30" step="0.5" value="{escape(_format_number_input(inputs['risk_rate_delta_per_100km']))}">
+                </label>
+                <label>최근 위험 신호 건수
+                  <input name="risk_signal_count" type="number" min="0" max="80" step="1" value="{escape(str(inputs['risk_signal_count']))}">
+                </label>
+              </div>
+              <div class="lab-actions">
+                <button class="button" type="submit">임시값으로 계산</button>
+                <a class="button" href="/?customer_id={escape(customer_id)}#simulation-lab">원본값으로 되돌리기</a>
+              </div>
+            </form>
+            {_simulation_presets(simulation)}
+          </details>"""
 
 
 def _simulation_presets(simulation: dict[str, Any]) -> str:
@@ -1234,7 +1255,8 @@ def _simulation_presets(simulation: dict[str, Any]) -> str:
     for label, values in presets:
         query = {"customer_id": customer_id, **values}
         links.append(f'<a class="button" href="/?{escape(urlencode(query))}#simulation-lab">{escape(label)}</a>')
-    return f"""<div class="preset-list" aria-label="조건 프리셋">
+    return f"""<div class="preset-list" aria-label="임시값 예시">
+            <span class="code">예시 임시값</span>
             {''.join(links)}
           </div>"""
 
@@ -1243,13 +1265,19 @@ def _simulation_result(simulation: dict[str, Any]) -> str:
     result = dict(simulation["result"])
     components = dict(simulation["components"])
     original = dict(simulation["original"])
+    assumption_active = bool(simulation.get("assumption_active"))
     changed = result["proposed_decision"] != original["care_decision"]
-    change_text = (
-        f"원래 {original['care_decision']}에서 {result['proposed_decision']}로 바뀝니다."
-        if changed
-        else f"원래 판정과 같은 {result['proposed_decision']}입니다."
-    )
-    return f"""<p>{escape(_display_customer_id(str(simulation['customer']['customer_id'])))} 기준으로 가정값을 계산했습니다. 주행 로그를 새로 생성한 것이 아니라 입력값만 바꿔 점수 산식에 다시 넣은 결과입니다. {escape(change_text)}</p>
+    if assumption_active:
+        change_text = (
+            f"임시값을 적용하면 원본 {original['care_decision']}에서 {result['proposed_decision']}로 바뀝니다."
+            if changed
+            else f"임시값을 적용해도 원본과 같은 {result['proposed_decision']}입니다."
+        )
+        basis_text = "선택 고객의 원본 기준값에 화면에서 입력한 임시값을 적용해 점수만 다시 계산"
+    else:
+        change_text = f"원본 90일 주행기록 기준 판정은 {result['proposed_decision']}입니다."
+        basis_text = "이미 생성된 고객별 90일 주행 로그와 feature 기준값으로 계산"
+    return f"""<p>{escape(_display_customer_id(str(simulation['customer']['customer_id'])))}의 결과입니다. {escape(change_text)}</p>
           <div class="lab-result-grid">
             {_lab_result_card("기존 방식", result['baseline_decision'], f"기준: {BASELINE_ANNUAL_MILEAGE_LIMIT_KM:,.0f}km 초과 여부")}
             {_lab_result_card("제안 방식", result['proposed_decision'], f"등급 {result['tier']} · 통합 점수 {result['senior_safe_mileage_score']:.1f}")}
@@ -1258,7 +1286,7 @@ def _simulation_result(simulation: dict[str, Any]) -> str:
           <div class="table-wrap" style="margin-top:14px">
             <table aria-label="가정값 판정 계산 근거">
               <tbody>
-                <tr><th scope="row">계산 방식</th><td>기존 feature 기준값 + 화면 입력 가정값으로 산식 재계산. trip log 재생성, Agent 재실행, OpenAI 재호출 없음.</td></tr>
+                <tr><th scope="row">계산 기준</th><td>{escape(basis_text)}</td></tr>
                 <tr><th scope="row">생활권 밖 비중 증가</th><td>{components['out_zone_ratio_delta_pct']:+.1f}%p</td></tr>
                 <tr><th scope="row">야간주행 증가</th><td>{components['night_delta_pct']:+.1f}%p</td></tr>
                 <tr><th scope="row">위험행동 증가</th><td>100km당 {components['risk_rate_delta_per_100km']:+.1f}건</td></tr>
