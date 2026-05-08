@@ -47,6 +47,7 @@ class TestContestDemoView(unittest.TestCase):
         self.assertIn("name=\"recent_out_zone_ratio_pct\"", html)
         self.assertIn("위험변화 점수", html)
         self.assertIn("합성고객 011의 90일 주행 좌표", html)
+        self.assertIn("생활권은 하나일 수도, 여러 개일 수도 있습니다", html)
         self.assertIn("모델이 실제로 보는 4가지 판단 요소", html)
         self.assertIn("기존 방식 0/5 · 제안 방식 5/5", html)
         self.assertIn("OpenAI 설명문 생성", html)
@@ -106,6 +107,13 @@ class TestContestDemoView(unittest.TestCase):
         self.assertIn("value=\"5\"", html)
         self.assertIn("임시값을 적용해도 원본과 같은 우대입니다.", html)
         self.assertIn("기존 저주행 할인", html)
+
+    def test_living_zone_preview_can_render_multiple_clusters_for_repeated_destinations(self) -> None:
+        html = render_contest_demo_page(load_dashboard_bundle(), request_path="/?customer_id=cust_026")
+
+        self.assertIn("합성고객 026의 90일 주행 좌표 · 생활권 클러스터 2개", html)
+        self.assertIn("생활권 1", html)
+        self.assertIn("생활권 2", html)
 
 
 if __name__ == "__main__":

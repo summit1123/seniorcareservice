@@ -17,6 +17,7 @@ from types import SimpleNamespace
 from typing import Any
 from urllib.parse import parse_qs, urlencode, urlparse
 
+from src.features.zone_features import fit_customer_dbscan_results
 from src.product.ab_comparison import (
     BASELINE_ANNUAL_MILEAGE_LIMIT_KM,
     calculate_tier,
@@ -34,6 +35,8 @@ SCENARIO_CONFIG_PATH = ROOT / "data" / "fixtures" / "scenario_config.json"
 VALIDATION_REPORT_PATH = ROOT / "data" / "fixtures" / "validation_report.md"
 AB_RESULTS_PATH = ROOT / "data" / "fixtures" / "ab_test_results.csv"
 SUMMARY_REPORT_PATH = ROOT / "data" / "fixtures" / "simulation_summary.json"
+PREVIEW_DBSCAN_EPS = 0.008
+PREVIEW_DBSCAN_MIN_SAMPLES = 3
 
 
 PERSONA_ORDER = [
@@ -611,7 +614,7 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
       <h2 id="living-zone-heading">좌표로 보는 생활권 모델</h2>
       <div class="map-grid">
         <div class="map-card">
-          <h3>{escape(_display_customer_id(str(risk_customer['customer_id'])))}의 90일 주행 좌표</h3>
+          <h3>{escape(_living_zone_map_heading(risk_customer))}</h3>
           {_living_zone_svg(risk_customer)}
           <div class="map-legend" aria-label="좌표 범례">
             <span class="legend-item"><span class="legend-dot before"></span>이전 60일</span>
@@ -1359,6 +1362,26 @@ def _load_customer_trip_rows(customer_id: str) -> list[dict[str, str]]:
         return [row for row in csv.DictReader(trip_log) if row["customer_id"] == customer_id]
 
 
+def _living_zone_preview_clusters(rows: list[dict[str, str]]) -> list[dict[str, Any]]:
+    if not rows:
+        return []
+    customer_id = rows[0]["customer_id"]
+    result = fit_customer_dbscan_results(
+        rows,
+        eps=PREVIEW_DBSCAN_EPS,
+        min_samples=PREVIEW_DBSCAN_MIN_SAMPLES,
+    ).get(customer_id, {})
+    clusters = [dict(cluster) for cluster in result.get("clusters", [])]
+    return sorted(clusters, key=lambda cluster: int(cluster.get("point_count", 0)), reverse=True)
+
+
+def _living_zone_map_heading(customer: dict[str, Any]) -> str:
+    customer_id = str(customer["customer_id"])
+    clusters = _living_zone_preview_clusters(_load_customer_trip_rows(customer_id))
+    count_text = f"생활권 클러스터 {len(clusters)}개" if clusters else "생활권 클러스터 없음"
+    return f"{_display_customer_id(customer_id)}의 90일 주행 좌표 · {count_text}"
+
+
 def _living_zone_svg(customer: dict[str, Any]) -> str:
     rows = _load_customer_trip_rows(str(customer["customer_id"]))
     if not rows:
@@ -1388,28 +1411,53 @@ def _living_zone_svg(customer: dict[str, Any]) -> str:
     def scale_y(value: float) -> float:
         return height - padding - ((value - min_y) / (max_y - min_y)) * (height - padding * 2)
 
-    baseline_local = [
-        (float(row["end_gps_x"]), float(row["end_gps_y"]))
-        for row in rows
-        if row["observation_period"] == "baseline" and row["zone_label"] != "outer"
-    ]
-    if not baseline_local:
+    clusters = _living_zone_preview_clusters(rows)
+    zone_nodes = []
+    if clusters:
+        for index, cluster in enumerate(clusters[:4], start=1):
+            center_x = scale_x(float(cluster["center_longitude"]))
+            center_y = scale_y(float(cluster["center_latitude"]))
+            min_lon = float(cluster.get("boundary_min_longitude", cluster["center_longitude"]))
+            max_lon = float(cluster.get("boundary_max_longitude", cluster["center_longitude"]))
+            min_lat = float(cluster.get("boundary_min_latitude", cluster["center_latitude"]))
+            max_lat = float(cluster.get("boundary_max_latitude", cluster["center_latitude"]))
+            core_rx = max(28.0, abs(scale_x(max_lon) - scale_x(min_lon)) / 2 + 18.0)
+            core_ry = max(24.0, abs(scale_y(max_lat) - scale_y(min_lat)) / 2 + 16.0)
+            buffer_rx = core_rx + 30.0
+            buffer_ry = core_ry + 24.0
+            label = f"생활권 {index}" if len(clusters) > 1 else "생활권"
+            zone_nodes.append(
+                f"""<ellipse cx="{center_x:.1f}" cy="{center_y:.1f}" rx="{buffer_rx:.1f}" ry="{buffer_ry:.1f}" fill="#f4efe4" stroke="#caa46c" stroke-width="2" stroke-dasharray="7 5" opacity="0.78" />
+            <ellipse cx="{center_x:.1f}" cy="{center_y:.1f}" rx="{core_rx:.1f}" ry="{core_ry:.1f}" fill="#e7f1ed" stroke="#4d8c78" stroke-width="2" opacity="0.84" />
+            <text x="{min(width - 110, center_x + 8):.1f}" y="{max(18, center_y - core_ry - 8):.1f}" fill="#126149" font-size="13" font-weight="700">{escape(label)}</text>"""
+            )
+    else:
         baseline_local = [
             (float(row["end_gps_x"]), float(row["end_gps_y"]))
             for row in rows
-            if row["observation_period"] == "baseline"
+            if row["observation_period"] == "baseline" and row["zone_label"] != "outer"
         ]
-    center_lon = sum(x for x, _ in baseline_local) / len(baseline_local)
-    center_lat = sum(y for _, y in baseline_local) / len(baseline_local)
-    center_x = scale_x(center_lon)
-    center_y = scale_y(center_lat)
-
-    distances_x = sorted(abs(scale_x(x) - center_x) for x, _ in baseline_local)
-    distances_y = sorted(abs(scale_y(y) - center_y) for _, y in baseline_local)
-    core_rx = max(34.0, _percentile(distances_x, 0.62) + 18.0)
-    core_ry = max(28.0, _percentile(distances_y, 0.62) + 16.0)
-    buffer_rx = max(core_rx + 34.0, _percentile(distances_x, 0.90) + 48.0)
-    buffer_ry = max(core_ry + 26.0, _percentile(distances_y, 0.90) + 42.0)
+        if not baseline_local:
+            baseline_local = [
+                (float(row["end_gps_x"]), float(row["end_gps_y"]))
+                for row in rows
+                if row["observation_period"] == "baseline"
+            ]
+        center_lon = sum(x for x, _ in baseline_local) / len(baseline_local)
+        center_lat = sum(y for _, y in baseline_local) / len(baseline_local)
+        center_x = scale_x(center_lon)
+        center_y = scale_y(center_lat)
+        distances_x = sorted(abs(scale_x(x) - center_x) for x, _ in baseline_local)
+        distances_y = sorted(abs(scale_y(y) - center_y) for _, y in baseline_local)
+        core_rx = max(34.0, _percentile(distances_x, 0.62) + 18.0)
+        core_ry = max(28.0, _percentile(distances_y, 0.62) + 16.0)
+        buffer_rx = max(core_rx + 34.0, _percentile(distances_x, 0.90) + 48.0)
+        buffer_ry = max(core_ry + 26.0, _percentile(distances_y, 0.90) + 42.0)
+        zone_nodes.append(
+            f"""<ellipse cx="{center_x:.1f}" cy="{center_y:.1f}" rx="{buffer_rx:.1f}" ry="{buffer_ry:.1f}" fill="#f4efe4" stroke="#caa46c" stroke-width="2" stroke-dasharray="7 5" opacity="0.86" />
+            <ellipse cx="{center_x:.1f}" cy="{center_y:.1f}" rx="{core_rx:.1f}" ry="{core_ry:.1f}" fill="#e7f1ed" stroke="#4d8c78" stroke-width="2" opacity="0.82" />
+            <text x="{center_x + 10:.1f}" y="{center_y - core_ry - 8:.1f}" fill="#126149" font-size="13" font-weight="700">생활권</text>"""
+        )
 
     route_lines = []
     point_nodes = []
@@ -1454,16 +1502,21 @@ def _living_zone_svg(customer: dict[str, Any]) -> str:
     return f"""<svg class="zone-map" viewBox="0 0 {width} {height}" role="img" aria-label="고객 {_display_customer_id(str(customer['customer_id']))}의 주행 좌표와 생활권 프리뷰">
             <rect x="0" y="0" width="{width}" height="{height}" fill="#f7f9f8" />
             <path d="M40 72 H520 M40 144 H520 M40 216 H520 M40 288 H520 M112 30 V330 M224 30 V330 M336 30 V330 M448 30 V330" stroke="#e1e6e2" stroke-width="1" />
-            <ellipse cx="{center_x:.1f}" cy="{center_y:.1f}" rx="{buffer_rx:.1f}" ry="{buffer_ry:.1f}" fill="#f4efe4" stroke="#caa46c" stroke-width="2" stroke-dasharray="7 5" opacity="0.86" />
-            <ellipse cx="{center_x:.1f}" cy="{center_y:.1f}" rx="{core_rx:.1f}" ry="{core_ry:.1f}" fill="#e7f1ed" stroke="#4d8c78" stroke-width="2" opacity="0.82" />
-            <text x="{center_x + 10:.1f}" y="{center_y - core_ry - 8:.1f}" fill="#126149" font-size="13" font-weight="700">생활권 안</text>
-            <text x="{min(width - 190, center_x + buffer_rx - 120):.1f}" y="{min(height - 14, max(24, center_y + buffer_ry + 20)):.1f}" fill="#9a4a15" font-size="13" font-weight="700">생활권 밖 변화</text>
+            {''.join(zone_nodes)}
             {''.join(route_lines)}
             {''.join(point_nodes)}
           </svg>"""
 
 
 def _living_zone_insights(customer: dict[str, Any]) -> str:
+    rows = _load_customer_trip_rows(str(customer["customer_id"]))
+    clusters = _living_zone_preview_clusters(rows)
+    cluster_count = len(clusters)
+    cluster_text = (
+        f"기준기간 반복 좌표에서 생활권 클러스터 {cluster_count}개가 잡혔습니다."
+        if cluster_count
+        else "반복 좌표가 부족해 생활권 클러스터를 확정하지 못했습니다."
+    )
     metrics = dict(customer.get("ab_comparison", {}).get("metrics", {}))
     feature_summary = dict(metrics.get("comparison_input", {}).get("feature_summary", {}))
     baseline_out = _format_ratio_percent(feature_summary.get("baseline_out_zone_ratio", 0))
@@ -1474,6 +1527,10 @@ def _living_zone_insights(customer: dict[str, Any]) -> str:
     baseline_decision = str(metrics.get("core_metrics", {}).get("baseline", {}).get("decision", "기존 저주행 할인"))
     proposed_decision = str(customer.get("care_decision", "예방 케어"))
     return f"""<ul class="insight-list">
+          <li>
+            <strong>생활권은 하나일 수도, 여러 개일 수도 있습니다</strong>
+            <p>{escape(cluster_text)} 집, 병원, 시장, 가족 방문지처럼 반복 목적지가 떨어져 있으면 지도에 원이 여러 개 표시됩니다.</p>
+          </li>
           <li>
             <strong>기존 방식은 왜 놓쳤나</strong>
             <p>최근 주행거리를 1년 기준으로 환산하면 {annualized_km:,.0f}km라서 {escape(baseline_decision)}처럼 보입니다.</p>
