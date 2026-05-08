@@ -2,7 +2,7 @@
 
 The existing customer decision page is a dense operator/debug surface.  This
 module renders a separate first screen for judges: it explains what was built,
-which data files exist, what the A/B result proves, and where the detailed
+which data files exist, what the same-customer comparison proves, and where the detailed
 evidence lives.
 """
 
@@ -274,6 +274,43 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
     }}
     .model-factor span {{ display: block; color: var(--muted); font-size: 12px; margin-bottom: 6px; }}
     .model-factor strong {{ display: block; font-size: 22px; }}
+    .difference-grid {{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      align-items: stretch;
+    }}
+    .system-card {{
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: #fff;
+    }}
+    .system-card h3 {{ font-size: 18px; }}
+    .system-card ul {{ margin: 12px 0 0; padding-left: 18px; color: var(--muted); }}
+    .system-card li {{ margin: 6px 0; }}
+    .example-strip {{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }}
+    .example-card {{
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 13px;
+      background: var(--subtle);
+    }}
+    .example-card span {{ display: block; color: var(--focus); font-size: 12px; font-weight: 800; margin-bottom: 6px; }}
+    .example-card strong {{ display: block; font-size: 19px; margin-bottom: 4px; }}
+    .bridge-note {{
+      margin-top: 14px;
+      border: 1px solid #b8d8d3;
+      border-radius: 8px;
+      padding: 14px;
+      background: #f2faf8;
+      color: var(--ink);
+    }}
     .lab-grid {{
       display: grid;
       grid-template-columns: minmax(360px, 0.9fr) minmax(0, 1.1fr);
@@ -399,14 +436,14 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
     details summary {{ cursor: pointer; color: var(--focus); font-weight: 700; }}
     details .code {{ display: inline-block; margin-top: 6px; }}
     @media (max-width: 960px) {{
-      .hero-grid, .map-grid, .lab-grid, .two-col, .case-grid {{ grid-template-columns: 1fr; }}
-      .verdict-grid, .question-grid, .model-factor-grid, .criteria-grid, .lab-result-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+      .hero-grid, .difference-grid, .map-grid, .lab-grid, .two-col, .case-grid {{ grid-template-columns: 1fr; }}
+      .verdict-grid, .question-grid, .model-factor-grid, .criteria-grid, .lab-result-grid, .example-strip {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
       .flow {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
     }}
     @media (max-width: 620px) {{
       .shell, .header-inner {{ padding-left: 18px; padding-right: 18px; }}
       h1 {{ font-size: 26px; }}
-      .metric-grid, .verdict-grid, .question-grid, .model-factor-grid, .field-grid, .criteria-grid, .lab-result-grid, .flow {{ grid-template-columns: 1fr; }}
+      .metric-grid, .verdict-grid, .question-grid, .model-factor-grid, .field-grid, .criteria-grid, .lab-result-grid, .example-strip, .flow {{ grid-template-columns: 1fr; }}
       .bar-row {{ grid-template-columns: 1fr; }}
     }}
   </style>
@@ -416,8 +453,9 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
     <div class="header-inner">
       <p class="eyebrow">테스트 결과를 먼저 보여주는 공모전 시연 화면</p>
       <h1>{title}</h1>
-      <p class="lead">“적게 탔는가”만 보던 보험 판단을 “평소 생활권 안에서 안정적으로 달렸는가, 최근 생활권 밖 위험 신호가 늘었는가”까지 보는 방식으로 검증했습니다. 이 화면은 좌표 프리뷰, 숫자 해설, 비교 테스트, 설명문 생성 결과를 한 흐름으로 보여줍니다.</p>
+      <p class="lead">기존 마일리지 보험은 “얼마나 적게 탔는가”로 할인 여부를 판단합니다. 이 데모는 거기에 “평소 생활권에서 벗어난 최근 위험변화가 있었는가”를 추가해, 같은 저주행 고객도 우대/기본/예방 케어로 다르게 설명하는 화면입니다.</p>
       <nav class="top-nav" aria-label="데모 흐름">
+        <a href="#system-difference">시스템 차이</a>
         <a href="#living-zone-preview">생활권 지도</a>
         <a href="#simulation-lab">조건 테스트</a>
         <a href="#test-questions">테스트 질문</a>
@@ -431,12 +469,12 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
   <main class="shell">
     <section class="hero-grid" id="summary" aria-labelledby="summary-heading">
       <div class="verdict-band">
-        <h2 id="summary-heading">이번 테스트가 증명한 것</h2>
-        <p>기존 거리 중심 방식은 “최근 생활권 밖 위험변화형” 고객 5명을 한 명도 포착하지 못했습니다. 제안 모델은 같은 주행 기록에서 5명 전원을 예방 케어 대상으로 포착했고, 비대상 오탐과 전체 오분류는 승인 기준 안에 들어왔습니다.</p>
+        <h2 id="summary-heading">한 문장으로 보면</h2>
+        <p>기존 마일리지 시스템은 “적게 탔으니 할인”에서 멈춥니다. 제안 방식은 “적게 탔지만 최근 생활권 밖 야간/위험행동이 늘었는가”까지 확인해, 할인 대상인지 예방 케어가 필요한 고객인지 나눕니다.</p>
         <div class="verdict-grid" aria-label="검증 결론">
-          {_verdict_card("제품 판정", "우대 / 기본 / 예방 케어", "저주행 할인 여부가 아니라 생활권 안정성, 생활권 밖 안전운전, 최근 위험변화를 함께 봅니다.")}
-          {_verdict_card("테스트 결론", f"위험변화 {approval['risk_change_capture_count']}/{approval['risk_change_target_count']} 포착", f"기존 산식은 {ab['baseline_capture_count']}/5, 제안 모델은 {ab['proposed_capture_count']}/5입니다.")}
-          {_verdict_card("설명문 생성", llm_status['display_report_mode'], llm_status['headline'])}
+          {_verdict_card("기존 마일리지", "주행거리 중심 할인", "1년 환산 주행거리가 기준보다 낮으면 대체로 우량 고객처럼 봅니다.")}
+          {_verdict_card("제안 방식", "생활권 변화까지 판정", "어디서, 언제, 어떤 위험신호가 늘었는지까지 봅니다.")}
+          {_verdict_card("결과 해석", "우대 / 기본 / 예방 케어", "단순 할인 계산이 아니라 고객별 설명과 케어 액션을 함께 만듭니다.")}
         </div>
         <div class="footer-actions">
           <a class="button" href="#living-zone-preview">좌표 프리뷰 보기</a>
@@ -446,9 +484,14 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
       <div class="metric-grid" aria-label="핵심 수치">
         {_metric_card("합성 고객", f"{trip_stats['customer_count']}명", "6개 유형, 유형별 5명")}
         {_metric_card("주행 기록", f"{trip_stats['trip_count']:,}건", "90일 관측기간 중 실제 운전이 발생한 기록")}
-        {_metric_card("위험변화 포착", f"{approval['risk_change_capture_count']}/{approval['risk_change_target_count']}", "기존 산식 0명, 제안 모델 5명", "good")}
+        {_metric_card("놓친 위험고객 발견", f"{approval['risk_change_capture_count']}/{approval['risk_change_target_count']}", "기존 방식 0명, 제안 방식 5명", "good")}
         {_metric_card("오분류", f"{approval['total_misclassification_count']}/{approval['total_misclassification_limit']}", "허용 기준 이내", "good")}
       </div>
+    </section>
+
+    <section id="system-difference" aria-labelledby="system-difference-heading">
+      <h2 id="system-difference-heading">기존 마일리지 시스템과 무엇이 다른가</h2>
+      {_system_difference_section(risk_customer)}
     </section>
 
     <section id="simulation-lab" aria-labelledby="simulation-lab-heading">
@@ -456,7 +499,7 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
       <div class="lab-grid">
         <div class="panel">
           <h3>고객과 최근 주행 조건을 바꿔보기</h3>
-          <p>아래 조건은 저장된 데이터를 덮어쓰지 않는 화면용 가정 테스트입니다. 값을 바꾸고 적용하면 같은 고객을 기존 거리 방식과 제안 방식으로 다시 판정합니다.</p>
+          <p>보험 직원이나 심사위원이 “이 고객의 최근 운전 상황이 달라지면 판정도 바뀌나?”를 확인하는 영역입니다. 값을 바꾸면 기존 마일리지 방식과 제안 방식을 같은 조건으로 다시 계산합니다.</p>
           {_simulation_form(simulation)}
           {_simulation_presets(simulation)}
         </div>
@@ -468,7 +511,7 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
       <div class="criteria-grid" aria-label="판정 기준">
         {_criteria_card("기존 거리 방식", f"1년 환산 주행거리 {BASELINE_ANNUAL_MILEAGE_LIMIT_KM:,.0f}km 초과 여부만 봅니다.", "생활권 밖으로 나갔는지, 야간/위험행동이 늘었는지는 반영하지 않습니다.")}
         {_criteria_card("위험변화 점수", "생활권 밖 비중 증가 35점 + 야간 증가 25점 + 위험행동 증가 25점 + 위험신호 빈도 15점", "최근 변화가 클수록 100점에 가까워집니다.")}
-        {_criteria_card("제안 방식 판정", f"위험변화 점수 {float(selected_policy['thresholds']['care_threshold']):.1f}점 이상이고 통합 점수가 A등급 기준보다 낮으면 예방 케어입니다.", "위험변화가 낮고 통합 점수가 S/A면 우대, 나머지는 기본입니다.")}
+        {_criteria_card("제안 방식 판정", f"위험변화 점수 {float(selected_policy['thresholds']['care_threshold']):.1f}점 이상이고 통합 점수가 우대 기준보다 낮으면 예방 케어입니다.", "위험변화가 낮고 통합 점수가 우대 구간이면 우대, 나머지는 기본입니다.")}
       </div>
     </section>
 
@@ -578,8 +621,8 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
         <div class="panel">
           <h3>같은 고객 30명으로 비교한 핵심 결과</h3>
           <div class="bars">
-            {_bar_row("기존 산식", ab["baseline_capture_rate"], f"{ab['baseline_capture_count']}/5 포착")}
-            {_bar_row("제안 모델", ab["proposed_capture_rate"], f"{ab['proposed_capture_count']}/5 포착", "good")}
+            {_bar_row("기존 방식", ab["baseline_capture_rate"], f"{ab['baseline_capture_count']}/5 발견")}
+            {_bar_row("제안 방식", ab["proposed_capture_rate"], f"{ab['proposed_capture_count']}/5 발견", "good")}
           </div>
           <div class="table-wrap" style="margin-top:14px">
             <table aria-label="기존 방식 비교 승인 게이트">
@@ -612,7 +655,7 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
       <h2 id="persona-heading">6개 시니어 케이스가 어떻게 판정됐나</h2>
       <div class="table-wrap">
         <table aria-label="6개 시니어 케이스 결과">
-          <thead><tr><th>케이스</th><th>검증 목적</th><th>제안 모델 결과</th><th>기존 산식 대비</th></tr></thead>
+          <thead><tr><th>케이스</th><th>검증 목적</th><th>제안 방식 결과</th><th>기존 방식 대비</th></tr></thead>
           <tbody>{_persona_table_rows(persona_rows)}</tbody>
         </table>
       </div>
@@ -641,7 +684,7 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
         </div>
         <div class="panel">
           <h3>심사위원에게 보여줄 결론</h3>
-          <p class="note">이 화면은 “실제 고객 사고율을 예측했다”는 주장이 아닙니다. 6개 합성 케이스에서 기존 거리 중심 마일리지가 놓치는 위험변화 신호를 제안 모델이 어떻게 구분하는지 보여주는 검증용 제품 화면입니다.</p>
+          <p class="note">이 화면은 “실제 고객 사고율을 예측했다”는 주장이 아닙니다. 6개 합성 케이스에서 기존 거리 중심 마일리지가 놓치는 위험변화 신호를 제안 방식이 어떻게 구분하는지 보여주는 검증용 제품 화면입니다.</p>
           <div class="footer-actions">
             <a class="button" href="/detail">상세 검증 화면 열기</a>
             <a class="button" href="/api/validation">검증 결과 원문 보기</a>
@@ -765,6 +808,53 @@ def _question_card(number: str, question: str, answer: str, evidence_label: str,
           <strong>{escape(question)}</strong>
           <p>{escape(answer)}</p>
           <div class="evidence" data-evidence-path="{escape(evidence_path)}">근거: {escape(evidence_label)}</div>
+        </article>"""
+
+
+def _system_difference_section(customer: dict[str, Any]) -> str:
+    metrics = dict(customer.get("ab_comparison", {}).get("metrics", {}))
+    core_metrics = dict(metrics.get("core_metrics", {}))
+    feature_summary = dict(metrics.get("comparison_input", {}).get("feature_summary", {}))
+    baseline = dict(core_metrics.get("baseline", {}))
+    proposed = dict(core_metrics.get("proposed", {}))
+    annualized_km = float(feature_summary.get("annualized_recent_km", 0.0))
+    baseline_out = _format_ratio_percent(feature_summary.get("baseline_out_zone_ratio", 0.0))
+    recent_out = _format_ratio_percent(feature_summary.get("recent_out_zone_ratio", 0.0))
+    night_delta = _format_ratio_delta(feature_summary.get("night_ratio_delta", 0.0))
+    risk_delta = float(feature_summary.get("risk_rate_delta_per_100km", 0.0))
+    return f"""<div class="difference-grid">
+        <article class="system-card">
+          <h3>기존 마일리지 보험</h3>
+          <p>보험료 할인 여부를 주로 주행거리로 판단합니다.</p>
+          <ul>
+            <li>입력: 최근 주행거리를 1년 기준으로 환산한 km</li>
+            <li>판정: 기준보다 적게 타면 저주행 할인</li>
+            <li>한계: 어디로 갔는지, 밤에 달렸는지, 위험행동이 늘었는지는 놓칩니다.</li>
+          </ul>
+        </article>
+        <article class="system-card">
+          <h3>시니어 안심주행 방식</h3>
+          <p>거리만 보지 않고 최근 운전 패턴이 평소 생활권에서 어떻게 달라졌는지 봅니다.</p>
+          <ul>
+            <li>입력: 주행거리 + 생활권 안/밖 좌표 + 야간주행 + 위험행동</li>
+            <li>판정: 우대, 기본, 예방 케어로 나눔</li>
+            <li>효과: 저주행 고객 안에서도 “안정 저주행”과 “최근 위험변화”를 분리합니다.</li>
+          </ul>
+        </article>
+      </div>
+      <div class="example-strip" aria-label="같은 고객 판정 예시">
+        {_example_card("같은 고객", _display_customer_id(str(customer['customer_id'])), "주행거리는 낮지만 최근 생활권 밖 변화가 생긴 고객")}
+        {_example_card("기존 방식 판정", str(baseline.get("decision", "기존 저주행 할인")), f"1년 환산 {annualized_km:,.0f}km라서 거리 기준으로는 우량해 보입니다.")}
+        {_example_card("제안 방식 판정", str(proposed.get("decision", customer.get("care_decision", ""))), f"생활권 밖 {baseline_out} -> {recent_out}, 야간 {night_delta}, 위험행동 100km당 {risk_delta:+.1f}건")}
+      </div>
+      <p class="bridge-note">핵심은 “할인을 없애자”가 아닙니다. 기존 저주행 할인을 유지하되, 시니어 고객에게 중요한 최근 생활권 변화 신호를 별도로 감지해 보험사 직원이 설명 가능한 케어 액션을 만들자는 것입니다.</p>"""
+
+
+def _example_card(label: str, value: str, body: str) -> str:
+    return f"""<article class="example-card">
+          <span>{escape(label)}</span>
+          <strong>{escape(value)}</strong>
+          <p>{escape(body)}</p>
         </article>"""
 
 
@@ -1187,7 +1277,7 @@ def _living_zone_insights(customer: dict[str, Any]) -> str:
           </li>
           <li>
             <strong>최종 판정</strong>
-            <p>그래서 제안 모델은 이 고객을 {escape(proposed_decision)} 대상으로 분류합니다.</p>
+            <p>그래서 제안 방식은 이 고객을 {escape(proposed_decision)} 대상으로 분류합니다.</p>
           </li>
         </ul>"""
 
@@ -1254,8 +1344,8 @@ def _test_journey_rows(
         (
             "5",
             "기존 방식 비교",
-            "동일 고객 30명에 기존 거리 중심 산식과 제안 모델을 모두 적용했습니다.",
-            f"기존 {ab['baseline_capture_count']}/5 · 제안 {ab['proposed_capture_count']}/5",
+            "동일 고객 30명에 기존 거리 중심 방식과 제안 방식을 모두 적용했습니다.",
+            f"기존 방식 {ab['baseline_capture_count']}/5 · 제안 방식 {ab['proposed_capture_count']}/5",
             "기존 방식 비교 결과",
             "data/fixtures/ab_test_results.csv",
         ),
