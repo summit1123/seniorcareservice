@@ -25,7 +25,11 @@ class TestContestDemoView(unittest.TestCase):
         self.assertIn("90일 관측", html)
         self.assertIn("이전 60일 + 최근 30일", html)
         self.assertIn("좌표로 보는 생활권 모델", html)
-        self.assertIn("예방 케어로 바뀐 고객의 90일 주행 좌표", html)
+        self.assertIn("직접 돌려보는 조건 테스트", html)
+        self.assertIn("고객과 최근 주행 조건을 바꿔보기", html)
+        self.assertIn("name=\"recent_out_zone_ratio_pct\"", html)
+        self.assertIn("위험변화 점수", html)
+        self.assertIn("고객 011의 90일 주행 좌표", html)
         self.assertIn("모델이 실제로 보는 4가지 판단 요소", html)
         self.assertIn("기존 0/5 · 제안 5/5", html)
         self.assertIn("OpenAI 설명문 생성", html)
@@ -67,6 +71,23 @@ class TestContestDemoView(unittest.TestCase):
         self.assertIn("Senior Safe Mileage 정책/검증 대시보드", detail_html)
         self.assertIn("cust_011", detail_html)
         self.assertNotIn("테스트 결과를 먼저 보여주는 공모전 시연 화면", detail_html)
+
+    def test_contest_demo_simulation_query_changes_selected_customer_and_conditions(self) -> None:
+        bundle = load_dashboard_bundle()
+        html = render_contest_demo_page(
+            bundle,
+            request_path=(
+                "/?customer_id=cust_001&annualized_recent_km=4200"
+                "&recent_out_zone_ratio_pct=5&night_delta_pct=0"
+                "&risk_rate_delta_per_100km=0&risk_signal_count=0"
+            ),
+        )
+
+        self.assertIn("고객 001의 90일 주행 좌표", html)
+        self.assertIn("value=\"4200\"", html)
+        self.assertIn("value=\"5\"", html)
+        self.assertIn("원래 판정과 같은 우대입니다.", html)
+        self.assertIn("기존 저주행 할인", html)
 
 
 if __name__ == "__main__":

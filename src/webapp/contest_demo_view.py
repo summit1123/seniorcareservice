@@ -13,7 +13,19 @@ import json
 from collections import Counter, defaultdict
 from html import escape
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
+from urllib.parse import parse_qs, urlencode, urlparse
+
+from src.product.ab_comparison import (
+    BASELINE_ANNUAL_MILEAGE_LIMIT_KM,
+    calculate_tier,
+    care_decision,
+)
+from src.product.scoring_engine import (
+    SeniorSafeMileageScoreInput,
+    calculate_local_score_result,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -66,7 +78,7 @@ REASON_LABELS = {
 }
 
 
-def render_contest_demo_page(bundle: dict[str, Any]) -> str:
+def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/") -> str:
     """Render the judge-facing contest demo page."""
 
     trip_stats = _load_trip_stats()
@@ -77,10 +89,12 @@ def render_contest_demo_page(bundle: dict[str, Any]) -> str:
     selected_policy = dict(bundle["selected_policy"])
     agent_audit = dict(bundle["agent_audit"])
     customers = list(bundle["customers"])
-    risk_customer = _select_demo_customer(customers, "recent_outer_risk_change")
+    selected_customer = _select_customer_from_query(customers, request_path)
+    risk_customer = selected_customer or _select_demo_customer(customers, "recent_outer_risk_change")
     stable_customer = _select_demo_customer(customers, "stable_local_low_mileage")
     persona_rows = _build_persona_rows(bundle, scenario)
     llm_status = _llm_status(summary_report, bundle)
+    simulation = _build_simulation_view_model(customers, risk_customer, selected_policy, request_path)
 
     title = "시니어 안심주행 보험 검증 대시보드"
     return f"""<!doctype html>
@@ -260,6 +274,62 @@ def render_contest_demo_page(bundle: dict[str, Any]) -> str:
     }}
     .model-factor span {{ display: block; color: var(--muted); font-size: 12px; margin-bottom: 6px; }}
     .model-factor strong {{ display: block; font-size: 22px; }}
+    .lab-grid {{
+      display: grid;
+      grid-template-columns: minmax(360px, 0.9fr) minmax(0, 1.1fr);
+      gap: 18px;
+      align-items: start;
+    }}
+    .lab-form {{
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }}
+    .field-grid {{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }}
+    label {{ display: grid; gap: 5px; color: var(--muted); font-size: 12px; font-weight: 700; }}
+    input, select {{
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+      padding: 8px 10px;
+      font: inherit;
+      font-size: 14px;
+    }}
+    .lab-actions {{ display: flex; flex-wrap: wrap; gap: 8px; }}
+    .lab-result-grid {{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }}
+    .lab-result {{
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--subtle);
+    }}
+    .lab-result span {{ display: block; color: var(--muted); font-size: 12px; }}
+    .lab-result strong {{ display: block; margin-top: 6px; font-size: 20px; }}
+    .criteria-grid {{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }}
+    .criteria-card {{
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+    }}
+    .preset-list {{ display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }}
     .two-col {{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 0.75fr); gap: 18px; }}
     .panel {{
       border: 1px solid var(--line);
@@ -329,14 +399,14 @@ def render_contest_demo_page(bundle: dict[str, Any]) -> str:
     details summary {{ cursor: pointer; color: var(--focus); font-weight: 700; }}
     details .code {{ display: inline-block; margin-top: 6px; }}
     @media (max-width: 960px) {{
-      .hero-grid, .map-grid, .two-col, .case-grid {{ grid-template-columns: 1fr; }}
-      .verdict-grid, .question-grid, .model-factor-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+      .hero-grid, .map-grid, .lab-grid, .two-col, .case-grid {{ grid-template-columns: 1fr; }}
+      .verdict-grid, .question-grid, .model-factor-grid, .criteria-grid, .lab-result-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
       .flow {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
     }}
     @media (max-width: 620px) {{
       .shell, .header-inner {{ padding-left: 18px; padding-right: 18px; }}
       h1 {{ font-size: 26px; }}
-      .metric-grid, .verdict-grid, .question-grid, .model-factor-grid, .flow {{ grid-template-columns: 1fr; }}
+      .metric-grid, .verdict-grid, .question-grid, .model-factor-grid, .field-grid, .criteria-grid, .lab-result-grid, .flow {{ grid-template-columns: 1fr; }}
       .bar-row {{ grid-template-columns: 1fr; }}
     }}
   </style>
@@ -349,6 +419,7 @@ def render_contest_demo_page(bundle: dict[str, Any]) -> str:
       <p class="lead">“적게 탔는가”만 보던 보험 판단을 “평소 생활권 안에서 안정적으로 달렸는가, 최근 생활권 밖 위험 신호가 늘었는가”까지 보는 방식으로 검증했습니다. 이 화면은 좌표 프리뷰, 숫자 해설, 비교 테스트, 설명문 생성 결과를 한 흐름으로 보여줍니다.</p>
       <nav class="top-nav" aria-label="데모 흐름">
         <a href="#living-zone-preview">생활권 지도</a>
+        <a href="#simulation-lab">조건 테스트</a>
         <a href="#test-questions">테스트 질문</a>
         <a href="#test-journey">실행 로그</a>
         <a href="#ab-proof">기존 방식 비교</a>
@@ -380,11 +451,32 @@ def render_contest_demo_page(bundle: dict[str, Any]) -> str:
       </div>
     </section>
 
+    <section id="simulation-lab" aria-labelledby="simulation-lab-heading">
+      <h2 id="simulation-lab-heading">직접 돌려보는 조건 테스트</h2>
+      <div class="lab-grid">
+        <div class="panel">
+          <h3>고객과 최근 주행 조건을 바꿔보기</h3>
+          <p>아래 조건은 저장된 데이터를 덮어쓰지 않는 화면용 가정 테스트입니다. 값을 바꾸고 적용하면 같은 고객을 기존 거리 방식과 제안 방식으로 다시 판정합니다.</p>
+          {_simulation_form(simulation)}
+          {_simulation_presets(simulation)}
+        </div>
+        <div class="panel">
+          <h3>가정 결과</h3>
+          {_simulation_result(simulation)}
+        </div>
+      </div>
+      <div class="criteria-grid" aria-label="판정 기준">
+        {_criteria_card("기존 거리 방식", f"1년 환산 주행거리 {BASELINE_ANNUAL_MILEAGE_LIMIT_KM:,.0f}km 초과 여부만 봅니다.", "생활권 밖으로 나갔는지, 야간/위험행동이 늘었는지는 반영하지 않습니다.")}
+        {_criteria_card("위험변화 점수", "생활권 밖 비중 증가 35점 + 야간 증가 25점 + 위험행동 증가 25점 + 위험신호 빈도 15점", "최근 변화가 클수록 100점에 가까워집니다.")}
+        {_criteria_card("제안 방식 판정", f"위험변화 점수 {float(selected_policy['thresholds']['care_threshold']):.1f}점 이상이고 통합 점수가 A등급 기준보다 낮으면 예방 케어입니다.", "위험변화가 낮고 통합 점수가 S/A면 우대, 나머지는 기본입니다.")}
+      </div>
+    </section>
+
     <section id="living-zone-preview" aria-labelledby="living-zone-heading">
       <h2 id="living-zone-heading">좌표로 보는 생활권 모델</h2>
       <div class="map-grid">
         <div class="map-card">
-          <h3>예방 케어로 바뀐 고객의 90일 주행 좌표</h3>
+          <h3>{escape(_display_customer_id(str(risk_customer['customer_id'])))}의 90일 주행 좌표</h3>
           {_living_zone_svg(risk_customer)}
           <div class="map-legend" aria-label="좌표 범례">
             <span class="legend-item"><span class="legend-dot before"></span>이전 60일</span>
@@ -529,7 +621,7 @@ def render_contest_demo_page(bundle: dict[str, Any]) -> str:
     <section id="customer-report" aria-labelledby="customer-report-heading">
       <h2 id="customer-report-heading">고객 1명으로 보면 어떻게 설명되나</h2>
       <div class="case-grid">
-        {_customer_case_card("예방 케어로 포착된 고객", risk_customer)}
+        {_customer_case_card("선택 고객", risk_customer)}
         {_customer_case_card("안정 저주행 우대 고객", stable_customer)}
       </div>
     </section>
@@ -674,6 +766,291 @@ def _question_card(number: str, question: str, answer: str, evidence_label: str,
           <p>{escape(answer)}</p>
           <div class="evidence" data-evidence-path="{escape(evidence_path)}">근거: {escape(evidence_label)}</div>
         </article>"""
+
+
+def _select_customer_from_query(customers: list[dict[str, Any]], request_path: str) -> dict[str, Any] | None:
+    query = parse_qs(urlparse(request_path).query)
+    selected_customer_id = query.get("customer_id", [None])[0]
+    if not selected_customer_id:
+        return None
+    for customer in customers:
+        if str(customer.get("customer_id")) == selected_customer_id:
+            return dict(customer)
+    return None
+
+
+def _build_simulation_view_model(
+    customers: list[dict[str, Any]],
+    customer: dict[str, Any],
+    selected_policy: dict[str, Any],
+    request_path: str,
+) -> dict[str, Any]:
+    query = parse_qs(urlparse(request_path).query)
+    metrics = dict(customer.get("ab_comparison", {}).get("metrics", {}))
+    feature_summary = dict(metrics.get("comparison_input", {}).get("feature_summary", {}))
+    scores = dict(customer.get("scores", {}))
+    weights = {key: float(value) for key, value in dict(selected_policy["weights"]).items()}
+    thresholds = dict(selected_policy["thresholds"])
+    tier_threshold = dict(thresholds["tier_threshold"])
+    care_threshold = float(thresholds["care_threshold"])
+
+    baseline_out_ratio = float(feature_summary.get("baseline_out_zone_ratio", 0.0))
+    baseline_night_ratio = float(feature_summary.get("baseline_night_ratio", 0.0))
+    baseline_risk_rate = float(feature_summary.get("baseline_risk_rate_per_100km", 0.0))
+    annualized_recent_km = _query_float(
+        query,
+        "annualized_recent_km",
+        float(feature_summary.get("annualized_recent_km", 0.0)),
+        0.0,
+        30000.0,
+    )
+    recent_out_zone_ratio_pct = _query_float(
+        query,
+        "recent_out_zone_ratio_pct",
+        float(feature_summary.get("recent_out_zone_ratio", 0.0)) * 100,
+        0.0,
+        100.0,
+    )
+    night_delta_pct = _query_float(
+        query,
+        "night_delta_pct",
+        float(feature_summary.get("night_ratio_delta", 0.0)) * 100,
+        -50.0,
+        100.0,
+    )
+    risk_rate_delta = _query_float(
+        query,
+        "risk_rate_delta_per_100km",
+        float(feature_summary.get("risk_rate_delta_per_100km", 0.0)),
+        -20.0,
+        30.0,
+    )
+    risk_signal_count = int(
+        round(
+            _query_float(
+                query,
+                "risk_signal_count",
+                float(feature_summary.get("recent_risk_signal_count", 0.0)),
+                0.0,
+                80.0,
+            )
+        )
+    )
+
+    recent_out_zone_ratio = recent_out_zone_ratio_pct / 100.0
+    recent_in_zone_ratio = _clamp_float(1.0 - recent_out_zone_ratio, 0.0, 1.0)
+    night_delta = night_delta_pct / 100.0
+    recent_night_ratio = _clamp_float(baseline_night_ratio + night_delta, 0.0, 1.0)
+    recent_risk_rate = max(0.0, baseline_risk_rate + risk_rate_delta)
+    recent_trip_count = int(feature_summary.get("recent_trip_count", max(1, risk_signal_count)))
+    recent_trip_count = max(1, recent_trip_count)
+    recent_total_km = annualized_recent_km / 365.0 * 30.0
+    recent_in_zone_km = recent_total_km * recent_in_zone_ratio
+    recent_out_zone_km = recent_total_km * recent_out_zone_ratio
+
+    score_input = SeniorSafeMileageScoreInput(
+        annualized_recent_km=annualized_recent_km,
+        recent_trip_count=recent_trip_count,
+        recent_in_zone_ratio=recent_in_zone_ratio,
+        recent_out_zone_ratio=recent_out_zone_ratio,
+        out_zone_ratio_delta=recent_out_zone_ratio - baseline_out_ratio,
+        baseline_night_ratio=baseline_night_ratio,
+        recent_night_ratio=recent_night_ratio,
+        night_ratio_delta=night_delta,
+        baseline_risk_rate_per_100km=baseline_risk_rate,
+        recent_risk_rate_per_100km=recent_risk_rate,
+        risk_rate_delta_per_100km=risk_rate_delta,
+        recent_risk_signal_count=risk_signal_count,
+        recent_in_zone_km=recent_in_zone_km,
+        recent_in_zone_night_ratio=float(feature_summary.get("recent_in_zone_night_ratio", recent_night_ratio)),
+        recent_in_zone_risk_rate_per_100km=float(
+            feature_summary.get("recent_in_zone_risk_rate_per_100km", recent_risk_rate)
+        ),
+        recent_out_zone_km=recent_out_zone_km,
+        recent_out_zone_night_ratio=recent_night_ratio if recent_out_zone_km else 0.0,
+        recent_out_zone_risk_rate_per_100km=recent_risk_rate if recent_out_zone_km else 0.0,
+    )
+    score_result = calculate_local_score_result(score_input, weights)
+    tier = calculate_tier(score_result.senior_safe_mileage_score, tier_threshold)
+    proposed_detected = (
+        score_result.risk_change_score >= care_threshold
+        and score_result.senior_safe_mileage_score < float(tier_threshold["A"])
+    )
+    proposed_decision = care_decision(proposed_detected, tier, score_result.risk_change_score)
+    baseline_detected = annualized_recent_km > BASELINE_ANNUAL_MILEAGE_LIMIT_KM
+    baseline_decision = "기존 거리 기준 할증 검토" if baseline_detected else "기존 저주행 할인"
+    original_decision = str(customer.get("care_decision", ""))
+
+    return {
+        "customer": dict(customer),
+        "customer_options": _simulation_customer_options(customers, str(customer["customer_id"])),
+        "inputs": {
+            "annualized_recent_km": round(annualized_recent_km, 0),
+            "recent_out_zone_ratio_pct": round(recent_out_zone_ratio_pct, 1),
+            "night_delta_pct": round(night_delta_pct, 1),
+            "risk_rate_delta_per_100km": round(risk_rate_delta, 1),
+            "risk_signal_count": risk_signal_count,
+        },
+        "original": {
+            "care_decision": original_decision,
+            "risk_change_score": float(scores.get("risk_change_score", 0.0)),
+            "senior_safe_mileage_score": float(scores.get("senior_safe_mileage_score", 0.0)),
+        },
+        "result": {
+            "baseline_decision": baseline_decision,
+            "baseline_detected": baseline_detected,
+            "proposed_decision": proposed_decision,
+            "proposed_detected": proposed_detected,
+            "tier": tier,
+            "mileage_baseline_score": score_result.mileage_baseline_score,
+            "senior_safe_mileage_score": score_result.senior_safe_mileage_score,
+            "risk_change_score": score_result.risk_change_score,
+            "in_zone_safe_score": score_result.in_zone_safe_score,
+            "out_zone_safe_score": score_result.out_zone_safe_score,
+            "care_threshold": care_threshold,
+            "a_threshold": float(tier_threshold["A"]),
+        },
+        "components": {
+            "out_zone_ratio_delta_pct": round((recent_out_zone_ratio - baseline_out_ratio) * 100, 1),
+            "night_delta_pct": round(night_delta_pct, 1),
+            "risk_rate_delta_per_100km": round(risk_rate_delta, 1),
+            "risk_signal_count": risk_signal_count,
+            "recent_trip_count": recent_trip_count,
+        },
+    }
+
+
+def _simulation_form(simulation: dict[str, Any]) -> str:
+    inputs = dict(simulation["inputs"])
+    return f"""<form class="lab-form" method="get" action="/#simulation-lab">
+            <label>고객 선택
+              <select name="customer_id">{simulation['customer_options']}</select>
+            </label>
+            <div class="field-grid">
+              <label>최근 주행거리(1년 환산 km)
+                <input name="annualized_recent_km" type="number" min="0" max="30000" step="100" value="{escape(_format_number_input(inputs['annualized_recent_km']))}">
+              </label>
+              <label>최근 생활권 밖 주행 비중(%)
+                <input name="recent_out_zone_ratio_pct" type="number" min="0" max="100" step="1" value="{escape(_format_number_input(inputs['recent_out_zone_ratio_pct']))}">
+              </label>
+              <label>야간주행 증가(%p)
+                <input name="night_delta_pct" type="number" min="-50" max="100" step="1" value="{escape(_format_number_input(inputs['night_delta_pct']))}">
+              </label>
+              <label>위험행동 증가(100km당)
+                <input name="risk_rate_delta_per_100km" type="number" min="-20" max="30" step="0.5" value="{escape(_format_number_input(inputs['risk_rate_delta_per_100km']))}">
+              </label>
+              <label>최근 위험 신호 건수
+                <input name="risk_signal_count" type="number" min="0" max="80" step="1" value="{escape(str(inputs['risk_signal_count']))}">
+              </label>
+            </div>
+            <div class="lab-actions">
+              <button class="button" type="submit">이 조건으로 다시 판정</button>
+              <a class="button" href="/?customer_id={escape(str(simulation['customer']['customer_id']))}#simulation-lab">원본 조건으로 보기</a>
+            </div>
+          </form>"""
+
+
+def _simulation_presets(simulation: dict[str, Any]) -> str:
+    customer_id = str(simulation["customer"]["customer_id"])
+    presets = [
+        ("안정 저주행", {"annualized_recent_km": 4200, "recent_out_zone_ratio_pct": 5, "night_delta_pct": 0, "risk_rate_delta_per_100km": 0, "risk_signal_count": 0}),
+        ("생활권 밖 안전운전", {"annualized_recent_km": 6500, "recent_out_zone_ratio_pct": 30, "night_delta_pct": 2, "risk_rate_delta_per_100km": 0.5, "risk_signal_count": 1}),
+        ("최근 위험변화", {"annualized_recent_km": 4040, "recent_out_zone_ratio_pct": 38, "night_delta_pct": 23, "risk_rate_delta_per_100km": 5.5, "risk_signal_count": 21}),
+        ("과다 주행", {"annualized_recent_km": 15000, "recent_out_zone_ratio_pct": 12, "night_delta_pct": 1, "risk_rate_delta_per_100km": 0.5, "risk_signal_count": 1}),
+    ]
+    links = []
+    for label, values in presets:
+        query = {"customer_id": customer_id, **values}
+        links.append(f'<a class="button" href="/?{escape(urlencode(query))}#simulation-lab">{escape(label)}</a>')
+    return f"""<div class="preset-list" aria-label="조건 프리셋">
+            {''.join(links)}
+          </div>"""
+
+
+def _simulation_result(simulation: dict[str, Any]) -> str:
+    result = dict(simulation["result"])
+    components = dict(simulation["components"])
+    original = dict(simulation["original"])
+    changed = result["proposed_decision"] != original["care_decision"]
+    change_text = (
+        f"원래 {original['care_decision']}에서 {result['proposed_decision']}로 바뀝니다."
+        if changed
+        else f"원래 판정과 같은 {result['proposed_decision']}입니다."
+    )
+    return f"""<p>{escape(_display_customer_id(str(simulation['customer']['customer_id'])))} 기준으로 조건을 다시 계산했습니다. {escape(change_text)}</p>
+          <div class="lab-result-grid">
+            {_lab_result_card("기존 방식", result['baseline_decision'], f"기준: {BASELINE_ANNUAL_MILEAGE_LIMIT_KM:,.0f}km 초과 여부")}
+            {_lab_result_card("제안 방식", result['proposed_decision'], f"등급 {result['tier']} · 통합 점수 {result['senior_safe_mileage_score']:.1f}")}
+            {_lab_result_card("위험변화 점수", f"{result['risk_change_score']:.1f}점", f"예방 케어 기준 {result['care_threshold']:.1f}점")}
+          </div>
+          <div class="table-wrap" style="margin-top:14px">
+            <table aria-label="조건 테스트 계산 근거">
+              <tbody>
+                <tr><th scope="row">생활권 밖 비중 증가</th><td>{components['out_zone_ratio_delta_pct']:+.1f}%p</td></tr>
+                <tr><th scope="row">야간주행 증가</th><td>{components['night_delta_pct']:+.1f}%p</td></tr>
+                <tr><th scope="row">위험행동 증가</th><td>100km당 {components['risk_rate_delta_per_100km']:+.1f}건</td></tr>
+                <tr><th scope="row">위험신호 건수</th><td>{components['risk_signal_count']}건 / 최근 주행 {components['recent_trip_count']}회</td></tr>
+                <tr><th scope="row">예방 케어 조건</th><td>위험변화 {result['risk_change_score']:.1f}점 >= {result['care_threshold']:.1f}점, 통합 점수 {result['senior_safe_mileage_score']:.1f}점 < A등급 {result['a_threshold']:.1f}점</td></tr>
+              </tbody>
+            </table>
+          </div>"""
+
+
+def _lab_result_card(label: str, value: str, caption: str) -> str:
+    return f"""<article class="lab-result">
+              <span>{escape(label)}</span>
+              <strong>{escape(value)}</strong>
+              <p>{escape(caption)}</p>
+            </article>"""
+
+
+def _criteria_card(title: str, body: str, caption: str) -> str:
+    return f"""<article class="criteria-card">
+          <h3>{escape(title)}</h3>
+          <p>{escape(body)}</p>
+          <p style="margin-top:8px">{escape(caption)}</p>
+        </article>"""
+
+
+def _simulation_customer_options(customers: list[dict[str, Any]], selected_customer_id: str) -> str:
+    options = []
+    for customer in customers:
+        customer_id = str(customer["customer_id"])
+        selected = " selected" if customer_id == selected_customer_id else ""
+        label = (
+            f"{_display_customer_id(customer_id)} · "
+            f"{PERSONA_FALLBACK_NAMES.get(str(customer['persona_type']), str(customer['persona_type']))} · "
+            f"{customer['care_decision']}"
+        )
+        options.append(f'<option value="{escape(customer_id)}"{selected}>{escape(label)}</option>')
+    return "".join(options)
+
+
+def _query_float(
+    query: dict[str, list[str]],
+    key: str,
+    default: float,
+    low: float,
+    high: float,
+) -> float:
+    raw = query.get(key, [None])[0]
+    if raw in {None, ""}:
+        value = default
+    else:
+        try:
+            value = float(raw)
+        except ValueError:
+            value = default
+    return _clamp_float(value, low, high)
+
+
+def _clamp_float(value: float, low: float, high: float) -> float:
+    return max(low, min(high, float(value)))
+
+
+def _format_number_input(value: object) -> str:
+    number = float(value)
+    return str(int(number)) if number.is_integer() else f"{number:.1f}"
 
 
 def _load_customer_trip_rows(customer_id: str) -> list[dict[str, str]]:

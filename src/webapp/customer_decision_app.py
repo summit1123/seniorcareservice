@@ -795,7 +795,7 @@ def render_webapp_page(path: str, bundle: dict[str, Any]) -> str:
         query = parse_qs(parsed.query)
         customer_id = query.get("customer_id", [None])[0]
         return render_customer_decision_page(bundle, selected_customer_id=customer_id)
-    return render_contest_demo_page(bundle)
+    return render_contest_demo_page(bundle, request_path=path)
 
 
 def serve(
