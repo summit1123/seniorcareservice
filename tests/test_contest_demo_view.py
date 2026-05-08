@@ -12,6 +12,11 @@ class TestContestDemoView(unittest.TestCase):
         html = render_contest_demo_page(bundle)
 
         self.assertIn("시니어 안심주행 보험 검증 대시보드", html)
+        self.assertIn("이 화면은 이 고객 하나만 이해하면 됩니다", html)
+        self.assertIn("적게 탔습니다", html)
+        self.assertIn("그래서 기존은 할인", html)
+        self.assertIn("하지만 최근 변화가 있습니다", html)
+        self.assertIn("그래서 새 방식은 케어", html)
         self.assertIn("한 문장으로 보면", html)
         self.assertIn("기존 마일리지 시스템과 무엇이 다른가", html)
         self.assertIn("기존 마일리지 보험", html)

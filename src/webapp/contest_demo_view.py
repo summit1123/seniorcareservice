@@ -433,17 +433,53 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
       font-weight: 700;
       font-size: 13px;
     }}
+    .story-section {{
+      border-top: 0;
+      margin-top: 0;
+      padding-top: 0;
+    }}
+    .story-card {{
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: #fff;
+      padding: 18px;
+    }}
+    .story-lead {{ max-width: 920px; color: var(--ink); font-size: 17px; }}
+    .story-steps {{
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }}
+    .story-step {{
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--subtle);
+      padding: 14px;
+      min-height: 142px;
+    }}
+    .story-step span {{ display: block; color: var(--focus); font-size: 12px; font-weight: 800; margin-bottom: 7px; }}
+    .story-step strong {{ display: block; font-size: 18px; margin-bottom: 6px; }}
+    .story-conclusion {{
+      margin-top: 14px;
+      border: 1px solid #b8d8d3;
+      border-radius: 8px;
+      background: #f2faf8;
+      padding: 14px;
+      color: var(--ink);
+      font-weight: 700;
+    }}
     details summary {{ cursor: pointer; color: var(--focus); font-weight: 700; }}
     details .code {{ display: inline-block; margin-top: 6px; }}
     @media (max-width: 960px) {{
       .hero-grid, .difference-grid, .map-grid, .lab-grid, .two-col, .case-grid {{ grid-template-columns: 1fr; }}
-      .verdict-grid, .question-grid, .model-factor-grid, .criteria-grid, .lab-result-grid, .example-strip {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+      .verdict-grid, .question-grid, .model-factor-grid, .criteria-grid, .lab-result-grid, .example-strip, .story-steps {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
       .flow {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
     }}
     @media (max-width: 620px) {{
       .shell, .header-inner {{ padding-left: 18px; padding-right: 18px; }}
       h1 {{ font-size: 26px; }}
-      .metric-grid, .verdict-grid, .question-grid, .model-factor-grid, .field-grid, .criteria-grid, .lab-result-grid, .example-strip, .flow {{ grid-template-columns: 1fr; }}
+      .metric-grid, .verdict-grid, .question-grid, .model-factor-grid, .field-grid, .criteria-grid, .lab-result-grid, .example-strip, .story-steps, .flow {{ grid-template-columns: 1fr; }}
       .bar-row {{ grid-template-columns: 1fr; }}
     }}
   </style>
@@ -455,6 +491,7 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
       <h1>{title}</h1>
       <p class="lead">기존 마일리지 보험은 “얼마나 적게 탔는가”로 할인 여부를 판단합니다. 이 데모는 거기에 “평소 생활권에서 벗어난 최근 위험변화가 있었는가”를 추가해, 같은 저주행 고객도 우대/기본/예방 케어로 다르게 설명하는 화면입니다.</p>
       <nav class="top-nav" aria-label="데모 흐름">
+        <a href="#plain-story">한 고객 예시</a>
         <a href="#system-difference">시스템 차이</a>
         <a href="#living-zone-preview">생활권 지도</a>
         <a href="#simulation-lab">조건 테스트</a>
@@ -467,6 +504,10 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
     </div>
   </header>
   <main class="shell">
+    <section class="story-section" id="plain-story" aria-labelledby="plain-story-heading">
+      {_plain_story_section(risk_customer)}
+    </section>
+
     <section class="hero-grid" id="summary" aria-labelledby="summary-heading">
       <div class="verdict-band">
         <h2 id="summary-heading">한 문장으로 보면</h2>
@@ -808,6 +849,41 @@ def _question_card(number: str, question: str, answer: str, evidence_label: str,
           <strong>{escape(question)}</strong>
           <p>{escape(answer)}</p>
           <div class="evidence" data-evidence-path="{escape(evidence_path)}">근거: {escape(evidence_label)}</div>
+        </article>"""
+
+
+def _plain_story_section(customer: dict[str, Any]) -> str:
+    metrics = dict(customer.get("ab_comparison", {}).get("metrics", {}))
+    core_metrics = dict(metrics.get("core_metrics", {}))
+    feature_summary = dict(metrics.get("comparison_input", {}).get("feature_summary", {}))
+    baseline = dict(core_metrics.get("baseline", {}))
+    proposed = dict(core_metrics.get("proposed", {}))
+    customer_label = _display_customer_id(str(customer["customer_id"]))
+    annualized_km = float(feature_summary.get("annualized_recent_km", 0.0))
+    baseline_out = _format_ratio_percent(feature_summary.get("baseline_out_zone_ratio", 0.0))
+    recent_out = _format_ratio_percent(feature_summary.get("recent_out_zone_ratio", 0.0))
+    night_delta = _format_ratio_delta(feature_summary.get("night_ratio_delta", 0.0))
+    risk_delta = float(feature_summary.get("risk_rate_delta_per_100km", 0.0))
+    baseline_decision = str(baseline.get("decision", "기존 저주행 할인"))
+    proposed_decision = str(proposed.get("decision", customer.get("care_decision", "예방 케어")))
+    return f"""<div class="story-card">
+        <h2 id="plain-story-heading">이 화면은 이 고객 하나만 이해하면 됩니다</h2>
+        <p class="story-lead">{escape(customer_label)}은 많이 운전하지 않는 시니어 고객입니다. 기존 마일리지 보험은 이 고객을 할인 대상으로 봅니다. 그런데 최근 30일 운전 위치와 위험신호를 보면 보험사가 먼저 확인해야 할 변화가 있습니다.</p>
+        <div class="story-steps" aria-label="한 고객 판정 흐름">
+          {_story_step("1", "적게 탔습니다", f"최근 주행거리를 1년 기준으로 환산하면 {annualized_km:,.0f}km입니다.")}
+          {_story_step("2", "그래서 기존은 할인", f"기존 마일리지 방식은 이 고객을 {baseline_decision}으로 봅니다.")}
+          {_story_step("3", "하지만 최근 변화가 있습니다", f"생활권 밖 주행이 {baseline_out}에서 {recent_out}로 늘고, 야간주행은 {night_delta}, 위험행동은 100km당 {risk_delta:+.1f}건 늘었습니다.")}
+          {_story_step("4", "그래서 새 방식은 케어", f"제안 방식은 이 고객을 {proposed_decision} 대상으로 분류합니다.")}
+        </div>
+        <p class="story-conclusion">즉, 이 데모의 핵심은 “적게 탄 고객을 무조건 할인하지 말자”가 아니라, 저주행 고객 안에서도 최근 위험변화가 생긴 고객을 설명 가능하게 구분하자는 것입니다.</p>
+      </div>"""
+
+
+def _story_step(number: str, title: str, body: str) -> str:
+    return f"""<article class="story-step">
+          <span>{escape(number)}</span>
+          <strong>{escape(title)}</strong>
+          <p>{escape(body)}</p>
         </article>"""
 
 
