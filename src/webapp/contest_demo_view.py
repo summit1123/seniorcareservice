@@ -93,6 +93,7 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
     risk_customer = selected_customer or _select_demo_customer(customers, "recent_outer_risk_change")
     stable_customer = _select_demo_customer(customers, "stable_local_low_mileage")
     persona_rows = _build_persona_rows(bundle, scenario)
+    selected_customer_id = str(risk_customer["customer_id"])
     llm_status = _llm_status(summary_report, bundle)
     simulation = _build_simulation_view_model(customers, risk_customer, selected_policy, request_path)
 
@@ -414,6 +415,53 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
     .bar-track {{ height: 12px; background: #ebeff2; border-radius: 999px; overflow: hidden; }}
     .bar-fill {{ height: 100%; background: var(--focus); }}
     .bar-fill.good {{ background: var(--good); }}
+    .population-section {{
+      border-top: 0;
+      margin-top: 0;
+      padding-top: 0;
+    }}
+    .population-grid {{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }}
+    .population-card {{
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #fff;
+    }}
+    .population-card header {{
+      border: 0;
+      margin: 0 0 12px;
+      padding: 0;
+      background: transparent;
+    }}
+    .population-card strong {{ display: block; font-size: 17px; margin-bottom: 4px; }}
+    .population-card .count {{ color: var(--focus); font-size: 12px; font-weight: 800; }}
+    .customer-chip-grid {{
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 6px;
+    }}
+    .customer-chip {{
+      display: grid;
+      gap: 2px;
+      min-height: 58px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 7px;
+      background: var(--subtle);
+      text-decoration: none;
+    }}
+    .customer-chip.selected {{
+      border-color: #4d8c78;
+      background: #eef8f4;
+      box-shadow: inset 0 0 0 1px #4d8c78;
+    }}
+    .customer-chip strong {{ font-size: 14px; margin: 0; }}
+    .customer-chip span {{ color: var(--muted); font-size: 11px; line-height: 1.25; }}
     .case-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }}
     .case-card {{ border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: #fff; }}
     .case-card strong {{ display: block; font-size: 18px; margin-bottom: 6px; }}
@@ -473,13 +521,14 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
     details .code {{ display: inline-block; margin-top: 6px; }}
     @media (max-width: 960px) {{
       .hero-grid, .difference-grid, .map-grid, .lab-grid, .two-col, .case-grid {{ grid-template-columns: 1fr; }}
-      .verdict-grid, .question-grid, .model-factor-grid, .criteria-grid, .lab-result-grid, .example-strip, .story-steps {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+      .verdict-grid, .question-grid, .model-factor-grid, .criteria-grid, .lab-result-grid, .example-strip, .story-steps, .population-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
       .flow {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
     }}
     @media (max-width: 620px) {{
       .shell, .header-inner {{ padding-left: 18px; padding-right: 18px; }}
       h1 {{ font-size: 26px; }}
-      .metric-grid, .verdict-grid, .question-grid, .model-factor-grid, .field-grid, .criteria-grid, .lab-result-grid, .example-strip, .story-steps, .flow {{ grid-template-columns: 1fr; }}
+      .metric-grid, .verdict-grid, .question-grid, .model-factor-grid, .field-grid, .criteria-grid, .lab-result-grid, .example-strip, .story-steps, .population-grid, .flow {{ grid-template-columns: 1fr; }}
+      .customer-chip-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
       .bar-row {{ grid-template-columns: 1fr; }}
     }}
   </style>
@@ -491,10 +540,11 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
       <h1>{title}</h1>
       <p class="lead">기존 마일리지 보험은 “얼마나 적게 탔는가”로 할인 여부를 판단합니다. 이 데모는 거기에 “평소 생활권에서 벗어난 최근 위험변화가 있었는가”를 추가해, 같은 저주행 고객도 우대/기본/예방 케어로 다르게 설명하는 화면입니다.</p>
       <nav class="top-nav" aria-label="데모 흐름">
-        <a href="#plain-story">한 고객 예시</a>
+        <a href="#customer-universe">30명 전체</a>
+        <a href="#plain-story">선택 고객 예시</a>
         <a href="#system-difference">시스템 차이</a>
         <a href="#living-zone-preview">생활권 지도</a>
-        <a href="#simulation-lab">조건 테스트</a>
+        <a href="#simulation-lab">판정 계산기</a>
         <a href="#test-questions">테스트 질문</a>
         <a href="#test-journey">실행 로그</a>
         <a href="#ab-proof">기존 방식 비교</a>
@@ -504,6 +554,8 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
     </div>
   </header>
   <main class="shell">
+    {_customer_universe_section(customers, persona_rows, selected_customer_id)}
+
     <section class="story-section" id="plain-story" aria-labelledby="plain-story-heading">
       {_plain_story_section(risk_customer)}
     </section>
@@ -536,16 +588,16 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
     </section>
 
     <section id="simulation-lab" aria-labelledby="simulation-lab-heading">
-      <h2 id="simulation-lab-heading">직접 돌려보는 조건 테스트</h2>
+      <h2 id="simulation-lab-heading">이미 만든 데이터로 해보는 판정 계산기</h2>
       <div class="lab-grid">
         <div class="panel">
-          <h3>고객과 최근 주행 조건을 바꿔보기</h3>
-          <p>보험 직원이나 심사위원이 “이 고객의 최근 운전 상황이 달라지면 판정도 바뀌나?”를 확인하는 영역입니다. 값을 바꾸면 기존 마일리지 방식과 제안 방식을 같은 조건으로 다시 계산합니다.</p>
+          <h3>고객과 최근 조건을 바꾼 가정 계산</h3>
+          <p>여기는 새 90일 주행 로그를 다시 만들거나 Agent/OpenAI를 재호출하는 영역이 아닙니다. 이미 생성된 고객별 기준값에 입력한 최근 조건을 덮어써서, 기존 마일리지 방식과 제안 점수 산식의 판정만 다시 계산합니다.</p>
           {_simulation_form(simulation)}
           {_simulation_presets(simulation)}
         </div>
         <div class="panel">
-          <h3>가정 결과</h3>
+          <h3>가정 계산 결과</h3>
           {_simulation_result(simulation)}
         </div>
       </div>
@@ -703,7 +755,7 @@ def render_contest_demo_page(bundle: dict[str, Any], *, request_path: str = "/")
     </section>
 
     <section id="customer-report" aria-labelledby="customer-report-heading">
-      <h2 id="customer-report-heading">고객 1명으로 보면 어떻게 설명되나</h2>
+      <h2 id="customer-report-heading">선택 고객을 어떻게 설명하나</h2>
       <div class="case-grid">
         {_customer_case_card("선택 고객", risk_customer)}
         {_customer_case_card("안정 저주행 우대 고객", stable_customer)}
@@ -826,6 +878,59 @@ def _llm_status(summary_report: dict[str, Any], bundle: dict[str, Any]) -> dict[
     }
 
 
+def _customer_universe_section(
+    customers: list[dict[str, Any]],
+    persona_rows: list[dict[str, Any]],
+    selected_customer_id: str,
+) -> str:
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for customer in sorted(customers, key=lambda row: str(row["customer_id"])):
+        grouped[str(customer["persona_type"])].append(customer)
+    persona_lookup = {str(row["persona_type"]): row for row in persona_rows}
+    decision_counts = Counter(str(customer["care_decision"]) for customer in customers)
+    decision_text = " · ".join(f"{decision} {count}명" for decision, count in sorted(decision_counts.items()))
+    cards = []
+    for persona in PERSONA_ORDER:
+        members = grouped.get(persona, [])
+        if not members:
+            continue
+        row = persona_lookup.get(persona, {})
+        display_name = str(row.get("display_name") or PERSONA_FALLBACK_NAMES.get(persona, persona))
+        purpose = str(row.get("purpose") or "테스트 케이스")
+        chips = "".join(_customer_chip(customer, selected_customer_id) for customer in members)
+        cards.append(
+            f"""<article class="population-card" data-persona-type="{escape(persona)}">
+          <header>
+            <span class="count">{len(members)}명 케이스</span>
+            <strong>{escape(display_name)}</strong>
+            <p>{escape(purpose)}</p>
+          </header>
+          <div class="customer-chip-grid" aria-label="{escape(display_name)} 고객 목록">
+            {chips}
+          </div>
+        </article>"""
+        )
+    return f"""<section class="population-section" id="customer-universe" aria-labelledby="customer-universe-heading" data-customer-population-count="{len(customers)}" data-selected-customer-id="{escape(selected_customer_id)}">
+      <h2 id="customer-universe-heading">먼저 30명 전체를 봅니다</h2>
+      <p class="note"><span class="code">cust_001</span>부터 <span class="code">cust_030</span>까지는 실제 가입자 번호가 아니라, 90일 주행 로그를 가진 합성 시뮬레이션 내부 ID입니다. 각 ID는 좌표, 주행거리, 생활권 안/밖, 야간주행, 위험행동, 최종 판정을 가진 하나의 테스트 운전자입니다.</p>
+      <p style="margin-top:10px">현재 판정 분포: {escape(decision_text)}. 아래 고객을 누르면 같은 화면에서 좌표 프리뷰와 가정 계산 대상이 바뀝니다.</p>
+      <div class="population-grid" aria-label="30명 합성 고객 목록">
+        {''.join(cards)}
+      </div>
+    </section>"""
+
+
+def _customer_chip(customer: dict[str, Any], selected_customer_id: str) -> str:
+    customer_id = str(customer["customer_id"])
+    selected_class = " selected" if customer_id == selected_customer_id else ""
+    suffix = _customer_suffix(customer_id)
+    decision = str(customer["care_decision"])
+    return f"""<a class="customer-chip{selected_class}" href="/?customer_id={escape(customer_id)}#plain-story" data-customer-id="{escape(customer_id)}" data-customer-selected="{str(customer_id == selected_customer_id).lower()}">
+              <strong>{escape(suffix)}</strong>
+              <span>{escape(decision)}</span>
+            </a>"""
+
+
 def _metric_card(label: str, value: str, caption: str, tone: str = "") -> str:
     tone_class = f" {tone}" if tone else ""
     return f"""<article class="metric{tone_class}">
@@ -866,16 +971,17 @@ def _plain_story_section(customer: dict[str, Any]) -> str:
     risk_delta = float(feature_summary.get("risk_rate_delta_per_100km", 0.0))
     baseline_decision = str(baseline.get("decision", "기존 저주행 할인"))
     proposed_decision = str(proposed.get("decision", customer.get("care_decision", "예방 케어")))
+    persona_name = PERSONA_FALLBACK_NAMES.get(str(customer["persona_type"]), str(customer["persona_type"]))
     return f"""<div class="story-card">
-        <h2 id="plain-story-heading">이 화면은 이 고객 하나만 이해하면 됩니다</h2>
-        <p class="story-lead">{escape(customer_label)}은 많이 운전하지 않는 시니어 고객입니다. 기존 마일리지 보험은 이 고객을 할인 대상으로 봅니다. 그런데 최근 30일 운전 위치와 위험신호를 보면 보험사가 먼저 확인해야 할 변화가 있습니다.</p>
+        <h2 id="plain-story-heading">선택 고객으로 보는 판정 흐름</h2>
+        <p class="story-lead">{escape(customer_label)}은 30명 합성 데이터 중 “{escape(persona_name)}” 케이스입니다. <span class="code">{escape(str(customer['customer_id']))}</span>는 실제 고객번호가 아니라 화면과 파일을 연결하기 위한 테스트 ID입니다.</p>
         <div class="story-steps" aria-label="한 고객 판정 흐름">
           {_story_step("1", "적게 탔습니다", f"최근 주행거리를 1년 기준으로 환산하면 {annualized_km:,.0f}km입니다.")}
           {_story_step("2", "그래서 기존은 할인", f"기존 마일리지 방식은 이 고객을 {baseline_decision}으로 봅니다.")}
           {_story_step("3", "하지만 최근 변화가 있습니다", f"생활권 밖 주행이 {baseline_out}에서 {recent_out}로 늘고, 야간주행은 {night_delta}, 위험행동은 100km당 {risk_delta:+.1f}건 늘었습니다.")}
-          {_story_step("4", "그래서 새 방식은 케어", f"제안 방식은 이 고객을 {proposed_decision} 대상으로 분류합니다.")}
+          {_story_step("4", "제안 방식 판정", f"제안 방식은 이 고객을 {proposed_decision} 대상으로 분류합니다.")}
         </div>
-        <p class="story-conclusion">즉, 이 데모의 핵심은 “적게 탄 고객을 무조건 할인하지 말자”가 아니라, 저주행 고객 안에서도 최근 위험변화가 생긴 고객을 설명 가능하게 구분하자는 것입니다.</p>
+        <p class="story-conclusion">즉, 이 데모의 핵심은 고객 하나를 맞췄다는 주장이 아니라, 같은 30명에게 기존 거리 방식과 생활권 기반 방식을 모두 적용해 판정 차이를 직접 확인하는 것입니다.</p>
       </div>"""
 
 
@@ -1110,7 +1216,7 @@ def _simulation_form(simulation: dict[str, Any]) -> str:
               </label>
             </div>
             <div class="lab-actions">
-              <button class="button" type="submit">이 조건으로 다시 판정</button>
+              <button class="button" type="submit">가정값으로 판정 계산</button>
               <a class="button" href="/?customer_id={escape(str(simulation['customer']['customer_id']))}#simulation-lab">원본 조건으로 보기</a>
             </div>
           </form>"""
@@ -1143,15 +1249,16 @@ def _simulation_result(simulation: dict[str, Any]) -> str:
         if changed
         else f"원래 판정과 같은 {result['proposed_decision']}입니다."
     )
-    return f"""<p>{escape(_display_customer_id(str(simulation['customer']['customer_id'])))} 기준으로 조건을 다시 계산했습니다. {escape(change_text)}</p>
+    return f"""<p>{escape(_display_customer_id(str(simulation['customer']['customer_id'])))} 기준으로 가정값을 계산했습니다. 주행 로그를 새로 생성한 것이 아니라 입력값만 바꿔 점수 산식에 다시 넣은 결과입니다. {escape(change_text)}</p>
           <div class="lab-result-grid">
             {_lab_result_card("기존 방식", result['baseline_decision'], f"기준: {BASELINE_ANNUAL_MILEAGE_LIMIT_KM:,.0f}km 초과 여부")}
             {_lab_result_card("제안 방식", result['proposed_decision'], f"등급 {result['tier']} · 통합 점수 {result['senior_safe_mileage_score']:.1f}")}
             {_lab_result_card("위험변화 점수", f"{result['risk_change_score']:.1f}점", f"예방 케어 기준 {result['care_threshold']:.1f}점")}
           </div>
           <div class="table-wrap" style="margin-top:14px">
-            <table aria-label="조건 테스트 계산 근거">
+            <table aria-label="가정값 판정 계산 근거">
               <tbody>
+                <tr><th scope="row">계산 방식</th><td>기존 feature 기준값 + 화면 입력 가정값으로 산식 재계산. trip log 재생성, Agent 재실행, OpenAI 재호출 없음.</td></tr>
                 <tr><th scope="row">생활권 밖 비중 증가</th><td>{components['out_zone_ratio_delta_pct']:+.1f}%p</td></tr>
                 <tr><th scope="row">야간주행 증가</th><td>{components['night_delta_pct']:+.1f}%p</td></tr>
                 <tr><th scope="row">위험행동 증가</th><td>100km당 {components['risk_rate_delta_per_100km']:+.1f}건</td></tr>
@@ -1591,9 +1698,14 @@ def _format_percent(value: object) -> str:
     return f"{float(value) * 100:.0f}%"
 
 
-def _display_customer_id(customer_id: str) -> str:
+def _customer_suffix(customer_id: str) -> str:
     suffix = customer_id.split("_")[-1]
-    return f"고객 {suffix}" if suffix.isdigit() else "고객"
+    return suffix if suffix.isdigit() else customer_id
+
+
+def _display_customer_id(customer_id: str) -> str:
+    suffix = _customer_suffix(customer_id)
+    return f"합성고객 {suffix}" if suffix.isdigit() else "합성고객"
 
 
 def _reason_label(reason_code: str) -> str:
