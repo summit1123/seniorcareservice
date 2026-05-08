@@ -808,6 +808,12 @@ def serve(
 
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self) -> None:  # noqa: N802 - stdlib hook
+            self._handle_request(include_body=True)
+
+        def do_HEAD(self) -> None:  # noqa: N802 - stdlib hook
+            self._handle_request(include_body=False)
+
+        def _handle_request(self, *, include_body: bool) -> None:
             parsed = urlparse(self.path)
             if parsed.path.startswith("/api/validation"):
                 status, payload = build_validation_api_response(self.path)
@@ -816,7 +822,8 @@ def serve(
                 self.send_header("Content-Type", "application/json; charset=utf-8")
                 self.send_header("Content-Length", str(len(body)))
                 self.end_headers()
-                self.wfile.write(body)
+                if include_body:
+                    self.wfile.write(body)
                 return
 
             html = render_webapp_page(self.path, dashboard_bundle)
@@ -825,7 +832,8 @@ def serve(
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
             self.end_headers()
-            self.wfile.write(body)
+            if include_body:
+                self.wfile.write(body)
 
         def log_message(self, format: str, *args: object) -> None:
             return

@@ -25,6 +25,7 @@ reports/*.png
 reports/*.html
 
 *.log
+.logs/
 tmp/
 
 # Codex Ralph loop

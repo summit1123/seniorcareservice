@@ -81,6 +81,15 @@ python3 scripts/generate_visual_assets.py
 python3 -m src.run_pipeline
 ```
 
+공개 데모 실행:
+
+```bash
+python3 -m src.webapp.customer_decision_app --host 127.0.0.1 --port 8003
+scripts/run_public_demo.sh
+```
+
+Cloudflare Tunnel로 팀원/심사위원에게 공유할 때는 [docs/public-demo-deployment.md](docs/public-demo-deployment.md)를 기준으로 `forsure.summit1123.co.kr` 라우팅, 로컬 서버, 터널 커넥터를 함께 확인합니다.
+
 분석 결과 시각화 생성:
 
 ```bash
