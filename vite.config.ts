@@ -68,11 +68,11 @@ function num(value: unknown, fallback = 0): number {
 }
 
 function krw(value: unknown): string {
-  return `KRW ${Math.round(num(value)).toLocaleString("en-US")}`;
+  return `${Math.round(num(value)).toLocaleString("ko-KR")}원`;
 }
 
 function pct(value: unknown): string {
-  return `${num(value).toLocaleString("en-US", { maximumFractionDigits: 1 })}%`;
+  return `${num(value).toLocaleString("ko-KR", { maximumFractionDigits: 1 })}%`;
 }
 
 function normalizedPremium(value: unknown, fallback: number) {
@@ -102,56 +102,56 @@ function projectedPremium(comparison: JsonObject, basePremiumInput?: number) {
 
 function reasonLabel(code: string): string {
   const labels: Record<string, string> = {
-    CANDIDATE_LIVING_ZONE: "Candidate Safe Zone Observed",
-    HARSH_BRAKE_INCREASE: "Harsh Braking Increase",
-    LOW_MILEAGE: "Low-Mileage Condition",
-    LOW_NIGHT_DRIVING: "Low Night Driving",
-    LOW_RISK_EVENTS: "Low Risk Events",
-    NIGHT_DRIVING_INCREASE: "Night Driving Increase",
-    NO_RECENT_OUT_ZONE_SPIKE: "No Recent Out-Zone Spike",
-    NO_STRONG_RISK_CHANGE: "No Strong Risk Change",
-    OUT_ZONE_PATTERN_CHANGE_RISK: "Out-Zone Risk Change",
-    OUT_ZONE_RATIO_INCREASE: "Out-Zone Share Increase",
-    OUT_ZONE_SAFE: "Stable Out-Zone",
-    OUT_ZONE_SAFE_DRIVING: "Safe Out-Zone Driving",
-    PREVENTIVE_CARE_REVIEW: "Preventive Care Review",
-    RISK_EVENT_INCREASE: "Risk Event Increase",
-    STABLE_IN_ZONE_DRIVING: "Stable In-Zone Driving"
+    CANDIDATE_LIVING_ZONE: "후보 생활권 관찰",
+    HARSH_BRAKE_INCREASE: "급감속 증가",
+    LOW_MILEAGE: "저주행 조건",
+    LOW_NIGHT_DRIVING: "야간 주행 낮음",
+    LOW_RISK_EVENTS: "위험행동 낮음",
+    NIGHT_DRIVING_INCREASE: "야간 주행 증가",
+    NO_RECENT_OUT_ZONE_SPIKE: "최근 생활권 밖 급증 없음",
+    NO_STRONG_RISK_CHANGE: "강한 위험변화 없음",
+    OUT_ZONE_PATTERN_CHANGE_RISK: "생활권 밖 위험변화",
+    OUT_ZONE_RATIO_INCREASE: "생활권 밖 비중 증가",
+    OUT_ZONE_SAFE: "생활권 밖 안정",
+    OUT_ZONE_SAFE_DRIVING: "생활권 밖 안전주행",
+    PREVENTIVE_CARE_REVIEW: "예방 케어 검토",
+    RISK_EVENT_INCREASE: "위험행동 증가",
+    STABLE_IN_ZONE_DRIVING: "생활권 안 안정주행"
   };
   return labels[code] ?? code;
 }
 
 const personaNames = [
-  "Alex Kim",
-  "Soon Park",
-  "Jung Lee",
-  "Mia Choi",
-  "Kevin Jung",
-  "Bok Yoon",
-  "Sang Han",
-  "Mija Oh",
-  "Moon Kang",
-  "Rye Seo",
-  "Han Jo",
-  "Young Moon",
-  "Sang Bae",
-  "Ok Shin",
-  "Man Yoo",
-  "Kyung Lim",
-  "Sung Noh",
-  "Geum Hong",
-  "Tae Kwon",
-  "Soon Jang",
-  "Jae Ko",
-  "Young Baek",
-  "Ki Nam",
-  "Hwa Song",
-  "Chun Yang",
-  "Mikyung Cha",
-  "Byung Joo",
-  "Jung Min",
-  "Seok Ha",
-  "Young Do"
+  "김영호",
+  "박순자",
+  "이정식",
+  "최명희",
+  "정기철",
+  "윤복순",
+  "한상일",
+  "오미자",
+  "강문수",
+  "서정례",
+  "조한기",
+  "문영희",
+  "배상국",
+  "신옥자",
+  "유만호",
+  "임경자",
+  "노성식",
+  "홍금자",
+  "권태식",
+  "장순덕",
+  "고재훈",
+  "백영도",
+  "남기철",
+  "송화자",
+  "양춘호",
+  "차미경",
+  "주병일",
+  "민정례",
+  "하석준",
+  "도영자"
 ];
 
 const CARE_REVIEW_RISK_THRESHOLD = 70;
@@ -162,18 +162,18 @@ function personaIndex(customerId: unknown) {
 }
 
 function personaName(customerId: unknown) {
-  return personaNames[personaIndex(customerId)] ?? "Senior Driver";
+  return `${personaNames[personaIndex(customerId)] ?? "시니어 운전자"} 어르신`;
 }
 
 function basisLabel(value: unknown) {
-  if (value === "pre_policy_60_day_dbscan") return "Pre-policy 60-day baseline";
-  if (value === "rolling_60_day_dbscan") return "Rolling previous 60 days";
+  if (value === "pre_policy_60_day_dbscan") return "가입 전 60일 기준";
+  if (value === "rolling_60_day_dbscan") return "직전 60일 갱신";
   return text(value);
 }
 
 function distanceScopeLabel(value: unknown) {
-  if (value === "evaluation_period_only") return "Evaluation period only";
-  return text(value, "12-month evaluation");
+  if (value === "evaluation_period_only") return "평가기간만 반영";
+  return text(value, "12개월 평가");
 }
 
 function findDriver(viewModel: JsonObject, driverId: string): JsonObject | undefined {
@@ -187,108 +187,74 @@ function findZoneSnapshot(zones: JsonObject, customerId: unknown, month: number)
 
 function interpretationLabel(value: unknown): string {
   const labels: Record<string, string> = {
-    candidate_living_zone: "Candidate Safe Zone",
-    existing_living_zone: "Baseline Safe Zone",
-    out_zone_pattern_change_risk: "Out-Zone Risk Change",
-    out_zone_safe_driving: "Stable Out-Zone"
+    candidate_living_zone: "반복 외부 후보",
+    existing_living_zone: "기준 생활권 안",
+    out_zone_pattern_change_risk: "생활권 밖 위험변화",
+    out_zone_safe_driving: "생활권 밖 안정"
   };
-  return labels[text(value)] ?? text(value, "Unclassified");
+  return labels[text(value)] ?? text(value, "미분류");
 }
 
 function destinationLabel(value: unknown): string {
   const labels: Record<string, string> = {
-    clinic: "Hospital",
-    family: "Family House",
-    family_home: "Family House",
-    home: "Home",
-    leisure: "Nearby Outing",
-    market: "Mart",
-    pharmacy: "Pharmacy",
-    unknown_outer: "New External Destination"
+    clinic: "병원",
+    family: "자녀 집",
+    family_home: "자녀 집",
+    home: "자택",
+    leisure: "근교 외출지",
+    market: "마트",
+    pharmacy: "약국",
+    unknown_outer: "신규 외부 목적지"
   };
-  return labels[text(value)] ?? text(value, "Unknown Destination");
+  return labels[text(value)] ?? text(value, "알 수 없는 목적지");
 }
 
 function personaTypeLabel(value: unknown): string {
   const labels: Record<string, string> = {
-    stable_local_low_mileage: "Stable Local Low-Mileage",
-    stable_outer_safe: "Stable Out-Zone Driver",
-    recent_outer_risk_change: "Recent Out-Zone Risk Change",
-    in_zone_risky_low_mileage: "In-Zone Risk Behavior",
-    medical_visit_pattern: "Repeated Medical-Visit Pattern",
-    irregular_family_support: "Irregular Family-Care Travel"
+    stable_local_low_mileage: "생활권 안 저주행 안정형",
+    stable_outer_safe: "생활권 밖 안정 주행형",
+    recent_outer_risk_change: "최근 생활권 밖 위험변화형",
+    in_zone_risky_low_mileage: "생활권 안 저주행 위험행동형",
+    medical_visit_pattern: "병원 방문 반복 외부 목적지형",
+    irregular_family_support: "가족 돌봄 불규칙 외부 이동형"
   };
-  return labels[text(value)] ?? text(value, "Senior Driver");
+  return labels[text(value)] ?? text(value, "시니어 운전자");
 }
 
 function decisionLabel(value: unknown): string {
   const labels: Record<string, string> = {
-    우대: "Favorable",
-    기본: "Standard",
-    "예방 케어": "Preventive Care",
-    Favorable: "Favorable",
-    Preferred: "Favorable",
-    Standard: "Standard",
-    "Preventive Care": "Preventive Care"
+    우대: "우대",
+    기본: "기본",
+    "예방 케어": "예방 케어",
+    Favorable: "우대",
+    Preferred: "우대",
+    Standard: "기본",
+    "Preventive Care": "예방 케어"
   };
-  return labels[text(value)] ?? text(value, "Standard");
+  return labels[text(value)] ?? text(value, "기본");
 }
 
 function translateKnownText(value: unknown): string {
   const labels: Record<string, string> = {
-    "3천km 이하": "Under 3,000 km",
-    "4천km 이하": "Under 4,000 km",
-    "5천km 이하": "Under 5,000 km",
-    "6천km 이하": "Under 6,000 km",
-    "7천km 이하": "Under 7,000 km",
-    "8천km 이하": "Under 8,000 km",
-    "9천km 이하": "Under 9,000 km",
-    "주 2회 내외": "About 2 trips/week",
-    "주 3~4회": "3-4 trips/week",
-    "생활권 안 중심": "Mostly In-Zone",
-    "위험행동 낮음": "Low risk events",
-    "반복 외부 목적지 안정": "Repeated external destinations with stable behavior",
-    "하반기 외부 목적지 증가": "Increase in external destinations in the second half",
-    "하반기 야간/급제동 증가": "Increase in night driving and harsh braking in the second half",
-    "생활권 안 과속/급감속 반복": "Repeated In-Zone speeding and harsh braking",
-    "반복 병원 목적 외부 이동": "Repeated external hospital trips",
-    "주간 병원 이동 중심, 위험행동 낮음": "Mostly daytime hospital trips with low risk events",
-    "가족 돌봄 외부 이동 변동": "Variable external travel for family care",
-    "외부 이동은 변동하나 위험행동 제한적": "External travel varies, but risk events remain limited",
-    "생활권 안 반복 주행과 낮은 위험행동을 근거로 안정 저주행 고객으로 설명": "Explains the driver as a stable low-mileage customer based on repeated In-Zone driving and low risk events",
-    "기존 거리 중심 산식과 제안 통합 산식 모두 우량으로 분류되어야 하는 기준 우량군": "Reference preferred group that should be classified as stable by both the existing mileage formula and the proposed integrated formula",
-    "예방 케어로 잘못 분류되면 안정 고객 비용 효율 평가가 왜곡됨": "If misclassified into Preventive Care, the cost-efficiency assessment for stable customers is distorted",
-    "생활권 밖 주행 자체를 과도하게 불리하게 보지 않는지 확인하는 공정성/오분류 방지군": "Fairness and misclassification-control group for checking that Out-Zone driving itself is not over-penalized",
-    "외부 주행은 있으나 반복 목적지와 안정 운전으로 예방 케어 대상은 아님": "Has external driving, but repeated destinations and stable driving mean it should not automatically become a Preventive Care case",
-    "생활권 밖 비율만으로 위험군 처리하면 모델 공정성이 약해짐": "Treating the driver as risky based only on Out-Zone share weakens model fairness",
-    "저주행임에도 최근 생활권 밖 야간/위험행동이 함께 늘어난 예방 케어 신호": "Preventive Care signal: despite low mileage, recent Out-Zone night driving and risk events increased together",
-    "기존 마일리지 산식이 놓칠 수 있는 저주행 위험변화 핵심 포착 대상군": "Core target group for detecting low-mileage risk changes that the existing mileage formula can miss",
-    "핵심 타깃을 놓치면 A/B 우수성 승인 게이트를 통과하기 어려움": "Missing this target group makes it difficult to pass the A/B validation gate",
-    "생활권 안 주행이라도 과속/급감속이 있으면 감점되는지 확인하는 엣지케이스": "Edge case for checking whether speeding and harsh braking are penalized even inside the safe zone",
-    "생활권 내 주행이 많지만 위험행동이 있어 우대 판단은 보수적으로 설명": "Mostly In-Zone driving, but risk events require a conservative preferred decision",
-    "생활권 안이라는 이유로 무조건 안정형 처리하면 모델 해석 원칙을 위반함": "Classifying as stable solely because it is In-Zone violates the model's interpretation principle",
-    "반복 의료 목적 외부 이동을 신규 위험변화로 오판하지 않는지 확인하는 케어 맥락군": "Care-context group for checking that repeated medical trips are not mistaken for new risk changes",
-    "정기 병원 방문처럼 반복 목적지가 있는 외부 이동은 변화 위험과 구분": "Repeated external trips, such as regular hospital visits, are separated from risk-change signals",
-    "의료 목적 반복 이동을 위험변화로 오판하면 직원 설명 품질이 낮아짐": "If repeated medical trips are mistaken for risk changes, explanation quality for employees drops",
-    "불규칙 외부 이동이 있어도 위험행동과 야간 증가가 동반되는지 분리 평가하는 엣지케이스": "Edge case for separately evaluating whether irregular external travel is accompanied by risk-event and night-driving increases",
-    "불규칙 가족 지원 이동은 있으나 위험행동 증가가 제한적이면 예방 케어로 단정하지 않음": "Irregular family-support travel exists, but it should not be treated as Preventive Care when risk-event increases are limited",
-    "외부 이동 증가만으로 케어 대상 처리하면 오탐 제한 조건에 불리함": "Treating external-travel increases alone as care cases hurts the false-positive control condition",
-    "평소 생활권 중심": "Centered on the usual safe zone",
-    "생활권 안 반복 주행": "Repeated In-Zone driving",
-    "생활권 밖 반복 목적지 안정": "Stable repeated Out-Zone destinations",
-    "최근 외부·야간 위험변화": "Recent external and night-driving risk change",
-    "생활권 안 위험행동 관찰": "In-zone risk behavior observed",
-    "정기 병원 목적지 반복": "Repeated regular hospital destinations",
-    "가족·생활 목적지 혼합": "Mixed family-care and daily-life destinations",
-    "상반기에는 외부 목적지와 야간 신호가 제한적임": "External destinations and night-driving signals were limited in the first half",
-    "9월 이후 신규 외부 목적지와 야간/급제동 신호가 함께 증가함": "After September, new external destinations and night / harsh-braking signals increased together",
-    "생활권 안 이동이 많지만 과속·급감속 이벤트가 반복됨": "Mostly In-Zone travel, but speeding and harsh-braking events repeat",
-    "외부 이동이 있으나 반복 목적지와 주간 주행 중심임": "External travel exists, but it centers on repeated destinations and daytime trips",
-    "외부 이동의 상당 부분이 반복 병원 목적지로 해석됨": "Much of the external travel is interpreted as repeated hospital destinations",
-    "가족 돌봄 외부 이동 증가": "Increase in external travel for family care",
-    "자녀집 방문이 늘지만 위험행동 증가는 제한적임": "Family-house visits increased, but risk-event increases remain limited",
-    "생활 목적지와 가족 지원 이동이 혼재함": "Daily-life destinations and family-support travel are mixed",
-    "자택·마트·병원 중심의 반복 이동이 유지됨": "Repeated travel centered on home, mart, and hospital is maintained"
+    "Under 3,000 km": "3천km 이하",
+    "Under 4,000 km": "4천km 이하",
+    "Under 5,000 km": "5천km 이하",
+    "Under 6,000 km": "6천km 이하",
+    "Under 7,000 km": "7천km 이하",
+    "Under 8,000 km": "8천km 이하",
+    "Under 9,000 km": "9천km 이하",
+    "About 2 trips/week": "주 2회 내외",
+    "3-4 trips/week": "주 3~4회",
+    "Mostly In-Zone": "생활권 안 중심",
+    "Low risk events": "위험행동 낮음",
+    "Repeated external destinations with stable behavior": "반복 외부 목적지 안정",
+    "Increase in external destinations in the second half": "하반기 외부 목적지 증가",
+    "Increase in night driving and harsh braking in the second half": "하반기 야간/급제동 증가",
+    "Repeated In-Zone speeding and harsh braking": "생활권 안 과속/급감속 반복",
+    "Repeated external hospital trips": "반복 병원 목적 외부 이동",
+    "Mostly daytime hospital trips with low risk events": "주간 병원 이동 중심, 위험행동 낮음",
+    "Variable external travel for family care": "가족 돌봄 외부 이동 변동",
+    "External travel varies, but risk events remain limited": "외부 이동은 변동하나 위험행동 제한적"
   };
   return labels[text(value)] ?? text(value);
 }
@@ -347,10 +313,10 @@ function englishDriverOption(value: JsonObject): JsonObject {
 
 function englishProductFrame(): JsonObject {
   return {
-    product_name_ko: "Senior Safe Zone Rider",
-    existing_formula_ko: "Annual mileage + vehicle class -> existing mileage discount rate",
-    proposed_formula_ko: "Annual mileage + 12-month Safe Zone stability + Out-Zone safety + risk change -> integrated-score discount adjustment",
-    llm_boundary_ko: "The LLM does not calculate premiums; it converts calculated evidence into employee-facing explanations."
+    product_name_ko: "안심반경 시니어 마일리지",
+    existing_formula_ko: "연간 주행거리 + 차종 → 기존 마일리지 할인율",
+    proposed_formula_ko: "연간 주행거리 + 12개월 생활권 안정성 + 생활권 밖 안전성 + 위험변화 → 통합점수 기반 할인 보정",
+    llm_boundary_ko: "LLM은 보험료를 계산하지 않고, 이미 계산된 근거를 직원용 설명문으로 변환합니다."
   };
 }
 
@@ -470,37 +436,39 @@ function reportEvidence(snapshot: JsonObject) {
   const repeatRate = tripCount ? repeatTrips / tripCount : 0;
   const topDestinations = grouped.slice(0, 3).map((item) => item.label);
 
-  let headline = "Repeated Stable In-Zone Driving";
+  let headline = "생활권 안 반복 안정 주행";
   if (riskScore >= CARE_REVIEW_RISK_THRESHOLD || riskEvents >= Math.max(3, tripCount * 0.25)) {
-    headline = "Month With Increasing Risk Events";
+    headline = "위험행동이 증가한 월";
   } else if (outZoneRatio >= 0.25 && repeatRate >= 0.5 && riskEvents <= Math.max(1, tripCount * 0.12)) {
-    headline = "Out-Zone Travel Centered on Repeated Destinations";
+    headline = "반복 목적지 중심의 생활권 밖 이동";
   } else if (newDestinationTrips >= Math.max(2, tripCount * 0.2)) {
-    headline = "New Destination Increase Observed";
+    headline = "신규 목적지 증가 관찰";
   } else if (outZoneRatio < 0.12 && riskEvents === 0) {
-    headline = "Stable In-Zone Driving Maintained";
+    headline = "생활권 안 안정 주행 유지";
+  } else {
+    headline = "생활권 안 반복 안정 주행";
   }
 
   const outerPattern =
     outZoneRatio < 0.12
-      ? "The Out-Zone share is low, so the month is interpreted as centered on the baseline safe zone."
+      ? "생활권 밖 비중이 낮아 기준 생활권 중심의 월로 해석됩니다."
       : repeatRate >= 0.5
-        ? "Out-zone travel exists, but repeated routes and repeated destinations mean it should not be treated as automatically risky."
-        : "Out-zone travel is dispersed, so the same pattern should be checked again next month.";
+        ? "생활권 밖 이동은 있으나 반복 경로와 반복 목적지가 있어 자동 위험으로 보지 않습니다."
+        : "생활권 밖 이동이 분산되어 다음 달에도 같은 패턴을 재확인해야 합니다.";
 
   const riskPattern =
     riskEvents === 0
-      ? "There are almost no risk-event signals such as harsh braking or speeding."
+      ? "급감속이나 과속과 같은 위험행동 신호가 거의 없습니다."
       : riskScore >= CARE_REVIEW_RISK_THRESHOLD
-        ? `${riskEvents} risk events and a ${riskScore.toFixed(1)} risk-change score increased together, so Preventive Care review is recommended.`
-        : `${riskEvents} risk events were observed, but the risk-change signal is limited.`;
+        ? `위험행동 ${riskEvents}건과 위험변화 점수 ${riskScore.toFixed(1)}점이 함께 높아 예방 케어 검토가 권장됩니다.`
+        : `위험행동 ${riskEvents}건이 관찰됐지만 위험변화 신호는 제한적입니다.`;
 
   const action =
     riskScore >= CARE_REVIEW_RISK_THRESHOLD
-      ? "For counseling, prioritize a safe-driving report, vehicle check, and guidance around night driving or unfamiliar routes."
+      ? "상담 시 안전운전 리포트, 차량 점검, 야간 또는 낯선 경로 주의 안내를 우선합니다."
       : outZoneRatio >= 0.25 && repeatRate >= 0.5
-        ? "Do not disadvantage the driver simply because the trips are Out-Zone; explain repeated destinations and low risk events together."
-        : "Accumulate this as evidence for the annual formula and recheck the change magnitude in the next renewal month.";
+        ? "생활권 밖 주행이라는 이유만으로 불리하게 보지 말고 반복 목적지와 낮은 위험행동을 함께 설명합니다."
+        : "연간 산식 근거로 누적하고 다음 갱신 월에 변화폭을 재확인합니다.";
 
   return {
     grouped,
@@ -553,7 +521,7 @@ function buildReportFeatures(driver: JsonObject, snapshot: JsonObject, month: nu
   }));
 
   return {
-    report_role: "Monthly driving explanation report for insurer staff",
+    report_role: "보험사 직원을 위한 월별 주행 근거 설명 리포트",
     report_month: month,
     generation_contract: {
       pricing_is_already_calculated: true,
@@ -561,7 +529,7 @@ function buildReportFeatures(driver: JsonObject, snapshot: JsonObject, month: nu
       monthly_report_must_not_include_premium_amounts: true,
       monthly_evidence_is_for_annual_decision_explanation: true,
       avoid_penalty_language_for_senior_customer: true,
-      privacy_filter: "Raw coordinates and identifiers are excluded; only summarized features are passed to the LLM"
+      privacy_filter: "원본 좌표와 식별자는 제외하고 요약 피처만 LLM에 전달"
     },
     driver_profile: {
       display_name: personaName(driver.customer_id),
@@ -581,7 +549,7 @@ function buildReportFeatures(driver: JsonObject, snapshot: JsonObject, month: nu
         decision_signal: decision,
         preventive_care_required: careRequired
       },
-      pricing_note: "Premiums and discount amounts are calculated separately in the annual formula screen / Decision Panel; the monthly report body must not include amounts.",
+      pricing_note: "보험료와 할인액은 연간 산식 화면 또는 최종 판단 패널에서 별도로 계산하며, 월별 리포트 본문에는 금액을 쓰지 않습니다.",
       annual_scores: {
         mileage_score: num(annualScore.annual_mileage_score),
         in_zone_safe_driving_score: num(annualScore.annual_in_zone_safe_driving_score),
@@ -642,37 +610,37 @@ function buildReportFeatures(driver: JsonObject, snapshot: JsonObject, month: nu
 
 function buildReportPrompt(features: ReportFeatures) {
   const systemPrompt = [
-    "You are an assistant that writes internal driving reports for auto-insurance product planning and underwriting staff.",
-    "The input values have already been calculated by the formula and XAI pipeline, so do not recalculate or estimate discount rates, scores, or amounts.",
-    "The report is not customer-facing copy. It is an explanation for internal review, counseling preparation, and Preventive Care decisions.",
-    "Avoid language that sounds like penalties, sanctions, or risk labeling for senior customers. Focus on Preventive Care and evidence confirmation.",
-    "The monthly report is an evidence report explaining the annual decision, not a premium calculation statement.",
-    "Do not mention existing discount amounts, proposed discount amounts, final premium differences, increases, decreases, surcharges, or premium hikes in the body.",
-    "Clearly distinguish monthly evidence values from annual discount rates.",
-    "Put the monthly conclusion, core evidence, and recommended action first so staff can understand the point within 10 seconds.",
-    "Write in Markdown, use at most one table, and preserve the numeric feature values from the input.",
-    "Each section should contain 2-4 bullets and, when useful, reference the concrete feature values and reason codes."
+    "당신은 자동차보험 상품기획 및 심사 직원을 위한 내부 주행 리포트를 작성하는 어시스턴트입니다.",
+    "입력값은 이미 산식과 XAI 파이프라인에서 계산된 값이므로 할인율, 점수, 금액을 다시 계산하거나 추정하지 마세요.",
+    "이 리포트는 고객 안내문이 아니라 내부 검토, 상담 준비, 예방 케어 판단을 위한 설명문입니다.",
+    "고령 고객에게 벌점, 제재, 낙인처럼 들리는 표현을 피하고 예방 케어와 근거 확인 중심으로 작성하세요.",
+    "월별 리포트는 연간 판단을 설명하는 근거 리포트이며 보험료 계산서가 아닙니다.",
+    "본문에서 기존 할인액, 제안 할인액, 최종 보험료 차이, 인상, 할증, 보험료 상승을 언급하지 마세요.",
+    "월별 근거값과 연간 할인율을 명확히 구분하세요.",
+    "직원이 10초 안에 핵심을 이해할 수 있도록 월별 결론, 핵심 근거, 추천 조치를 먼저 배치하세요.",
+    "Markdown으로 작성하고, 표는 최대 1개만 사용하며, 입력된 숫자 피처값은 그대로 보존하세요.",
+    "각 섹션은 2~4개 bullet로 작성하고, 필요하면 구체적인 피처값과 reason code를 함께 언급하세요."
   ].join("\n");
 
   const userPrompt = [
-    "Use only the privacy_filtered_features below and write the report in English.",
-    "Use exactly the following 7 Markdown section headings. Do not omit or rename sections.",
-    "## 1. Monthly Conclusion Summary",
-    "## 2. Annual Formula Reflection",
-    "## 3. Safe Zone Evidence",
-    "## 4. Monthly Driving Pattern",
-    "## 5. Key XAI Reasons",
-    "## 6. Counseling and Care Actions",
-    "## 7. Review Limits and Items to Confirm",
+    "아래 privacy_filtered_features만 사용해 한국어로 리포트를 작성하세요.",
+    "반드시 다음 7개 Markdown 섹션 제목을 그대로 사용하세요. 섹션을 생략하거나 이름을 바꾸지 마세요.",
+    "## 1. 월별 결론 요약",
+    "## 2. 연간 산식 반영",
+    "## 3. 생활권 판단 근거",
+    "## 4. 월별 주행 패턴",
+    "## 5. XAI 주요 원인",
+    "## 6. 상담 및 케어 액션",
+    "## 7. 검토 한계와 확인 필요사항",
     "",
-    "Writing rules:",
-    "- Section 1 must summarize the Safe Zone / risk-change signals observed in this month and the next staff action within 3 lines. Do not mention premium changes.",
-    "- Section 2 must explain which of the four indicators (Mileage, In-Zone, Out-Zone, Pattern Change) this month's evidence contributes to. Do not calculate discounts or final premiums.",
-    "- Section 3 must distinguish pre-policy / rolling 60-day Safe Zone fitting, the P90 accepted radius, and In-Zone versus Out-Zone shares.",
-    "- Section 4 must interpret destination groups, repeated destinations, new destinations, night driving, and risk events in staff-friendly language.",
-    "- Section 5 must explain how the four indicators influenced the monthly evidence interpretation.",
-    "- Section 6 must suggest Preventive Care, a safe-driving report, vehicle check, and next-month recheck actions where appropriate.",
-    "- Section 7 must briefly note that raw coordinates are hidden, monthly evidence only explains the annual decision, and actual claim-data validation is still needed.",
+    "작성 규칙:",
+    "- 1번 섹션은 이번 달 생활권/위험변화 신호와 다음 직원 조치를 3줄 안에 요약하세요. 보험료 변화는 언급하지 마세요.",
+    "- 2번 섹션은 이번 달 근거가 4개 지표(주행거리, 생활권 안 안전, 생활권 밖 안전, 위험변화) 중 어디에 기여하는지 설명하세요. 할인율이나 최종 보험료를 계산하지 마세요.",
+    "- 3번 섹션은 가입 전 또는 직전 60일 생활권 산출, P90 인정반경, 생활권 안/밖 비중을 구분해 설명하세요.",
+    "- 4번 섹션은 목적지 그룹, 반복 목적지, 신규 목적지, 야간 주행, 위험행동을 직원이 이해하기 쉽게 해석하세요.",
+    "- 5번 섹션은 4개 지표가 월별 근거 해석에 어떻게 영향을 주었는지 설명하세요.",
+    "- 6번 섹션은 필요 시 예방 케어, 안전운전 리포트, 차량 점검, 다음 달 재확인 액션을 제안하세요.",
+    "- 7번 섹션은 원본 좌표가 숨겨져 있고, 월별 근거는 연간 판단 설명용이며, 실제 청구 데이터 검증이 아직 필요하다는 점을 짧게 적으세요.",
     `privacy_filtered_features=${JSON.stringify(features, null, 2)}`
   ].join("\n");
 

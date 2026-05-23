@@ -27,150 +27,133 @@ import type {
   ZoneTripInterpretation
 } from "./types";
 
-const numberFormatter = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
+const numberFormatter = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
 
 const personaNames = [
-  "Alex Kim",
-  "Soon Park",
-  "Jung Lee",
-  "Mia Choi",
-  "Kevin Jung",
-  "Bok Yoon",
-  "Sang Han",
-  "Mija Oh",
-  "Moon Kang",
-  "Rye Seo",
-  "Han Jo",
-  "Young Moon",
-  "Sang Bae",
-  "Ok Shin",
-  "Man Yoo",
-  "Kyung Lim",
-  "Sung Noh",
-  "Geum Hong",
-  "Tae Kwon",
-  "Soon Jang",
-  "Jae Ko",
-  "Young Baek",
-  "Ki Nam",
-  "Hwa Song",
-  "Chun Yang",
-  "Mikyung Cha",
-  "Byung Joo",
-  "Jung Min",
-  "Seok Ha",
-  "Young Do"
+  "김영호",
+  "박순자",
+  "이정식",
+  "최명희",
+  "정기철",
+  "윤복순",
+  "한상일",
+  "오미자",
+  "강문수",
+  "서정례",
+  "조한기",
+  "문영희",
+  "배상국",
+  "신옥자",
+  "유만호",
+  "임경자",
+  "노성식",
+  "홍금자",
+  "권태식",
+  "장순덕",
+  "고재훈",
+  "백영도",
+  "남기철",
+  "송화자",
+  "양춘호",
+  "차미경",
+  "주병일",
+  "민정례",
+  "하석준",
+  "도영자"
 ];
 
 const decisionMeta: Record<string, { label: string; className: string }> = {
-  우대: { label: "Favorable", className: "good" },
-  기본: { label: "Standard", className: "base" },
-  "예방 케어": { label: "Preventive Care", className: "care" },
-  Favorable: { label: "Favorable", className: "good" },
-  Preferred: { label: "Favorable", className: "good" },
-  Standard: { label: "Standard", className: "base" },
-  "Preventive Care": { label: "Preventive Care", className: "care" }
+  우대: { label: "우대", className: "good" },
+  기본: { label: "기본", className: "base" },
+  "예방 케어": { label: "예방 케어", className: "care" },
+  Favorable: { label: "우대", className: "good" },
+  Preferred: { label: "우대", className: "good" },
+  Standard: { label: "기본", className: "base" },
+  "Preventive Care": { label: "예방 케어", className: "care" }
 };
 
 const interpretationMeta: Record<string, { label: string; className: string; short: string }> = {
-  existing_living_zone: { label: "Baseline In-Zone", className: "stable", short: "In-Zone" },
-  candidate_living_zone: { label: "Repeated Out-Zone Candidate", className: "candidate", short: "Candidate" },
-  out_zone_safe_driving: { label: "Stable Out-Zone", className: "safeout", short: "Out-Zone Stable" },
-  out_zone_pattern_change_risk: { label: "Risk Change Observed", className: "risk", short: "Change" }
+  existing_living_zone: { label: "기준 생활권 안", className: "stable", short: "생활권 안" },
+  candidate_living_zone: { label: "반복 외부 후보", className: "candidate", short: "후보 생활권" },
+  out_zone_safe_driving: { label: "생활권 밖 안정", className: "safeout", short: "외부 안정" },
+  out_zone_pattern_change_risk: { label: "위험변화 관찰", className: "risk", short: "위험변화" }
 };
 
 const reasonLabels: Record<string, string> = {
-  CANDIDATE_LIVING_ZONE: "Candidate Safe Zone Observed",
-  HARSH_BRAKE_INCREASE: "Harsh Braking Increase",
-  LOW_MILEAGE: "Low-Mileage Condition",
-  LOW_NIGHT_DRIVING: "Low Night Driving",
-  LOW_RISK_EVENTS: "Low Risk Events",
-  NIGHT_DRIVING_INCREASE: "Night Driving Increase",
-  NO_RECENT_OUT_ZONE_SPIKE: "No Recent Out-Zone Spike",
-  NO_STRONG_RISK_CHANGE: "No Strong Risk Change",
-  OUT_ZONE_PATTERN_CHANGE_RISK: "Out-Zone Risk Change",
-  OUT_ZONE_RATIO_INCREASE: "Out-Zone Share Increase",
-  OUT_ZONE_SAFE: "Stable Out-Zone",
-  OUT_ZONE_SAFE_DRIVING: "Safe Out-Zone Driving",
-  PREVENTIVE_CARE_REVIEW: "Preventive Care Review",
-  RISK_EVENT_INCREASE: "Risk Event Increase",
-  STABLE_IN_ZONE_DRIVING: "Stable In-Zone Driving"
+  CANDIDATE_LIVING_ZONE: "후보 생활권 관찰",
+  HARSH_BRAKE_INCREASE: "급감속 증가",
+  LOW_MILEAGE: "저주행 조건",
+  LOW_NIGHT_DRIVING: "야간 주행 낮음",
+  LOW_RISK_EVENTS: "위험행동 낮음",
+  NIGHT_DRIVING_INCREASE: "야간 주행 증가",
+  NO_RECENT_OUT_ZONE_SPIKE: "최근 생활권 밖 급증 없음",
+  NO_STRONG_RISK_CHANGE: "강한 위험변화 없음",
+  OUT_ZONE_PATTERN_CHANGE_RISK: "생활권 밖 위험변화",
+  OUT_ZONE_RATIO_INCREASE: "생활권 밖 비중 증가",
+  OUT_ZONE_SAFE: "생활권 밖 안정",
+  OUT_ZONE_SAFE_DRIVING: "생활권 밖 안전주행",
+  PREVENTIVE_CARE_REVIEW: "예방 케어 검토",
+  RISK_EVENT_INCREASE: "위험행동 증가",
+  STABLE_IN_ZONE_DRIVING: "생활권 안 안정주행"
 };
 
 const personaTypeLabels: Record<string, string> = {
-  stable_local_low_mileage: "Stable Local Low-Mileage",
-  stable_outer_safe: "Stable Out-Zone Driver",
-  recent_outer_risk_change: "Recent Out-Zone Risk Change",
-  in_zone_risky_low_mileage: "In-Zone Risk Behavior",
-  medical_visit_pattern: "Repeated Medical-Visit Pattern",
-  irregular_family_support: "Irregular Family-Care Travel"
+  stable_local_low_mileage: "생활권 안 저주행 안정형",
+  stable_outer_safe: "생활권 밖 안정 주행형",
+  recent_outer_risk_change: "최근 생활권 밖 위험변화형",
+  in_zone_risky_low_mileage: "생활권 안 저주행 위험행동형",
+  medical_visit_pattern: "병원 방문 반복 외부 목적지형",
+  irregular_family_support: "가족 돌봄 불규칙 외부 이동형"
 };
 
 const destinationTypeLabels: Record<string, string> = {
-  clinic: "Hospital",
-  family: "Family House",
-  family_home: "Family House",
-  home: "House",
-  leisure: "Nearby Outing",
-  market: "Mart",
-  pharmacy: "Pharmacy",
-  unknown_outer: "New External Destination"
+  clinic: "병원",
+  family: "자녀 집",
+  family_home: "자녀 집",
+  home: "자택",
+  leisure: "근교 외출지",
+  market: "마트",
+  pharmacy: "약국",
+  unknown_outer: "신규 외부 목적지"
 };
 
 const dynamicTextTranslations: Record<string, string> = {
-  "생활권 안 저주행 안정형": "Stable Local Low-Mileage",
-  "생활권 밖 안정 주행형": "Stable Out-Zone Driver",
-  "최근 생활권 밖 위험변화형": "Recent Out-Zone Risk Change",
-  "생활권 안 저주행 위험행동형": "In-Zone Risk Behavior",
-  "병원 방문 반복 외부 목적지형": "Repeated Medical-Visit Pattern",
-  "가족 돌봄 불규칙 외부 이동형": "Irregular Family-Care Travel",
-  "주 2회 내외": "About 2 trips/week",
-  "주 3~4회": "3-4 trips/week",
-  "3천km 이하": "Under 3,000 km",
-  "4천km 이하": "Under 4,000 km",
-  "5천km 이하": "Under 5,000 km",
-  "6천km 이하": "Under 6,000 km",
-  "7천km 이하": "Under 7,000 km",
-  "8천km 이하": "Under 8,000 km",
-  "9천km 이하": "Under 9,000 km",
-  "생활권 안 중심": "Mostly In-Zone",
-  "생활권 안 반복 주행과 낮은 위험행동을 근거로 안정 저주행 고객으로 설명": "Explains the driver as a stable low-mileage customer based on repeated In-Zone driving and low risk events",
-  "기존 거리 중심 산식과 제안 통합 산식 모두 우량으로 분류되어야 하는 기준 우량군": "Reference preferred group that should be classified as stable by both the existing mileage formula and the proposed integrated formula",
-  "예방 케어로 잘못 분류되면 안정 고객 비용 효율 평가가 왜곡됨": "If misclassified into Preventive Care, the cost-efficiency assessment for stable customers is distorted",
-  "반복 외부 목적지 안정": "Repeated external destinations with stable behavior",
-  "생활권 밖 주행 자체를 과도하게 불리하게 보지 않는지 확인하는 공정성/오분류 방지군": "Fairness and misclassification-control group for checking that Out-Zone driving itself is not over-penalized",
-  "외부 주행은 있으나 반복 목적지와 안정 운전으로 예방 케어 대상은 아님": "Has external driving, but repeated destinations and stable driving mean it should not automatically become a Preventive Care case",
-  "생활권 밖 비율만으로 위험군 처리하면 모델 공정성이 약해짐": "Treating the driver as risky based only on Out-Zone share weakens model fairness",
-  "하반기 외부 목적지 증가": "Increase in external destinations in the second half",
-  "하반기 야간/급제동 증가": "Increase in night driving and harsh braking in the second half",
-  "저주행임에도 최근 생활권 밖 야간/위험행동이 함께 늘어난 예방 케어 신호": "Preventive Care signal: despite low mileage, recent Out-Zone night driving and risk events increased together",
-  "기존 마일리지 산식이 놓칠 수 있는 저주행 위험변화 핵심 포착 대상군": "Core target group for detecting low-mileage risk changes that the existing mileage formula can miss",
-  "핵심 타깃을 놓치면 A/B 우수성 승인 게이트를 통과하기 어려움": "Missing this target group makes it difficult to pass the A/B validation gate",
-  "생활권 안 과속/급감속 반복": "Repeated In-Zone speeding and harsh braking",
-  "생활권 안 주행이라도 과속/급감속이 있으면 감점되는지 확인하는 엣지케이스": "Edge case for checking whether speeding and harsh braking are penalized even inside the safe zone",
-  "생활권 내 주행이 많지만 위험행동이 있어 우대 판단은 보수적으로 설명": "Mostly In-Zone driving, but risk events require a conservative preferred decision",
-  "생활권 안이라는 이유로 무조건 안정형 처리하면 모델 해석 원칙을 위반함": "Classifying as stable solely because it is In-Zone violates the model's interpretation principle",
-  "반복 병원 목적 외부 이동": "Repeated external hospital trips",
-  "주간 병원 이동 중심, 위험행동 낮음": "Mostly daytime hospital trips with low risk events",
-  "반복 의료 목적 외부 이동을 신규 위험변화로 오판하지 않는지 확인하는 케어 맥락군": "Care-context group for checking that repeated medical trips are not mistaken for new risk changes",
-  "정기 병원 방문처럼 반복 목적지가 있는 외부 이동은 변화 위험과 구분": "Repeated external trips, such as regular hospital visits, are separated from risk-change signals",
-  "의료 목적 반복 이동을 위험변화로 오판하면 직원 설명 품질이 낮아짐": "If repeated medical trips are mistaken for risk changes, explanation quality for employees drops",
-  "가족 돌봄 외부 이동 변동": "Variable external travel for family care",
-  "외부 이동은 변동하나 위험행동 제한적": "External travel varies, but risk events remain limited",
-  "불규칙 외부 이동이 있어도 위험행동과 야간 증가가 동반되는지 분리 평가하는 엣지케이스": "Edge case for separately evaluating whether irregular external travel is accompanied by risk-event and night-driving increases",
-  "불규칙 가족 지원 이동은 있으나 위험행동 증가가 제한적이면 예방 케어로 단정하지 않음": "Irregular family-support travel exists, but it should not be treated as Preventive Care when risk-event increases are limited",
-  "외부 이동 증가만으로 케어 대상 처리하면 오탐 제한 조건에 불리함": "Treating external-travel increases alone as care cases hurts the false-positive control condition",
-  "위험행동 낮음": "Low risk events",
-  "기본": "Standard",
-  "우대": "Favorable",
-  "예방 케어": "Preventive Care",
-  "신규 외부 목적지": "New External Destination",
-  "근교 외출지": "Nearby Outing",
-  "자녀집": "Family House",
-  "자택": "House",
-  "병원": "Hospital",
-  "마트": "Mart",
-  "약국": "Pharmacy"
+  "Stable Local Low-Mileage": "생활권 안 저주행 안정형",
+  "Stable Out-Zone Driver": "생활권 밖 안정 주행형",
+  "Recent Out-Zone Risk Change": "최근 생활권 밖 위험변화형",
+  "In-Zone Risk Behavior": "생활권 안 저주행 위험행동형",
+  "Repeated Medical-Visit Pattern": "병원 방문 반복 외부 목적지형",
+  "Irregular Family-Care Travel": "가족 돌봄 불규칙 외부 이동형",
+  "About 2 trips/week": "주 2회 내외",
+  "3-4 trips/week": "주 3~4회",
+  "Under 3,000 km": "3천km 이하",
+  "Under 4,000 km": "4천km 이하",
+  "Under 5,000 km": "5천km 이하",
+  "Under 6,000 km": "6천km 이하",
+  "Under 7,000 km": "7천km 이하",
+  "Under 8,000 km": "8천km 이하",
+  "Under 9,000 km": "9천km 이하",
+  "Mostly In-Zone": "생활권 안 중심",
+  "Repeated external destinations with stable behavior": "반복 외부 목적지 안정",
+  "Increase in external destinations in the second half": "하반기 외부 목적지 증가",
+  "Increase in night driving and harsh braking in the second half": "하반기 야간/급제동 증가",
+  "Repeated In-Zone speeding and harsh braking": "생활권 안 과속/급감속 반복",
+  "Repeated external hospital trips": "반복 병원 목적 외부 이동",
+  "Mostly daytime hospital trips with low risk events": "주간 병원 이동 중심, 위험행동 낮음",
+  "Variable external travel for family care": "가족 돌봄 외부 이동 변동",
+  "External travel varies, but risk events remain limited": "외부 이동은 변동하나 위험행동 제한적",
+  "Low risk events": "위험행동 낮음",
+  "Standard": "기본",
+  "Favorable": "우대",
+  "Preventive Care": "예방 케어",
+  "New External Destination": "신규 외부 목적지",
+  "Nearby Outing": "근교 외출지",
+  "Family House": "자녀 집",
+  "House": "자택",
+  "Home": "자택",
+  "Hospital": "병원",
+  "Mart": "마트",
+  "Pharmacy": "약국"
 };
 
 const selectedPolicy = {
@@ -335,11 +318,11 @@ function App() {
   };
 
   if (directoryState === "loading") {
-    return <ScreenState title="Connecting Demo Data" detail="Loading 30 personas and annual comparison outputs." />;
+    return <ScreenState title="데모 데이터 연결 중" detail="30명 페르소나와 연간 비교 결과를 불러오는 중입니다." />;
   }
 
   if (directoryState === "error" || !directory) {
-    return <ScreenState title="Unable to Open Demo Data" detail={errorMessage} />;
+    return <ScreenState title="데모 데이터를 열 수 없습니다" detail={errorMessage} />;
   }
 
   return (
@@ -347,20 +330,20 @@ function App() {
       <header className="app-header">
         <div className="brand-block">
           <div>
-            <p className="eyebrow">Samsung Fire & Marine AI Challenge · Decision Dashboard</p>
-            <h1>Senior Safe Zone Rider</h1>
-            <p>Shows how Safe Zone stability and risk-change signals supplement the annual mileage-based discount structure.</p>
+            <p className="eyebrow">삼성화재 AI 활용 공모전 · 의사결정 대시보드</p>
+            <h1>안심반경 시니어 마일리지</h1>
+            <p>기존 마일리지의 저주행 우대 원칙은 유지하되, 생활권 안정성과 최근 위험변화 신호로 연간 판단을 보정합니다.</p>
           </div>
         </div>
         <div className="header-actions">
-          <div className="page-switch" aria-label="Page Switch">
+          <div className="page-switch" aria-label="페이지 전환">
             <button
               type="button"
               className={pageMode === "overview" ? "active" : ""}
               onClick={() => setPageMode("overview")}
               aria-current={pageMode === "overview" ? "page" : undefined}
             >
-              Model Design
+              설계구조
             </button>
             <button
               type="button"
@@ -368,13 +351,13 @@ function App() {
               onClick={() => setPageMode("profiles")}
               aria-current={pageMode === "profiles" ? "page" : undefined}
             >
-              Profile Analysis
+              프로필 분석
             </button>
           </div>
           <div className="contract-box">
-            <span>Decision Unit</span>
-            <strong>Annual Review · Monthly Evidence</strong>
-            <small>First 60 days are used only to build the Safe Zone</small>
+            <span>판정 단위</span>
+            <strong>연간 판정 · 월별 근거</strong>
+            <small>최초 60일은 생활권 산출 전용</small>
           </div>
         </div>
       </header>
@@ -443,7 +426,7 @@ function App() {
 
 function DesignOverviewPage({ directory }: { directory: PersonaDirectoryResponse }) {
   return (
-    <main className="overview-page" aria-label="Product Design Overview Page">
+    <main className="overview-page" aria-label="상품 설계구조 화면">
       <OverviewComparisonPanel directory={directory} />
 
       <ProductBlueprintPanel directory={directory} />
@@ -457,105 +440,105 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
   const avgRateDelta = summary.avg_proposed_discount_rate_pct - summary.avg_existing_discount_rate_pct;
 
   return (
-    <section className="panel comparison-overview" aria-label="Overall Comparison Dashboard">
+    <section className="panel comparison-overview" aria-label="전체 비교 대시보드">
       <div className="panel-head">
         <div>
-          <p className="eyebrow">Overall Comparison</p>
-          <h2>Comparing the existing mileage discount and the proposed formula using the same 30 drivers and annual mileage data</h2>
+          <p className="eyebrow">전체 비교</p>
+          <h2>같은 30명 연간 주행 데이터로 기존 마일리지와 제안 산식을 비교합니다</h2>
         </div>
-        <span className="count-badge">12-Month Evaluation · {summary.customer_count} Drivers</span>
+        <span className="count-badge">12개월 평가 · {summary.customer_count}명</span>
       </div>
 
-      <div className="judge-takeaway" aria-label="Key Evaluation Points">
+      <div className="judge-takeaway" aria-label="핵심 평가 포인트">
         <div>
-          <span>Problem</span>
-          <strong>Existing mileage discounts cannot distinguish risk differences within the same low-mileage group</strong>
-          <p>Under the existing mileage discount, drivers in the same annual mileage band receive the same discount even if Safe Zone departures, night driving, or harsh braking patterns change.</p>
+          <span>문제</span>
+          <strong>기존 마일리지는 같은 저주행 안의 위험 차이를 구분하기 어렵습니다</strong>
+          <p>연간 주행거리 구간이 같으면 생활권 이탈, 야간 주행, 급감속 변화가 있어도 같은 할인율이 적용됩니다.</p>
         </div>
         <div>
-          <span>Proposed Differentiation</span>
-          <strong>Adds Safe Zone stability and risk-change signals on top of mileage</strong>
-            <p>Favorable drivers are identified more accurately, while risk-change cases are separated into Preventive Care before the annual discount is recalculated.</p>
+          <span>제안 차별점</span>
+          <strong>거리 기준 위에 생활권 안정성과 위험변화 신호를 추가합니다</strong>
+          <p>안정형은 우대 후보로 설명하고, 최근 위험변화가 커진 사례는 할인 축소 또는 예방 케어로 분리합니다.</p>
         </div>
         <div>
-          <span>Validation Result</span>
-          <strong>Even within the same low-mileage group, decisions can differ as Favorable, Standard, or Preventive Care</strong>
-          <p>The dashboard shows only verifiable average discount changes and classification results, without using actual contract premiums.</p>
+          <span>검증 결과</span>
+          <strong>같은 저주행 고객도 우대·기본·예방 케어로 다른 판단이 가능합니다</strong>
+          <p>대시보드는 실제 계약보험료가 아니라, 검증 가능한 평균 할인율과 판정 등급 변화를 중심으로 보여줍니다.</p>
         </div>
       </div>
 
-      <div className="comparison-ledger" aria-label="Existing Mileage vs Proposed Formula Table">
+      <div className="comparison-ledger" aria-label="기존 마일리지와 제안 산식 비교표">
         <div className="ledger-head">
-          <span>Comparison Item</span>
-          <strong>Existing Mileage Rider</strong>
-          <strong>Proposed Integrated Formula</strong>
+          <span>비교 항목</span>
+          <strong>기존 마일리지 특약</strong>
+          <strong>제안 통합 산식</strong>
         </div>
         <ComparisonLedgerRow
-          label="Evaluation Basis"
-          legacy="Uses only annual mileage and vehicle type"
-          proposed="Uses annual mileage, In-Zone Safety, Out-Zone Safety, and Risk Change together"
+          label="판단 기준"
+          legacy="연간 주행거리와 차종으로 할인율 결정"
+          proposed="주행거리 + 생활권 안 안전 + 생활권 밖 안전 + 위험변화"
         />
         <ComparisonLedgerRow
-          label="Within the Same Low-Mileage Group"
-          legacy="Drivers in the same mileage band usually receive the same discount"
-          proposed="Even within the same low-mileage band, Safe Zone evidence can split customers into Favorable, Standard, or Preventive Care"
+          label="같은 저주행 구간 처리"
+          legacy="같은 거리구간이면 생활권 변화와 관계없이 같은 할인율"
+          proposed="같은 저주행 안에서도 생활권 근거에 따라 우대·기본·예방 케어로 분리"
         />
         <ComparisonLedgerRow
-          label="Discount Decision Method"
-          legacy="Applies the mileage-band discount table as is"
-          proposed="Starts from the existing discount table, then uses the integrated score to decide Favorable, Standard, or Preventive Care routing"
+          label="연간 할인 계산"
+          legacy="거리구간 할인율을 그대로 적용"
+          proposed="기존 할인표를 기준선으로 두고 통합점수로 할인 방향을 보정"
         />
         <ComparisonLedgerRow
-          label="Explainability"
-          legacy="Limited evidence to explain why the same discount is applied or why an adjustment is needed"
-          proposed="Safe Zone maps, monthly four-factor scores, and XAI reports explain the reason for each adjustment"
+          label="설명 가능성"
+          legacy="조정 근거가 ‘적게 탔다’에 머물러 설명력이 약함"
+          proposed="생활권 지도, 월별 4지표, XAI 리포트로 조정 이유 설명 가능"
         />
       </div>
 
       <div className="overview-evidence-grid">
         <div className="decision-donut-card">
-          <span>Decision Tier Structure of the Proposed Formula</span>
+          <span>제안 산식의 판정 등급 구조</span>
           <div className="decision-donut-wrap">
             <div className="decision-donut" style={{ background: donutBackground }}>
               <div>
-                <strong>3 Tiers</strong>
-                <small>Annual Decision Criteria</small>
+                <strong>3등급</strong>
+                <small>연간 판정 기준</small>
               </div>
             </div>
             <div className="decision-donut-legend">
-              <DecisionLegend label="Favorable" detail="Safe Zone Stable" className="preferred" />
-              <DecisionLegend label="Standard" detail="Low Change" className="standard" />
-              <DecisionLegend label="Preventive Care" detail="Risk Change Observed" className="care" />
+              <DecisionLegend label="우대" detail="생활권 안정형" className="preferred" />
+              <DecisionLegend label="기본" detail="변화 낮음" className="standard" />
+              <DecisionLegend label="예방 케어" detail="위험변화 관찰" className="care" />
             </div>
           </div>
         </div>
 
         <div className="simulation-result-card">
-          <span>A/B Simulation Results for 30 Drivers</span>
-          <strong>Comparing discount rates and classification outcomes</strong>
+          <span>30명 A/B 시뮬레이션 결과</span>
+          <strong>총액을 맞춰 끼운 값이 아니라, 두 산식을 각각 계산한 결과입니다</strong>
           <p>
-            The same annual driving data from 30 drivers was applied to both the existing mileage formula and the proposed integrated formula. Since actual contract premiums are not used at this stage,
-            the comparison focuses on average discount rates and Favorable/Standard/Preventive Care classifications.
+            동일한 30명 연간 주행 데이터를 기존 마일리지 산식과 제안 통합 산식에 각각 넣어 비교했습니다. 실제 계약보험료를 확정하지 않은 단계이므로,
+            평균 할인율과 우대·기본·예방 케어 판정 구조를 중심으로 검증합니다.
           </p>
           <div className="budget-compare-grid no-money">
             <div>
-              <span>Existing Avg. Discount</span>
+              <span>기존 평균 할인율</span>
               <strong>{percent(summary.avg_existing_discount_rate_pct)}</strong>
-              <small>Based on annual mileage bands</small>
+              <small>연간 주행거리 구간 기준</small>
             </div>
             <div>
-              <span>Proposed Avg. Discount</span>
+              <span>제안 평균 할인율</span>
               <strong>{percent(summary.avg_proposed_discount_rate_pct)}</strong>
-              <small>Based on the four-factor integrated score</small>
+              <small>4개 지표 통합점수 기준</small>
             </div>
             <div>
-              <span>Avg. Discount Change</span>
+              <span>평균 할인율 변화</span>
               <strong>{signedPercentPoint(avgRateDelta)}</strong>
-              <small>Rate difference comparable without actual contract premiums</small>
+              <small>실제 계약보험료 없이 비교 가능한 비율 차이</small>
             </div>
           </div>
           <p className="portfolio-footnote">
-            Before actual premiums and coverage terms are finalized, only discount rates and decision evidence are presented.
+            실제 보험료와 담보 조건이 확정되기 전에는 할인율과 판정 근거만 제시합니다.
           </p>
         </div>
       </div>
@@ -595,10 +578,10 @@ function CaseRail({
   const [query, setQuery] = useState("");
   const [decisionFilter, setDecisionFilter] = useState("all");
   const decisionFilters = [
-    { value: "all", label: "All" },
-    { value: "Favorable", label: "Favorable" },
-    { value: "Standard", label: "Standard" },
-    { value: "Preventive Care", label: "Preventive Care" }
+    { value: "all", label: "전체" },
+    { value: "우대", label: "우대" },
+    { value: "기본", label: "기본" },
+    { value: "예방 케어", label: "예방 케어" }
   ];
   const filtered = options.filter((option) => {
     const text = `${personaName(option.customer_id)} ${caseNo(option.customer_id)} ${caseType(option)} ${decisionClass(option.annual_decision_signal).label}`.toLowerCase();
@@ -613,14 +596,14 @@ function CaseRail({
   });
 
   return (
-    <aside className="case-rail" aria-label="Virtual Senior Case List">
+    <aside className="case-rail" aria-label="가상 시니어 사례 목록">
       <div className="rail-heading">
-        <p className="eyebrow">Virtual Cases</p>
-        <h2>30 Cases</h2>
+        <p className="eyebrow">가상 사례</p>
+        <h2>30명 사례</h2>
       </div>
       <label className="search-box">
         <Search size={15} />
-        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search name or tag" />
+        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="이름 또는 태그 검색" />
       </label>
       <div className="filter-row">
         {decisionFilters.map((filter) => (
@@ -644,7 +627,7 @@ function CaseRail({
               <span>
                 <strong>{personaName(option.customer_id)}</strong>
                 <small>
-                  {personaAge(option.customer_id)} yrs · {changeTag}
+                  {personaAge(option.customer_id)}세 · {changeTag}
                 </small>
               </span>
               <em className={`risk-pill ${risk.className}`}>{risk.label}</em>
@@ -670,7 +653,7 @@ function DecisionSummaryCard({
   driverState: LoadState;
 }) {
   if (!driver) {
-    return <InspectorState title="Waiting for Case Decision" detail="Select a case on the left to view the final decision summary." />;
+    return <InspectorState title="사례 선택 대기" detail="좌측 사례를 선택하면 최종 판단 요약이 표시됩니다." />;
   }
 
   const comparison = driver.ab_comparison;
@@ -684,34 +667,34 @@ function DecisionSummaryCard({
     : driver.annual_score.annual_reason_codes.slice(0, 3).map((code) => reasonLabels[code] ?? code);
 
   return (
-    <section className={`decision-summary-card ${driverState === "loading" ? "is-loading" : ""}`} aria-label="Final Decision Summary">
+    <section className={`decision-summary-card ${driverState === "loading" ? "is-loading" : ""}`} aria-label="최종 판단 요약">
       <div className="summary-identity">
-        <p className="eyebrow">Final Decision Summary</p>
+        <p className="eyebrow">최종 판단 요약</p>
         <h2>{personaName(driver.customer_id)}</h2>
-        <span>{personaAge(driver.customer_id)} yrs · {personaResidence(driver)} · {personaTypeLabel(driver.persona_type)}</span>
+        <span>{personaAge(driver.customer_id)}세 · {personaResidence(driver)} · {personaTypeLabel(driver.persona_type)}</span>
       </div>
 
       <div className="summary-verdict">
-        <span>Current Decision</span>
+        <span>현재 판단</span>
         <strong>{profile?.headline ?? decisionReasons[0]}</strong>
         <p>{decisionReasons.slice(1, 3).join(" ")}</p>
       </div>
 
       <div className="summary-decision-stack">
         <div className={`risk-score-block ${risk.className}`}>
-          <span>Decision Tier</span>
+          <span>판정 등급</span>
           <strong>{risk.label}</strong>
-          <b>Integrated Score {numberFormatter.format(driver.annual_score.annual_senior_safe_mileage_score)} pts</b>
+          <b>통합점수 {numberFormatter.format(driver.annual_score.annual_senior_safe_mileage_score)}점</b>
         </div>
 
         <div className="premium-delta-block">
-          <span>Discount Change</span>
+          <span>할인율 변화</span>
           <strong>{signedPercentPoint(rateDelta)}</strong>
           <small>{percent(comparison.existing_discount_rate_pct)} → {percent(comparison.proposed_discount_rate_pct)}</small>
         </div>
 
         <div className="summary-action">
-          <span>Recommended Action</span>
+          <span>추천 조치</span>
           <strong>{action}</strong>
         </div>
       </div>
@@ -731,7 +714,7 @@ function DecisionProcessFrame({
   selectedMonth: number;
 }) {
   if (!driver) {
-    return <InspectorState title="Waiting for Decision Process" detail="Select a case to view the discount adjustment process." />;
+    return <InspectorState title="판단 과정 대기" detail="사례를 선택하면 할인 보정 과정이 표시됩니다." />;
   }
 
   const comparison = driver.ab_comparison;
@@ -741,42 +724,41 @@ function DecisionProcessFrame({
   const riskScore = selectedRow?.out_zone_pattern_change_risk ?? comparison.annual_out_zone_pattern_change_risk;
   const zoneBasis = zoneMap
     ? `P90 ${Math.round(zoneMap.snapshot.living_zone.buffer.departure_p90_threshold_m).toLocaleString("en-US")}m`
-    : "Building Safe Zone";
+      : "생활권 산출 중";
   const steps = [
     {
-      title: "Existing Baseline",
+      title: "기존 기준선",
       value: `${translateText(comparison.existing_matched_tier_label)} · ${percent(comparison.existing_discount_rate_pct)}`,
-      detail: "Uses only annual mileage and vehicle type",
+      detail: "연간 주행거리와 차종만 반영",
       icon: Route
     },
     {
-      title: "Safe Zone Build",
+      title: "생활권 생성",
       value: zoneBasis,
-      detail: "Repeated destinations and travel radius over the previous 60 days",
+      detail: "직전 60일 반복 목적지와 이동 반경 반영",
       icon: MapPinned
     },
     {
-      title: `Month ${selectedMonth} Change`,
-      value: profile ? `${percent(profile.outZoneRatio * 100)}  Out-Zone driving` : "Building monthly evidence",
-      detail: profile?.riskPattern ?? "Checks Out-Zone, night-driving, and risk-event changes",
+      title: `${selectedMonth}월 변화`,
+      value: profile ? `생활권 밖 ${percent(profile.outZoneRatio * 100)}` : "월별 근거 산출 중",
+      detail: profile?.riskPattern ?? "생활권 밖·야간·위험행동 변화를 확인",
       icon: Activity
     },
     {
-      title: "Annual Decision",
+      title: "연간 판단",
       value: `${percent(comparison.proposed_discount_rate_pct)} · ${decision.label}`,
-      detail: `Risk Change ${numberFormatter.format(riskScore)} pts`,
+      detail: `위험변화 ${numberFormatter.format(riskScore)}점`,
       icon: AlertTriangle
     }
   ];
 
   return (
-    <section className="decision-process-frame" aria-label="Discount Adjustment Decision Process">
+    <section className="decision-process-frame" aria-label="할인 보정 판단 과정">
       <div className="decision-process-copy">
-        <p className="eyebrow">Decision Process</p>
-        <h2>Even with the same low mileage, Out-Zone risk changes can lead to a different decision</h2>
+        <p className="eyebrow">판단 과정</p>
+        <h2>같은 저주행이라도 생활권 밖 위험변화가 있으면 다른 결론이 납니다</h2>
         <p>
-          The existing mileage discount is used as a comparison baseline, while In-Zone/Out-Zone safety and recent risk changes are calculated into an annual integrated score for{" "}
-          {personaName(driver.customer_id)} annual decision.
+          기존 마일리지는 비교 기준선으로 두고, 생활권 안/밖 안전성과 최근 위험변화를 연간 통합점수로 계산해 {personaName(driver.customer_id)}의 판정 근거를 설명합니다.
         </p>
       </div>
       <div className="process-rail">
@@ -808,40 +790,40 @@ function LivingZoneDecisionMap({
   selectedMonth: number;
   zoneState: LoadState;
 }) {
-  if (!driver) return <InspectorState title="Waiting for Safe Zone Map" detail="Select a case to display the Safe Zone radius and recent external destinations." />;
+  if (!driver) return <InspectorState title="생활권 지도 대기" detail="사례를 선택하면 생활권 반경과 최근 외부 목적지가 표시됩니다." />;
 
   const profile = zoneMap ? deriveEvidenceProfile(driver, zoneMap.snapshot) : null;
 
   return (
-    <section className="decision-map-panel" aria-label="Safe Zone Decision Map">
+    <section className="decision-map-panel" aria-label="생활권 판단 지도">
       <div className="decision-section-head">
         <div>
-          <p className="eyebrow">Safe Zone Decision Map</p>
-          <h2>House-Centered Safe Zone and Recent Change Destinations</h2>
+          <p className="eyebrow">생활권 판단 지도</p>
+          <h2>자택 중심 생활권과 최근 변화 목적지</h2>
         </div>
         {profile && zoneMap ? (
           <div className="map-kpis">
-            <span>P90 {Math.round(zoneMap.snapshot.living_zone.buffer.departure_p90_threshold_m).toLocaleString("en-US")}m</span>
-            <span>Out-Zone {percent(profile.outZoneRatio * 100)}</span>
-            <span>Risk Segments {profile.riskEvents} Events</span>
+            <span>P90 {Math.round(zoneMap.snapshot.living_zone.buffer.departure_p90_threshold_m).toLocaleString("ko-KR")}m</span>
+            <span>생활권 밖 {percent(profile.outZoneRatio * 100)}</span>
+            <span>위험구간 {profile.riskEvents}건</span>
           </div>
         ) : null}
       </div>
 
       <div className="map-stage">
         {zoneState === "loading" || !zoneMap || !profile ? (
-          <p>Loading the Safe Zone map.</p>
+          <p>생활권 지도를 불러오는 중입니다.</p>
         ) : (
           <GeoLivingZoneCanvas driver={driver} snapshot={zoneMap.snapshot} profile={profile} />
         )}
       </div>
 
       <div className="map-legend-row">
-        <span><i className="legend-home" />House / Safe Zone Center</span>
-        <span><i className="legend-normal" />Usual Repeated Route</span>
-        <span><i className="legend-out" />Out-Zone Destination</span>
-        <span><i className="legend-risk" />Risk Driving Segment</span>
-        <b>{selectedMonth} Selected-Month Evidence</b>
+        <span><i className="legend-home" />자택 / 생활권 중심</span>
+        <span><i className="legend-normal" />평소 반복 경로</span>
+        <span><i className="legend-out" />생활권 밖 목적지</span>
+        <span><i className="legend-risk" />위험 주행 구간</span>
+        <b>{selectedMonth}월 선택 근거</b>
       </div>
     </section>
   );
@@ -866,11 +848,11 @@ function AnalysisTabs({
   const selectedRow = rows.find((row) => row.month === selectedMonth) ?? rows[0];
   const profile = driver && zoneMap ? deriveEvidenceProfile(driver, zoneMap.snapshot) : null;
   const tabs = [
-    { key: "Overview", label: "Overview" },
-    { key: "Monthly Pattern", label: "Monthly Pattern" },
-    { key: "Risk Signals", label: "Risk Signals" },
-    { key: "Premium Simulation", label: "Annual Discount" },
-    { key: "Report", label: "Report" }
+    { key: "Overview", label: "요약" },
+    { key: "Monthly Pattern", label: "월별 패턴" },
+    { key: "Risk Signals", label: "위험 신호" },
+    { key: "Premium Simulation", label: "연간 할인" },
+    { key: "Report", label: "리포트" }
   ];
 
   return (
@@ -886,9 +868,9 @@ function AnalysisTabs({
       <div className="analysis-content">
         {activeTab === "Overview" && driver && selectedRow ? (
           <div className="insight-grid">
-            <InsightCard title="Classification Reason" value={profile?.headline ?? "Review Monthly Evidence"} detail={profile?.summary ?? driver.care_context.message_focus} />
-            <InsightCard title="Safe Zone Change" value={`${numberFormatter.format(selectedRow.out_zone_pattern_change_risk ?? 0)} pts Risk Change`} detail={`Month ${selectedMonth} baseline: ${basisLabel(selectedRow.basis_status)} applied`} />
-            <InsightCard title="Product Decision" value={decisionClass(driver.ab_comparison.annual_decision_signal).label} detail={driver.care_context.product_role} />
+            <InsightCard title="분류 근거" value={profile?.headline ?? "월별 근거 확인"} detail={profile?.summary ?? translateText(driver.care_context.message_focus)} />
+            <InsightCard title="생활권 변화" value={`위험변화 ${numberFormatter.format(selectedRow.out_zone_pattern_change_risk ?? 0)}점`} detail={`${selectedMonth}월 기준: ${basisLabel(selectedRow.basis_status)} 적용`} />
+            <InsightCard title="상품 판단" value={decisionClass(driver.ab_comparison.annual_decision_signal).label} detail={translateText(driver.care_context.product_role)} />
           </div>
         ) : null}
 
@@ -898,10 +880,10 @@ function AnalysisTabs({
 
         {activeTab === "Risk Signals" && driver && selectedRow ? (
           <div className="risk-signal-grid">
-            <ScoreMeter label="Mileage Score" value={selectedRow.mileage_score} helper="Annualizes monthly mileage; lower mileage receives a higher score" />
-            <ScoreMeter label="In-Zone Safety Score" value={selectedRow.in_zone_safe_driving_score} helper="Higher when harsh braking, speeding, and night-driving ratios are lower In-Zone" />
-            <ScoreMeter label="Out-Zone Safety Score" value={selectedRow.out_zone_safe_driving_score} helper="Higher when risk events and night-driving ratios are lower Out-Zone" />
-            <ScoreMeter label="Risk Change Index" value={selectedRow.out_zone_pattern_change_risk} inverse helper="Higher when Out-Zone, night-driving, and risk events increase versus the previous 60 days" />
+            <ScoreMeter label="주행거리 점수" value={selectedRow.mileage_score} helper="월별 주행거리를 연환산해 저주행일수록 높게 계산" />
+            <ScoreMeter label="생활권 안 안전점수" value={selectedRow.in_zone_safe_driving_score} helper="생활권 안 급감속·과속·야간 비율이 낮을수록 높음" />
+            <ScoreMeter label="생활권 밖 안전점수" value={selectedRow.out_zone_safe_driving_score} helper="생활권 밖 위험행동과 야간 비율이 낮을수록 높음" />
+            <ScoreMeter label="위험변화 점수" value={selectedRow.out_zone_pattern_change_risk} inverse helper="직전 60일 대비 생활권 밖·야간·위험행동이 늘수록 높음" />
             <div className="reason-chip-row">
               {[...driver.annual_score.annual_reason_codes, ...selectedRow.reason_codes].slice(0, 8).map((code) => (
                 <span key={`${code}-${selectedMonth}`}>{reasonLabels[code] ?? code}</span>
@@ -916,9 +898,9 @@ function AnalysisTabs({
 
         {activeTab === "Report" && profile ? (
           <div className="report-tab-summary">
-            <strong>Monthly Report Input Evidence</strong>
+            <strong>리포트 입력 근거</strong>
             <p>{profile.summary}</p>
-            <span>The Decision Panel turns this monthly evidence into an employee report. Monthly values are evidence for the annual decision, not monthly premiums.</span>
+            <span>우측 최종 판단 패널에서 이 근거를 직원용 리포트로 생성합니다. 월별 값은 월 보험료가 아니라 연간 판단에 누적되는 설명 근거입니다.</span>
           </div>
         ) : null}
       </div>
@@ -938,7 +920,7 @@ function MonthlyPatternChart({ rows, selectedMonth, onSelectMonth }: { rows: Mon
             className={`month-bar ${meta.className} ${row.month === selectedMonth ? "selected" : ""}`}
             onClick={() => onSelectMonth(row.month)}
           >
-            <span>Month {row.month}</span>
+            <span>{row.month}월</span>
             <i><b style={{ height: `${Math.max(12, Math.min(92, row.out_zone_pattern_change_risk))}%` }} /></i>
             <b>{numberFormatter.format(row.out_zone_pattern_change_risk)}</b>
           </button>
@@ -956,16 +938,16 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
   return (
     <div className="premium-simulation">
       <div>
-        <span>Existing Mileage Rider Rate</span>
+        <span>기존 마일리지 특약 할인율</span>
         <strong>{percent(existingRate)}</strong>
         <i><b style={{ width: `${(existingRate / maxRate) * 100}%` }} /></i>
       </div>
       <div>
-        <span>Proposed Integrated Formula</span>
+        <span>제안 통합 산식 할인율</span>
         <strong>{percent(proposedRate)}</strong>
         <i><b style={{ width: `${(proposedRate / maxRate) * 100}%` }} /></i>
       </div>
-      <p>This compares discount rates for the same annual mileage after reflecting Safe Zone stability, Out-Zone safety, and risk-change signals. Actual contract premiums are not calculated.</p>
+      <p>같은 연간 주행거리에 생활권 안정성, 생활권 밖 안전성, 위험변화 신호를 반영해 할인율 차이를 비교합니다. 실제 계약보험료는 계산하지 않습니다.</p>
     </div>
   );
 }
@@ -993,7 +975,7 @@ function DecisionPanel({
     setProgress("");
   }, [driver?.customer_id, selectedMonth]);
 
-  if (!driver) return <aside className="decision-panel"><InspectorState title="Decision Panel" detail="Select a case to view the final action panel." /></aside>;
+  if (!driver) return <aside className="decision-panel"><InspectorState title="최종 판단 패널" detail="사례를 선택하면 최종 액션 패널이 표시됩니다." /></aside>;
 
   const comparison = driver.ab_comparison;
   const decision = decisionClass(comparison.annual_decision_signal);
@@ -1004,56 +986,56 @@ function DecisionPanel({
     setState("streaming");
     setMarkdown("");
     setError("");
-    setProgress("Sending monthly driving evidence to the report API");
+    setProgress("월별 주행 근거를 리포트 API로 전송 중");
     try {
       let next = "";
       await demoApi.streamMonthlyReport(driver.customer_id, selectedMonth, (chunk) => {
         next += chunk;
-        setProgress(`Generating: ${latestReportSection(next)}`);
+        setProgress(`생성 중: ${latestReportSection(next)}`);
         setMarkdown(next);
       });
-      setProgress("Report generation complete");
+      setProgress("리포트 생성 완료");
       setState("ready");
     } catch (reportError) {
       setState("error");
-      setError(reportError instanceof Error ? reportError.message : "Report generation failed");
+      setError(reportError instanceof Error ? reportError.message : "리포트 생성에 실패했습니다");
     }
   };
 
   return (
-    <aside className={`decision-panel ${loading ? "is-loading" : ""} ${markdown ? "has-report" : ""}`} aria-label="Decision Panel">
+    <aside className={`decision-panel ${loading ? "is-loading" : ""} ${markdown ? "has-report" : ""}`} aria-label="최종 판단 패널">
       <div className="decision-panel-head">
-        <p className="eyebrow">Decision Panel</p>
-        <h2>Final Action</h2>
+        <p className="eyebrow">최종 판단 패널</p>
+        <h2>최종 액션</h2>
         <em className={`decision ${decision.className}`}>{decision.label}</em>
       </div>
 
       <div className="decision-money-stack">
         <div>
-          <span>Baseline Mileage Discount</span>
+          <span>기존 마일리지 할인율</span>
           <strong>{percent(comparison.existing_discount_rate_pct)}</strong>
           <small>{translateText(comparison.existing_matched_tier_label)}</small>
         </div>
         <div>
-          <span>Proposed Discount Rate</span>
+          <span>제안 할인율</span>
           <strong>{percent(comparison.proposed_discount_rate_pct)}</strong>
-          <small>Integrated Score {numberFormatter.format(comparison.annual_senior_safe_mileage_score)} pts</small>
+          <small>통합점수 {numberFormatter.format(comparison.annual_senior_safe_mileage_score)}점</small>
         </div>
         <div className="money-delta">
-          <span>Adjustment vs Mileage Baseline</span>
+          <span>기존 대비 보정폭</span>
           <strong>{signedPercentPoint(rateDelta)}</strong>
-          <small>Calculated separately after actual contract details are finalized</small>
+          <small>실제 계약 조건 확정 후 별도 계산</small>
         </div>
       </div>
 
       <div className="decision-reason-box">
-        <span>Adjustment Reason</span>
+        <span>조정 사유</span>
         <strong>{translateText(profile?.headline ?? driver.care_context.product_role)}</strong>
         <p>{translateText(profile?.summary ?? driver.care_context.message_focus)}</p>
       </div>
 
       <div className="xai-inspector" aria-label="XAI Decision Evidence">
-        <span>XAI Decision Evidence · Month {selectedMonth}</span>
+        <span>XAI 판단 근거 · {selectedMonth}월</span>
         {xaiReasons.map((reason) => (
           <div key={reason.label}>
             <strong>{reason.label}</strong>
@@ -1065,7 +1047,7 @@ function DecisionPanel({
 
       <button className="report-button" type="button" onClick={generate} disabled={state === "streaming"}>
         {state === "streaming" ? <RefreshCcw size={15} /> : <FileText size={15} />}
-        {state === "streaming" ? "Generating Report" : `Generate Month ${selectedMonth} Report`}
+        {state === "streaming" ? "리포트 생성 중" : `${selectedMonth}월 리포트 생성`}
       </button>
 
       {state === "error" ? <p className="error-copy">{error}</p> : null}
@@ -1074,8 +1056,8 @@ function DecisionPanel({
         <div className="report-popout" role="status" aria-live="polite">
           <div className="report-popout-head">
             <div>
-              <span>Employee Report for Insurance Staff</span>
-              <strong>{personaName(driver.customer_id)} · {selectedMonth}Monthly Evidence Analysis</strong>
+              <span>보험사 직원용 리포트</span>
+              <strong>{personaName(driver.customer_id)} · {selectedMonth}월 근거 분석</strong>
             </div>
             <button
               className="report-close-button"
@@ -1087,7 +1069,7 @@ function DecisionPanel({
               }}
               disabled={state === "streaming"}
             >
-              {state === "streaming" ? "Generating" : "Done"}
+              {state === "streaming" ? "생성 중" : "완료"}
             </button>
           </div>
           <MarkdownReport markdown={markdown} className="decision-report-stream" />
@@ -1099,19 +1081,19 @@ function DecisionPanel({
 
 function latestReportSection(markdown: string) {
   const knownSections = [
-    "Monthly Conclusion Summary",
-    "Annual Formula Reflection",
-    "Safe Zone Decision Evidence",
-    "Monthly Driving Pattern",
-    "Key XAI Drivers",
-    "Consultation and Care Actions",
-    "Review Limits and Follow-Up Items"
+    "월별 결론 요약",
+    "연간 산식 반영",
+    "생활권 판단 근거",
+    "월별 주행 패턴",
+    "XAI 주요 원인",
+    "상담 및 케어 액션",
+    "검토 한계와 확인 필요사항"
   ];
   const known = knownSections.filter((section) => markdown.includes(section)).at(-1);
   if (known) return known;
   const matches = [...markdown.matchAll(/^##\s+\d+\.\s+(.+)$/gm)];
   const latest = matches.at(-1)?.[1]?.trim();
-  return latest && latest.length > 6 ? latest : "Receiving report draft";
+  return latest && latest.length > 6 ? latest : "리포트 초안 수신 중";
 }
 
 function MarkdownReport({ markdown, className = "" }: { markdown: string; className?: string }) {
@@ -1202,24 +1184,24 @@ function topXaiReasons(driver: DriverAnnualSummary, zoneMap: ZoneMapResponse | n
   const tripCount = zoneMap?.snapshot.basis_window.scored_trip_count ?? driver.annual_score.annual_trip_count;
   return [
     {
-      label: "Out-Zone Risk Change",
+      label: "생활권 밖 위험변화",
       width: Math.max(8, Math.min(100, risk)),
-      detail: `${numberFormatter.format(risk)} pts`
+      detail: `${numberFormatter.format(risk)}점`
     },
     {
-      label: "In-Zone Safety",
+      label: "선택 월 생활권 안 안전점수",
       width: Math.max(8, Math.min(100, inZone)),
-      detail: `${numberFormatter.format(inZone)} pts`
+      detail: `${numberFormatter.format(inZone)}점`
     },
     {
-      label: "Out-Zone Safety",
+      label: "선택 월 생활권 밖 안전점수",
       width: Math.max(8, Math.min(100, outZone)),
-      detail: `${numberFormatter.format(outZone)} pts`
+      detail: `${numberFormatter.format(outZone)}점`
     },
     {
-      label: "Mileage Score",
+      label: "선택 월 주행거리 점수",
       width: Math.max(8, Math.min(100, mileage)),
-      detail: `${numberFormatter.format(mileage)} pts · ${tripCount} Events`
+      detail: `${numberFormatter.format(mileage)}점 · ${tripCount}건`
     }
   ];
 }
@@ -1238,45 +1220,45 @@ function ProblemFrame({ directory, driver }: { directory: PersonaDirectoryRespon
   const summary = directory.summary;
 
   return (
-    <section className="panel problem-frame" aria-label="Problem and Existing Method Comparison">
+    <section className="panel problem-frame" aria-label="문제와 기존 방식 비교">
       <div className="panel-head">
         <div>
-          <p className="eyebrow">Problem</p>
-          <h2>Different risk patterns are mixed within the same mileage discount band</h2>
+          <p className="eyebrow">문제 정의</p>
+          <h2>같은 마일리지 할인구간 안에 서로 다른 위험 패턴이 섞여 있습니다</h2>
         </div>
-        <span className="count-badge">30 Virtual Cases</span>
+        <span className="count-badge">30명 가상 사례</span>
       </div>
       <div className="formula-compare">
         <div>
-          <span>Existing Mileage Rider</span>
-          <strong>Annual Mileage + Vehicle Type</strong>
-          <p>Drivers in the same band receive the same discount even when Safe Zone and risk-change patterns differ.</p>
+          <span>기존 마일리지 특약</span>
+          <strong>연간 주행거리 + 차종</strong>
+          <p>생활권과 위험변화 패턴이 달라도 같은 구간이면 같은 할인율을 적용합니다.</p>
         </div>
         <ArrowRight size={18} />
         <div>
-          <span>Proposed Integrated Formula</span>
-          <strong>Mileage + In/Out-Zone Safety + Risk Change</strong>
-          <p>Distinguishes Favorable, Standard, and Preventive Care within low-mileage customers.</p>
+          <span>제안 통합 산식</span>
+          <strong>주행거리 + 생활권 안/밖 안전 + 위험변화</strong>
+          <p>저주행 고객 안에서도 우대·기본·예방 케어를 구분합니다.</p>
         </div>
       </div>
       <div className="metric-strip">
-        <Metric label="Existing Avg. Discount" value={percent(summary.avg_existing_discount_rate_pct)} />
-        <Metric label="Proposed Avg. Discount" value={percent(summary.avg_proposed_discount_rate_pct)} />
-        <Metric label="Average Adjustment vs Baseline" value={signedPercentPoint(summary.avg_proposed_discount_rate_pct - summary.avg_existing_discount_rate_pct)} />
-        <Metric label="Decision Tier" value="Favorable · Standard · Preventive Care" tone="care" />
-        <Metric label="Average Integrated Score" value={`${numberFormatter.format(summary.avg_annual_score)} pts`} tone="good" />
+        <Metric label="기존 평균 할인율" value={percent(summary.avg_existing_discount_rate_pct)} />
+        <Metric label="제안 평균 할인율" value={percent(summary.avg_proposed_discount_rate_pct)} />
+        <Metric label="평균 보정폭" value={signedPercentPoint(summary.avg_proposed_discount_rate_pct - summary.avg_existing_discount_rate_pct)} />
+        <Metric label="판정 등급" value="우대 · 기본 · 예방 케어" tone="care" />
+        <Metric label="평균 통합점수" value={`${numberFormatter.format(summary.avg_annual_score)}점`} tone="good" />
       </div>
       <div className="tier-proof">
         <div>
-          <span>Annual Discount Result Comparison</span>
-          <strong>Existing Avg. {percent(summary.avg_existing_discount_rate_pct)} / Proposed Avg. {percent(summary.avg_proposed_discount_rate_pct)}</strong>
+          <span>연간 할인 결과 비교</span>
+          <strong>기존 평균 {percent(summary.avg_existing_discount_rate_pct)} / 제안 평균 {percent(summary.avg_proposed_discount_rate_pct)}</strong>
           <p>
-            The same annual data for 30 drivers was applied to both formulas. This shows comparable discount differences without actual contract premiums.
+            같은 30명 연간 데이터를 두 산식에 각각 적용했습니다. 실제 계약보험료 없이도 할인율 차이와 판정 근거를 비교할 수 있습니다.
           </p>
         </div>
         {driver ? (
           <div className="current-case">
-            <span>Current Selection</span>
+            <span>현재 선택</span>
             <strong>
               {personaName(driver.customer_id)} · {personaTypeLabel(driver.persona_type)}
             </strong>
@@ -1290,50 +1272,50 @@ function ProblemFrame({ directory, driver }: { directory: PersonaDirectoryRespon
 
 function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryResponse }) {
   return (
-    <section className="panel blueprint-panel" aria-label="Data Generation Method and Final Formula">
+    <section className="panel blueprint-panel" aria-label="데이터 생성 방식과 최종 산식">
       <div className="panel-head">
         <div>
-          <p className="eyebrow">AI Usage and Formula Rationale</p>
-          <h2>AI does not decide premiums directly. It supports Safe Zone generation, candidate formula search, and decision explanation.</h2>
+          <p className="eyebrow">AI 활용과 산식 근거</p>
+          <h2>AI는 보험료를 직접 결정하지 않고, 생활권 생성·후보 산식 탐색·판정 설명을 보조합니다.</h2>
         </div>
-        <span className="count-badge">Four-Factor Weight Comparison</span>
+        <span className="count-badge">4개 지표 가중치 비교</span>
       </div>
 
-      <div className="ai-proof-row" aria-label="Where AI Is Used">
+      <div className="ai-proof-row" aria-label="AI 활용 위치">
         <div>
           <span>AI 1</span>
-          <strong>Automated Safe Zone Generation</strong>
-          <p>DBSCAN clusters destinations from the first 60 days, while the P90 radius absorbs small variations such as parking and minor detours.</p>
+          <strong>생활권 자동 생성</strong>
+          <p>최초 60일 목적지를 DBSCAN으로 군집화하고, P90 반경으로 주차·우회 같은 작은 흔들림을 흡수합니다.</p>
         </div>
         <div>
           <span>AI 2</span>
-          <strong>Four-Factor Weight Selection</strong>
-          <p>Multiple candidate weight sets are compared to decide how much mileage, In-Zone safety, Out-Zone safety, and risk change should contribute to the final formula.</p>
+          <strong>4개 지표 가중치 선택</strong>
+          <p>주행거리, 생활권 안 안전, 생활권 밖 안전, 위험변화를 어느 비율로 반영할지 후보 산식을 비교합니다.</p>
         </div>
         <div>
           <span>AI 3</span>
-          <strong>XAI + Employee Report</strong>
-          <p>XAI extracts how the four factors influenced the decision, and the LLM is used only to generate readable explanations for insurance staff.</p>
+          <strong>XAI + 직원용 리포트</strong>
+          <p>XAI는 4개 지표가 판정에 미친 영향을 추출하고, LLM은 이를 보험사 직원이 읽을 수 있는 설명문으로 바꿉니다.</p>
         </div>
       </div>
 
-      <div className="blueprint-flow" aria-label="Formula Design Flow">
+      <div className="blueprint-flow" aria-label="산식 설계 흐름">
         <div className="flow-step">
           <span>1</span>
-          <strong>Build Senior Driving Scenarios</strong>
-          <p>Six driver types and a total of {directory.summary.customer_count} drivers are assigned destinations such as home, hospital, mart, family house, nearby areas, and different outing tendencies.</p>
+          <strong>시니어 주행 시나리오 생성</strong>
+          <p>6개 운전자 유형과 총 {directory.summary.customer_count}명에게 자택, 병원, 마트, 자녀 집, 근교 외출지, 외출 성향을 부여합니다.</p>
         </div>
         <ArrowRight size={18} />
         <div className="flow-step">
           <span>2</span>
-          <strong>Build Safe Zones from the First 60 Days</strong>
-          <p>DBSCAN clusters repeated destinations, and the P90 radius includes minor detours and parking movements within the Safe Zone.</p>
+          <strong>최초 60일로 생활권 생성</strong>
+          <p>DBSCAN으로 반복 목적지를 묶고, P90 반경으로 주차·짧은 우회 이동을 생활권 안에 포함합니다.</p>
         </div>
         <ArrowRight size={18} />
         <div className="flow-step">
           <span>3</span>
-          <strong>Compare 12 Evaluation Months under the Same Conditions</strong>
-          <p>The same annual driving data is applied to the existing mileage formula and the proposed formula to compare discount changes and classification results.</p>
+          <strong>동일 조건으로 12개월 평가 비교</strong>
+          <p>같은 연간 주행 데이터를 기존 마일리지 산식과 제안 산식에 각각 적용해 할인율 변화와 판정 결과를 비교합니다.</p>
         </div>
       </div>
 
@@ -1341,59 +1323,59 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
         <div className="formula-decision-card">
           <div className="blueprint-title">
             <BarChart3 size={17} />
-            <strong>Final Integrated Score Formula</strong>
+            <strong>최종 통합점수 산식</strong>
           </div>
           <p className="formula-lead">
-            The mileage-based standard is retained, while Safe Zone indicators are added to distinguish stable drivers from Preventive Care candidates within the same low-mileage group.
+            기존 마일리지의 거리 기준은 유지하되, 같은 저주행 안에서 안정형과 예방 케어 대상을 나누기 위해 생활권 지표를 함께 반영합니다.
           </p>
           <div className="weight-layout" aria-label="Final Formula Weights">
             <div className="weight-block mileage">
-              <span>Mileage</span>
+              <span>주행거리</span>
               <strong>30%</strong>
-              <small>Maintains the low-mileage benefit principle</small>
+              <small>저주행 우대 기준 유지</small>
             </div>
             <div className="weight-block in-zone">
-              <span>In-Zone Safety</span>
+              <span>생활권 안 안전</span>
               <strong>30%</strong>
-              <small>Stable driving within the familiar radius</small>
+              <small>익숙한 반경 안 안정운전</small>
             </div>
             <div className="weight-block out-zone">
-              <span>Out-Zone Safety</span>
+              <span>생활권 밖 안전</span>
               <strong>20%</strong>
-              <small>Does not penalize Out-Zone driving itself</small>
+              <small>외부 주행 자체를 불리하게 보지 않음</small>
             </div>
             <div className="weight-block risk">
-              <span>Risk-Change Adjustment</span>
+              <span>위험변화 보정</span>
               <strong>20%</strong>
-              <small>Score decreases as risk-change signals increase</small>
+              <small>위험변화가 커질수록 점수 하락</small>
             </div>
           </div>
           <div className="formula-box simplified">
-            <span>Calculation Method</span>
-            <strong>Integrated Score = Mileage Score × 0.30 + In-Zone Safety × 0.30 + Out-Zone Safety × 0.20 + (100 - Risk Change) × 0.20</strong>
+            <span>계산 방식</span>
+            <strong>통합점수 = 주행거리 점수 × 0.30 + 생활권 안 안전점수 × 0.30 + 생활권 밖 안전점수 × 0.20 + (100 - 위험변화) × 0.20</strong>
           </div>
         </div>
 
         <div className="formula-evidence-card">
           <div className="blueprint-title">
             <ShieldCheck size={17} />
-            <strong>Why This Weight Set Was Selected</strong>
+            <strong>왜 이 비율을 선택했나</strong>
           </div>
           <div className="evidence-checklist">
             <div>
-              <span>Rate Stability</span>
-              <strong>Checks whether the average discount change remains within an explainable range</strong>
-              <p>Both formulas are calculated and compared with the existing discount system to confirm that the change is explainable.</p>
+              <span>비용 검증</span>
+              <strong>평균 할인율 변화가 설명 가능한 범위인지 확인</strong>
+              <p>두 산식을 각각 계산해 기존 할인 구조와 비교하고, 변화폭이 과도하지 않은지 확인합니다.</p>
             </div>
             <div>
-              <span>Fairness Condition</span>
-              <strong>No penalty solely for driving outside the Safe Zone</strong>
-              <p>Repeated external destinations and stable driving should still qualify for Standard or Favorable decisions.</p>
+              <span>공정성 조건</span>
+              <strong>생활권 밖이라는 이유만으로 감점하지 않음</strong>
+              <p>반복 외부 목적지와 안정 주행은 기본 또는 우대 판단이 가능해야 합니다.</p>
             </div>
             <div>
-              <span>Prevention Condition</span>
-              <strong>Drivers with rising risk signals are separated into Preventive Care</strong>
-              <p>Cases with recent increases in Out-Zone driving, night driving, and harsh braking are linked to reports and preventive guidance.</p>
+              <span>예방 조건</span>
+              <strong>위험변화형은 예방 케어로 분리</strong>
+              <p>최근 외부·야간·급제동 변화가 커진 사례는 리포트와 예방 안내로 연결합니다.</p>
             </div>
           </div>
           <CandidateSearchChart />
@@ -1417,7 +1399,7 @@ function ProfileLandingPanel({
   driverState: LoadState;
 }) {
   if (!driver) {
-    return <InspectorState title="Waiting for Profile Landing" detail="Select a senior profile on the left to update this area for that case." />;
+    return <InspectorState title="프로필 선택 대기" detail="좌측 시니어 프로필을 선택하면 이 영역이 해당 사례 기준으로 갱신됩니다." />;
   }
 
   const annual = driver.annual_score;
@@ -1425,18 +1407,18 @@ function ProfileLandingPanel({
   const decision = decisionClass(annual.annual_decision_signal);
   const destinations = destinationLabels(driver);
   const formulaRows = [
-    { label: "Mileage", score: annual.annual_mileage_score, weight: selectedPolicy.weights.mileage },
-    { label: "In-Zone", score: annual.annual_in_zone_safe_driving_score, weight: selectedPolicy.weights.inZone },
-    { label: "Out-Zone", score: annual.annual_out_zone_safe_driving_score, weight: selectedPolicy.weights.outZone },
-    { label: "100-Risk", score: 100 - annual.annual_out_zone_pattern_change_risk, weight: selectedPolicy.weights.riskChange }
+    { label: "주행거리", score: annual.annual_mileage_score, weight: selectedPolicy.weights.mileage },
+    { label: "생활권 안", score: annual.annual_in_zone_safe_driving_score, weight: selectedPolicy.weights.inZone },
+    { label: "생활권 밖", score: annual.annual_out_zone_safe_driving_score, weight: selectedPolicy.weights.outZone },
+    { label: "100-위험변화", score: 100 - annual.annual_out_zone_pattern_change_risk, weight: selectedPolicy.weights.riskChange }
   ];
   const profile = zoneMap ? deriveEvidenceProfile(driver, zoneMap.snapshot) : null;
 
   return (
-    <section className={`panel profile-landing ${driverState === "loading" ? "is-loading" : ""}`} aria-label="Driver Safe Zone Analysis">
+    <section className={`panel profile-landing ${driverState === "loading" ? "is-loading" : ""}`} aria-label="운전자 생활권 분석">
       <div className="profile-hero">
         <div>
-          <p className="eyebrow">Driver Safe Zone Analysis</p>
+          <p className="eyebrow">운전자 생활권 분석</p>
           <h2>
             {personaName(driver.customer_id)} · {personaTypeLabel(driver.persona_type)}
           </h2>
@@ -1449,20 +1431,20 @@ function ProfileLandingPanel({
         <div className="profile-card map-card">
           <div className="map-card-head">
             <div>
-              <p className="eyebrow">Safe Zone Visualization</p>
-              <h3>Month {selectedMonth} Destination Coordinate Analysis</h3>
-              <span>DBSCAN Safe Zone + P90 Radius + Selected-Month Trip Interpretation</span>
+              <p className="eyebrow">생활권 시각화</p>
+              <h3>{selectedMonth}월 목적지 좌표 분석</h3>
+              <span>DBSCAN 생활권 + P90 반경 + 선택 월 주행 해석</span>
             </div>
             {profile ? (
               <div className="map-stat-row">
-                <b>P90 {Math.round(zoneMap?.snapshot.living_zone.buffer.departure_p90_threshold_m ?? 0).toLocaleString("en-US")}m</b>
-                <b>Out-Zone {percent(profile.outZoneRatio * 100)}</b>
-                <b>{profile.riskEvents} Risk Events</b>
+                <b>P90 {Math.round(zoneMap?.snapshot.living_zone.buffer.departure_p90_threshold_m ?? 0).toLocaleString("ko-KR")}m</b>
+                <b>생활권 밖 {percent(profile.outZoneRatio * 100)}</b>
+                <b>위험행동 {profile.riskEvents}건</b>
               </div>
             ) : null}
           </div>
           {zoneState === "loading" || !zoneMap || !profile ? (
-            <p>Loading the Safe Zone map.</p>
+            <p>생활권 지도를 불러오는 중입니다.</p>
           ) : (
             <GeoLivingZoneCanvas driver={driver} snapshot={zoneMap.snapshot} profile={profile} />
           )}
@@ -1471,33 +1453,33 @@ function ProfileLandingPanel({
         <div className="profile-card driver-card">
           <div className="blueprint-title">
             <UserRound size={17} />
-            <strong>Senior Driver Profile</strong>
+            <strong>어르신 특성</strong>
           </div>
           <div className="trait-list compact">
-            <Fact label="Outing Frequency" value={driver.living_pattern.weekly_outing_frequency_ko} />
-            <Fact label="Main Destinations" value={destinations.join(", ")} />
-            <Fact label="Out-Zone Tendency" value={driver.living_pattern.outer_trip_tendency} />
-            <Fact label="Risk-Event Tendency" value={driver.living_pattern.risk_behavior_tendency} />
-            <Fact label="Product Meaning" value={driver.care_context.product_role} />
+            <Fact label="외출 빈도" value={driver.living_pattern.weekly_outing_frequency_ko} />
+            <Fact label="주요 목적지" value={destinations.join(", ")} />
+            <Fact label="생활권 밖 성향" value={driver.living_pattern.outer_trip_tendency} />
+            <Fact label="위험행동 성향" value={driver.living_pattern.risk_behavior_tendency} />
+            <Fact label="상품상 의미" value={driver.care_context.product_role} />
           </div>
         </div>
 
         <div className="profile-card formula-card profile-formula-card">
           <div className="blueprint-title">
             <BarChart3 size={17} />
-            <strong>Formula Application for This Profile</strong>
+            <strong>이 프로필의 산식 적용</strong>
           </div>
           <div className="same-driver-compare">
             <div>
-              <span>Existing Mileage Rider</span>
+              <span>기존 마일리지</span>
               <strong>{percent(comparison.existing_discount_rate_pct)}</strong>
               <small>{translateText(comparison.existing_matched_tier_label)}</small>
             </div>
             <ArrowRight size={18} />
             <div>
-              <span>Proposed Formula</span>
+              <span>제안 산식</span>
               <strong>{percent(comparison.proposed_discount_rate_pct)}</strong>
-              <small>Integrated Score {annual.annual_senior_safe_mileage_score} pts</small>
+              <small>통합점수 {annual.annual_senior_safe_mileage_score}점</small>
             </div>
           </div>
           <div className="formula-substitution profile">
@@ -1511,8 +1493,8 @@ function ProfileLandingPanel({
               </div>
             ))}
             <div className="formula-total">
-              <span>Integrated Score</span>
-              <strong>{numberFormatter.format(annual.annual_senior_safe_mileage_score)} pts</strong>
+              <span>통합점수</span>
+              <strong>{numberFormatter.format(annual.annual_senior_safe_mileage_score)}점</strong>
               <em>{decision.label}</em>
             </div>
           </div>
@@ -1526,31 +1508,31 @@ function CandidateSearchChart() {
   return (
     <div className="candidate-search formula-choice-board">
       <div className="candidate-chart-head">
-        <span>Candidate Formula Comparison Result</span>
-        <strong>The final weights are shown in the formula, while this section explains why other candidates were rejected.</strong>
+        <span>산식 후보 비교 결과</span>
+        <strong>최종 비율은 위 산식에 반영하고, 이 영역은 다른 후보를 왜 제외했는지 설명합니다.</strong>
       </div>
 
-      <div className="candidate-comparison-grid" aria-label="Candidate Formula Comparison">
+      <div className="candidate-comparison-grid" aria-label="후보 산식 비교">
         <div className="rejected">
-          <span>Mileage-Centered Option</span>
-          <strong>Rejected</strong>
-          <p>Too similar to the existing mileage discount, making it difficult to explain low-mileage drivers with rising risk signals.</p>
+          <span>거리 중심안</span>
+          <strong>탈락</strong>
+          <p>기존 마일리지와 차이가 작아 저주행 위험변화군을 설명하기 어렵습니다.</p>
         </div>
         <div className="selected">
-          <span>Balanced Option</span>
-          <strong>Selected</strong>
-          <p>Preserves the low-mileage benefit while incorporating In-Zone/Out-Zone safety and risk-change signals.</p>
+          <span>균형안</span>
+          <strong>선택</strong>
+          <p>저주행 우대는 남기고, 생활권 안/밖 안정성과 위험변화를 함께 설명합니다.</p>
         </div>
         <div className="deferred">
-          <span>Risk-Change Heavy Option</span>
-          <strong>On Hold</strong>
-          <p>Put on hold because it may unfairly penalize repeated external destinations.</p>
+          <span>위험변화 과대안</span>
+          <strong>보류</strong>
+          <p>반복 외부 목적지까지 과도하게 불리하게 볼 수 있어 보류했습니다.</p>
         </div>
       </div>
 
       <div className="selection-criteria">
-        <span>Selection Criteria</span>
-        <strong>Moderate average discount change · Separates risk-change drivers · Prevents misclassification of stable Out-Zone drivers</strong>
+        <span>선택 기준</span>
+        <strong>평균 할인율 변화가 과도하지 않음 · 위험변화군 분리 가능 · 외부 안정주행 오분류 방지</strong>
       </div>
     </div>
   );
@@ -1558,11 +1540,11 @@ function CandidateSearchChart() {
 
 function PersonaMatrix({ summaries, selectedOption }: { summaries: PersonaSummary[]; selectedOption?: DriverOption }) {
   return (
-    <section className="panel persona-matrix" aria-label="Persona Type Comparison">
+    <section className="panel persona-matrix" aria-label="페르소나 유형 비교">
       <div className="panel-head">
         <div>
-          <p className="eyebrow">Persona Types</p>
-          <h2>Six driver types create different decision scenarios</h2>
+          <p className="eyebrow">페르소나 유형</p>
+          <h2>6개 유형이 서로 다른 판단 장면을 만듭니다</h2>
         </div>
         {selectedOption ? <span className="count-badge">{caseNo(selectedOption.customer_id)}</span> : null}
       </div>
@@ -1577,7 +1559,7 @@ function PersonaMatrix({ summaries, selectedOption }: { summaries: PersonaSummar
             <strong>{personaTypeLabel(summary.persona_type)}</strong>
             <p>{personaNarrative(summary.persona_type)}</p>
             <small>
-              Avg. {numberFormatter.format(summary.avg_annual_distance_km)}km · {formatDecisionCounts(summary.decision_counts)}
+              평균 {numberFormatter.format(summary.avg_annual_distance_km)}km · {formatDecisionCounts(summary.decision_counts)}
             </small>
           </div>
         ))}
@@ -1604,11 +1586,11 @@ function MonthlyEvidenceLane({
     : 0;
 
   return (
-    <section className={`panel evidence-lane ${loading ? "is-loading" : ""}`} aria-label="Monthly Four-Factor Evidence">
+    <section className={`panel evidence-lane ${loading ? "is-loading" : ""}`} aria-label="월별 4지표 근거">
       <div className="panel-head">
         <div>
-          <p className="eyebrow">Monthly Evidence</p>
-          <h2>Shows which evidence accumulated into the annual decision over 12 months</h2>
+          <p className="eyebrow">월별 근거</p>
+          <h2>12개월 동안 어떤 근거가 연간 판단에 누적됐는지 확인합니다</h2>
         </div>
         <div className="legend">
           {Object.entries(interpretationMeta).map(([key, meta]) => (
@@ -1620,29 +1602,29 @@ function MonthlyEvidenceLane({
       {selectedRow && selectedMeta ? (
         <div className="month-focus-panel">
           <div className="month-focus-copy">
-            <span>Selected Month</span>
+            <span>선택 월</span>
             <strong>
               {selectedRow.service_month} · {selectedMeta.label}
             </strong>
             <p>
-              {numberFormatter.format(selectedRow.monthly_total_distance_km)} km driven, {basisLabel(selectedRow.basis_status)} was used for the Safe Zone decision.
-              The values below are evidence scores accumulated into the annual formula, not monthly discount rates.
+              {numberFormatter.format(selectedRow.monthly_total_distance_km)}km 주행, {basisLabel(selectedRow.basis_status)}으로 생활권을 판단했습니다.
+              아래 값은 월별 할인율이 아니라 연간 산식에 누적되는 근거 점수입니다.
             </p>
           </div>
           <div className="score-meter-grid">
-            <ScoreMeter label="Mileage Score" value={selectedRow.mileage_score} helper="Higher when monthly mileage is lower" />
-            <ScoreMeter label="In-Zone Safety Score" value={selectedRow.in_zone_safe_driving_score} helper="Higher when In-Zone risk events are lower" />
-            <ScoreMeter label="Out-Zone Safety Score" value={selectedRow.out_zone_safe_driving_score} helper="Higher when Out-Zone driving remains stable" />
-            <ScoreMeter label="Risk Change Index" value={selectedRow.out_zone_pattern_change_risk} inverse helper="Higher means more attention is needed" />
+            <ScoreMeter label="주행거리 점수" value={selectedRow.mileage_score} helper="월별 주행거리가 낮을수록 높음" />
+            <ScoreMeter label="생활권 안 안전점수" value={selectedRow.in_zone_safe_driving_score} helper="생활권 안 위험행동이 낮을수록 높음" />
+            <ScoreMeter label="생활권 밖 안전점수" value={selectedRow.out_zone_safe_driving_score} helper="생활권 밖 주행이 안정적일수록 높음" />
+            <ScoreMeter label="위험변화 점수" value={selectedRow.out_zone_pattern_change_risk} inverse helper="높을수록 주의 필요" />
           </div>
           <p className="score-legend-copy">
-            The four values are standardized 0-100 inputs for the annual formula, not monthly premiums. Safety scores are better when higher, while the risk-change index is more stable when lower.
+            4개 값은 월 보험료가 아니라 연간 산식에 들어가는 0~100 표준화 입력값입니다. 안전점수는 높을수록 좋고, 위험변화 점수는 낮을수록 안정적입니다.
           </p>
-          <div className="monthly-integrated-formula" aria-label="Monthly Integrated Evidence Score Formula">
-            <span>Monthly Integrated Evidence Score</span>
-            <strong>{numberFormatter.format(monthlyIntegratedScore)} pts</strong>
-            <p>Low Mileage 30% + In-Zone Safety 30% + Out-Zone Safety 20% + (100 - Risk Change) 20%</p>
-            <small>This score does not directly determine a monthly premium; 12 months of evidence are aggregated to compare the annual proposed discount rate.</small>
+          <div className="monthly-integrated-formula" aria-label="월별 통합 근거점수 산식">
+            <span>월별 통합 근거점수</span>
+            <strong>{numberFormatter.format(monthlyIntegratedScore)}점</strong>
+            <p>주행거리 30% + 생활권 안 안전 30% + 생활권 밖 안전 20% + (100 - 위험변화) 20%</p>
+            <small>이 점수는 월 보험료를 직접 결정하지 않고, 12개월 근거를 누적해 연간 제안 할인율 비교에 사용합니다.</small>
           </div>
         </div>
       ) : null}
@@ -1657,10 +1639,10 @@ function MonthlyEvidenceLane({
               className={`month-card ${meta.className} ${selectedMonth === row.month ? "selected" : ""}`}
               onClick={() => onSelectMonth(row.month)}
             >
-              <span>Month {row.month}</span>
+              <span>{row.month}월</span>
               <strong>{numberFormatter.format(row.monthly_total_distance_km)}km</strong>
               <small>{basisLabel(row.basis_status)}</small>
-              <em>Change {numberFormatter.format(row.out_zone_pattern_change_risk)} pts</em>
+              <em>변화 {numberFormatter.format(row.out_zone_pattern_change_risk)}점</em>
               <i style={{ width: `${Math.min(100, row.out_zone_pattern_change_risk)}%` }} />
             </button>
           );
@@ -1671,35 +1653,35 @@ function MonthlyEvidenceLane({
 }
 
 function AnnualComparison({ driver, loading }: { driver: DriverAnnualSummary | null; loading: boolean }) {
-  if (!driver) return <InspectorState title="Loading Annual Formula" detail="Loading the annual comparison for the selected case." />;
+  if (!driver) return <InspectorState title="연간 산식 로딩" detail="선택 사례의 연간 비교를 불러오는 중입니다." />;
   const comparison = driver.ab_comparison;
   const decision = decisionClass(comparison.annual_decision_signal);
 
   return (
-    <section className={`panel side-panel ${loading ? "is-loading" : ""}`} aria-label="Annual Formula Comparison">
+    <section className={`panel side-panel ${loading ? "is-loading" : ""}`} aria-label="연간 산식 비교">
       <div className="panel-head compact">
         <div>
-          <p className="eyebrow">Annual Formula Comparison</p>
-          <h2>Annual Discount Basis</h2>
+          <p className="eyebrow">연간 산식 비교</p>
+          <h2>연간 할인 기준</h2>
         </div>
         <em className={`decision ${decision.className}`}>{decision.label}</em>
       </div>
       <div className="premium-grid">
         <div>
-          <span>Annual Evaluation Mileage</span>
+          <span>연간 평가 주행거리</span>
           <strong>{numberFormatter.format(comparison.annual_total_distance_km)}km</strong>
         </div>
         <div>
-          <span>Existing Discount Band</span>
+          <span>기존 할인구간</span>
           <strong>{translateText(comparison.existing_matched_tier_label)}</strong>
         </div>
       </div>
-      <ComparisonRow title="Existing Mileage Rider" subtitle={comparison.existing_matched_tier_label} rate={comparison.existing_discount_rate_pct} />
-      <ComparisonRow title="Proposed Integrated Formula" subtitle={`Integrated Score ${numberFormatter.format(comparison.annual_senior_safe_mileage_score)} pts`} rate={comparison.proposed_discount_rate_pct} />
+      <ComparisonRow title="기존 마일리지 특약" subtitle={comparison.existing_matched_tier_label} rate={comparison.existing_discount_rate_pct} />
+      <ComparisonRow title="제안 통합 산식" subtitle={`통합점수 ${numberFormatter.format(comparison.annual_senior_safe_mileage_score)}점`} rate={comparison.proposed_discount_rate_pct} />
       <div className="delta-box">
-        <span>Adjustment vs Mileage Baseline</span>
+        <span>기존 대비 보정폭</span>
         <strong>{signedPercentPoint(comparison.proposed_discount_rate_pct - comparison.existing_discount_rate_pct)}</strong>
-        <small>Monthly indicators are used only as evidence; the final comparison is calculated on the annual discount basis.</small>
+        <small>월별 지표는 근거로만 쓰고, 최종 비교는 연간 할인 기준으로 계산합니다.</small>
       </div>
     </section>
   );
@@ -1718,18 +1700,18 @@ function EvidenceProfile({
   state: LoadState;
   error: string;
 }) {
-  if (!driver) return <InspectorState title="Loading Safe Zone Evidence" detail="Loading the driver profile." />;
-  if (state === "loading" || !zoneMap) return <InspectorState title={`${selectedMonth} Safe Zone Loading`} detail="Loading destination and risk-event evidence for the selected month." />;
-  if (state === "error") return <InspectorState title="Safe Zone Evidence Error" detail={error} />;
+  if (!driver) return <InspectorState title="생활권 근거 로딩" detail="운전자 프로필을 불러오는 중입니다." />;
+  if (state === "loading" || !zoneMap) return <InspectorState title={`${selectedMonth}월 생활권 로딩`} detail="선택 월의 목적지와 위험행동 근거를 불러오는 중입니다." />;
+  if (state === "error") return <InspectorState title="생활권 근거 오류" detail={error} />;
 
   const profile = deriveEvidenceProfile(driver, zoneMap.snapshot);
 
   return (
-    <section className="panel side-panel evidence-profile" aria-label="Selected-Month Safe Zone Evidence">
+    <section className="panel side-panel evidence-profile" aria-label="선택 월 생활권 근거">
       <div className="panel-head compact">
         <div>
-          <p className="eyebrow">Selected Month Evidence</p>
-          <h2>{zoneMap.snapshot.service_month} Case Analysis</h2>
+          <p className="eyebrow">선택 월 근거</p>
+          <h2>{zoneMap.snapshot.service_month} 사례 분석</h2>
         </div>
         <MapPinned size={18} />
       </div>
@@ -1739,10 +1721,10 @@ function EvidenceProfile({
       </div>
       <GeoLivingZoneCanvas driver={driver} snapshot={zoneMap.snapshot} profile={profile} />
       <div className="derived-grid">
-        <Fact label="Main Destinations" value={profile.topDestinations.join(", ")} />
-        <Fact label="Out-Zone Driving Pattern" value={profile.outerPattern} />
-        <Fact label="Risk Events" value={profile.riskPattern} />
-        <Fact label="Decision Basis" value={basisLabel(zoneMap.snapshot.basis_window.basis_status)} />
+        <Fact label="주요 목적지" value={profile.topDestinations.join(", ")} />
+        <Fact label="생활권 밖 패턴" value={profile.outerPattern} />
+        <Fact label="위험행동" value={profile.riskPattern} />
+        <Fact label="판정 기준" value={basisLabel(zoneMap.snapshot.basis_window.basis_status)} />
       </div>
       <DestinationEvidence trips={zoneMap.snapshot.trip_interpretations} />
     </section>
@@ -1799,7 +1781,7 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
 
   return (
     <div className="geo-canvas-shell">
-      <svg className="geo-map" viewBox={`0 0 ${mapWidth} ${mapHeight}`} role="img" aria-label="Safe Zone Map Based on Actual Coordinates">
+      <svg className="geo-map" viewBox={`0 0 ${mapWidth} ${mapHeight}`} role="img" aria-label="실제 좌표 기반 생활권 지도">
       <defs>
         <linearGradient id="mapSurface" x1="0" x2="1" y1="0" y2="1">
           <stop offset="0%" stopColor="#f9fbfd" />
@@ -1815,8 +1797,8 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
       <path className="map-road arterial" d="M38 405 C195 344 253 384 392 300 S665 190 862 138" />
       <path className="map-road" d="M78 130 C214 190 324 222 470 232 S708 278 840 376" />
       <path className="map-road muted" d="M126 502 C236 424 325 366 436 318 S672 283 812 250" />
-      <text className="geo-title" x="42" y="42">Safe Zone Decision Map</text>
-      <text className="geo-subtitle" x="42" y="63">Actual destination coordinates · Baseline Safe Zone · Recent change destinations · Risk driving segments</text>
+      <text className="geo-title" x="42" y="42">생활권 판단 지도</text>
+      <text className="geo-subtitle" x="42" y="63">실제 목적지 좌표 · 기준 생활권 · 최근 변화 목적지 · 위험 주행 구간</text>
 
       <g className="geo-core-ring">
         <circle cx={clusterCenter.x} cy={clusterCenter.y} r={p90Radius * 1.55} />
@@ -1847,7 +1829,7 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
       {home ? (
         <g className="geo-node home">
           <circle cx={homePoint.x} cy={homePoint.y} r="18" />
-          <text x={homePoint.x} y={homePoint.y - 27} textAnchor="middle">House</text>
+          <text x={homePoint.x} y={homePoint.y - 27} textAnchor="middle">자택</text>
         </g>
       ) : null}
 
@@ -1863,23 +1845,23 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
 
       <g className="geo-badge" transform="translate(42 500)">
         <rect width="210" height="34" rx="9" />
-        <text x="13" y="22">P90 {Math.round(snapshot.living_zone.buffer.departure_p90_threshold_m).toLocaleString("en-US")}m Safe Zone</text>
+        <text x="13" y="22">P90 {Math.round(snapshot.living_zone.buffer.departure_p90_threshold_m).toLocaleString("ko-KR")}m 생활권</text>
       </g>
       <g className="geo-badge risk" transform="translate(268 500)">
         <rect width="260" height="34" rx="9" />
-        <text x="13" y="22">Out-Zone {percent(profile.outZoneRatio * 100)} · {profile.riskEvents} Risk Events</text>
+        <text x="13" y="22">생활권 밖 {percent(profile.outZoneRatio * 100)} · 위험행동 {profile.riskEvents}건</text>
       </g>
       </svg>
-      <aside className="geo-detail-panel" aria-label="Safe Zone Map Evidence Details">
-        <span>Destination Evidence</span>
+      <aside className="geo-detail-panel" aria-label="생활권 지도 근거 상세">
+        <span>목적지 근거</span>
         {visibleDestinations.map(({ group, destination }, index) => {
           const meta = interpretationClass(group.dominant);
           return (
             <div key={`geo-detail-${group.key}`} className={`geo-detail-row ${meta.className}`}>
               <b>{index + 1}</b>
               <strong>{destinationTypeLabel(group.key)}</strong>
-              <small>{meta.label} · {group.count} Visits</small>
-              <em>{group.distanceKm.toFixed(0)}km · {group.riskEvents} Risk Events</em>
+              <small>{meta.label} · {group.count}회 방문</small>
+              <em>{group.distanceKm.toFixed(0)}km · 위험행동 {group.riskEvents}건</em>
             </div>
           );
         })}
@@ -1922,8 +1904,8 @@ function DestinationEvidence({ trips }: { trips: ZoneTripInterpretation[] }) {
   return (
     <div className="destination-list">
       <div className="destination-head">
-        <span>Selected Month Destination Evidence</span>
-        <span>{trips.length} Trips</span>
+        <span>선택 월 목적지 근거</span>
+        <span>{trips.length}회 주행</span>
       </div>
       {grouped.map((item) => {
         const meta = interpretationClass(item.dominant);
@@ -1931,7 +1913,7 @@ function DestinationEvidence({ trips }: { trips: ZoneTripInterpretation[] }) {
           <div className="destination-row" key={item.label}>
             <span>
               <strong>{item.label}</strong>
-              <small>{item.count} Trips · {item.riskEvents} Risk Events · {item.nightTrips} Night Trips</small>
+              <small>{item.count}회 주행 · 위험행동 {item.riskEvents}건 · 야간 {item.nightTrips}회</small>
             </span>
             <em className={`tag ${meta.className}`}>{meta.label}</em>
           </div>
@@ -1952,7 +1934,7 @@ function NarrativeReport({ driver, zoneMap, selectedMonth }: { driver: DriverAnn
     setError("");
   }, [driver?.customer_id, selectedMonth]);
 
-  if (!driver) return <InspectorState title="Waiting for Report" detail="Select a driver to generate the employee report." />;
+  if (!driver) return <InspectorState title="리포트 대기" detail="운전자를 선택하면 직원용 리포트를 생성할 수 있습니다." />;
 
   const profile = zoneMap ? deriveEvidenceProfile(driver, zoneMap.snapshot) : null;
   const generate = async () => {
@@ -1968,33 +1950,33 @@ function NarrativeReport({ driver, zoneMap, selectedMonth }: { driver: DriverAnn
       setState("ready");
     } catch (reportError) {
       setState("error");
-      setError(reportError instanceof Error ? reportError.message : "Report generation failed");
+      setError(reportError instanceof Error ? reportError.message : "리포트 생성에 실패했습니다");
     }
   };
 
   return (
-    <section className="panel side-panel report-panel" aria-label="Employee Report">
+    <section className="panel side-panel report-panel" aria-label="직원용 리포트">
       <div className="panel-head compact">
         <div>
-          <p className="eyebrow">Employee Report</p>
-          <h2>Evidence-Based Explanation Generation</h2>
+          <p className="eyebrow">직원용 리포트</p>
+          <h2>근거 기반 설명문 생성</h2>
         </div>
         <FileText size={18} />
       </div>
       <div className="llm-boundary">
         <ShieldCheck size={16} />
-        <span>The report explains monthly evidence in employee-facing language. Actual contract premium calculation is outside this demo scope.</span>
+        <span>리포트는 월별 근거를 직원이 이해할 수 있는 문장으로 설명합니다. 실제 계약 보험료 계산은 이 데모 범위 밖입니다.</span>
       </div>
       {profile ? (
         <div className="report-input">
-          <span>Generation Input</span>
+          <span>생성 입력</span>
           <strong>{profile.headline}</strong>
           <small>{profile.topDestinations.join(", ")} · {profile.riskPattern}</small>
         </div>
       ) : null}
       <button className="report-button" type="button" onClick={generate} disabled={state === "streaming"}>
         {state === "streaming" ? <RefreshCcw size={15} /> : <FileText size={15} />}
-        {state === "streaming" ? "Generating" : `Generate Month ${selectedMonth} Report`}
+        {state === "streaming" ? "생성 중" : `${selectedMonth}월 리포트 생성`}
       </button>
       {state === "error" ? <p className="error-copy">{error}</p> : null}
       {markdown ? <MarkdownReport markdown={markdown} className="markdown-stream" /> : null}
@@ -2029,7 +2011,7 @@ function ScoreMeter({ label, value, inverse = false, helper }: { label: string; 
   return (
     <div className={`score-meter ${tone}`}>
       <span>{translateText(label)}</span>
-      <strong>{numberFormatter.format(value)} pts</strong>
+      <strong>{numberFormatter.format(value)}점</strong>
       {helper ? <small>{translateText(helper)}</small> : null}
       <i>
         <b style={{ width: `${normalized}%` }} />
@@ -2105,32 +2087,32 @@ function deriveEvidenceProfile(driver: DriverAnnualSummary, snapshot: ZoneSnapsh
   const outZoneRatio = snapshot.monthly_evidence.out_zone_distance_ratio;
   const riskScore = snapshot.scores.out_zone_pattern_change_risk;
 
-  let headline = "Repeated In-Zone Driving";
-  if (riskScore >= careReviewRiskThreshold) headline = "Out-Zone Risk Change Detected in the Selected Month";
-  else if (riskEvents > 0 && riskScore < preferredRiskCeiling) headline = "Risk Events Observed, But Change Risk Is Low";
-  else if (outZoneRatio > 0.25 && repeatRate > 0.55 && riskEvents <= trips.length * 0.2) headline = "Repeated Out-Zone Driving Is Stable";
-  else if (newDestinationTrips > 0 && outZoneRatio > 0.15) headline = "New External Destination Observed";
-  else if (driver.persona_type === "medical_visit_pattern") headline = "Repeated Hospital Visits Observed";
-  else if (driver.persona_type === "irregular_family_support") headline = "Family-Care Out-Zone Travel Observed";
+  let headline = "생활권 안 반복 주행";
+  if (riskScore >= careReviewRiskThreshold) headline = "선택 월 생활권 밖 위험변화 포착";
+  else if (riskEvents > 0 && riskScore < preferredRiskCeiling) headline = "위험행동은 있으나 변화위험은 낮음";
+  else if (outZoneRatio > 0.25 && repeatRate > 0.55 && riskEvents <= trips.length * 0.2) headline = "반복 외부 목적지 안정";
+  else if (newDestinationTrips > 0 && outZoneRatio > 0.15) headline = "신규 외부 목적지 관찰";
+  else if (driver.persona_type === "medical_visit_pattern") headline = "반복 병원 방문 관찰";
+  else if (driver.persona_type === "irregular_family_support") headline = "가족 돌봄 외부 이동 관찰";
 
   const outerPattern =
     outZoneRatio < 0.12
-      ? "Mostly In-Zone"
+      ? "대부분 생활권 안 주행"
       : repeatRate >= 0.6
-        ? "Repeated External Destinations"
+        ? "반복 외부 목적지 중심"
         : newDestinationTrips > 0
-          ? "Includes New External Destinations"
-          : "Dispersed External Travel";
+          ? "신규 외부 목적지 포함"
+          : "분산된 외부 이동";
   const riskPattern =
     riskEvents === 0
-      ? "Almost No Risk Events"
+      ? "위험행동 거의 없음"
       : riskScore >= careReviewRiskThreshold
-        ? `${riskEvents} risk events · high change risk`
-        : `${riskEvents} risk events observed, but change risk is ${numberFormatter.format(riskScore)} pts, so no sharp spike signal is detected${nightTrips > 0 ? ` · ${nightTrips} night trips` : ""}`;
+        ? `위험행동 ${riskEvents}건 · 변화위험 높음`
+        : `위험행동 ${riskEvents}건이 관찰됐지만 변화위험은 ${numberFormatter.format(riskScore)}점으로 급증 신호는 제한적${nightTrips > 0 ? ` · 야간 ${nightTrips}회` : ""}`;
 
   return {
     headline,
-    summary: `In ${snapshot.service_month}, visits center on ${topDestinations.join(", ")}, and the Out-Zone share is ${percent(outZoneRatio * 100)}. Interpreted as: ${outerPattern}; ${riskPattern}.`,
+    summary: `${snapshot.service_month}에는 ${topDestinations.join(", ")} 방문이 중심이며, 생활권 밖 비중은 ${percent(outZoneRatio * 100)}입니다. ${outerPattern}, ${riskPattern}으로 해석됩니다.`,
     topDestinations,
     outerPattern,
     riskPattern,
@@ -2391,7 +2373,7 @@ function matchesCaseFilter(option: DriverOption, filter: string) {
 }
 
 function personaName(customerId: string) {
-  return `${personaNames[personaIndex(customerId)] ?? "Senior Driver"}`;
+  return `${personaNames[personaIndex(customerId)] ?? "시니어 운전자"} 어르신`;
 }
 
 function personaIndex(customerId: string) {
@@ -2400,7 +2382,7 @@ function personaIndex(customerId: string) {
 }
 
 function caseNo(customerId: string) {
-  return `Case ${String(personaIndex(customerId) + 1).padStart(2, "0")}`;
+  return `가상 ${String(personaIndex(customerId) + 1).padStart(2, "0")}`;
 }
 
 function personaAge(customerId: string) {
@@ -2410,16 +2392,16 @@ function personaAge(customerId: string) {
 
 function personaResidence(driver: DriverAnnualSummary) {
   const districts = [
-    "Seoul Gangnam",
-    "Seoul Songpa",
-    "Seoul Nowon",
-    "Seoul Eunpyeong",
-    "Seoul Gangseo",
-    "Gyeonggi Seongnam",
-    "Gyeonggi Goyang",
-    "Gyeonggi Suwon",
-    "Incheon Namdong",
-    "Seoul Geumcheon"
+    "서울 강남구",
+    "서울 송파구",
+    "서울 노원구",
+    "서울 은평구",
+    "서울 강서구",
+    "경기 성남시",
+    "경기 고양시",
+    "경기 수원시",
+    "인천 남동구",
+    "서울 금천구"
   ];
   return districts[personaIndex(driver.customer_id) % districts.length];
 }
@@ -2430,14 +2412,14 @@ function caseType(option: DriverOption) {
 
 function coreChangeTag(personaType: string) {
   const tags: Record<string, string> = {
-    stable_local_low_mileage: "Repeated Stability",
-    stable_outer_safe: "Out-Zone Stable",
-    recent_outer_risk_change: "Expanded Radius",
-    in_zone_risky_low_mileage: "In-Zone Risk",
-    medical_visit_pattern: "Repeated Hospital",
-    irregular_family_support: "Irregular Out-Zone"
+    stable_local_low_mileage: "반복 안정",
+    stable_outer_safe: "외부 안정",
+    recent_outer_risk_change: "활동반경 확대",
+    in_zone_risky_low_mileage: "생활권 안 위험",
+    medical_visit_pattern: "반복 병원",
+    irregular_family_support: "불규칙 외부"
   };
-  return tags[personaType] ?? "Pattern Observed";
+  return tags[personaType] ?? "패턴 관찰";
 }
 
 function riskBadgeForOption(option: DriverOption) {
@@ -2449,10 +2431,10 @@ function riskBadgeForDriver(driver: DriverAnnualSummary) {
 }
 
 function recommendedAction(driver: DriverAnnualSummary, selectedRow?: MonthlyEvidence) {
-  if (driver.ab_comparison.preventive_care_required) return "Send preventive care guidance and a safe-driving report";
-  if ((selectedRow?.out_zone_pattern_change_risk ?? 0) >= 50) return "Recheck change magnitude next month";
-  if (decisionClass(driver.ab_comparison.annual_decision_signal).label === "Favorable") return "Candidate for continued Favorable status";
-  return "Maintain Standard status and monitor monthly";
+  if (driver.ab_comparison.preventive_care_required) return "예방 케어 안내 및 안전운전 리포트 발송";
+  if ((selectedRow?.out_zone_pattern_change_risk ?? 0) >= 50) return "다음 달 변화폭 재확인";
+  if (decisionClass(driver.ab_comparison.annual_decision_signal).label === "우대") return "우대 유지 후보";
+  return "기본 유지 및 월별 모니터링";
 }
 
 function personaTone(type: string) {
@@ -2464,26 +2446,26 @@ function personaTone(type: string) {
 
 function personaNarrative(type: string) {
   const text: Record<string, string> = {
-    stable_local_low_mileage: "Reference group likely to qualify as Favorable under both existing mileage and proposed formulas due to short repeated trips",
-    stable_outer_safe: "Fairness test group: Out-Zone travel exists, but repeated destinations and low risk events should prevent misclassification",
-    recent_outer_risk_change: "Core group needing Preventive Care: low mileage but rising external destinations and risk events in the second half",
-    in_zone_risky_low_mileage: "Low-mileage blind-spot group: harsh braking and speeding accumulate even within the Safe Zone",
-    medical_visit_pattern: "Group where repeated hospital/pharmacy visits should be observed as a candidate Safe Zone, not automatically treated as external risk",
-    irregular_family_support: "Observation group with legitimate but irregular external travel for family care"
+    stable_local_low_mileage: "짧은 반복 주행이 많아 기존 마일리지와 제안 산식 모두 우대 가능성이 높은 기준군",
+    stable_outer_safe: "생활권 밖 이동이 있어도 목적지 반복성과 낮은 위험행동으로 오분류를 막아야 하는 공정성 검증군",
+    recent_outer_risk_change: "저주행이지만 하반기 외부 목적지와 위험행동이 함께 늘어 예방 케어가 필요한 핵심군",
+    in_zone_risky_low_mileage: "멀리 가지 않아도 생활권 안 급감속과 과속이 누적되는 저주행 함정군",
+    medical_visit_pattern: "병원·약국 반복 방문을 무조건 외부 위험으로 보지 않고 후보 생활권으로 관찰하는 군",
+    irregular_family_support: "가족 돌봄성 외부 이동처럼 목적이 정당하지만 불규칙성이 큰 관찰군"
   };
-  return text[type] ?? "Case group where annual decisions vary based on monthly driving evidence";
+  return text[type] ?? "월별 주행 근거에 따라 연간 판단이 달라지는 사례군";
 }
 
 function destinationLabels(driver: DriverAnnualSummary) {
   const fallback: Record<string, string> = {
-    clinic: "Hospital",
-    family: "Family House",
-    family_home: "Family House",
-    home: "House",
-    leisure: "Nearby Outing",
-    market: "Mart",
-    pharmacy: "Pharmacy",
-    unknown_outer: "New External Destination"
+    clinic: "병원",
+    family: "자녀 집",
+    family_home: "자녀 집",
+    home: "자택",
+    leisure: "근교 외출지",
+    market: "마트",
+    pharmacy: "약국",
+    unknown_outer: "신규 외부 목적지"
   };
 
   return driver.living_pattern.primary_destinations.map((key) => {
@@ -2493,8 +2475,8 @@ function destinationLabels(driver: DriverAnnualSummary) {
 }
 
 function basisLabel(value: string) {
-  if (value === "pre_policy_60_day_dbscan") return "Pre-policy 60-day baseline";
-  if (value === "rolling_60_day_dbscan") return "Rolling previous 60 days";
+  if (value === "pre_policy_60_day_dbscan") return "가입 전 60일 기준";
+  if (value === "rolling_60_day_dbscan") return "직전 60일 갱신";
   return value;
 }
 
