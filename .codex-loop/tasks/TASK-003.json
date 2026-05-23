@@ -1,27 +1,37 @@
 {
   "id": "003",
-  "title": "제출용 시각화 자료와 리포트 만들기",
-  "status": "completed",
+  "title": "rolling 60일 생활권과 월별 4지표 계산",
+  "status": "done",
   "priority": "p0",
-  "summary": "모델 구조와 결과를 심사위원이 빠르게 이해할 수 있는 figure, report, proposal source로 정리합니다.",
+  "summary": "운전자별 사전 baseline 60일과 평가기간 12개월 주행 로그에서 매월 직전 60일 기준 생활권을 계산하고, 해당 월 주행을 4개 지표로 평가한다.",
   "dependsOn": [
-    "001",
     "002"
   ],
   "deliverables": [
-    "reports/figures/01_ai_pipeline.svg",
-    "reports/figures/02_score_structure.svg",
-    "reports/figures/03_decision_flow.svg",
-    "reports/model_demo_summary.md",
-    "docs/submissions/proposal.md"
+    "src/features/monthly_living_zone.py",
+    "src/product/annual_scoring_engine.py",
+    "data/processed/monthly_zone_snapshots.json",
+    "data/processed/monthly_score_table.csv",
+    "data/processed/annual_score_table.csv"
   ],
   "acceptance": [
-    "시각화는 장식이 아니라 데이터, 모델, 판단 흐름을 설명합니다.",
-    "검정 중심의 깔끔한 문서 톤을 유지합니다.",
-    "proposal source review와 PDF render/review 흐름에 연결됩니다."
+    "1월 평가도 사전 baseline 60일을 기준으로 DBSCAN 생활권과 P90 버퍼를 계산하며 cold-start를 쓰지 않는다.",
+    "2월~12월은 평가월을 제외한 직전 60일 주행을 기준으로 DBSCAN 생활권과 P90 버퍼를 계산한다.",
+    "P90 버퍼는 max(500m, min(P90, 2km)) 규칙을 따른다.",
+    "각 월은 Mileage Score, In-Zone Safe Driving Score, Out-Zone Safe Driving Score, Out-Zone Pattern Change Risk를 산출한다.",
+    "월별 점수는 할인율이 아니라 연간 판단 근거로만 사용된다.",
+    "신규 목적지는 기존 생활권, 후보 생활권, 생활권 밖 안정 주행, 생활권 밖 위험변화 중 하나로 해석된다.",
+    "12개월 월별 점수에서 연간 종합 점수가 산출된다.",
+    "사전 baseline 60일 주행은 생활권 기준 생성과 변화 비교에만 사용되고, 연간 주행거리/할인액 산출에서는 제외된다."
   ],
   "notes": [
-    "빈 박스나 장식용 도형으로 분량을 채우지 않습니다.",
-    "PDF는 최종 패키징 결과일 뿐 source of truth가 아닙니다."
-  ]
+    "이번 달 주행을 평가할 때 같은 달 데이터를 생활권 기준 생성에 바로 섞어 데이터 누수를 만들지 않는다.",
+    "생활권 밖 자체를 위험으로 보지 않고 위험행동 및 평소 대비 변화와 함께 본다.",
+    "기존 산출물은 1월 cold-start 기준이므로 사전 baseline 60일 입력으로 다시 생성한다."
+  ],
+  "verification": [
+    "python3 scripts/generate_monthly_living_zone_scores.py",
+    "python3 -m unittest tests.test_monthly_living_zone"
+  ],
+  "completedAt": "2026-05-10"
 }

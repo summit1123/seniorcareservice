@@ -1,27 +1,35 @@
 {
   "id": "002",
-  "title": "AI 점수와 판단 결과 만들기",
-  "status": "completed",
+  "title": "30명 1년 페르소나와 월별 주행 시나리오 생성",
+  "status": "done",
   "priority": "p0",
-  "summary": "생활권 생성 feature와 운전행동 feature를 이용해 평소패턴 변화 감지, 점수 계산, 리워드/케어 판단을 만듭니다.",
+  "summary": "6개 시니어 페르소나별 5명, 총 30명에 대해 생활권 학습용 사전 baseline 60일과 평가기간 12개월 주행 시나리오를 생성한다.",
   "dependsOn": [
     "001"
   ],
   "deliverables": [
-    "src/models/pattern_model.py",
-    "src/models/score_rules.py",
-    "src/product/decision_rules.py",
-    "data/processed/score_table.csv",
-    "data/processed/decision_table.csv"
+    "data/fixtures/annual_persona_profiles.json",
+    "data/fixtures/annual_trip_logs.csv",
+    "data/fixtures/monthly_scenario_events.json",
+    "scripts/generate_annual_persona_simulation.py"
   ],
   "acceptance": [
-    "Isolation Forest 기반 pattern_change_score가 생성됩니다.",
-    "Safe Driving Score, Familiar Zone Score, Out-Zone Behavior Risk가 계산됩니다.",
-    "최종 decision은 추가 리워드, 기본 유지, 예방 케어 중 하나로 나옵니다.",
-    "reason_1, reason_2, reason_3가 사람이 읽을 수 있는 문장으로 생성됩니다."
+    "각 가상 운전자는 실제 고객처럼 보이는 프로필을 가진다: 생활 목적지, 외출 빈도, 주행거리 성향, 생활권 안/밖 이동 성향, 위험행동 성향.",
+    "각 운전자는 평가기간 시작 전 60일 baseline 주행 로그와 1월~12월 평가기간 주행 로그를 가진다.",
+    "baseline 60일 주행은 생활권 생성과 변화 비교에만 사용되며 기존 마일리지 연간 주행거리, 제안 연간 할인율, 할인액 계산에는 포함되지 않는다.",
+    "페르소나에는 안정 저주행형, 생활권 밖 안정형, 최근 위험변화형, 생활권 안 위험행동형, 병원 방문형, 가족 돌봄 이동형이 포함된다.",
+    "주행 로그는 period_role(baseline 또는 evaluation), 월, 날짜, 거리, 시간, 출발/도착 좌표, 생활 목적지, 과속/급감속/야간 등 위험행동 필드를 포함한다.",
+    "연간 주행거리 구간이 기존 마일리지 할인표의 여러 구간을 덮도록 분포한다.",
+    "생성 데이터는 고정 seed로 재현 가능하다."
   ],
   "notes": [
-    "AI가 보험료를 직접 결정한다고 표현하지 않습니다.",
-    "위험은 벌점이 아니라 예방 케어로 연결합니다."
-  ]
+    "30명은 실제 고객이 아니라 AI 페르소나 기반 시뮬레이션 운전자다.",
+    "발표에서는 이 데이터가 상품 기준 검증용 시나리오임을 명확히 말한다.",
+    "기존 12개월 fixture는 사전 baseline 60일이 빠져 있으므로 이 task를 다시 수행한다."
+  ],
+  "verification": [
+    "python3 scripts/generate_annual_persona_simulation.py",
+    "python3 -m unittest tests.test_annual_persona_simulation"
+  ],
+  "completedAt": "2026-05-10"
 }

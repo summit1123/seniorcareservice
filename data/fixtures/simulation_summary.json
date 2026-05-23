@@ -1,11 +1,11 @@
 {
   "schema_version": "senior-report-agent/v1",
-  "generated_at": "2026-05-07T02:20:37+00:00",
+  "generated_at": "2026-05-10T17:35:54+00:00",
   "source_artifacts": {
     "evaluation_view_model_input": "data/fixtures/evaluation_view_model.json",
     "critic_review_input": "data/fixtures/rule_review.json"
   },
-  "report_mode": "llm_generated",
+  "report_mode": "deterministic_template",
   "approval": {
     "approval_gate_passed": true,
     "critic_passed": true,
@@ -105,7 +105,7 @@
     ]
   },
   "portfolio_llm_report": {
-    "mode": "llm_generated",
+    "mode": "deterministic_template",
     "request_features": {
       "customer_count": 30,
       "risk_change_target_count": 5,
@@ -137,22 +137,18 @@
     },
     "fallback_available": true,
     "audience": "insurer_staff",
-    "summary": "### Senior Safe Mileage 정책 검증 결과 요약\n\n- **고객 수**: 30명\n- **위험 변화 목표 수**: 5\n- **제안된 캡처 수**: 5\n- **비목표 잘못 탐지 수**: 1\n- **총 분류 오류 수**: 1\n- **에이전트 검증 통과율**: 96.67%\n- **비평 판단**: 통과\n- **비평 위험 수**: 2\n\n#### 선택된 정책 가중치\n- 주행 거리: 30%\n- 존 내: 30%\n- 안전한 존 외: 20%\n- 존 변화: 20%\n\n#### 선택된 정책 임계값\n- 케어 임계값: 41.14\n- 케어 임계값 백분위수: 20%\n- 케어 임계값 출처: 위험 변화 점수 상위 백분위\n- 예상 상위 N 수: 6\n\n#### 티어 임계값\n- S: 85\n- A: 75\n- B: 65\n- C: 0\n\n이 결과는 정책의 신뢰성과 유효성을 검증하는 데 기여하며, 향후 조정 시 고려될 수 있습니다.",
+    "summary": "제안 Senior Safe Mileage Score는 합성 30명 fixture에서 저주행 위험변화 대상 5명 중 5명을 포착했고, 비대상 오탐은 1명입니다. Critic Agent verdict는 pass입니다.",
     "llm_service_status": {
-      "status": "available",
-      "active": true,
+      "status": "inactive",
+      "active": false,
       "available": true,
       "failure_detected": false,
-      "report_mode": "llm_generated",
+      "report_mode": "deterministic_template",
       "fallback_active": false,
+      "fallback_reason": "openai_api_disabled",
       "purpose": "insurer_portfolio_report",
       "handled_by": "report_agent",
       "core_outputs_continue": true
-    },
-    "generation": {
-      "provider": "openai",
-      "model": "gpt-4o-mini",
-      "attempts": 1
     }
   },
   "customer_reports": [
@@ -411,7 +407,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### 고객별 Senior Safe Mileage 판정 리포트\n\n**판정**: 우대  \n**리포트 요약**: 통합 점수 90.1과 낮은 위험변화 점수 5.3를 기준으로 생활권 중심 안정 주행 우대 대상입니다.\n\n**이유 코드**:\n- 낮은 주행 거리 기준 적격\n- 생활권 DBSCAN P90 입력 사용\n- 생활권 안정 주행\n- 강한 위험 변화 없음\n- 제안된 모델 유리 또는 기준\n\n**주행 데이터**:\n- 기준 총 주행 거리: 517.93 km\n- 최근 총 주행 거리: 269.4 km\n- 연간화된 최근 주행 거리: 3,232.8 km\n- 최근 주행 횟수: 12회\n- 최근 생활권 내 주행 비율: 92.98%\n- 최근 생활권 내 주행 거리: 250.5 km\n- 최근 생활권 내 주행 횟수: 11회\n- 최근 위험률 (100km당): 0.3992\n\n**추천 조치**: 생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
+        "summary": "통합 점수 90.1와 낮은 위험변화 점수 5.3를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 90.1 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 73.1 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -509,22 +505,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -783,7 +775,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### 고객별 Senior Safe Mileage 판정 리포트\n\n**판정:** 우대  \n**이유:** \n- 낮은 주행 거리 기준 적격\n- 생활권 중심 DBSCAN P90 데이터 사용\n- 생활권 내 안정 주행\n- 위험 변화 없음\n- 제안된 모델 우대 또는 표준\n\n**통합 점수:** 91.5  \n**위험 변화 점수:** 2.3  \n**최근 총 주행 거리:** 244.96 km  \n**최근 생활권 내 주행 거리:** 244.96 km  \n**주간 주행 비율:** 100%  \n**최근 주행 횟수:** 11회  \n\n**요약:** 생활권 중심 안정 주행 우대 대상으로 판별됨.\n\n**추천 조치:** 생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
+        "summary": "통합 점수 91.5와 낮은 위험변화 점수 2.3를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 91.5 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 75.5 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -881,22 +873,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -1155,7 +1143,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### 고객별 Senior Safe Mileage 판정 리포트\n\n- **우대 판정**: 고객은 생활권 중심 안정 주행 우대 대상입니다.\n  \n- **기초 정보**:\n  - 총 주행 거리: 704.28 km\n  - 최근 주행 거리: 351.17 km\n  - 연간 주행 거리 예측: 4214.04 km\n  - 최근 여행 횟수: 15회\n  - 생활권 내 비율: 94.47%\n  - 생활권 외 비율: 5.53%\n\n- **위험 평가**:\n  - 위험 변화 점수: 3.43 (낮은 위험 변화)\n  - 생활권 내 위험 점수: 0.9043 per 100km\n  - 생활권 외 위험 점수: 0.0 per 100km\n\n- **추천 조치**: 생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.\n\n- **요약**: 통합 점수 87.2와 낮은 위험변화 점수 3.4를 기준으로 우대 판정.",
+        "summary": "통합 점수 87.2와 낮은 위험변화 점수 3.4를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 87.2 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 64.9 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -1253,22 +1241,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -1527,7 +1511,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### Senior Safe Mileage 판정 리포트\n\n- **고객 판정**: 우대\n- **이유 코드**:\n  - 저주행 기준 적합\n  - 생활권 데이터 분석 사용\n  - 생활권 내 안정적인 주행\n  - 위험 변화 없음\n  - 모델 제안이 유리 또는 표준\n  \n- **통합 점수**: 90.3\n- **위험 변화 점수**: 11.3\n\n**판별 요약**: 생활권 중심 안정 주행 우대 대상입니다.\n\n**추천 행동**: 생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
+        "summary": "통합 점수 90.3와 낮은 위험변화 점수 11.3를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 90.3 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 77.8 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -1625,22 +1609,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -1899,7 +1879,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### Senior Safe Mileage 판정 리포트\n\n- **고객 판정**: 우대\n- **판정 근거**:\n  - 낮은 주행 거리 기준 적격\n  - 생활권 중심 DBSCAN P90 입력 사용\n  - 안정된 생활권 주행\n  - 강한 위험 변화 없음\n  - 제안된 모델에서 유리하거나 표준\n  \n- **통합 점수**: 88.5\n- **위험 변화 점수**: 6.7\n- **생활권 주행 실적**:\n  - 최근 총 주행 거리: 294.46 km\n  - 생활권 내 주행 거리: 272.48 km (93%)\n  - 최근 주행 횟수: 14회 (13회 생활권 내)\n  \n- **제안된 조치**:\n  - 생활권 중심 안정 주행 우대 근거 확인 후, 일반 갱신 안내에 반영.\n\n**비고**: 고객은 안정적인 낮은 주행 거리 패턴을 보이고 있으며, 이로 인해 우대 인정.",
+        "summary": "통합 점수 88.5와 낮은 위험변화 점수 6.7를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 88.5 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 70.5 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -1997,22 +1977,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -2271,7 +2247,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### Senior Safe Mileage 판정 리포트\n\n- **진단 결정**: 우대\n- **판정 근거**:\n  - 낮은 주행 거리 기준 적격\n  - 생활권 중심 데이터 분석 입력 사용\n  - 생활권 내 안정 주행\n  - 위험 변화 없음\n  - 우대 모델 기준에 부합\n\n- **통합 점수**: 80.0\n- **위험 변화 점수**: 5.5\n\n- **요약**: 생활권 중심 안정 주행 우대 대상입니다.\n\n- **추천 조치**: 생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
+        "summary": "통합 점수 80.0와 낮은 위험변화 점수 5.5를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 80.0 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 45.7 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -2369,22 +2345,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -2645,7 +2617,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### 고객별 Senior Safe Mileage 판정 리포트\n\n- **판정 결과**: 우대\n- **기초 점수**: \n  - 통합 점수: 81.5\n  - 위험변화 점수: 6.4\n- **주요 사유 코드**: \n  - LOW_MILEAGE_BASELINE_ELIGIBLE\n  - LIVING_ZONE_DBSCAN_P90_INPUT_USED\n  - LIVING_ZONE_STABLE_DRIVING\n  - NEW_DESTINATION_OUT_ZONE_SIGNAL\n  - NO_STRONG_RISK_CHANGE\n  - PROPOSED_MODEL_FAVORABLE_OR_STANDARD\n  \n- **요약**: \n  - 생활권 중심 안정 주행 우대 대상입니다.\n  \n- **추천 조치**: \n  - 생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다. \n\n### 주행 데이터 요약\n- **총 주행 거리 (기초)**: 956.67 km\n- **최근 총 주행 거리**: 476.18 km\n- **연간 예상 주행 거리**: 5714.16 km\n- **최근 주행 횟수**: 14회\n- **생활권 내 주행 비율**: 75.74%\n- **생활권 외 주행 비율**: 24.26% (변동: 2.28%)\n- **위험율 변화 (100km당)**: 0.3174\n\n#### 생활권 내/외 주행 데이터\n- **생활권 내 주행 거리**: 360.65 km (주행 횟수: 11)\n- **생활권 외 주행 거리**: 115.53 km (주행 횟수: 3)\n- **생활권 내 위험율 (100km당)**: 0.5546\n- **생활권 외 위험율 (100km당)**: 1.7312\n\n### 안전 점수\n- 생활권 외 안전 점수: 90.48\n- 주행 점수: 52.38\n- 위험 변화 점수: 6.39\n- Senior Safe Mileage 점수: 81.53\n\n이상입니다.",
+        "summary": "통합 점수 81.5와 낮은 위험변화 점수 6.4를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 81.5 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 52.4 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -2750,22 +2722,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -3022,7 +2990,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 기본 판정 리포트",
-        "summary": "**고객별 Senior Safe Mileage 판정 리포트**\n\n- **판정 결과**: 기본\n- **판정 사유**: \n  - 저주행거리 기준 적합\n  - 거주 구역 분석 사용\n  - 새로운 목적지가 구역 외 신호\n  - 위험 변화 없음\n  \n- **통합 점수**: 74.0\n- **위험 변화 점수**: 9.4\n- **고객 상태**: 기본 조건 유지가 적절\n\n- **추천 조치**: \n  - 기본 조건 유지 \n  - 다음 관측기간의 위험 변화 점수 모니터링\n\n**주요 데이터**:\n- 총 주행 거리: 1381.49 km\n- 최근 주행 거리: 681.62 km (연간화: 8179.44 km)\n- 최근 주행 회수: 19회\n- 구역 내 비율: 66.9%\n- 구역 외 비율: 33.1%\n- 위험률 변화 (100km당): 0.1603",
+        "summary": "통합 점수 74.0와 위험변화 점수 9.4를 기준으로 기본 조건 유지가 적절한 고객입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 기존 마일리지 점수 31.8 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다. 최근 생활권 밖 신규 목적지 신호가 있어 기존 저주행 산식보다 변화 검토 필요성이 커졌습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "기본 조건을 유지하되 다음 관측기간의 위험변화 점수 추이를 모니터링합니다.",
@@ -3113,22 +3081,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -3389,7 +3353,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### 고객별 Senior Safe Mileage 판정 리포트\n\n**고객 판정:** 우대  \n**판정 근거:**  \n- 낮은 주행거리 기준 적격  \n- 생활권 중심 안정 주행  \n- 새로운 목적지 신호  \n- 위험 변화 없음  \n- 모델 유리 또는 표준  \n\n**통합 점수:** 76.1  \n**위험 변화 점수:** 9.4  \n\n**주행 데이터:**  \n- 기준 주행거리: 1130.94 km  \n- 최근 주행거리: 628.99 km  \n- 연간화 최근 주행: 7547.88 km  \n- 최근 주행 수: 17회  \n- 주거 지역 내 주행 비율: 69.33%  \n- 주거 지역 외 주행 비율: 30.67%  \n\n**위험 평점:**  \n- 주거 지역 내 위험 평점: 1.1466 per 100km  \n- 주거 지역 외 위험 평점: 0.5183 per 100km  \n\n**추천 조치:**  \n생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
+        "summary": "통합 점수 76.1와 낮은 위험변화 점수 9.4를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 76.1 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 37.1 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -3494,22 +3458,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -3770,7 +3730,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### 고객별 Senior Safe Mileage 판정 리포트\n\n**판정: 우대**  \n**사유 코드:** \n- 낮은 주행 거리 기준 적격\n- 생활권 DBSCAN P90 입력 사용\n- 생활권 중심 안정 주행\n- 새로운 목적지 외부 지역 신호\n- 강력한 위험 변화 없음\n- 제안 모델 우대 또는 표준\n\n**통합 점수:** 80.0  \n**위험 변화 점수:** 17.5  \n\n**생활권 중심 안정 주행 우대 대상**  \n\n**권장 조치:** 생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.  \n\n**기타 정보:**\n- 기준 주행 거리: 927.41 km\n- 최근 주행 거리: 454.42 km (연환산: 5453.04 km)\n- 최근 주행 횟수: 13회\n- 생활권 내 주행 비율: 67.38%\n- 생활권 외 주행 비율: 32.62% (Δ: 10.05%)\n- 안전 점수 (생활권 외): 88.87\n- 주행 거리 기준 점수: 54.56\n- 위험 변화 점수: 17.51\n- Senior Safe Mileage 점수: 80.05\n\n검토 후 업데이트 필요.",
+        "summary": "통합 점수 80.0와 낮은 위험변화 점수 17.5를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 80.0 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 54.6 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -3875,22 +3835,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -4153,7 +4109,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 예방 케어 판정 리포트",
-        "summary": "### Senior Safe Mileage 판정 리포트\n\n**고객 정보**\n- **케어 결정:** 예방 케어\n- **리포트 사유 코드:** \n  - 저주행 기준 적격\n  - 생활권 DBSCAN P90 입력 사용\n  - 새로운 목적지 외부 신호\n  - 생활권 패턴 변화 위험\n  - 최근 야간 주행 증가\n  - 위험 사건 비율 증가\n  - 제안된 예방 케어 모델\n\n**요약**\n- 최근 생활권 밖 위험 변화 점수: **97.8**\n- 통합 점수: **51.7**\n- 예방 케어 검토 필요 대상\n\n**추천 조치**\n- 상담 또는 안전운전 안내 대상으로 검토\n- 최근 생활권 밖 주행 변화 원인 확인\n\n**주행 데이터 요약**\n- **기준 총 주행 거리:** 648.84 km\n- **최근 총 주행 거리:** 336.66 km\n- **연간 최근 주행 거리:** 4039.92 km\n- **최근 주행 횟수:** 13 회\n- **최근 생활권 내 비율:** 62.34%\n- **최근 생활권 밖 비율:** 37.66%\n- **외부 비율 변화:** 34.19%\n- **야간 비율 변화:** 22.8%\n- **100km당 위험률 변화:** 5.4783\n\n**위험 점수**\n- 생활권 밖 안전 점수: **77.78**\n- 주행 기준 점수: **66.33**\n- 위험 변화 점수: **97.8**\n- Senior Safe Mileage 점수: **51.71** \n\n상기 정보를 바탕으로 고객의 안전 운전 습관을 살펴보고, 필요한 예방 조치를 취해주시기 바랍니다.",
+        "summary": "최근 생활권 밖 위험변화 점수 97.8와 통합 점수 51.7를 기준으로 예방 케어 검토가 필요한 고객입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류했습니다. 제안 모델은 저주행 할인 여부와 별개로 최근 위험변화를 반영해 예방 케어 판정으로 전환했습니다. 생활권 밖 주행 패턴 변화가 위험변화 점수 97.8 상승의 핵심 근거입니다. 최근 야간주행 증가가 생활권 밖 변화와 함께 관찰되어 예방 케어 검토 근거를 보강했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 0.0점 fail입니다. 제안 모델 decision_detected=True, ground_truth_target=True, proxy_label_target=True, exception_rule=none.",
         "recommended_action": "상담 또는 안전운전 안내 대상으로 검토하고 최근 생활권 밖 주행 변화 원인을 확인합니다.",
@@ -4265,22 +4221,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -4543,7 +4495,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 예방 케어 판정 리포트",
-        "summary": "### 고객별 Senior Safe Mileage 판정 리포트\n\n- **케어 결정**: 예방 케어\n- **리포트 요약**: 최근 생활권 밖 위험변화 점수 100.0과 통합 점수 48.7을 기준으로 예방 케어 검토가 필요한 고객입니다.\n\n#### 이유 코드:\n- LOW_MILEAGE_BASELINE_ELIGIBLE\n- LIVING_ZONE_DBSCAN_P90_INPUT_USED\n- NEW_DESTINATION_OUT_ZONE_SIGNAL\n- OUT_ZONE_PATTERN_CHANGE_RISK\n- RECENT_NIGHT_DRIVING_INCREASE\n- RISK_EVENT_RATE_INCREASE\n- PROPOSED_MODEL_PREVENTIVE_CARE\n\n#### 최근 주행 데이터:\n- **기준 총 주행 거리**: 722.96 km\n- **최근 총 주행 거리**: 363.01 km (연간화: 4356.12 km)\n- **최근 주행 횟수**: 15회\n- **생활권 주행 비율**: 60%\n- **비생활권 주행 비율**: 40%\n- **비생활권 변경 비율**: 33.61%\n- **야간 주행 증가 비율**: 26.86%\n- **위험률 변화**: 5.64 (100 km 당)\n\n#### 최근 주행 분석:\n- **생활권 내 주행 거리**: 217.79 km (주행 횟수: 9회, 야간 비율: 24.88%, 위험률: 6.43)\n- **비생활권 주행 거리**: 145.22 km (주행 횟수: 6회, 야간 비율: 29.84%, 위험률: 6.20)\n\n#### 점수:\n- **비생활권 안전 점수**: 60.44\n- **주행 거리 기준 점수**: 63.7\n- **위험 변화 점수**: 100.0\n- **Senior Safe Mileage 점수**: 48.73\n\n### 추천 조치\n상담 또는 안전운전 안내 대상으로 검토하고 최근 생활권 밖 주행 변화 원인을 확인합니다.",
+        "summary": "최근 생활권 밖 위험변화 점수 100.0와 통합 점수 48.7를 기준으로 예방 케어 검토가 필요한 고객입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류했습니다. 제안 모델은 저주행 할인 여부와 별개로 최근 위험변화를 반영해 예방 케어 판정으로 전환했습니다. 생활권 밖 주행 패턴 변화가 위험변화 점수 100.0 상승의 핵심 근거입니다. 최근 야간주행 증가가 생활권 밖 변화와 함께 관찰되어 예방 케어 검토 근거를 보강했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 0.0점 fail입니다. 제안 모델 decision_detected=True, ground_truth_target=True, proxy_label_target=True, exception_rule=none.",
         "recommended_action": "상담 또는 안전운전 안내 대상으로 검토하고 최근 생활권 밖 주행 변화 원인을 확인합니다.",
@@ -4655,22 +4607,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -4933,7 +4881,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 예방 케어 판정 리포트",
-        "summary": "### Senior Safe Mileage 판정 리포트\n\n**고객 판정: 예방 케어**  \n**이유 코드:**  \n- LOW_MILEAGE_BASELINE_ELIGIBLE  \n- LIVING_ZONE_DBSCAN_P90_INPUT_USED  \n- NEW_DESTINATION_OUT_ZONE_SIGNAL  \n- OUT_ZONE_PATTERN_CHANGE_RISK  \n- RECENT_NIGHT_DRIVING_INCREASE  \n- RISK_EVENT_RATE_INCREASE  \n- PROPOSED_MODEL_PREVENTIVE_CARE  \n\n**요약:**  \n최근 생활권 밖 위험변화 점수 100.0과 통합 점수 46.5를 기준으로 예방 케어 검토가 필요한 고객입니다.  \n\n**권장 조치:**  \n상담 또는 안전운전 안내 대상으로 검토하고 최근 생활권 밖 주행 변화 원인을 확인합니다.  \n\n**주요 지표:**  \n- **기준 총 주행 거리:** 579.12 km  \n- **최근 총 주행 거리:** 315.89 km (연간 환산: 3790.68 km, 최근 주행 횟수: 12회)  \n- **생활권 내 비율:** 58.45%, **생활권 외 비율:** 41.55% (생활권 외 비율 변화: 33.63%)  \n- **밤 주행 비율 변화:** 33.99%  \n- **위험률 변화 (100km당):** 6.9357  \n- **생활권 내 주행 거리:** 184.65 km (위험률: 8.1235)  \n- **생활권 외 주행 거리:** 131.24 km (위험률: 6.0957)  \n- **생활권 외 안전 점수:** 52.89  \n- **마일리지 기준 점수:** 68.41  \n- **위험 변화 점수:** 100.0  \n- **Senior Safe Mileage 점수:** 46.48  \n\n보고서 요약: 고객은 최근 다양한 지표에서 위험 변화가 감지되어 예방 케어가 필요함.",
+        "summary": "최근 생활권 밖 위험변화 점수 100.0와 통합 점수 46.5를 기준으로 예방 케어 검토가 필요한 고객입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류했습니다. 제안 모델은 저주행 할인 여부와 별개로 최근 위험변화를 반영해 예방 케어 판정으로 전환했습니다. 생활권 밖 주행 패턴 변화가 위험변화 점수 100.0 상승의 핵심 근거입니다. 최근 야간주행 증가가 생활권 밖 변화와 함께 관찰되어 예방 케어 검토 근거를 보강했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 0.0점 fail입니다. 제안 모델 decision_detected=True, ground_truth_target=True, proxy_label_target=True, exception_rule=none.",
         "recommended_action": "상담 또는 안전운전 안내 대상으로 검토하고 최근 생활권 밖 주행 변화 원인을 확인합니다.",
@@ -5045,22 +4993,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -5323,7 +5267,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 예방 케어 판정 리포트",
-        "summary": "### Senior Safe Mileage 판정 리포트\n\n**고객 판정:** 예방 케어  \n**이유 코드:** \n- 저주행 기준 적격\n- 생활권 DBSCAN P90 입출력 사용\n- 새로운 목적지 생활권 외 신호\n- 생활권 외 패턴 변화 위험\n- 최근 야간 주행 증가\n- 위험 사건 비율 증가\n- 제안된 예방 케어 모델\n\n**최근 생활권 외 위험 변화 점수:** 89.3  \n**통합 점수:** 54.5  \n\n**상황 요약:**  \n최근 생활권 밖 위험변화 점수와 통합 점수를 기준으로 예방 케어 검토 필요.\n\n**권장 조치:**  \n상담 또는 안전운전 안내 대상으로 검토하고, 최근 생활권 밖 주행 변화 원인 확인 필요.\n\n**프라이버시 필터링된 특징:**  \n- 개인 유형: 최근 외부 위험 변화\n- 기준 총 주행: 777.74 km\n- 최근 총 주행: 355.77 km\n- 연간화된 최근 주행: 4269.24 km\n- 최근 주행 건수: 17\n- 최근 생활권 내 비율: 63.58%\n- 최근 생활권 외 비율: 36.42%\n- 외부 비율 변화: 27.52%\n- 야간 비율 변화: 20.01%\n- 100km당 위험 비율 변화: 4.4405\n\n**세부 사항:**  \n- 최근 생활권 내 주행: 226.21 km (건수: 11, 야간 비율: 29.57%, 위험 비율: 5.7469 per 100km)  \n- 최근 생활권 외 주행: 129.56 km (건수: 6, 야간 비율: 12.96%, 위험 비율: 4.6311 per 100km)  \n- 외부 안전 점수: 72.3  \n- 주행 기준 점수: 64.42  \n- 위험 변화 점수: 89.32  \n- Senior Safe Mileage 점수: 54.51",
+        "summary": "최근 생활권 밖 위험변화 점수 89.3와 통합 점수 54.5를 기준으로 예방 케어 검토가 필요한 고객입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류했습니다. 제안 모델은 저주행 할인 여부와 별개로 최근 위험변화를 반영해 예방 케어 판정으로 전환했습니다. 생활권 밖 주행 패턴 변화가 위험변화 점수 89.3 상승의 핵심 근거입니다. 최근 야간주행 증가가 생활권 밖 변화와 함께 관찰되어 예방 케어 검토 근거를 보강했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 0.0점 fail입니다. 제안 모델 decision_detected=True, ground_truth_target=True, proxy_label_target=True, exception_rule=none.",
         "recommended_action": "상담 또는 안전운전 안내 대상으로 검토하고 최근 생활권 밖 주행 변화 원인을 확인합니다.",
@@ -5435,22 +5379,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -5713,7 +5653,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 예방 케어 판정 리포트",
-        "summary": "### 고객별 Senior Safe Mileage 판정 리포트\n\n**고객 케어 결정:** 예방 케어  \n**이유 코드:**  \n- LOW_MILEAGE_BASELINE_ELIGIBLE  \n- LIVING_ZONE_DBSCAN_P90_INPUT_USED  \n- NEW_DESTINATION_OUT_ZONE_SIGNAL  \n- OUT_ZONE_PATTERN_CHANGE_RISK  \n- RECENT_NIGHT_DRIVING_INCREASE  \n- RISK_EVENT_RATE_INCREASE  \n- PROPOSED_MODEL_PREVENTIVE_CARE  \n\n**최근 생활권 밖 위험변화 점수:** 99.1  \n**통합 점수:** 42.2  \n\n**Fallback Summary:**  \n최근 생활권 밖 위험변화 점수 99.1와 통합 점수 42.2를 기준으로 예방 케어 검토가 필요한 고객입니다.  \n\n**추천 행동:**  \n상담 또는 안전운전 안내 대상으로 검토하고 최근 생활권 밖 주행 변화 원인을 확인합니다.  \n\n---\n\n**기타 정보:**  \n- 기본 연간 주행 거리: 5,154.6 km  \n- 최근 주행 거리: 429.55 km  \n- 최근 주행 횟수: 18회  \n- 최근 생활권 내 주행 거리: 266.22 km  \n- 최근 생활권 외 주행 거리: 163.33 km  \n- 안전 점수: 38.49  \n- 마일리지 기준 점수: 57.04  \n- 위험 변화 점수: 99.09  \n- Senior Safe Mileage 점수: 42.23",
+        "summary": "최근 생활권 밖 위험변화 점수 99.1와 통합 점수 42.2를 기준으로 예방 케어 검토가 필요한 고객입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류했습니다. 제안 모델은 저주행 할인 여부와 별개로 최근 위험변화를 반영해 예방 케어 판정으로 전환했습니다. 생활권 밖 주행 패턴 변화가 위험변화 점수 99.1 상승의 핵심 근거입니다. 최근 야간주행 증가가 생활권 밖 변화와 함께 관찰되어 예방 케어 검토 근거를 보강했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 0.0점 fail입니다. 제안 모델 decision_detected=True, ground_truth_target=True, proxy_label_target=True, exception_rule=none.",
         "recommended_action": "상담 또는 안전운전 안내 대상으로 검토하고 최근 생활권 밖 주행 변화 원인을 확인합니다.",
@@ -5825,22 +5765,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -6099,7 +6035,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 기본 판정 리포트",
-        "summary": "### Senior Safe Mileage 판정 리포트\n\n- **고객 판정**: 기본  \n- **판정 기준**: 통합 점수 69.1, 위험변화 점수 25.5  \n- **사유 코드**: \n  - LOW_MILEAGE_BASELINE_ELIGIBLE\n  - LIVING_ZONE_DBSCAN_P90_INPUT_USED\n  - LIVING_ZONE_STABLE_DRIVING\n  - NO_STRONG_RISK_CHANGE\n  - RISK_EVENT_RATE_INCREASE\n\n- **프라이버시 필터링된 특징**: \n  - 인구 유형: 위험 낮은 주행거리 지역 내\n  - 기준 주행거리: 520.98 km\n  - 최근 총 주행거리: 259.59 km\n  - 최근 주행횟수: 12회\n  - 지역 내 주행 비율: 90.38%\n  - 지역 밖 주행 비율: 9.62%\n\n- **위험 변화 점수**: 25.5\n- **추천 조치**: 기본 조건을 유지하되 다음 관측기간의 위험변화 점수 추이를 모니터링합니다. \n\n**결론**: 위험 변화가 크지 않으며 안정적인 주행 환경으로 판단되어 기본 조건 유지를 권장합니다.",
+        "summary": "통합 점수 69.1와 위험변화 점수 25.5를 기준으로 기본 조건 유지가 적절한 고객입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 급가감속 등 위험행동 빈도 증가가 최근 30일 위험변화 판단에 영향을 줬습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 69.1 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 74.0 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "기본 조건을 유지하되 다음 관측기간의 위험변화 점수 추이를 모니터링합니다.",
@@ -6197,22 +6133,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -6471,7 +6403,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 기본 판정 리포트",
-        "summary": "### Senior Safe Mileage 판정 리포트\n\n- **고객 상태**: 기본 조건 유지\n- **이유 코드**:\n  - 저주행 거리 기준 적합\n  - 거주 구역 데이터 사용\n  - 안정적인 운전 패턴\n  - 강한 위험 변화 없음\n  - 위험 사건 비율 증가\n\n- **요약**: \n  - 통합 점수: 57.0\n  - 위험 변화 점수: 27.3\n  - 분석 결과에 따라 기본 조건 유지가 적절함.\n\n- **추천 조치**:\n  - 기본 조건 유지\n  - 다음 관측기간의 위험 변화 점수 추이를 모니터링\n\n- **주요 지표**:\n  - 총 주행 거리 (기준): 672.55 km\n  - 최근 총 주행 거리: 355.41 km\n  - 연간화된 최근 주행 거리: 4264.92 km\n  - 최근 주행 횟수: 16회\n  - 구역 내 비율: 92.66%\n  - 구역 외 비율: 7.34% \n  - 위험 비율 변화 (100km 당): 2.9189\n  - 구역 내 위험 비율: 5.4656 (100km 당)\n  - 구역 외 위험 비율: 15.3374 (100km 당)\n\n이 리포트는 고객의 운전 습관을 평가하여 안전한 조건을 유지하기 위한 것입니다.",
+        "summary": "통합 점수 57.0와 위험변화 점수 27.3를 기준으로 기본 조건 유지가 적절한 고객입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 급가감속 등 위험행동 빈도 증가가 최근 30일 위험변화 판단에 영향을 줬습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 57.0 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 64.5 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "기본 조건을 유지하되 다음 관측기간의 위험변화 점수 추이를 모니터링합니다.",
@@ -6569,22 +6501,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -6843,7 +6771,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 기본 판정 리포트",
-        "summary": "고객별 Senior Safe Mileage 판정 리포트\n\n- **판정 결과**: 기본 조건 유지\n- **이유 코드**:\n  - 저주행 기준 적격\n  - 생활권 내 안정적 운전\n  - 위험 변화 없음\n  - 위험 이벤트 비율 증가\n\n- **통합 점수**: 65.4\n- **위험 변화 점수**: 28.8\n\n- **추천 조치**: 기본 조건을 유지하되, 다음 관측기간의 위험 변화 점수 추이를 모니터링합니다.\n\n**추가 정보**:\n- 연간 주행 거리: 4315.08 km\n- 최근 주행 거리: 359.59 km\n- 최근 주행 횟수: 17회\n- 생활권 내 주행 비율: 94.51%\n- 저녁 시간 주행 비율의 변화: 4.2% 증가\n\n고객의 현재 주행 패턴은 안정적이며, 향후 모니터링이 필요합니다.",
+        "summary": "통합 점수 65.4와 위험변화 점수 28.8를 기준으로 기본 조건 유지가 적절한 고객입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 급가감속 등 위험행동 빈도 증가가 최근 30일 위험변화 판단에 영향을 줬습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 65.4 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 64.0 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "기본 조건을 유지하되 다음 관측기간의 위험변화 점수 추이를 모니터링합니다.",
@@ -6941,22 +6869,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -7217,7 +7141,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 예방 케어 판정 리포트",
-        "summary": "### Senior Safe Mileage 판정 리포트\n\n**고객 판정:** 예방 케어  \n**이유 코드:** \n- LOW_MILEAGE_BASELINE_ELIGIBLE\n- LIVING_ZONE_DBSCAN_P90_INPUT_USED\n- LIVING_ZONE_STABLE_DRIVING\n- BORDERLINE_PATTERN_CHANGE_MONITORED\n- RISK_EVENT_RATE_INCREASE\n- PROPOSED_MODEL_PREVENTIVE_CARE\n\n**최근 분석 요약:**  \n고객은 최근 생활권 밖 위험변화 점수 41.1과 통합 점수 63.0을 기준으로 예방 케어 검토가 필요합니다.\n\n**제안된 조치:**  \n상담 또는 안전운전 안내 대상으로 검토하고, 최근 생활권 밖 주행 변화 원인을 확인합니다.\n\n### 고객 특성\n- **인구 유형:** 위험이 낮은 생활권 내 주행\n- **기준 총 주행 거리:** 624.01 km\n- **최근 총 주행 거리:** 312.34 km\n- **연간 주행 거리:** 3748.08 km\n- **최근 주행 횟수:** 15회\n- **생활권 내 비율:** 93.81%\n- **생활권 외 비율:** 6.19%\n- **비율 변화:** 3.52%\n- **야간 비율 변화:** 1.23%\n- **100km당 위험률 변화:** 4.96\n- **생활권 내 주행 거리:** 293.0 km\n- **생활권 내 주행 횟수:** 14회\n- **생활권 내 야간 비율:** 5.51%\n- **생활권 내 100km당 위험률:** 7.51\n- **생활권 외 주행 거리:** 19.34 km\n- **생활권 외 주행 횟수:** 1회\n- **생활권 외 야간 비율:** 0.0%\n- **생활권 외 100km당 위험률:** 5.17\n- **생활권 외 안전 점수:** 71.56\n- **주행 거리 기준 점수:** 68.77\n- **위험 변화 점수:** 41.14\n- **Senior Safe Mileage 점수:** 63.0\n\n--- \n\n고객별 추가 검토가 필요합니다.",
+        "summary": "최근 생활권 밖 위험변화 점수 41.1와 통합 점수 63.0를 기준으로 예방 케어 검토가 필요한 고객입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류했습니다. 제안 모델은 저주행 할인 여부와 별개로 최근 위험변화를 반영해 예방 케어 판정으로 전환했습니다. 급가감속 등 위험행동 빈도 증가가 최근 30일 위험변화 판단에 영향을 줬습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 63.0 산정에 긍정적으로 기여했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 0.0점으로 기준 80.0점 대비 fail이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=True, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "상담 또는 안전운전 안내 대상으로 검토하고 최근 생활권 밖 주행 변화 원인을 확인합니다.",
@@ -7322,22 +7246,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -7598,7 +7518,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### 고객별 Senior Safe Mileage 판정 리포트\n\n- **우대 판정**: 우대\n- **판정 근거**:\n  - 낮은 주행 기준 점수 적합\n  - 생활권 중심 안정 주행\n  - 위험 변화 없음\n  - 위험 사건 비율 증가\n  - 제안된 모델이 우대 또는 표준\n  \n- **통합 점수**: 77.5\n- **위험 변화 점수**: 24.1\n\n- **주행 정보**:\n  - 총 주행 거리(최근): 241.05 km\n  - 연간 기준 주행 거리: 2892.6 km\n  - 최근 주행 횟수: 11회\n  - 생활권 내 주행 비율: 100%\n  \n- **위험률**:\n  - 최근 위험률(생활권 내): 5.8079 per 100 km\n\n- **추천 행동**: 생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
+        "summary": "통합 점수 77.5와 낮은 위험변화 점수 24.1를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 급가감속 등 위험행동 빈도 증가가 최근 30일 위험변화 판단에 영향을 줬습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 77.5 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 75.9 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -7703,22 +7623,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -7977,7 +7893,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### 고객별 Senior Safe Mileage 판정 리포트\n\n**판정:** 우대  \n**리우딩 요인:**  \n- 낮은 주행거리 기준 적격\n- 생활권 DBSCAN P90 입력 사용\n- 생활권 중심 안정 주행\n- 강한 위험 변화 없음\n- 제안 모델 우대 또는 표준  \n\n**통합 점수:** 78.6  \n**위험 변화 점수:** 12.5  \n**생활권 중심 안정 주행 우대 대상 확인 요약:**  \n최근 주행 거리: 511.06 km  \n연간화된 최근 주행: 6,132.72 km  \n최근 생활권 내 주행: 383.73 km  \n최근 생활권 내 주행 비율: 75.09%  \n\n**추천 조치:**  \n생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
+        "summary": "통합 점수 78.6와 낮은 위험변화 점수 12.5를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 78.6 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 48.9 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -8075,22 +7991,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -8351,7 +8263,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### Senior Safe Mileage 판정 리포트\n\n- **우대 판정**: 고객은 생활권 중심 안정 주행 우대 대상입니다.\n- **기본 점수**: 통합 점수 81.7\n- **위험변화 점수**: 8.7 (낮음)\n- **최근 주행 거리**: 451.11 km\n- **연간화된 최근 주행 거리**: 5413.32 km\n- **최근 주행 횟수**: 15회\n- **생활권 내 주행 비율**: 71.12%\n- **생활권 외 주행 비율**: 28.88%\n- **안정 주행 이유**: 생활권 중심 안정 주행, 위험 변화 없음, 제안 모델 유리 또는 표준\n\n### 권장 조치\n생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
+        "summary": "통합 점수 81.7와 낮은 위험변화 점수 8.7를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 81.7 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 54.9 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -8456,22 +8368,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -8732,7 +8640,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### 고객별 Senior Safe Mileage 판정 리포트\n\n**판정**: 우대  \n**우대 사유**: \n- 저주행 기반 점수 적합\n- 생활권 중심 데이터 사용\n- 안정적인 주행 패턴\n- 신규 목적지 외부 신호\n- 위험 변화 없음\n- 모델 우대 또는 표준\n\n**통합 점수**: 78.2  \n**위험변화 점수**: 7.8\n\n**생활권 중심 안정 주행 우대 대상**: 해당 고객은 생활권 내 안정적인 주행을 유지하며, 위험 변화가 적어 우대 대상입니다.\n\n**추천 조치**: \n생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다. \n\n**주행 데이터 요약**:\n- 기초 총 주행 거리: 1120.14 km\n- 최근 총 주행 거리: 546.59 km\n- 연간 전환 주행 거리: 6559.08 km\n- 최근 주행 횟수: 19회\n- 생활권 내 비율: 73.64%\n- 생활권 외 비율: 26.36%\n\n**위험 점수 요약**:\n- 생활권 내 위험 점수 (100km당): 1.739\n- 생활권 외 위험 점수 (100km당): 0.6941\n- 위험 변화 점수: 7.75\n\n해당 리포트는 고객의 안전 운전 습관을 반영하며, 지속적인 안정성을 유지할 수 있도록 지원하기 위해 작성되었습니다.",
+        "summary": "통합 점수 78.2와 낮은 위험변화 점수 7.8를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 78.2 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 45.3 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -8837,22 +8745,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -9111,7 +9015,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### Senior Safe Mileage 판정 리포트\n\n- **고객 판정**: 우대\n- **우대 사유**: \n  - 저주행 거리 기준 적격\n  - 생활권 중심 DBSCAN P90 입력 사용\n  - 생활권 안정 주행\n  - 강력한 위험 변동 없음\n  - 제안된 모델: 유리하거나 표준\n\n- **통합 점수**: 83.1\n- **위험 변동 점수**: 11.2\n- **생활권 주행 상태**: 안정적\n\n- **추천 조치**: 생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.\n\n#### 추가 정보\n- **기준 주행 거리**: 747.98 km\n- **최근 주행 거리**: 415.91 km\n- **연간 주행 거리**: 4,990.92 km\n- **최근 주행 횟수**: 13\n- **구역 내 비율**: 77.77%\n- **구역 외 비율**: 22.23%\n- **위험율 변화 (100km당)**: 0.2933\n\n해당 정보는 고객의 주행 안전성과 위험을 평가하는 데 도움이 됩니다.",
+        "summary": "통합 점수 83.1와 낮은 위험변화 점수 11.2를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 83.1 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 58.4 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -9209,22 +9113,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -9483,7 +9383,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### 고객별 Senior Safe Mileage 판정 리포트\n\n- **우대 판정**: 우대\n- **이유 코드**:\n  - 저주행 기준 적합\n  - 생활권 중심 주행 데이터 사용\n  - 생활권 안정 주행\n  - 위험 변화 없음\n  - 모델 우대 또는 표준\n\n- **통합 점수**: 77.8\n- **위험 변화 점수**: 5.4\n- **생활권 중심 안정 주행 우대 대상**: 확인됨\n\n- **최근 주행 데이터**:\n  - 총 주행 거리: 506.05 km\n  - 연평균 주행 거리: 6072.6 km\n  - 최근 여행 횟수: 18회\n  - 생활권 내 주행 비율: 80.96%\n  - 생활권 외 주행 비율: 19.04%\n  \n- **위험 점수**:\n  - 생활권 내: 0.9763 per 100km\n  - 생활권 외: 3.114 per 100km\n\n- **추천 조치**: 생활권 중심 안정 주행 우대 근거를 검토하고 일반 갱신 안내에 반영할 것.",
+        "summary": "통합 점수 77.8와 낮은 위험변화 점수 5.4를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 77.8 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 49.4 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -9581,22 +9481,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -9853,7 +9749,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 기본 판정 리포트",
-        "summary": "### Senior Safe Mileage 판정 리포트\n\n**고객 판정:** 기본  \n**이유 코드:** \n- 낮은 마일리지 기준 적격\n- 거주 지역 DBSCAN P90 입력 사용\n- 새로운 목적지 아웃존 신호\n- 위험 변화 없음\n\n**통합 점수:** 72.5  \n**위험 변화 점수:** 27.6  \n\n**요약:** 통합 점수 72.5와 위험 변화 점수 27.6를 기준으로 기본 조건 유지가 적절한 고객입니다.  \n\n**추천 조치:** 기본 조건을 유지하되 다음 관측 기간의 위험 변화 점수 추이를 모니터링합니다.  \n\n### 개인정보 보호 필터링된 정보\n- **고객 유형:** 비정기 가족 지원  \n- **기준 마일리지:** 1045.62 km  \n- **최근 총 마일리지:** 559.06 km  \n- **연환산 최근 마일리지:** 6708.72 km  \n- **최근 여행 횟수:** 16  \n- **최근 인존 비율:** 73.07%  \n- **최근 아웃존 비율:** 26.93%  \n- **아웃존 비율 변화:** 11.6%  \n- **야간 비율 변화:** 2.53%  \n- **100 km당 위험 비율 변화:** 0.4374  \n- **최근 인존 km:** 408.5  \n- **최근 인존 여행 횟수:** 12  \n- **최근 인존 야간 비율:** 8.6%  \n- **최근 인존 100 km당 위험 비율:** 2.6928  \n- **최근 아웃존 km:** 150.56  \n- **최근 아웃존 여행 횟수:** 4  \n- **최근 아웃존 야간 비율:** 0%  \n- **최근 아웃존 100 km당 위험 비율:** 0.0  \n- **아웃존 안전 점수:** 100.0  \n- **마일리지 기준 점수:** 44.09  \n- **위험 변화 점수:** 27.63  \n- **시니어 세이프 마일리지 점수:** 72.54",
+        "summary": "통합 점수 72.5와 위험변화 점수 27.6를 기준으로 기본 조건 유지가 적절한 고객입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 기존 마일리지 점수 44.1 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다. 최근 생활권 밖 신규 목적지 신호가 있어 기존 저주행 산식보다 변화 검토 필요성이 커졌습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "기본 조건을 유지하되 다음 관측기간의 위험변화 점수 추이를 모니터링합니다.",
@@ -9944,22 +9840,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -10220,7 +10112,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 우대 판정 리포트",
-        "summary": "### Senior Safe Mileage 판정 리포트\n\n**고객 유형:** 비정기 가족 지원  \n**주행 거리 요약:**  \n- 기준 총 주행 거리: 868.09 km  \n- 최근 총 주행 거리: 417.98 km  \n- 최근 연간화 주행 거리: 5015.76 km  \n- 최근 주행 횟수: 14회  \n\n**생활권 내/외 비율:**  \n- 생활권 내 비율: 73.05%  \n- 생활권 외 비율: 26.95%  \n\n**안전 점수 및 위험 변화:**  \n- 생활권 외 안전 점수: 86.8  \n- 주행 거리 기준 점수: 58.2  \n- 위험 변화 점수: 26.96  \n- Senior Safe Mileage 점수: 76.48  \n\n**판정 결정:** 우대  \n**이유 코드:**  \n- LOW_MILEAGE_BASELINE_ELIGIBLE  \n- LIVING_ZONE_DBSCAN_P90_INPUT_USED  \n- LIVING_ZONE_STABLE_DRIVING  \n- NEW_DESTINATION_OUT_ZONE_SIGNAL  \n- NO_STRONG_RISK_CHANGE  \n- PROPOSED_MODEL_FAVORABLE_OR_STANDARD  \n\n**요약:** 통합 점수 76.5와 낮은 위험변화 점수 27.0를 기준으로 생활권 중심 안정 주행 우대 대상입니다.  \n\n**권장 조치:** 생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
+        "summary": "통합 점수 76.5와 낮은 위험변화 점수 27.0를 기준으로 생활권 중심 안정 주행 우대 대상입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 76.5 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 58.2 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "생활권 중심 안정 주행 우대 근거를 확인하고 일반 갱신 안내에 반영합니다.",
@@ -10325,22 +10217,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -10597,7 +10485,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 기본 판정 리포트",
-        "summary": "### 고객별 Senior Safe Mileage 판정 리포트\n\n- **판정 결과**: 기본\n- **이유 코드**: \n  - 저주행 기준 적격\n  - 거주지 구역 P90 데이터 사용\n  - 신규 목적지 외부 구역 신호\n  - 위험 변화 없음\n\n- **통합 점수**: 67.5\n- **위험 변화 점수**: 28.2\n\n- **개요**: 기본 조건 유지가 적절한 고객입니다.\n\n- **추천 조치**: 기본 조건을 유지하되, 다음 관측 기간의 위험 변화 점수 추이를 모니터링합니다. \n\n- **주행 세부정보**:\n  - 기준 주행 거리: 1306.04 km\n  - 최근 주행 거리: 652.91 km\n  - 연간화된 최근 주행 거리: 7834.92 km\n  - 최근 운행 횟수: 20회\n  - 최근 구역 내 비율: 71.2%\n  - 최근 구역 외 비율: 28.8%\n  - 구역 외 비율 변화: 12.63%\n  - 야간 비율 변화: 2.14%\n  - 100km당 위험율 변화: 0.3066\n\n- **구역 내 / 외 주행 데이터**:\n  - 최근 구역 내 주행 거리: 464.85 km (14회)\n  - 최근 구역 외 주행 거리: 188.06 km (6회)\n  - 구역 외 안전 점수: 80.97\n  - 주행 거리 기준 점수: 34.71\n  - 위험 변화 점수: 28.16\n  - Senior Safe Mileage 점수: 67.49\n\n이 고객에 대한 지속적인 모니터링이 필요합니다.",
+        "summary": "통합 점수 67.5와 위험변화 점수 28.2를 기준으로 기본 조건 유지가 적절한 고객입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 기존 마일리지 점수 34.7 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다. 최근 생활권 밖 신규 목적지 신호가 있어 기존 저주행 산식보다 변화 검토 필요성이 커졌습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "기본 조건을 유지하되 다음 관측기간의 위험변화 점수 추이를 모니터링합니다.",
@@ -10688,22 +10576,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -10960,7 +10844,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 기본 판정 리포트",
-        "summary": "### Senior Safe Mileage 판정 리포트\n\n**고객 판정:** 기본  \n**이유 코드:** \n- 저주행 기준 적합\n- 생활 구역 안전성 확인\n- 강한 위험 변화 없음\n\n**통합 점수:** 69.4  \n**위험 변화 점수:** 26.1  \n**추천 행동:** 기본 조건을 유지하되 다음 관측기간의 위험 변화 점수를 모니터링합니다.\n\n**주요 지표:**  \n- 기준 주행 거리: 1167.35 km  \n- 최근 주행 거리: 584.03 km  \n- 최근 연환산 주행 거리: 7008.36 km  \n- 최근 여행 횟수: 19회  \n- 구역 내 주행 비율: 73.67%  \n- 구역 외 주행 비율: 26.33%  \n- 구역 외 비율 변화: 9.95%  \n- 야간 주행 비율 변화: 7.52%  \n- 100 km당 위험률 변화: 0.7695  \n\n**구역 내/외 안전 점수:**  \n- 구역 내 위험률 (100 km당): 2.0919  \n- 구역 외 위험률 (100 km당): 3.2512  \n- 구역 외 안전 점수: 82.12  \n- 주행 거리 기준 점수: 41.6  \n- 위험 변화 점수: 26.13  \n\n고객은 기본 조건 유지가 적절합니다.",
+        "summary": "통합 점수 69.4와 위험변화 점수 26.1를 기준으로 기본 조건 유지가 적절한 고객입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 69.4 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 41.6 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "기본 조건을 유지하되 다음 관측기간의 위험변화 점수 추이를 모니터링합니다.",
@@ -11051,22 +10935,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     },
@@ -11325,7 +11205,7 @@
         },
         "fallback_available": true,
         "title": "Senior Safe Mileage 기본 판정 리포트",
-        "summary": "**Senior Safe Mileage 판정 리포트**\n\n- **고객군**: 비정기적 가족 지원\n- **기본 주행 거리**: 1,322.78 km\n- **최근 주행 거리**: 699.44 km\n- **연간화된 최근 주행 거리**: 8,393.28 km\n- **최근 여행 건수**: 21건\n- **내부 구역 비율**: 69.64%\n- **외부 구역 비율**: 30.36%\n- **위험 변화 점수**: 34.0\n\n**통합 점수**: 64.4  \n**최종판단**: 기본 조건 유지가 적절함.\n\n**추천 조치**: 기본 조건 유지, 다음 관측기간의 위험변화 점수 모니터링 필요.\n\n**리포트 이유 코드**:\n- 저주행 거리 기준 적합\n- 안정적인 거주 구역 주행\n- 새로운 목적지 신호 감지\n- 위험 변동 없음",
+        "summary": "통합 점수 64.4와 위험변화 점수 34.0를 기준으로 기본 조건 유지가 적절한 고객입니다.",
         "decision_explanation": "기존 거리 산식은 위험변화 신호를 포착하지 않았습니다. 제안 모델은 예방 케어 신호로 분류하지 않았습니다. 생활권 내 주행은 안정 신호로 반영되어 통합 점수 64.4 산정에 긍정적으로 기여했습니다. 기존 마일리지 점수 30.1 기준으로 저주행 할인 조건은 충족했지만, 이 신호만으로는 최근 위험변화 여부를 설명하기 어렵습니다. DBSCAN/P90 생활권 기준을 적용해 평소 생활권 안팎의 주행 변화를 분리해 검토했습니다.",
         "hybrid_pass_fail_rationale": "hybrid 평가는 ground truth 0.8, proxy label 0.2 가중치를 적용합니다. 제안 모델은 100.0점으로 기준 80.0점 대비 pass이며, 기존 산식은 100.0점 pass입니다. 제안 모델 decision_detected=False, ground_truth_target=False, proxy_label_target=False, exception_rule=none.",
         "recommended_action": "기본 조건을 유지하되 다음 관측기간의 위험변화 점수 추이를 모니터링합니다.",
@@ -11423,22 +11303,18 @@
           "required_follow_up_count": 1
         },
         "privacy_notice": "외부 LLM 요청에는 고객 식별자, 원본 trip id, 정확한 GPS 좌표를 포함하지 않습니다.",
-        "mode": "llm_generated",
+        "mode": "deterministic_template",
         "llm_service_status": {
-          "status": "available",
-          "active": true,
+          "status": "inactive",
+          "active": false,
           "available": true,
           "failure_detected": false,
-          "report_mode": "llm_generated",
+          "report_mode": "deterministic_template",
           "fallback_active": false,
+          "fallback_reason": "openai_api_disabled",
           "purpose": "insurer_customer_report",
           "handled_by": "report_agent",
           "core_outputs_continue": true
-        },
-        "generation": {
-          "provider": "openai",
-          "model": "gpt-4o-mini",
-          "attempts": 1
         }
       }
     }

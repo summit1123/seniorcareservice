@@ -168,7 +168,7 @@ data/processed/score_table.csv
 커밋:
 
 ```text
-feat : 리워드 및 케어 판단 로직 추가
+feat : 우대 및 케어 판단 로직 추가
 ```
 
 파일:
@@ -180,7 +180,7 @@ data/processed/decision_table.csv
 
 완료 기준:
 
-- 추가 리워드 판단
+- 통합 산식 우대 판단
 - 기본 유지 판단
 - 예방 케어 판단
 - reason_1, reason_2, reason_3 생성

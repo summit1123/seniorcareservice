@@ -1,0 +1,153 @@
+<svg width="1240" height="700" viewBox="0 0 1240 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="pageBg" x1="0" y1="0" x2="1240" y2="700" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F4F8FF"/>
+      <stop offset="0.48" stop-color="#EEF4FB"/>
+      <stop offset="1" stop-color="#F7FAFF"/>
+    </linearGradient>
+    <linearGradient id="topGlow" x1="110" y1="-18" x2="1020" y2="96" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4D8DFF" stop-opacity="0.42"/>
+      <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="1" stop-color="#FF8B3D" stop-opacity="0.35"/>
+    </linearGradient>
+    <linearGradient id="cardFill" x1="0" y1="0" x2="0" y2="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9FB2CC"/>
+      <stop offset="1" stop-color="#8FA5C1"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="12" flood-color="#61738A" flood-opacity="0.22"/>
+    </filter>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#0B1B36" flood-opacity="0.13"/>
+    </filter>
+    <style>
+      .font { font-family: "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", Arial, sans-serif; }
+      .navy { fill: #111D3A; }
+      .muted { fill: #4B5872; }
+      .white { fill: #FFFFFF; }
+      .lime { fill: #D8FF63; font-weight: 900; }
+      .orange { fill: #FF8B3D; font-weight: 900; }
+      .title { font-size: 54px; font-weight: 900; letter-spacing: -1.8px; }
+      .subtitle { font-size: 19px; font-weight: 700; letter-spacing: -0.35px; }
+      .cardTitle { font-size: 27px; font-weight: 900; letter-spacing: -0.8px; }
+      .bullet { font-size: 17.4px; font-weight: 700; letter-spacing: -0.45px; }
+      .small { font-size: 13px; font-weight: 800; letter-spacing: -0.25px; }
+      .step { font-size: 14px; font-weight: 900; letter-spacing: -0.25px; }
+    </style>
+  </defs>
+
+  <rect x="1" y="1" width="1238" height="698" fill="url(#pageBg)" stroke="#7B5CFF" stroke-width="2"/>
+  <rect x="28" y="26" width="1184" height="646" rx="34" fill="#E9F0F8"/>
+  <rect x="28" y="26" width="1184" height="120" rx="34" fill="url(#topGlow)"/>
+
+  <path d="M36 600 L112 682 H36 Z" fill="#FFFFFF" opacity="0.48"/>
+  <path d="M1135 375 L1180 330 L1198 348 L1153 393 Z" fill="#FFFFFF" opacity="0.55"/>
+  <circle cx="1176" cy="624" r="57" fill="#FFFFFF" opacity="0.85"/>
+  <circle cx="1176" cy="624" r="25" fill="#8FA5C1"/>
+
+  <text class="font title navy" x="72" y="110">3. AI 솔루션 제안</text>
+  <text class="font subtitle navy" x="620" y="153" text-anchor="middle">
+    AI가 생활권·위험행동·위험변화를 분석해 기존 마일리지의 한계를 보완합니다.
+  </text>
+
+  <text class="font small navy" x="1010" y="78">프로젝트 명</text>
+  <text class="font small navy" x="1010" y="98" style="font-size:18px;font-weight:900;">FOURSURE</text>
+  <rect x="1132" y="65" width="37" height="5" rx="2.5" fill="#111D3A"/>
+  <rect x="1132" y="79" width="37" height="5" rx="2.5" fill="#111D3A"/>
+  <rect x="1132" y="93" width="37" height="5" rx="2.5" fill="#111D3A"/>
+
+  <!-- Card 1 -->
+  <g filter="url(#shadow)">
+    <rect x="116" y="214" width="317" height="362" rx="27" fill="url(#cardFill)"/>
+  </g>
+  <circle cx="278" cy="213" r="43" fill="#FFFFFF" filter="url(#softShadow)"/>
+  <path d="M260 225 C260 207 272 196 284 196 C296 196 308 207 308 225" stroke="#626A83" stroke-width="6" stroke-linecap="round"/>
+  <path d="M250 232 H316" stroke="#626A83" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="284" cy="217" r="7" fill="#626A83"/>
+  <text class="font cardTitle white" x="274" y="306" text-anchor="middle">생활권 생성 AI</text>
+  <line x1="145" y1="329" x2="405" y2="329" stroke="#FFFFFF" stroke-width="2" opacity="0.72"/>
+  <circle cx="148" cy="364" r="7" fill="#FFFFFF"/>
+  <text class="font bullet white" x="166" y="370">사전 60일 GPS 주행 로그 기반</text>
+  <circle cx="148" cy="424" r="7" fill="#FFFFFF"/>
+  <text class="font bullet white" x="166" y="430">
+    <tspan class="lime">DBSCAN</tspan><tspan>으로 반복 목적지 군집화</tspan>
+  </text>
+  <circle cx="148" cy="484" r="7" fill="#FFFFFF"/>
+  <text class="font bullet white" x="166" y="490">
+    <tspan class="lime">P90 인정반경</tspan><tspan>으로 개인별 생활권 보정</tspan>
+  </text>
+
+  <!-- Card 2 -->
+  <g filter="url(#shadow)">
+    <rect x="462" y="214" width="317" height="362" rx="27" fill="url(#cardFill)"/>
+  </g>
+  <circle cx="621" cy="213" r="43" fill="#FFFFFF" filter="url(#softShadow)"/>
+  <circle cx="621" cy="213" r="24" stroke="#626A83" stroke-width="6"/>
+  <path d="M621 213 L638 201" stroke="#626A83" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="621" cy="213" r="5" fill="#626A83"/>
+  <text class="font cardTitle white" x="621" y="306" text-anchor="middle">4개 지표 통합점수</text>
+  <line x1="491" y1="329" x2="751" y2="329" stroke="#FFFFFF" stroke-width="2" opacity="0.72"/>
+  <circle cx="499" cy="364" r="7" fill="#FFFFFF"/>
+  <text class="font bullet white" x="517" y="370">
+    <tspan>주행거리 30% + 생활권 안 안전 30%</tspan>
+  </text>
+  <circle cx="499" cy="424" r="7" fill="#FFFFFF"/>
+  <text class="font bullet white" x="517" y="430">
+    <tspan>생활권 밖 안전 20% + </tspan><tspan class="orange">위험변화 20%</tspan>
+  </text>
+  <circle cx="499" cy="484" r="7" fill="#FFFFFF"/>
+  <text class="font bullet white" x="517" y="490">
+    <tspan>위험변화가 높으면 </tspan><tspan class="lime">예방 케어</tspan><tspan> 우선</tspan>
+  </text>
+
+  <!-- Card 3 -->
+  <g filter="url(#shadow)">
+    <rect x="808" y="214" width="317" height="362" rx="27" fill="url(#cardFill)"/>
+  </g>
+  <circle cx="966" cy="213" r="43" fill="#FFFFFF" filter="url(#softShadow)"/>
+  <path d="M949 194 H977 L990 207 V233 H949 Z" stroke="#626A83" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M977 194 V207 H990" stroke="#626A83" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M959 221 H980" stroke="#626A83" stroke-width="5" stroke-linecap="round"/>
+  <text class="font cardTitle white" x="966" y="306" text-anchor="middle">XAI + LLM 리포트</text>
+  <line x1="837" y1="329" x2="1097" y2="329" stroke="#FFFFFF" stroke-width="2" opacity="0.72"/>
+  <circle cx="847" cy="364" r="7" fill="#FFFFFF"/>
+  <text class="font bullet white" x="865" y="370">
+    <tspan class="lime">Reason Code</tspan><tspan>로 판정 근거 구조화</tspan>
+  </text>
+  <circle cx="847" cy="424" r="7" fill="#FFFFFF"/>
+  <text class="font bullet white" x="865" y="430">LLM은 직원용 설명문만 생성</text>
+  <circle cx="847" cy="484" r="7" fill="#FFFFFF"/>
+  <text class="font bullet white" x="865" y="490">
+    <tspan>등급·요율 결정은 </tspan><tspan class="orange">심사 검토</tspan><tspan> 영역</tspan>
+  </text>
+
+  <!-- Bottom insight -->
+  <path d="M250 604 L264 579 L278 604 Z" fill="#111D3A"/>
+  <rect x="262" y="594" width="4" height="7" rx="2" fill="#FFFFFF"/>
+  <circle cx="264" cy="604" r="2" fill="#FFFFFF"/>
+  <text class="font subtitle navy" x="294" y="601">
+    월별 점수는 할인율이 아니라 <tspan class="orange">연간 판단을 설명하는 근거</tspan>입니다.
+  </text>
+
+  <!-- Pipeline -->
+  <g transform="translate(238 626)">
+    <rect x="0" y="0" width="120" height="32" rx="16" fill="#FFFFFF" stroke="#C9D6E8"/>
+    <text class="font step navy" x="60" y="21" text-anchor="middle">주행 로그</text>
+    <path d="M132 16 H158" stroke="#7B8CA8" stroke-width="3" stroke-linecap="round"/>
+    <path d="M158 16 L150 9 M158 16 L150 23" stroke="#7B8CA8" stroke-width="3" stroke-linecap="round"/>
+    <rect x="170" y="0" width="130" height="32" rx="16" fill="#FFFFFF" stroke="#C9D6E8"/>
+    <text class="font step navy" x="235" y="21" text-anchor="middle">생활권 생성</text>
+    <path d="M312 16 H338" stroke="#7B8CA8" stroke-width="3" stroke-linecap="round"/>
+    <path d="M338 16 L330 9 M338 16 L330 23" stroke="#7B8CA8" stroke-width="3" stroke-linecap="round"/>
+    <rect x="350" y="0" width="130" height="32" rx="16" fill="#FFFFFF" stroke="#C9D6E8"/>
+    <text class="font step navy" x="415" y="21" text-anchor="middle">월별 4지표</text>
+    <path d="M492 16 H518" stroke="#7B8CA8" stroke-width="3" stroke-linecap="round"/>
+    <path d="M518 16 L510 9 M518 16 L510 23" stroke="#7B8CA8" stroke-width="3" stroke-linecap="round"/>
+    <rect x="530" y="0" width="142" height="32" rx="16" fill="#FFFFFF" stroke="#C9D6E8"/>
+    <text class="font step navy" x="601" y="21" text-anchor="middle">연간 통합점수</text>
+    <path d="M684 16 H710" stroke="#7B8CA8" stroke-width="3" stroke-linecap="round"/>
+    <path d="M710 16 L702 9 M710 16 L702 23" stroke="#7B8CA8" stroke-width="3" stroke-linecap="round"/>
+    <rect x="722" y="0" width="175" height="32" rx="16" fill="#111D3A"/>
+    <text class="font step white" x="809.5" y="21" text-anchor="middle">우대·기본·예방 케어</text>
+  </g>
+</svg>

@@ -528,7 +528,7 @@ def calculate_tier(score: float, tier_threshold: dict[str, int | float]) -> str:
 def care_decision(proposed_detected: bool, tier: str, risk_change_score: float) -> str:
     if proposed_detected:
         return "예방 케어"
-    if tier in {"S", "A"} and risk_change_score < 35:
+    if tier in {"S", "A"} and risk_change_score < 70:
         return "우대"
     return "기본"
 

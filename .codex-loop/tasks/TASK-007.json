@@ -1,0 +1,54 @@
+{
+  "id": "007",
+  "title": "검증 전용: build/test/API/report/screenshot 증거 재생성",
+  "status": "done",
+  "priority": "p0",
+  "summary": "목표 평가자가 product-ui 구현 산출물 자체보다 최신 재현 검증 증거 부족을 지적했으므로, 구현 task 001-006은 보존하고 build, unittest, preflight, API/report stream, 첫 화면 및 리포트 7섹션 screenshot 증거를 재실행 가능한 로그로 갱신한다.",
+  "dependsOn": [
+    "001",
+    "002",
+    "003",
+    "004",
+    "005",
+    "006"
+  ],
+  "deliverables": [
+    "reports/react-demo-screenshots/",
+    "reports/judge-demo-summary.md",
+    ".codex-loop/logs/LOG.md",
+    ".codex-loop/context/current-state.md",
+    ".codex-loop/tasks.json"
+  ],
+  "acceptance": [
+    "`npm run build`를 최신 코드 기준으로 재실행하고 통과 결과를 `.codex-loop/logs/LOG.md` 또는 `reports/judge-demo-summary.md`에 남긴다.",
+    "`python3 -m unittest discover -s tests`를 재실행해 goal evaluator가 지적한 unittest 재현 실패를 해소하고, 전체 테스트 개수와 통과 결과를 로그에 남긴다.",
+    "`python3 scripts/preflight.py run`을 재실행해 COMPLETE 전 필수 증거를 충족하고, `.codex-loop/config.json`이 proposal workflow/product-ui loop 계약과 충돌하지 않는지 확인한다.",
+    "로컬 앱 또는 Vite preview/dev server에서 `/api/personas`, `/api/drivers/{id}/annual-summary`, `/api/drivers/{id}/monthly-snapshots`, `/api/drivers/{id}/zone-map?month=...`, `/api/reports/stream` 또는 구현된 report stream endpoint를 실제 요청으로 확인한다.",
+    "리포트 stream은 현재 생성 중인 섹션 progress와 최종 7개 Markdown 섹션을 검증하고, 보험료 입력값이 report/API 입력에 반영됨을 확인한다.",
+    "첫 화면 3영역 운영 콘솔 screenshot을 새로 저장하고, 좌측 운전자/페르소나 레일, 중앙 연간 A/B 및 월별 타임라인, 우측 생활권 지도와 XAI inspector가 한 화면에서 읽히는지 확인한다.",
+    "리포트 7섹션 최종 상태 screenshot을 새로 저장하고, 텍스트 잘림 없이 필수 섹션이 보이는지 확인한다.",
+    "증거 갱신 후에만 `tasks.json`의 task 007을 `done`으로 바꾸고 `next_task_id`를 비운다."
+  ],
+  "notes": [
+    "이번 replan은 제품 구현을 새로 추가하는 것이 아니라, 최신 read-only 검증에서 신뢰가 깨진 evidence lane을 다시 여는 것이다.",
+    "검증 중 실제 결함이 나오면 007 안에서 무리하게 완료 처리하지 말고, 원인에 맞는 구현 task를 다시 열거나 새 task로 분리한다.",
+    "Primary source of truth: the design contract, approved assets, screenshots, and the actual UI implementation.",
+    "product-ui 완료 기준은 런타임 screenshot과 재현 가능한 build/test/API/report stream 로그가 함께 남을 때만 충족된다.",
+    "2026-05-11 후속 evaluator가 raw build/test 증거는 인정했지만 첫 화면 구조, driver-change, 최종 리포트 screenshot, source 문서 framing 증거가 더 필요하다고 판단했으므로 task 008을 별도로 열었다."
+  ],
+  "verification": [
+    "npm run build",
+    "python3 -m unittest discover -s tests",
+    "python3 scripts/preflight.py run",
+    "local API/report stream smoke check",
+    "first-screen and 7-section report screenshots under reports/react-demo-screenshots/"
+  ],
+  "evidence": [
+    ".codex-loop/logs/latest-build.log",
+    ".codex-loop/logs/latest-unittest.log",
+    ".codex-loop/logs/latest-report-stream.md",
+    "reports/react-demo-screenshots/ralph-first-screen-decision-dashboard.png",
+    "reports/react-demo-screenshots/ralph-report-current-section-panel.png",
+    "reports/react-demo-screenshots/ralph-report-seven-sections-panel.png"
+  ]
+}

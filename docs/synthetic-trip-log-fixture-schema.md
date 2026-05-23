@@ -30,7 +30,7 @@ baseline/recent 생성 범위와 30명 고객 각각의 baseline 패턴, recent 
 |---|---|
 | 고객 수 | 정확히 30명 |
 | 페르소나 구성 | 6개 `persona_type` 각각 5명 |
-| 관측기간 | 총 90일 |
+| 관측기간 | 단기 관측 기간 |
 | 기간 분리 | `baseline` 60일 + `recent` 30일 |
 | Trip 수 | 고객별 baseline 최소 20건, recent 최소 8건 |
 | 저주행 위험변화형 | 5명 포함 |
@@ -62,7 +62,7 @@ baseline/recent 생성 범위와 30명 고객 각각의 baseline 패턴, recent 
 | `simulation_seed` | integer | Y | 1 이상의 정수 | `20260507` |
 | `observation_period` | enum string | Y | `baseline` 또는 `recent` | `baseline` |
 | `observation_day_index` | integer | Y | baseline은 1-60, recent는 61-90 | `12` |
-| `service_date` | date string | Y | ISO `YYYY-MM-DD`, 90일 범위 안 | `2026-01-12` |
+| `service_date` | date string | Y | ISO `YYYY-MM-DD`, 단기 관측 범위 안 | `2026-01-12` |
 | `trip_id` | string | Y | 합성 ID, `trip_{customer_id}_{NNNN}` 형식 | `trip_cust_001_0004` |
 | `trip_sequence` | integer | Y | 고객별 1부터 증가 | `4` |
 | `trip_start_time` | datetime string | Y | `YYYY-MM-DD HH:MM:SS`, 종료보다 이전 | `2026-01-12 09:10:00` |
@@ -127,8 +127,8 @@ Consistency Check Agent는 최소한 아래 규칙을 검증합니다.
 | 검증 항목 | 통과 기준 |
 |---|---|
 | 시간 일관성 | `trip_start_time < trip_end_time` |
-| 기간 일관성 | `service_date`와 `observation_day_index`가 같은 90일 달력에 위치 |
-| 고객별 90일 커버리지 | 고객별 Trip이 baseline 시작일 `1`, baseline 종료일 `60`, recent 시작일 `61`, recent 종료일 `90`을 모두 포함 |
+| 기간 일관성 | `service_date`와 `observation_day_index`가 같은 단기 관측 달력에 위치 |
+| 고객별 단기 관측 커버리지 | 고객별 Trip이 baseline 시작일 `1`, baseline 종료일 `60`, recent 시작일 `61`, recent 종료일 `90`을 모두 포함 |
 | baseline 커버리지 | 고객별 baseline Trip이 60일 관측창의 시작일 `1`과 종료일 `60`을 모두 포함 |
 | recent 커버리지 | 고객별 recent Trip이 30일 관측창의 시작일 `61`과 종료일 `90`을 모두 포함 |
 | 평균속도 | 계산 평균속도와 `avg_speed` 차이가 1.0km/h 이하 |

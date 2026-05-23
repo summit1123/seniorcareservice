@@ -1,0 +1,2805 @@
+{
+  "schema_version": "senior-annual-persona-profiles/v1",
+  "simulation_seed": 20260507,
+  "year": 2026,
+  "baseline_observation_window": {
+    "start_date": "2025-11-02",
+    "end_date": "2025-12-31",
+    "days": 60,
+    "period_role": "baseline",
+    "usage": "living_zone_fit_and_pattern_comparison_only",
+    "excluded_from_annual_mileage_and_discount_amounts": true
+  },
+  "evaluation_period": {
+    "start_date": "2026-01-01",
+    "end_date": "2026-12-31",
+    "months": 12
+  },
+  "customer_count": 30,
+  "customer_count_per_persona": 5,
+  "source_fixtures": {
+    "persona_templates": "data/fixtures/persona_templates.yaml",
+    "senior_customers": "data/fixtures/senior_customers.json",
+    "customer_driving_parameters": "data/fixtures/customer_driving_parameters.json",
+    "mileage_discount_table": "data/fixtures/mileage_discount_table.json"
+  },
+  "drivers": [
+    {
+      "customer_id": "cust_001",
+      "driver_id": "driver_001",
+      "persona_type": "stable_local_low_mileage",
+      "persona_display_name_ko": "생활권 안 저주행 안정형",
+      "scenario_id": "scenario_stable_local_low_mileage_01",
+      "scenario_variant": "market_loop",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 825000,
+      "annual_mileage_target_km": 3200.0,
+      "expected_care_decision": "favorable",
+      "expected_reason_codes": [
+        "LOW_MILEAGE",
+        "STABLE_IN_ZONE_DRIVING",
+        "LOW_RISK_EVENTS"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 3200.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 25.0,
+        "matched_tier_label": "4천km 이하",
+        "matched_max_annual_mileage_km": 4000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.978,
+          "latitude": 37.5665,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.981001,
+          "latitude": 37.558773,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.99078,
+          "latitude": 37.577928,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.077828,
+          "latitude": 37.632914,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.978275,
+          "latitude": 37.572335,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 127.061109,
+          "latitude": 37.590372,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 126.807806,
+          "latitude": 37.600972,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 2회 내외",
+        "primary_destinations": [
+          "clinic",
+          "home",
+          "market"
+        ],
+        "outer_trip_tendency": "생활권 안 중심",
+        "risk_behavior_tendency": "위험행동 낮음"
+      },
+      "care_context": {
+        "product_role": "기존 거리 중심 산식과 제안 통합 산식 모두 우량으로 분류되어야 하는 기준 우량군",
+        "message_focus": "생활권 안 반복 주행과 낮은 위험행동을 근거로 안정 저주행 고객으로 설명",
+        "false_positive_or_negative_risk": "예방 케어로 잘못 분류되면 안정 고객 비용 효율 평가가 왜곡됨"
+      }
+    },
+    {
+      "customer_id": "cust_002",
+      "driver_id": "driver_002",
+      "persona_type": "stable_local_low_mileage",
+      "persona_display_name_ko": "생활권 안 저주행 안정형",
+      "scenario_id": "scenario_stable_local_low_mileage_02",
+      "scenario_variant": "clinic_short_loop",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 853000,
+      "annual_mileage_target_km": 2800.0,
+      "expected_care_decision": "favorable",
+      "expected_reason_codes": [
+        "LOW_MILEAGE",
+        "STABLE_IN_ZONE_DRIVING",
+        "LOW_RISK_EVENTS"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 2800.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 28.0,
+        "matched_tier_label": "3천km 이하",
+        "matched_max_annual_mileage_km": 3000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.991,
+          "latitude": 37.5612,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.995307,
+          "latitude": 37.568528,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.987877,
+          "latitude": 37.546131,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.024472,
+          "latitude": 37.66104,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.98922,
+          "latitude": 37.555534,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 127.079061,
+          "latitude": 37.567252,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 127.154132,
+          "latitude": 37.612823,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 2회 내외",
+        "primary_destinations": [
+          "clinic",
+          "home",
+          "market"
+        ],
+        "outer_trip_tendency": "생활권 안 중심",
+        "risk_behavior_tendency": "위험행동 낮음"
+      },
+      "care_context": {
+        "product_role": "기존 거리 중심 산식과 제안 통합 산식 모두 우량으로 분류되어야 하는 기준 우량군",
+        "message_focus": "생활권 안 반복 주행과 낮은 위험행동을 근거로 안정 저주행 고객으로 설명",
+        "false_positive_or_negative_risk": "예방 케어로 잘못 분류되면 안정 고객 비용 효율 평가가 왜곡됨"
+      }
+    },
+    {
+      "customer_id": "cust_003",
+      "driver_id": "driver_003",
+      "persona_type": "stable_local_low_mileage",
+      "persona_display_name_ko": "생활권 안 저주행 안정형",
+      "scenario_id": "scenario_stable_local_low_mileage_03",
+      "scenario_variant": "home_buffer_loop",
+      "vehicle_class": "personal_passenger_ev_hydrogen",
+      "base_premium_krw": 851000,
+      "annual_mileage_target_km": 4100.0,
+      "expected_care_decision": "favorable",
+      "expected_reason_codes": [
+        "LOW_MILEAGE",
+        "STABLE_IN_ZONE_DRIVING",
+        "LOW_RISK_EVENTS"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 4100.0,
+        "vehicle_class": "personal_passenger_ev_hydrogen",
+        "vehicle_class_label": "개인 승용(전기차, 수소차)",
+        "discount_rate_pct": 27.0,
+        "matched_tier_label": "5천km 이하",
+        "matched_max_annual_mileage_km": 5000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 127.012,
+          "latitude": 37.542,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 127.020934,
+          "latitude": 37.545896,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.999395,
+          "latitude": 37.553547,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.122291,
+          "latitude": 37.487004,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 127.011178,
+          "latitude": 37.547803,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 127.094968,
+          "latitude": 37.566121,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 127.009201,
+          "latitude": 37.402779,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "home",
+          "market"
+        ],
+        "outer_trip_tendency": "생활권 안 중심",
+        "risk_behavior_tendency": "위험행동 낮음"
+      },
+      "care_context": {
+        "product_role": "기존 거리 중심 산식과 제안 통합 산식 모두 우량으로 분류되어야 하는 기준 우량군",
+        "message_focus": "생활권 안 반복 주행과 낮은 위험행동을 근거로 안정 저주행 고객으로 설명",
+        "false_positive_or_negative_risk": "예방 케어로 잘못 분류되면 안정 고객 비용 효율 평가가 왜곡됨"
+      }
+    },
+    {
+      "customer_id": "cust_004",
+      "driver_id": "driver_004",
+      "persona_type": "stable_local_low_mileage",
+      "persona_display_name_ko": "생활권 안 저주행 안정형",
+      "scenario_id": "scenario_stable_local_low_mileage_04",
+      "scenario_variant": "low_frequency_weekday",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 809000,
+      "annual_mileage_target_km": 2600.0,
+      "expected_care_decision": "favorable",
+      "expected_reason_codes": [
+        "LOW_MILEAGE",
+        "STABLE_IN_ZONE_DRIVING",
+        "LOW_RISK_EVENTS"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 2600.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 28.0,
+        "matched_tier_label": "3천km 이하",
+        "matched_max_annual_mileage_km": 3000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.935,
+          "latitude": 37.505,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.942781,
+          "latitude": 37.510221,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.921201,
+          "latitude": 37.515648,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.057901,
+          "latitude": 37.539152,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.928886,
+          "latitude": 37.501749,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.871968,
+          "latitude": 37.455916,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 127.103498,
+          "latitude": 37.543985,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 2회 내외",
+        "primary_destinations": [
+          "clinic",
+          "home",
+          "market"
+        ],
+        "outer_trip_tendency": "생활권 안 중심",
+        "risk_behavior_tendency": "위험행동 낮음"
+      },
+      "care_context": {
+        "product_role": "기존 거리 중심 산식과 제안 통합 산식 모두 우량으로 분류되어야 하는 기준 우량군",
+        "message_focus": "생활권 안 반복 주행과 낮은 위험행동을 근거로 안정 저주행 고객으로 설명",
+        "false_positive_or_negative_risk": "예방 케어로 잘못 분류되면 안정 고객 비용 효율 평가가 왜곡됨"
+      }
+    },
+    {
+      "customer_id": "cust_005",
+      "driver_id": "driver_005",
+      "persona_type": "stable_local_low_mileage",
+      "persona_display_name_ko": "생활권 안 저주행 안정형",
+      "scenario_id": "scenario_stable_local_low_mileage_05",
+      "scenario_variant": "low_frequency_weekend",
+      "vehicle_class": "personal_business",
+      "base_premium_krw": 817000,
+      "annual_mileage_target_km": 3600.0,
+      "expected_care_decision": "favorable",
+      "expected_reason_codes": [
+        "LOW_MILEAGE",
+        "STABLE_IN_ZONE_DRIVING",
+        "LOW_RISK_EVENTS"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 3600.0,
+        "vehicle_class": "personal_business",
+        "vehicle_class_label": "개인 업무용(초소형ㆍ경ㆍ4종화물, 3종승합)",
+        "discount_rate_pct": 12.0,
+        "matched_tier_label": "4천km 이하",
+        "matched_max_annual_mileage_km": 4000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 127.045,
+          "latitude": 37.585,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 127.052852,
+          "latitude": 37.590162,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 127.054916,
+          "latitude": 37.598094,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.164231,
+          "latitude": 37.543231,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 127.04292,
+          "latitude": 37.579398,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 127.128257,
+          "latitude": 37.561409,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 127.114683,
+          "latitude": 37.71282,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "home",
+          "market"
+        ],
+        "outer_trip_tendency": "생활권 안 중심",
+        "risk_behavior_tendency": "위험행동 낮음"
+      },
+      "care_context": {
+        "product_role": "기존 거리 중심 산식과 제안 통합 산식 모두 우량으로 분류되어야 하는 기준 우량군",
+        "message_focus": "생활권 안 반복 주행과 낮은 위험행동을 근거로 안정 저주행 고객으로 설명",
+        "false_positive_or_negative_risk": "예방 케어로 잘못 분류되면 안정 고객 비용 효율 평가가 왜곡됨"
+      }
+    },
+    {
+      "customer_id": "cust_006",
+      "driver_id": "driver_006",
+      "persona_type": "stable_outer_safe",
+      "persona_display_name_ko": "생활권 밖 안정 주행형",
+      "scenario_id": "scenario_stable_outer_safe_01",
+      "scenario_variant": "family_visit_safe",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 920000,
+      "annual_mileage_target_km": 6500.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "OUT_ZONE_SAFE",
+        "LOW_NIGHT_DRIVING",
+        "LOW_RISK_EVENTS"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 6500.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 21.0,
+        "matched_tier_label": "7천km 이하",
+        "matched_max_annual_mileage_km": 7000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 127.063,
+          "latitude": 37.514,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 127.05281,
+          "latitude": 37.513826,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 127.046135,
+          "latitude": 37.506634,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.041665,
+          "latitude": 37.41209,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 127.070361,
+          "latitude": 37.514022,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.974665,
+          "latitude": 37.514194,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 126.895507,
+          "latitude": 37.555672,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "family",
+          "leisure"
+        ],
+        "outer_trip_tendency": "반복 외부 목적지 안정",
+        "risk_behavior_tendency": "위험행동 낮음"
+      },
+      "care_context": {
+        "product_role": "생활권 밖 주행 자체를 과도하게 불리하게 보지 않는지 확인하는 공정성/오분류 방지군",
+        "message_focus": "외부 주행은 있으나 반복 목적지와 안정 운전으로 예방 케어 대상은 아님",
+        "false_positive_or_negative_risk": "생활권 밖 비율만으로 위험군 처리하면 모델 공정성이 약해짐"
+      }
+    },
+    {
+      "customer_id": "cust_007",
+      "driver_id": "driver_007",
+      "persona_type": "stable_outer_safe",
+      "persona_display_name_ko": "생활권 밖 안정 주행형",
+      "scenario_id": "scenario_stable_outer_safe_02",
+      "scenario_variant": "daytime_outer_clinic",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 913000,
+      "annual_mileage_target_km": 5900.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "OUT_ZONE_SAFE",
+        "LOW_NIGHT_DRIVING",
+        "LOW_RISK_EVENTS"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 5900.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 22.0,
+        "matched_tier_label": "6천km 이하",
+        "matched_max_annual_mileage_km": 6000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.912,
+          "latitude": 37.482,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.908272,
+          "latitude": 37.474476,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.926838,
+          "latitude": 37.491725,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 126.782404,
+          "latitude": 37.472202,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.908302,
+          "latitude": 37.476952,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.977991,
+          "latitude": 37.435446,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 127.084618,
+          "latitude": 37.457025,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "family",
+          "leisure"
+        ],
+        "outer_trip_tendency": "반복 외부 목적지 안정",
+        "risk_behavior_tendency": "위험행동 낮음"
+      },
+      "care_context": {
+        "product_role": "생활권 밖 주행 자체를 과도하게 불리하게 보지 않는지 확인하는 공정성/오분류 방지군",
+        "message_focus": "외부 주행은 있으나 반복 목적지와 안정 운전으로 예방 케어 대상은 아님",
+        "false_positive_or_negative_risk": "생활권 밖 비율만으로 위험군 처리하면 모델 공정성이 약해짐"
+      }
+    },
+    {
+      "customer_id": "cust_008",
+      "driver_id": "driver_008",
+      "persona_type": "stable_outer_safe",
+      "persona_display_name_ko": "생활권 밖 안정 주행형",
+      "scenario_id": "scenario_stable_outer_safe_03",
+      "scenario_variant": "leisure_daytrip_safe",
+      "vehicle_class": "personal_passenger_ev_hydrogen",
+      "base_premium_krw": 941000,
+      "annual_mileage_target_km": 8200.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "OUT_ZONE_SAFE",
+        "LOW_NIGHT_DRIVING",
+        "LOW_RISK_EVENTS"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 8200.0,
+        "vehicle_class": "personal_passenger_ev_hydrogen",
+        "vehicle_class_label": "개인 승용(전기차, 수소차)",
+        "discount_rate_pct": 20.0,
+        "matched_tier_label": "9천km 이하",
+        "matched_max_annual_mileage_km": 9000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 127.102,
+          "latitude": 37.621,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 127.108496,
+          "latitude": 37.614764,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 127.108835,
+          "latitude": 37.606721,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 126.971888,
+          "latitude": 37.628165,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 127.108819,
+          "latitude": 37.623218,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 127.187011,
+          "latitude": 37.640381,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 127.23217,
+          "latitude": 37.714579,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "family",
+          "leisure"
+        ],
+        "outer_trip_tendency": "반복 외부 목적지 안정",
+        "risk_behavior_tendency": "위험행동 낮음"
+      },
+      "care_context": {
+        "product_role": "생활권 밖 주행 자체를 과도하게 불리하게 보지 않는지 확인하는 공정성/오분류 방지군",
+        "message_focus": "외부 주행은 있으나 반복 목적지와 안정 운전으로 예방 케어 대상은 아님",
+        "false_positive_or_negative_risk": "생활권 밖 비율만으로 위험군 처리하면 모델 공정성이 약해짐"
+      }
+    },
+    {
+      "customer_id": "cust_009",
+      "driver_id": "driver_009",
+      "persona_type": "stable_outer_safe",
+      "persona_display_name_ko": "생활권 밖 안정 주행형",
+      "scenario_id": "scenario_stable_outer_safe_04",
+      "scenario_variant": "repeat_outer_destination",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 949000,
+      "annual_mileage_target_km": 7100.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "OUT_ZONE_SAFE",
+        "LOW_NIGHT_DRIVING",
+        "LOW_RISK_EVENTS"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 7100.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 18.0,
+        "matched_tier_label": "8천km 이하",
+        "matched_max_annual_mileage_km": 8000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.865,
+          "latitude": 37.548,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.855479,
+          "latitude": 37.550895,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.880766,
+          "latitude": 37.556773,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 126.829822,
+          "latitude": 37.64747,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.87141,
+          "latitude": 37.550876,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.849337,
+          "latitude": 37.616959,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 126.703547,
+          "latitude": 37.602786,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "family",
+          "leisure"
+        ],
+        "outer_trip_tendency": "반복 외부 목적지 안정",
+        "risk_behavior_tendency": "위험행동 낮음"
+      },
+      "care_context": {
+        "product_role": "생활권 밖 주행 자체를 과도하게 불리하게 보지 않는지 확인하는 공정성/오분류 방지군",
+        "message_focus": "외부 주행은 있으나 반복 목적지와 안정 운전으로 예방 케어 대상은 아님",
+        "false_positive_or_negative_risk": "생활권 밖 비율만으로 위험군 처리하면 모델 공정성이 약해짐"
+      }
+    },
+    {
+      "customer_id": "cust_010",
+      "driver_id": "driver_010",
+      "persona_type": "stable_outer_safe",
+      "persona_display_name_ko": "생활권 밖 안정 주행형",
+      "scenario_id": "scenario_stable_outer_safe_05",
+      "scenario_variant": "outer_buffer_mix",
+      "vehicle_class": "personal_business",
+      "base_premium_krw": 912000,
+      "annual_mileage_target_km": 5600.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "OUT_ZONE_SAFE",
+        "LOW_NIGHT_DRIVING",
+        "LOW_RISK_EVENTS"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 5600.0,
+        "vehicle_class": "personal_business",
+        "vehicle_class_label": "개인 업무용(초소형ㆍ경ㆍ4종화물, 3종승합)",
+        "discount_rate_pct": 8.0,
+        "matched_tier_label": "6천km 이하",
+        "matched_max_annual_mileage_km": 6000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 127.025,
+          "latitude": 37.5,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 127.01517,
+          "latitude": 37.502132,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 127.01935,
+          "latitude": 37.514599,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 126.937346,
+          "latitude": 37.423605,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 127.024884,
+          "latitude": 37.505838,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 127.113065,
+          "latitude": 37.494688,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 127.018086,
+          "latitude": 37.63913,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "family",
+          "leisure"
+        ],
+        "outer_trip_tendency": "반복 외부 목적지 안정",
+        "risk_behavior_tendency": "위험행동 낮음"
+      },
+      "care_context": {
+        "product_role": "생활권 밖 주행 자체를 과도하게 불리하게 보지 않는지 확인하는 공정성/오분류 방지군",
+        "message_focus": "외부 주행은 있으나 반복 목적지와 안정 운전으로 예방 케어 대상은 아님",
+        "false_positive_or_negative_risk": "생활권 밖 비율만으로 위험군 처리하면 모델 공정성이 약해짐"
+      }
+    },
+    {
+      "customer_id": "cust_011",
+      "driver_id": "driver_011",
+      "persona_type": "recent_outer_risk_change",
+      "persona_display_name_ko": "최근 생활권 밖 위험변화형",
+      "scenario_id": "scenario_recent_outer_risk_change_01",
+      "scenario_variant": "new_night_outer_route",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 915000,
+      "annual_mileage_target_km": 3900.0,
+      "expected_care_decision": "preventive_care",
+      "expected_reason_codes": [
+        "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+        "OUT_ZONE_RATIO_INCREASE",
+        "NIGHT_DRIVING_INCREASE",
+        "HARSH_BRAKE_INCREASE"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 3900.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 25.0,
+        "matched_tier_label": "4천km 이하",
+        "matched_max_annual_mileage_km": 4000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.9,
+          "latitude": 37.48,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.899436,
+          "latitude": 37.471928,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.901651,
+          "latitude": 37.464785,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 126.835219,
+          "latitude": 37.569606,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.89654,
+          "latitude": 37.485153,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.8451,
+          "latitude": 37.534877,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 127.05634,
+          "latitude": 37.543205,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "family",
+          "unknown_outer"
+        ],
+        "outer_trip_tendency": "하반기 외부 목적지 증가",
+        "risk_behavior_tendency": "하반기 야간/급제동 증가"
+      },
+      "care_context": {
+        "product_role": "기존 마일리지 산식이 놓칠 수 있는 저주행 위험변화 핵심 포착 대상군",
+        "message_focus": "저주행임에도 최근 생활권 밖 야간/위험행동이 함께 늘어난 예방 케어 신호",
+        "false_positive_or_negative_risk": "핵심 타깃을 놓치면 A/B 우수성 승인 게이트를 통과하기 어려움"
+      }
+    },
+    {
+      "customer_id": "cust_012",
+      "driver_id": "driver_012",
+      "persona_type": "recent_outer_risk_change",
+      "persona_display_name_ko": "최근 생활권 밖 위험변화형",
+      "scenario_id": "scenario_recent_outer_risk_change_02",
+      "scenario_variant": "recent_family_emergency",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 953000,
+      "annual_mileage_target_km": 4300.0,
+      "expected_care_decision": "preventive_care",
+      "expected_reason_codes": [
+        "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+        "OUT_ZONE_RATIO_INCREASE",
+        "NIGHT_DRIVING_INCREASE",
+        "HARSH_BRAKE_INCREASE"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 4300.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 23.0,
+        "matched_tier_label": "5천km 이하",
+        "matched_max_annual_mileage_km": 5000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 127.02,
+          "latitude": 37.492,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 127.01003,
+          "latitude": 37.49033,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 127.001629,
+          "latitude": 37.487445,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.146216,
+          "latitude": 37.51736,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 127.01704,
+          "latitude": 37.486654,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 127.010264,
+          "latitude": 37.422359,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 126.992351,
+          "latitude": 37.354501,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "family",
+          "unknown_outer"
+        ],
+        "outer_trip_tendency": "하반기 외부 목적지 증가",
+        "risk_behavior_tendency": "하반기 야간/급제동 증가"
+      },
+      "care_context": {
+        "product_role": "기존 마일리지 산식이 놓칠 수 있는 저주행 위험변화 핵심 포착 대상군",
+        "message_focus": "저주행임에도 최근 생활권 밖 야간/위험행동이 함께 늘어난 예방 케어 신호",
+        "false_positive_or_negative_risk": "핵심 타깃을 놓치면 A/B 우수성 승인 게이트를 통과하기 어려움"
+      }
+    },
+    {
+      "customer_id": "cust_013",
+      "driver_id": "driver_013",
+      "persona_type": "recent_outer_risk_change",
+      "persona_display_name_ko": "최근 생활권 밖 위험변화형",
+      "scenario_id": "scenario_recent_outer_risk_change_03",
+      "scenario_variant": "unknown_outer_cluster",
+      "vehicle_class": "personal_passenger_ev_hydrogen",
+      "base_premium_krw": 941000,
+      "annual_mileage_target_km": 3600.0,
+      "expected_care_decision": "preventive_care",
+      "expected_reason_codes": [
+        "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+        "OUT_ZONE_RATIO_INCREASE",
+        "NIGHT_DRIVING_INCREASE",
+        "HARSH_BRAKE_INCREASE"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 3600.0,
+        "vehicle_class": "personal_passenger_ev_hydrogen",
+        "vehicle_class_label": "개인 승용(전기차, 수소차)",
+        "discount_rate_pct": 29.0,
+        "matched_tier_label": "4천km 이하",
+        "matched_max_annual_mileage_km": 4000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.884,
+          "latitude": 37.565,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.894129,
+          "latitude": 37.565948,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.864797,
+          "latitude": 37.566236,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 126.797077,
+          "latitude": 37.641973,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.885381,
+          "latitude": 37.570735,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.820753,
+          "latitude": 37.516049,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 126.771322,
+          "latitude": 37.458183,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 2회 내외",
+        "primary_destinations": [
+          "clinic",
+          "family",
+          "unknown_outer"
+        ],
+        "outer_trip_tendency": "하반기 외부 목적지 증가",
+        "risk_behavior_tendency": "하반기 야간/급제동 증가"
+      },
+      "care_context": {
+        "product_role": "기존 마일리지 산식이 놓칠 수 있는 저주행 위험변화 핵심 포착 대상군",
+        "message_focus": "저주행임에도 최근 생활권 밖 야간/위험행동이 함께 늘어난 예방 케어 신호",
+        "false_positive_or_negative_risk": "핵심 타깃을 놓치면 A/B 우수성 승인 게이트를 통과하기 어려움"
+      }
+    },
+    {
+      "customer_id": "cust_014",
+      "driver_id": "driver_014",
+      "persona_type": "recent_outer_risk_change",
+      "persona_display_name_ko": "최근 생활권 밖 위험변화형",
+      "scenario_id": "scenario_recent_outer_risk_change_04",
+      "scenario_variant": "late_clinic_route",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 889000,
+      "annual_mileage_target_km": 4700.0,
+      "expected_care_decision": "preventive_care",
+      "expected_reason_codes": [
+        "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+        "OUT_ZONE_RATIO_INCREASE",
+        "NIGHT_DRIVING_INCREASE",
+        "HARSH_BRAKE_INCREASE"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 4700.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 23.0,
+        "matched_tier_label": "5천km 이하",
+        "matched_max_annual_mileage_km": 5000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 127.087,
+          "latitude": 37.57,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 127.095894,
+          "latitude": 37.573959,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 127.081545,
+          "latitude": 37.555354,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.06198,
+          "latitude": 37.671384,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 127.093381,
+          "latitude": 37.572918,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 127.069296,
+          "latitude": 37.638649,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 127.182029,
+          "latitude": 37.687107,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "family",
+          "unknown_outer"
+        ],
+        "outer_trip_tendency": "하반기 외부 목적지 증가",
+        "risk_behavior_tendency": "하반기 야간/급제동 증가"
+      },
+      "care_context": {
+        "product_role": "기존 마일리지 산식이 놓칠 수 있는 저주행 위험변화 핵심 포착 대상군",
+        "message_focus": "저주행임에도 최근 생활권 밖 야간/위험행동이 함께 늘어난 예방 케어 신호",
+        "false_positive_or_negative_risk": "핵심 타깃을 놓치면 A/B 우수성 승인 게이트를 통과하기 어려움"
+      }
+    },
+    {
+      "customer_id": "cust_015",
+      "driver_id": "driver_015",
+      "persona_type": "recent_outer_risk_change",
+      "persona_display_name_ko": "최근 생활권 밖 위험변화형",
+      "scenario_id": "scenario_recent_outer_risk_change_05",
+      "scenario_variant": "outer_speeding_braking",
+      "vehicle_class": "personal_business",
+      "base_premium_krw": 907000,
+      "annual_mileage_target_km": 5100.0,
+      "expected_care_decision": "preventive_care",
+      "expected_reason_codes": [
+        "LOW_MILEAGE_WITH_RECENT_OUT_ZONE_RISK",
+        "OUT_ZONE_RATIO_INCREASE",
+        "NIGHT_DRIVING_INCREASE",
+        "HARSH_BRAKE_INCREASE"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 5100.0,
+        "vehicle_class": "personal_business",
+        "vehicle_class_label": "개인 업무용(초소형ㆍ경ㆍ4종화물, 3종승합)",
+        "discount_rate_pct": 8.0,
+        "matched_tier_label": "6천km 이하",
+        "matched_max_annual_mileage_km": 6000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.956,
+          "latitude": 37.603,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.948763,
+          "latitude": 37.6087,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.948587,
+          "latitude": 37.617097,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 126.963337,
+          "latitude": 37.706142,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.949074,
+          "latitude": 37.604997,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.928947,
+          "latitude": 37.66971,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 127.077761,
+          "latitude": 37.703407,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "family",
+          "unknown_outer"
+        ],
+        "outer_trip_tendency": "하반기 외부 목적지 증가",
+        "risk_behavior_tendency": "하반기 야간/급제동 증가"
+      },
+      "care_context": {
+        "product_role": "기존 마일리지 산식이 놓칠 수 있는 저주행 위험변화 핵심 포착 대상군",
+        "message_focus": "저주행임에도 최근 생활권 밖 야간/위험행동이 함께 늘어난 예방 케어 신호",
+        "false_positive_or_negative_risk": "핵심 타깃을 놓치면 A/B 우수성 승인 게이트를 통과하기 어려움"
+      }
+    },
+    {
+      "customer_id": "cust_016",
+      "driver_id": "driver_016",
+      "persona_type": "in_zone_risky_low_mileage",
+      "persona_display_name_ko": "생활권 안 저주행 위험행동형",
+      "scenario_id": "scenario_in_zone_risky_low_mileage_01",
+      "scenario_variant": "market_harsh_brake",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 925000,
+      "annual_mileage_target_km": 3300.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "IN_ZONE_RISK_EVENTS",
+        "LOW_MILEAGE",
+        "FAVORABLE_WITHHELD_FOR_RISK"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 3300.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 25.0,
+        "matched_tier_label": "4천km 이하",
+        "matched_max_annual_mileage_km": 4000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.913,
+          "latitude": 37.483,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.908622,
+          "latitude": 37.4757,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.894034,
+          "latitude": 37.485591,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 126.846901,
+          "latitude": 37.394001,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.914466,
+          "latitude": 37.488722,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.949555,
+          "latitude": 37.419218,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 126.844605,
+          "latitude": 37.354775,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "home",
+          "market"
+        ],
+        "outer_trip_tendency": "생활권 안 중심",
+        "risk_behavior_tendency": "생활권 안 과속/급감속 반복"
+      },
+      "care_context": {
+        "product_role": "생활권 안 주행이라도 과속/급감속이 있으면 감점되는지 확인하는 엣지케이스",
+        "message_focus": "생활권 내 주행이 많지만 위험행동이 있어 우대 판단은 보수적으로 설명",
+        "false_positive_or_negative_risk": "생활권 안이라는 이유로 무조건 안정형 처리하면 모델 해석 원칙을 위반함"
+      }
+    },
+    {
+      "customer_id": "cust_017",
+      "driver_id": "driver_017",
+      "persona_type": "in_zone_risky_low_mileage",
+      "persona_display_name_ko": "생활권 안 저주행 위험행동형",
+      "scenario_id": "scenario_in_zone_risky_low_mileage_02",
+      "scenario_variant": "clinic_speeding_core",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 943000,
+      "annual_mileage_target_km": 4200.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "IN_ZONE_RISK_EVENTS",
+        "LOW_MILEAGE",
+        "FAVORABLE_WITHHELD_FOR_RISK"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 4200.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 23.0,
+        "matched_tier_label": "5천km 이하",
+        "matched_max_annual_mileage_km": 5000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 127.033,
+          "latitude": 37.493,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 127.023775,
+          "latitude": 37.496433,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 127.052161,
+          "latitude": 37.491558,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.144005,
+          "latitude": 37.546991,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 127.03584,
+          "latitude": 37.498387,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 127.108366,
+          "latitude": 37.529522,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 127.196455,
+          "latitude": 37.442326,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "home",
+          "market"
+        ],
+        "outer_trip_tendency": "생활권 안 중심",
+        "risk_behavior_tendency": "생활권 안 과속/급감속 반복"
+      },
+      "care_context": {
+        "product_role": "생활권 안 주행이라도 과속/급감속이 있으면 감점되는지 확인하는 엣지케이스",
+        "message_focus": "생활권 내 주행이 많지만 위험행동이 있어 우대 판단은 보수적으로 설명",
+        "false_positive_or_negative_risk": "생활권 안이라는 이유로 무조건 안정형 처리하면 모델 해석 원칙을 위반함"
+      }
+    },
+    {
+      "customer_id": "cust_018",
+      "driver_id": "driver_018",
+      "persona_type": "in_zone_risky_low_mileage",
+      "persona_display_name_ko": "생활권 안 저주행 위험행동형",
+      "scenario_id": "scenario_in_zone_risky_low_mileage_03",
+      "scenario_variant": "buffer_sharp_turn",
+      "vehicle_class": "personal_passenger_ev_hydrogen",
+      "base_premium_krw": 946000,
+      "annual_mileage_target_km": 4500.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "IN_ZONE_RISK_EVENTS",
+        "LOW_MILEAGE",
+        "FAVORABLE_WITHHELD_FOR_RISK"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 4500.0,
+        "vehicle_class": "personal_passenger_ev_hydrogen",
+        "vehicle_class_label": "개인 승용(전기차, 수소차)",
+        "discount_rate_pct": 27.0,
+        "matched_tier_label": "5천km 이하",
+        "matched_max_annual_mileage_km": 5000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.94,
+          "latitude": 37.52,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.941273,
+          "latitude": 37.511979,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.923517,
+          "latitude": 37.512107,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.070236,
+          "latitude": 37.521442,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.936777,
+          "latitude": 37.51475,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.85174,
+          "latitude": 37.523027,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 126.792498,
+          "latitude": 37.444498,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "home",
+          "market"
+        ],
+        "outer_trip_tendency": "생활권 안 중심",
+        "risk_behavior_tendency": "생활권 안 과속/급감속 반복"
+      },
+      "care_context": {
+        "product_role": "생활권 안 주행이라도 과속/급감속이 있으면 감점되는지 확인하는 엣지케이스",
+        "message_focus": "생활권 내 주행이 많지만 위험행동이 있어 우대 판단은 보수적으로 설명",
+        "false_positive_or_negative_risk": "생활권 안이라는 이유로 무조건 안정형 처리하면 모델 해석 원칙을 위반함"
+      }
+    },
+    {
+      "customer_id": "cust_019",
+      "driver_id": "driver_019",
+      "persona_type": "in_zone_risky_low_mileage",
+      "persona_display_name_ko": "생활권 안 저주행 위험행동형",
+      "scenario_id": "scenario_in_zone_risky_low_mileage_04",
+      "scenario_variant": "recent_in_zone_risk_up",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 889000,
+      "annual_mileage_target_km": 3900.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "IN_ZONE_RISK_EVENTS",
+        "LOW_MILEAGE",
+        "FAVORABLE_WITHHELD_FOR_RISK"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 3900.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 25.0,
+        "matched_tier_label": "4천km 이하",
+        "matched_max_annual_mileage_km": 4000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 127.061,
+          "latitude": 37.552,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 127.060688,
+          "latitude": 37.543919,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 127.058461,
+          "latitude": 37.567138,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.190439,
+          "latitude": 37.54011,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 127.05535,
+          "latitude": 37.548254,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.975198,
+          "latitude": 37.568803,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 126.976461,
+          "latitude": 37.674046,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "home",
+          "market"
+        ],
+        "outer_trip_tendency": "생활권 안 중심",
+        "risk_behavior_tendency": "생활권 안 과속/급감속 반복"
+      },
+      "care_context": {
+        "product_role": "생활권 안 주행이라도 과속/급감속이 있으면 감점되는지 확인하는 엣지케이스",
+        "message_focus": "생활권 내 주행이 많지만 위험행동이 있어 우대 판단은 보수적으로 설명",
+        "false_positive_or_negative_risk": "생활권 안이라는 이유로 무조건 안정형 처리하면 모델 해석 원칙을 위반함"
+      }
+    },
+    {
+      "customer_id": "cust_020",
+      "driver_id": "driver_020",
+      "persona_type": "in_zone_risky_low_mileage",
+      "persona_display_name_ko": "생활권 안 저주행 위험행동형",
+      "scenario_id": "scenario_in_zone_risky_low_mileage_05",
+      "scenario_variant": "dense_stop_and_go",
+      "vehicle_class": "personal_business",
+      "base_premium_krw": 912000,
+      "annual_mileage_target_km": 3000.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "IN_ZONE_RISK_EVENTS",
+        "LOW_MILEAGE",
+        "FAVORABLE_WITHHELD_FOR_RISK"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 3000.0,
+        "vehicle_class": "personal_business",
+        "vehicle_class_label": "개인 업무용(초소형ㆍ경ㆍ4종화물, 3종승합)",
+        "discount_rate_pct": 16.0,
+        "matched_tier_label": "3천km 이하",
+        "matched_max_annual_mileage_km": 3000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.998,
+          "latitude": 37.575,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.998843,
+          "latitude": 37.566943,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.981305,
+          "latitude": 37.582625,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 126.893912,
+          "latitude": 37.637182,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.991241,
+          "latitude": 37.577324,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.993323,
+          "latitude": 37.50503,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 126.907078,
+          "latitude": 37.694141,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 2회 내외",
+        "primary_destinations": [
+          "clinic",
+          "home",
+          "market"
+        ],
+        "outer_trip_tendency": "생활권 안 중심",
+        "risk_behavior_tendency": "생활권 안 과속/급감속 반복"
+      },
+      "care_context": {
+        "product_role": "생활권 안 주행이라도 과속/급감속이 있으면 감점되는지 확인하는 엣지케이스",
+        "message_focus": "생활권 내 주행이 많지만 위험행동이 있어 우대 판단은 보수적으로 설명",
+        "false_positive_or_negative_risk": "생활권 안이라는 이유로 무조건 안정형 처리하면 모델 해석 원칙을 위반함"
+      }
+    },
+    {
+      "customer_id": "cust_021",
+      "driver_id": "driver_021",
+      "persona_type": "medical_visit_pattern",
+      "persona_display_name_ko": "병원 방문 반복 외부 목적지형",
+      "scenario_id": "scenario_medical_visit_pattern_01",
+      "scenario_variant": "weekly_clinic_outer",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 960000,
+      "annual_mileage_target_km": 6200.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "REPEATED_MEDICAL_DESTINATION",
+        "OUT_ZONE_STABLE_PATTERN",
+        "LOW_NIGHT_DRIVING"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 6200.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 21.0,
+        "matched_tier_label": "7천km 이하",
+        "matched_max_annual_mileage_km": 7000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 127.075,
+          "latitude": 37.602,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 127.083948,
+          "latitude": 37.598113,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 127.132414,
+          "latitude": 37.540671,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.009523,
+          "latitude": 37.691337,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 127.06855,
+          "latitude": 37.604825,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 127.128356,
+          "latitude": 37.65788,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 127.123464,
+          "latitude": 37.735839,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "home"
+        ],
+        "outer_trip_tendency": "반복 병원 목적 외부 이동",
+        "risk_behavior_tendency": "주간 병원 이동 중심, 위험행동 낮음"
+      },
+      "care_context": {
+        "product_role": "반복 의료 목적 외부 이동을 신규 위험변화로 오판하지 않는지 확인하는 케어 맥락군",
+        "message_focus": "정기 병원 방문처럼 반복 목적지가 있는 외부 이동은 변화 위험과 구분",
+        "false_positive_or_negative_risk": "의료 목적 반복 이동을 위험변화로 오판하면 직원 설명 품질이 낮아짐"
+      }
+    },
+    {
+      "customer_id": "cust_022",
+      "driver_id": "driver_022",
+      "persona_type": "medical_visit_pattern",
+      "persona_display_name_ko": "병원 방문 반복 외부 목적지형",
+      "scenario_id": "scenario_medical_visit_pattern_02",
+      "scenario_variant": "rehab_center_repeat",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 983000,
+      "annual_mileage_target_km": 5700.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "REPEATED_MEDICAL_DESTINATION",
+        "OUT_ZONE_STABLE_PATTERN",
+        "LOW_NIGHT_DRIVING"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 5700.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 22.0,
+        "matched_tier_label": "6천km 이하",
+        "matched_max_annual_mileage_km": 6000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.823,
+          "latitude": 37.512,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.832346,
+          "latitude": 37.508775,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.727848,
+          "latitude": 37.523555,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 126.854548,
+          "latitude": 37.612229,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.825779,
+          "latitude": 37.506593,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.765033,
+          "latitude": 37.564871,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 126.966944,
+          "latitude": 37.591688,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "home"
+        ],
+        "outer_trip_tendency": "반복 병원 목적 외부 이동",
+        "risk_behavior_tendency": "주간 병원 이동 중심, 위험행동 낮음"
+      },
+      "care_context": {
+        "product_role": "반복 의료 목적 외부 이동을 신규 위험변화로 오판하지 않는지 확인하는 케어 맥락군",
+        "message_focus": "정기 병원 방문처럼 반복 목적지가 있는 외부 이동은 변화 위험과 구분",
+        "false_positive_or_negative_risk": "의료 목적 반복 이동을 위험변화로 오판하면 직원 설명 품질이 낮아짐"
+      }
+    },
+    {
+      "customer_id": "cust_023",
+      "driver_id": "driver_023",
+      "persona_type": "medical_visit_pattern",
+      "persona_display_name_ko": "병원 방문 반복 외부 목적지형",
+      "scenario_id": "scenario_medical_visit_pattern_03",
+      "scenario_variant": "daytime_hospital_loop",
+      "vehicle_class": "personal_passenger_ev_hydrogen",
+      "base_premium_krw": 1016000,
+      "annual_mileage_target_km": 6900.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "REPEATED_MEDICAL_DESTINATION",
+        "OUT_ZONE_STABLE_PATTERN",
+        "LOW_NIGHT_DRIVING"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 6900.0,
+        "vehicle_class": "personal_passenger_ev_hydrogen",
+        "vehicle_class_label": "개인 승용(전기차, 수소차)",
+        "discount_rate_pct": 25.0,
+        "matched_tier_label": "7천km 이하",
+        "matched_max_annual_mileage_km": 7000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 127.11,
+          "latitude": 37.48,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 127.11996,
+          "latitude": 37.481699,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 127.076419,
+          "latitude": 37.551555,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.232857,
+          "latitude": 37.514158,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 127.117357,
+          "latitude": 37.480079,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 127.188363,
+          "latitude": 37.447713,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 127.063475,
+          "latitude": 37.614254,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "home"
+        ],
+        "outer_trip_tendency": "반복 병원 목적 외부 이동",
+        "risk_behavior_tendency": "주간 병원 이동 중심, 위험행동 낮음"
+      },
+      "care_context": {
+        "product_role": "반복 의료 목적 외부 이동을 신규 위험변화로 오판하지 않는지 확인하는 케어 맥락군",
+        "message_focus": "정기 병원 방문처럼 반복 목적지가 있는 외부 이동은 변화 위험과 구분",
+        "false_positive_or_negative_risk": "의료 목적 반복 이동을 위험변화로 오판하면 직원 설명 품질이 낮아짐"
+      }
+    },
+    {
+      "customer_id": "cust_024",
+      "driver_id": "driver_024",
+      "persona_type": "medical_visit_pattern",
+      "persona_display_name_ko": "병원 방문 반복 외부 목적지형",
+      "scenario_id": "scenario_medical_visit_pattern_04",
+      "scenario_variant": "buffer_pharmacy_link",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 994000,
+      "annual_mileage_target_km": 4800.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "REPEATED_MEDICAL_DESTINATION",
+        "OUT_ZONE_STABLE_PATTERN",
+        "LOW_NIGHT_DRIVING"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 4800.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 23.0,
+        "matched_tier_label": "5천km 이하",
+        "matched_max_annual_mileage_km": 5000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.955,
+          "latitude": 37.638,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.963965,
+          "latitude": 37.634132,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.948595,
+          "latitude": 37.561812,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 126.82498,
+          "latitude": 37.646431,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.962326,
+          "latitude": 37.637335,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 127.038021,
+          "latitude": 37.613764,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 126.911809,
+          "latitude": 37.503028,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "home"
+        ],
+        "outer_trip_tendency": "반복 병원 목적 외부 이동",
+        "risk_behavior_tendency": "주간 병원 이동 중심, 위험행동 낮음"
+      },
+      "care_context": {
+        "product_role": "반복 의료 목적 외부 이동을 신규 위험변화로 오판하지 않는지 확인하는 케어 맥락군",
+        "message_focus": "정기 병원 방문처럼 반복 목적지가 있는 외부 이동은 변화 위험과 구분",
+        "false_positive_or_negative_risk": "의료 목적 반복 이동을 위험변화로 오판하면 직원 설명 품질이 낮아짐"
+      }
+    },
+    {
+      "customer_id": "cust_025",
+      "driver_id": "driver_025",
+      "persona_type": "medical_visit_pattern",
+      "persona_display_name_ko": "병원 방문 반복 외부 목적지형",
+      "scenario_id": "scenario_medical_visit_pattern_05",
+      "scenario_variant": "caregiver_dropoff_repeat",
+      "vehicle_class": "personal_business",
+      "base_premium_krw": 1042000,
+      "annual_mileage_target_km": 6500.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "REPEATED_MEDICAL_DESTINATION",
+        "OUT_ZONE_STABLE_PATTERN",
+        "LOW_NIGHT_DRIVING"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 6500.0,
+        "vehicle_class": "personal_business",
+        "vehicle_class_label": "개인 업무용(초소형ㆍ경ㆍ4종화물, 3종승합)",
+        "discount_rate_pct": 8.0,
+        "matched_tier_label": "7천km 이하",
+        "matched_max_annual_mileage_km": 7000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 127.013,
+          "latitude": 37.664,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 127.004771,
+          "latitude": 37.659211,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 127.023856,
+          "latitude": 37.739871,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.137837,
+          "latitude": 37.694105,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 127.018417,
+          "latitude": 37.667963,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.960301,
+          "latitude": 37.720296,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 127.177997,
+          "latitude": 37.712244,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "clinic",
+          "home"
+        ],
+        "outer_trip_tendency": "반복 병원 목적 외부 이동",
+        "risk_behavior_tendency": "주간 병원 이동 중심, 위험행동 낮음"
+      },
+      "care_context": {
+        "product_role": "반복 의료 목적 외부 이동을 신규 위험변화로 오판하지 않는지 확인하는 케어 맥락군",
+        "message_focus": "정기 병원 방문처럼 반복 목적지가 있는 외부 이동은 변화 위험과 구분",
+        "false_positive_or_negative_risk": "의료 목적 반복 이동을 위험변화로 오판하면 직원 설명 품질이 낮아짐"
+      }
+    },
+    {
+      "customer_id": "cust_026",
+      "driver_id": "driver_026",
+      "persona_type": "irregular_family_support",
+      "persona_display_name_ko": "가족 돌봄 불규칙 외부 이동형",
+      "scenario_id": "scenario_irregular_family_support_01",
+      "scenario_variant": "grandchild_pickup",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 1025000,
+      "annual_mileage_target_km": 6200.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "FAMILY_SUPPORT_CONTEXT",
+        "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+        "NO_STRONG_RISK_CHANGE"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 6200.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 21.0,
+        "matched_tier_label": "7천km 이하",
+        "matched_max_annual_mileage_km": 7000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.881,
+          "latitude": 37.449,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.890072,
+          "latitude": 37.452673,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.868909,
+          "latitude": 37.437123,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 126.753305,
+          "latitude": 37.429126,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.874563,
+          "latitude": 37.451825,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.907956,
+          "latitude": 37.51572,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 126.706973,
+          "latitude": 37.431697,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "family",
+          "home",
+          "market"
+        ],
+        "outer_trip_tendency": "가족 돌봄 외부 이동 변동",
+        "risk_behavior_tendency": "외부 이동은 변동하나 위험행동 제한적"
+      },
+      "care_context": {
+        "product_role": "불규칙 외부 이동이 있어도 위험행동과 야간 증가가 동반되는지 분리 평가하는 엣지케이스",
+        "message_focus": "불규칙 가족 지원 이동은 있으나 위험행동 증가가 제한적이면 예방 케어로 단정하지 않음",
+        "false_positive_or_negative_risk": "외부 이동 증가만으로 케어 대상 처리하면 오탐 제한 조건에 불리함"
+      }
+    },
+    {
+      "customer_id": "cust_027",
+      "driver_id": "driver_027",
+      "persona_type": "irregular_family_support",
+      "persona_display_name_ko": "가족 돌봄 불규칙 외부 이동형",
+      "scenario_id": "scenario_irregular_family_support_02",
+      "scenario_variant": "family_errand_daytime",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 1043000,
+      "annual_mileage_target_km": 5400.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "FAMILY_SUPPORT_CONTEXT",
+        "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+        "NO_STRONG_RISK_CHANGE"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 5400.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 22.0,
+        "matched_tier_label": "6천km 이하",
+        "matched_max_annual_mileage_km": 6000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 127.15,
+          "latitude": 37.413,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 127.150823,
+          "latitude": 37.404942,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 127.130774,
+          "latitude": 37.413085,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.033114,
+          "latitude": 37.367692,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 127.142698,
+          "latitude": 37.413676,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 127.06456,
+          "latitude": 37.43044,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 126.974944,
+          "latitude": 37.405624,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "family",
+          "home",
+          "market"
+        ],
+        "outer_trip_tendency": "가족 돌봄 외부 이동 변동",
+        "risk_behavior_tendency": "외부 이동은 변동하나 위험행동 제한적"
+      },
+      "care_context": {
+        "product_role": "불규칙 외부 이동이 있어도 위험행동과 야간 증가가 동반되는지 분리 평가하는 엣지케이스",
+        "message_focus": "불규칙 가족 지원 이동은 있으나 위험행동 증가가 제한적이면 예방 케어로 단정하지 않음",
+        "false_positive_or_negative_risk": "외부 이동 증가만으로 케어 대상 처리하면 오탐 제한 조건에 불리함"
+      }
+    },
+    {
+      "customer_id": "cust_028",
+      "driver_id": "driver_028",
+      "persona_type": "irregular_family_support",
+      "persona_display_name_ko": "가족 돌봄 불규칙 외부 이동형",
+      "scenario_id": "scenario_irregular_family_support_03",
+      "scenario_variant": "irregular_outer_safe",
+      "vehicle_class": "personal_passenger_ev_hydrogen",
+      "base_premium_krw": 1041000,
+      "annual_mileage_target_km": 7800.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "FAMILY_SUPPORT_CONTEXT",
+        "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+        "NO_STRONG_RISK_CHANGE"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 7800.0,
+        "vehicle_class": "personal_passenger_ev_hydrogen",
+        "vehicle_class_label": "개인 승용(전기차, 수소차)",
+        "discount_rate_pct": 22.0,
+        "matched_tier_label": "8천km 이하",
+        "matched_max_annual_mileage_km": 8000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.744,
+          "latitude": 37.667,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.751266,
+          "latitude": 37.661319,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.748252,
+          "latitude": 37.681896,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 126.829951,
+          "latitude": 37.744737,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.737022,
+          "latitude": 37.668892,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.752718,
+          "latitude": 37.736728,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 126.919804,
+          "latitude": 37.671606,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "family",
+          "home",
+          "market"
+        ],
+        "outer_trip_tendency": "가족 돌봄 외부 이동 변동",
+        "risk_behavior_tendency": "외부 이동은 변동하나 위험행동 제한적"
+      },
+      "care_context": {
+        "product_role": "불규칙 외부 이동이 있어도 위험행동과 야간 증가가 동반되는지 분리 평가하는 엣지케이스",
+        "message_focus": "불규칙 가족 지원 이동은 있으나 위험행동 증가가 제한적이면 예방 케어로 단정하지 않음",
+        "false_positive_or_negative_risk": "외부 이동 증가만으로 케어 대상 처리하면 오탐 제한 조건에 불리함"
+      }
+    },
+    {
+      "customer_id": "cust_029",
+      "driver_id": "driver_029",
+      "persona_type": "irregular_family_support",
+      "persona_display_name_ko": "가족 돌봄 불규칙 외부 이동형",
+      "scenario_id": "scenario_irregular_family_support_04",
+      "scenario_variant": "weekend_family_support",
+      "vehicle_class": "personal_passenger_general",
+      "base_premium_krw": 1049000,
+      "annual_mileage_target_km": 7000.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "FAMILY_SUPPORT_CONTEXT",
+        "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+        "NO_STRONG_RISK_CHANGE"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 7000.0,
+        "vehicle_class": "personal_passenger_general",
+        "vehicle_class_label": "개인 승용(전기차, 수소차 제외)",
+        "discount_rate_pct": 21.0,
+        "matched_tier_label": "7천km 이하",
+        "matched_max_annual_mileage_km": 7000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 127.202,
+          "latitude": 37.59,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 127.20819,
+          "latitude": 37.596427,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 127.194953,
+          "latitude": 37.604214,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 127.084432,
+          "latitude": 37.545355,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 127.207193,
+          "latitude": 37.594143,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 127.191998,
+          "latitude": 37.659619,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 127.02761,
+          "latitude": 37.607084,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "family",
+          "home",
+          "market"
+        ],
+        "outer_trip_tendency": "가족 돌봄 외부 이동 변동",
+        "risk_behavior_tendency": "외부 이동은 변동하나 위험행동 제한적"
+      },
+      "care_context": {
+        "product_role": "불규칙 외부 이동이 있어도 위험행동과 야간 증가가 동반되는지 분리 평가하는 엣지케이스",
+        "message_focus": "불규칙 가족 지원 이동은 있으나 위험행동 증가가 제한적이면 예방 케어로 단정하지 않음",
+        "false_positive_or_negative_risk": "외부 이동 증가만으로 케어 대상 처리하면 오탐 제한 조건에 불리함"
+      }
+    },
+    {
+      "customer_id": "cust_030",
+      "driver_id": "driver_030",
+      "persona_type": "irregular_family_support",
+      "persona_display_name_ko": "가족 돌봄 불규칙 외부 이동형",
+      "scenario_id": "scenario_irregular_family_support_05",
+      "scenario_variant": "outer_trip_without_risk_spike",
+      "vehicle_class": "personal_business",
+      "base_premium_krw": 1037000,
+      "annual_mileage_target_km": 8100.0,
+      "expected_care_decision": "standard",
+      "expected_reason_codes": [
+        "FAMILY_SUPPORT_CONTEXT",
+        "OUT_ZONE_INCREASE_WITH_LOW_RISK",
+        "NO_STRONG_RISK_CHANGE"
+      ],
+      "existing_mileage_lookup": {
+        "annual_mileage_km": 8100.0,
+        "vehicle_class": "personal_business",
+        "vehicle_class_label": "개인 업무용(초소형ㆍ경ㆍ4종화물, 3종승합)",
+        "discount_rate_pct": 8.0,
+        "matched_tier_label": "9천km 이하",
+        "matched_max_annual_mileage_km": 9000,
+        "eligible_for_discount": true,
+        "table_id": "samsungfire_direct_mileage_discount_2026_04_11",
+        "source_url": "https://direct.samsungfire.com/mall/PP030102_001.html",
+        "input_fields": [
+          "annual_mileage_km",
+          "vehicle_class"
+        ]
+      },
+      "living_destinations": {
+        "home": {
+          "label_ko": "자택",
+          "longitude": 126.786,
+          "latitude": 37.401,
+          "living_zone_role": "core"
+        },
+        "market": {
+          "label_ko": "마트",
+          "longitude": 126.781108,
+          "latitude": 37.408089,
+          "living_zone_role": "core"
+        },
+        "clinic": {
+          "label_ko": "병원",
+          "longitude": 126.766964,
+          "latitude": 37.403129,
+          "living_zone_role": "buffer"
+        },
+        "family_home": {
+          "label_ko": "자녀집",
+          "longitude": 126.723776,
+          "latitude": 37.491712,
+          "living_zone_role": "outer"
+        },
+        "pharmacy": {
+          "label_ko": "약국",
+          "longitude": 126.779153,
+          "latitude": 37.398876,
+          "living_zone_role": "core"
+        },
+        "leisure": {
+          "label_ko": "근교 외출지",
+          "longitude": 126.707435,
+          "latitude": 37.369153,
+          "living_zone_role": "outer"
+        },
+        "unknown_outer": {
+          "label_ko": "신규 외부 목적지",
+          "longitude": 126.923344,
+          "latitude": 37.487504,
+          "living_zone_role": "outer"
+        }
+      },
+      "living_pattern": {
+        "home_anchor": "synthetic_living_zone_center",
+        "weekly_outing_frequency_ko": "주 3~4회",
+        "primary_destinations": [
+          "family",
+          "home",
+          "market"
+        ],
+        "outer_trip_tendency": "가족 돌봄 외부 이동 변동",
+        "risk_behavior_tendency": "외부 이동은 변동하나 위험행동 제한적"
+      },
+      "care_context": {
+        "product_role": "불규칙 외부 이동이 있어도 위험행동과 야간 증가가 동반되는지 분리 평가하는 엣지케이스",
+        "message_focus": "불규칙 가족 지원 이동은 있으나 위험행동 증가가 제한적이면 예방 케어로 단정하지 않음",
+        "false_positive_or_negative_risk": "외부 이동 증가만으로 케어 대상 처리하면 오탐 제한 조건에 불리함"
+      }
+    }
+  ],
+  "persona_counts": {
+    "in_zone_risky_low_mileage": 5,
+    "irregular_family_support": 5,
+    "medical_visit_pattern": 5,
+    "recent_outer_risk_change": 5,
+    "stable_local_low_mileage": 5,
+    "stable_outer_safe": 5
+  },
+  "mileage_tier_counts": {
+    "3천km 이하": 3,
+    "4천km 이하": 6,
+    "5천km 이하": 6,
+    "6천km 이하": 5,
+    "7천km 이하": 6,
+    "8천km 이하": 2,
+    "9천km 이하": 2
+  }
+}

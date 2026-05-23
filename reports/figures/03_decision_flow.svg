@@ -25,7 +25,7 @@
 <line x1="324" y1="209" x2="368" y2="209" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
 <line x1="642" y1="209" x2="686" y2="209" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
 <rect x="120" y="355" width="270" height="122" rx="4" fill="#FFFFFF" stroke="#B8B8B8" stroke-width="1"/>
-<text x="136" y="385" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="18" font-weight="700" fill="#111111">A. 추가 리워드</text>
+<text x="136" y="385" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="18" font-weight="700" fill="#111111">A. 우대</text>
 <text x="136" y="413" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">생활권 중심 주행</text>
 <text x="136" y="433" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">위험행동 낮음</text>
 <text x="136" y="453" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">패턴 변화 낮음</text>

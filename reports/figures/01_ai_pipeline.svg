@@ -48,7 +48,7 @@
 <text x="456" y="423" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">과속/야간/노인운전자 보정</text>
 <rect x="810" y="325" width="320" height="142" rx="4" fill="#FFFFFF" stroke="#B8B8B8" stroke-width="1"/>
 <text x="826" y="355" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="18" font-weight="700" fill="#111111">상품 적용</text>
-<text x="826" y="383" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">마일리지 할인은 유지</text>
-<text x="826" y="403" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">안정 주행은 추가 리워드</text>
+<text x="826" y="383" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">기존 마일리지 기준선과 비교</text>
+<text x="826" y="403" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">안정 주행은 우대 판단</text>
 <text x="826" y="423" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="400" fill="#666666">위험 변화는 예방 케어</text>
 </svg>

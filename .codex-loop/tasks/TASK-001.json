@@ -1,24 +1,29 @@
 {
   "id": "001",
-  "title": "Trip 샘플 데이터와 feature pipeline 만들기",
-  "status": "completed",
+  "title": "기존 마일리지 할인표와 산식 도출 계약 고정",
+  "status": "done",
   "priority": "p0",
-  "summary": "공공 사업용차량 Trip 데이터 구조를 기준으로 모델 입력 feature table을 생성합니다.",
+  "summary": "삼성화재 마일리지 할인표를 기준 비교군으로 코드/데이터 계약에 고정하고, 4개 제안 지표가 기존 기준선의 미구분 문제에서 도출된다는 설명 구조를 만든다.",
   "dependsOn": [],
   "deliverables": [
-    "data/raw/trip_sample.csv",
-    "src/data/load_trips.py",
-    "src/features/zone_features.py",
-    "src/features/driving_features.py",
-    "data/processed/model_feature_table.csv"
+    "src/product/mileage_discount_table.py",
+    "data/fixtures/mileage_discount_table.json",
+    "docs/mileage-comparison-contract.md"
   ],
   "acceptance": [
-    "Trip 샘플 데이터는 driver_id, GPS, 거리, 시간, 위험운전 이벤트를 포함합니다.",
-    "생활권 안/밖 비율과 위험운전/100km feature가 생성됩니다.",
-    "원본 좌표는 최종 모델 feature에 직접 남기지 않습니다."
+    "연간 1,000km~15,000km 구간과 개인 승용 일반, 개인 승용 전기/수소, 개인 업무용 할인율이 모두 반영된다.",
+    "기존 마일리지 lookup은 연간 주행거리와 차종만 입력으로 사용한다.",
+    "CAGR, 월복리, 월별 할인율 환산은 사용하지 않는다는 원칙이 문서와 코드 주석에 남는다.",
+    "4개 지표는 임의 추가 항목이 아니라 기존 할인표 적용 후 발견되는 미구분 패턴을 설명하기 위한 축으로 문서화된다.",
+    "테스트는 3,000km 이하 개인 승용 일반 할인율이 28%로 계산됨을 검증한다."
   ],
   "notes": [
-    "공개 데이터는 실제 시니어 승용차 대표 데이터가 아니라 구현 가능성 검증용입니다.",
-    "데이터 담당자가 실제 CSV를 가져오면 컬럼 매핑만 바꿔서 재실행할 수 있어야 합니다."
-  ]
+    "기존 할인표는 비교 기준선이며, 실제 삼성화재 보험료 산정 시스템을 복제한다고 주장하지 않는다.",
+    "제안 산식은 기존 할인에 보너스를 더하는 구조가 아니라 연간 통합 점수 기반 비교 구조다."
+  ],
+  "verification": [
+    "python3 -m unittest tests.test_mileage_discount_table tests.test_ab_comparison",
+    "python3 scripts/preflight.py run"
+  ],
+  "completedAt": "2026-05-10"
 }

@@ -15,7 +15,7 @@
 
 - Trip 데이터 후보 필드: 시작 GPS X/Y, 종료 GPS X/Y, TRIP 운행거리, TRIP 운행시간, 평균운행속도, 최고속도, 과속건수, 급가속건수, 급감속건수, 급좌회전/급우회전건수.
 - 모델 feature: `in_zone_ratio`, `out_zone_ratio`, `speeding_per_100km`, `harsh_brake_per_100km`, `harsh_accel_per_100km`, `sharp_turn_per_100km`, `pattern_change_score`.
-- 상품 판단: 추가 리워드, 기본 유지, 예방 케어.
+- 상품 판단: 통합 산식 우대, 기본 유지, 예방 케어.
 
 ## 기각한 방향
 

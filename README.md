@@ -1,115 +1,60 @@
 # Senior Care Service
 
-생활권 기반 시니어 안심주행 특약의 AI 모델 검증용 저장소입니다.
+생활권 기반 시니어 안심주행 특약의 심사위원용 React 데모 저장소입니다.
 
-이 프로젝트는 사고 발생 여부를 직접 예측하는 모델을 먼저 만들기보다, 고객의 평소 운전 패턴과 최근 운전 패턴의 차이를 학습해 추가 리워드 또는 예방 케어 판단에 활용하는 구조를 검증합니다.
+이 프로젝트는 실제 사고/청구 예측을 주장하지 않습니다. 대신 같은 연간 주행거리 고객을 기존 마일리지 방식과 제안 통합 산식으로 함께 평가해, 기존 거리 기준만으로는 구분되지 않는 생활권 안정성·생활권 밖 안전성·최근 위험변화를 보여줍니다.
 
 ## 핵심 방향
 
-- 생활권 생성: 고객이 자주 출발하거나 도착하는 지점과 반복 경로를 기반으로 생활권을 생성합니다.
-- 평소패턴 학습: 고객별 정상 운전 패턴을 학습하고 최근 운전이 평소와 달라졌는지 감지합니다.
-- 위험행동 점수화: 과속, 급가속, 급감속, 급회전 등 위험운전 행동을 주행거리 기준으로 정규화합니다.
-- 상품 적용: 마일리지 할인은 유지하고, AI 결과는 추가 리워드 또는 예방 케어 안내에 활용합니다.
+- 기존 기준선: 삼성화재 마일리지 할인표의 연간 주행거리/차종별 할인율을 비교군으로 사용합니다.
+- 제안 산식: Mileage Score, In-Zone Safe Driving Score, Out-Zone Safe Driving Score, Out-Zone Pattern Change Risk를 연간 통합 점수로 계산합니다.
+- 생활권 분석: 사전 60일은 생활권 기준을 만들기 위한 관찰 데이터로만 쓰고, 할인 비교는 평가기간 12개월 주행거리로만 계산합니다.
+- 리포트: LLM은 보험료를 결정하지 않고, XAI reason code와 월별 근거를 보험사 직원용 설명문으로 바꾸는 역할만 합니다.
 
 ## 현재 목표
 
-1. 공공 사업용차량 주행 데이터와 동일한 구조의 샘플 데이터를 준비합니다.
-2. Trip 데이터를 driver-period 단위 feature table로 변환합니다.
-3. DBSCAN 기반 생활권 생성 견본을 만듭니다.
-4. Isolation Forest 기반 평소패턴 변화 감지 견본을 만듭니다.
-5. 최종 score table과 decision table을 생성합니다.
+1. 30명 시니어 페르소나와 12개월 주행 시나리오를 준비합니다.
+2. 월별 DBSCAN/P90 생활권과 4개 지표를 계산합니다.
+3. 기존 마일리지 vs 제안 통합 산식의 연간 A/B 비교를 생성합니다.
+4. React Decision Dashboard에서 사례 선택, 생활권 지도, 보험료 입력, XAI 리포트를 한 화면에서 보여줍니다.
 
-## 디렉터리 구조
-
-```text
-data/
-  raw/            원본 데이터
-  processed/      가공 데이터와 feature table
-docs/             작업계획, 데이터 계약, 커밋 규칙
-notebooks/        탐색 및 모델 검증 노트북
-reports/          결과 리포트
-src/              재사용 가능한 Python 코드
-```
-
-## 커밋 방식
-
-커밋은 작은 단위로 쪼개서 남깁니다.
-
-```text
-type : 한국어 설명
-```
-
-예시:
-
-```text
-docs : AI 모델 작업계획 추가
-feat : 생활권 생성 feature 계산 추가
-test : 점수 계산 테스트 추가
-```
-
-## Ralph / SummitHarness
-
-이 저장소는 SummitHarness 기반 Ralph loop를 사용할 수 있도록 bootstrap되어 있습니다.
-
-환경 점검:
+## 실행
 
 ```bash
+npm install
+npm run dev -- --port 5174
+```
+
+브라우저에서 확인:
+
+```text
+http://127.0.0.1:5174/
+```
+
+## 검증
+
+```bash
+npm run build
+python3 -m unittest discover -s tests
 python3 scripts/preflight.py run
 ```
 
-컨텍스트 갱신:
+## 주요 산출물
 
-```bash
-python3 scripts/context_engine.py refresh --source setup
+```text
+data/fixtures/annual_persona_profiles.json
+data/fixtures/annual_trip_logs.csv
+data/processed/monthly_score_table.csv
+data/processed/annual_ab_comparison.csv
+data/fixtures/judge_demo_view_model.json
+reports/judge-demo-summary.md
+reports/react-demo-screenshots/
 ```
 
-Ralph 실행:
+## Ralph / SummitHarness
 
 ```bash
 ./ralph.sh
 ```
 
-시각화 자료 생성:
-
-```bash
-python3 scripts/generate_visual_assets.py
-```
-
-모델 파이프라인 실행:
-
-```bash
-python3 -m src.run_pipeline
-```
-
-공개 데모 실행:
-
-```bash
-python3 -m src.webapp.customer_decision_app --host 127.0.0.1 --port 8003
-scripts/run_public_demo.sh
-```
-
-Cloudflare Tunnel로 팀원/심사위원에게 공유할 때는 [docs/public-demo-deployment.md](docs/public-demo-deployment.md)를 기준으로 `forsure.summit1123.co.kr` 라우팅, 로컬 서버, 터널 커넥터를 함께 확인합니다.
-
-분석 결과 시각화 생성:
-
-```bash
-python3 scripts/generate_analysis_outputs.py
-```
-
-TAAS 사고통계 가중치 생성:
-
-```bash
-python3 scripts/build_taas_weights.py
-```
-
-생성되는 기본 자료:
-
-```text
-reports/figures/01_ai_pipeline.svg
-reports/figures/02_score_structure.svg
-reports/figures/03_decision_flow.svg
-reports/figures/04_driver_score_comparison.svg
-reports/figures/05_decision_result_summary.svg
-reports/model_demo_summary.md
-data/processed/taas_weight_table.csv
-```
+Ralph 산출물과 검증 로그는 `.codex-loop/` 아래에 남습니다.

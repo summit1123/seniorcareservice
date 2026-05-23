@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-APP_HOST="${APP_HOST:-127.0.0.1}"
+APP_HOST="${APP_HOST:-localhost}"
 APP_PORT="${APP_PORT:-8003}"
 PUBLIC_HOSTNAME="${PUBLIC_HOSTNAME:-forsure.summit1123.co.kr}"
 TUNNEL_TOKEN_FILE="${TUNNEL_TOKEN_FILE:-$HOME/.cloudflared/summit1123.token}"
@@ -19,7 +19,7 @@ require_cmd() {
 }
 
 require_cmd lsof
-require_cmd python3
+require_cmd npm
 require_cmd cloudflared
 require_cmd pgrep
 require_cmd grep
@@ -42,6 +42,7 @@ trap cleanup EXIT INT TERM
 
 echo "[INFO] root=$ROOT_DIR"
 echo "[INFO] local app=http://$APP_HOST:$APP_PORT"
+echo "[INFO] Cloudflare ingress for forsure currently targets http://localhost:8003"
 echo "[INFO] public url=https://$PUBLIC_HOSTNAME"
 
 if lsof -nP -iTCP:"$APP_PORT" -sTCP:LISTEN >/dev/null 2>&1; then
@@ -50,7 +51,7 @@ else
   echo "[INFO] starting app server..."
   (
     cd "$ROOT_DIR"
-    python3 -m src.webapp.customer_decision_app --host "$APP_HOST" --port "$APP_PORT"
+    npm run dev -- --host "$APP_HOST" --port "$APP_PORT"
   ) > "$LOG_DIR/public-demo-app.log" 2>&1 &
   app_pid="$!"
   PIDS+=("$app_pid")
@@ -81,7 +82,7 @@ echo "[READY] https://$PUBLIC_HOSTNAME"
 echo "[CHECK] curl -sS -I https://$PUBLIC_HOSTNAME/"
 
 if ((${#PIDS[@]} > 0)); then
-  echo "[INFO] keep this terminal open while sharing the public demo."
+  echo "[INFO] keep this terminal open while sharing the React decision dashboard."
   wait
 else
   echo "[INFO] no new process was started by this script."

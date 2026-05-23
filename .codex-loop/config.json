@@ -26,34 +26,32 @@
     ],
     "env": {},
     "timeout_seconds": {
-      "seed": 900,
+      "seed": 600,
       "worker": 1800,
       "review": 600,
-      "evaluator": 900,
-      "replan": 900
+      "evaluator": 600,
+      "replan": 600
     },
     "heartbeat_seconds": 15
   },
   "loop": {
     "completion_promise": "COMPLETE",
     "max_iterations": 0,
-    "mode": "proposal",
+    "mode": "product-ui",
     "auto_seed_tasks": true,
-    "require_intake_approval": true,
-    "require_research_plan": true,
-    "quality_profile": "summit-ralph-personal",
-    "workflow_profile": "proposal-only",
-    "workflow_stage": "proposal-package",
-    "workflow_goal": "생활권 기반 시니어 안심주행 특약의 AI 모델 견본과 제출용 시각화 자료를 만든다",
+    "require_intake_approval": false,
+    "require_research_plan": false,
+    "quality_profile": "product-ui",
+    "workflow_profile": "idea-to-service",
+    "workflow_stage": "frontend-integration",
+    "workflow_goal": "안심반경 시니어 마일리지의 1년 시뮬레이션 데이터와 React 심사위원 데모를 만든다",
     "iteration_policy": "until_complete",
     "seed_retry_attempts": 2,
     "seed_local_recovery": true
   },
   "checks": {
     "commands": [
-      "python3 scripts/generate_sample_trip_data.py",
-      "python3 -m src.run_pipeline",
-      "python3 scripts/generate_analysis_outputs.py"
+      "python3 -m unittest discover -s tests"
     ],
     "stop_on_failure": true
   },

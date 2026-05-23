@@ -50,6 +50,6 @@ feat : 생활권 생성 feature 계산 추가
 feat : 운전행동 feature 집계 추가
 feat : 평소패턴 변화 감지 모델 추가
 feat : 최종 점수 계산 추가
-feat : 리워드 및 케어 판단 로직 추가
+feat : 우대 및 케어 판단 로직 추가
 report : 모델 결과 요약 리포트 추가
 ```

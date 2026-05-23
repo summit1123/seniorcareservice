@@ -9,6 +9,31 @@
 
 Senior Safe Mileage Score 제품 검증용 합성 fixture의 상세 스키마는 `docs/synthetic-trip-log-fixture-schema.md`를 따릅니다.
 
+React 심사위원 데모의 1년 시뮬레이션 source는 아래 annual fixture 3종입니다. 기존
+단기 fixture는 모델 파이프라인 검증용으로 유지하고, UI와 12개월 생활권 산식은
+annual fixture를 기준으로 읽습니다.
+
+| 파일 | 형식 | 역할 |
+|---|---|---|
+| `data/fixtures/annual_persona_profiles.json` | JSON | 30명 시니어 운전자 프로필, 생활 목적지 anchor, 차종군, 기존 마일리지 lookup 결과 |
+| `data/fixtures/annual_trip_logs.csv` | CSV | 운전자별 사전 baseline 60일 + 2026년 1월~12월 평가기간 Trip 로그. period_role, 월, 날짜, 거리, 시간, 출발/도착 좌표, 목적지, 위험행동 필드 포함 |
+| `data/fixtures/monthly_scenario_events.json` | JSON | 운전자별 12개월 생활권/위험변화 이벤트와 UI timeline용 reason hint |
+
+재생성 명령:
+
+```bash
+python3 scripts/generate_annual_persona_simulation.py
+```
+
+재현성 계약:
+
+- 기본 seed는 `data/fixtures/persona_templates.yaml`의 `simulation_seed=20260507`입니다.
+- 6개 페르소나별 5명, 총 30명을 유지합니다.
+- 모든 운전자는 사전 baseline 60일 Trip, 1월~12월 평가기간 Trip, 월별 scenario event를 가집니다.
+- 사전 baseline 60일 Trip은 생활권 생성과 변화 비교에만 사용하며 기존 마일리지 연간 주행거리, 제안 연간 점수, 할인액 계산에서는 제외합니다.
+- 연간 주행거리 분포는 삼성화재 기존 마일리지 할인표의 여러 구간을 덮도록 유지합니다.
+- 좌표는 실제 고객 위치가 아니라 합성 생활권 중심과 jitter 좌표입니다.
+
 ## 2. 모델 입력용 Trip 테이블
 
 파일명:
@@ -359,7 +384,7 @@ data/processed/decision_table.csv
 | living_zone_outside_segment_night_ratio_delta | 생활권 밖 구간 야간 비율 변화 |
 | living_zone_outside_segment_risk_change_score | 생활권 밖 주행 구간 위험 변화 지표 |
 | outside_living_zone_segments_json | 생활권 밖 주행 구간 판정 기준과 플래그 집계 JSON |
-| decision | 추가 리워드, 기본 유지, 예방 케어 |
+| decision | 통합 산식 우대, 기본 유지, 예방 케어 |
 | reason_1 | 판단 이유 1 |
 | reason_2 | 판단 이유 2 |
 | reason_3 | 판단 이유 3 |
@@ -391,3 +416,61 @@ stop_count
 원본 좌표는 생활권 생성용으로만 쓰고, 최종 모델에는 핵심/버퍼/외부 생활권 비율과 위험운전 요약값을 넣습니다.
 
 실제 CSV가 들어오면 모델 담당자는 먼저 매핑 리포트를 남깁니다. 리포트가 통과하지 못한 경우에는 누락 컬럼을 보완한 뒤 다시 실행하며, 원본 데이터를 직접 수정하지 않고 표준화된 중간 CSV를 생성해 파이프라인에 연결합니다.
+
+## 8. React 데모용 월별 생활권/연간 점수 산출물
+
+파일명:
+
+```text
+data/processed/monthly_zone_snapshots.json
+data/processed/monthly_score_table.csv
+data/processed/annual_score_table.csv
+data/processed/annual_ab_comparison.csv
+data/fixtures/judge_demo_view_model.json
+```
+
+역할:
+
+| 파일 | 역할 |
+|---|---|
+| `monthly_zone_snapshots.json` | 운전자별 1월~12월 Living Zone Timeline source. 1월은 사전 baseline 60일, 2월~12월은 평가월 제외 직전 60일 기준 DBSCAN/P90 생활권, 누수 방지 상태, 월별 해석 상태, reason code를 담는다. |
+| `monthly_score_table.csv` | 월별 4지표 산출 테이블. 월별 값은 할인율이 아니라 연간 판단 근거다. |
+| `annual_score_table.csv` | 12개월 월별 근거를 연간 Senior Safe Mileage Score로 종합한 테이블. 기존 할인액 비교는 task 004에서 이 테이블을 입력으로 붙인다. |
+| `annual_ab_comparison.csv` | 같은 평가기간 12개월 주행거리와 입력 보험료를 기존 마일리지 lookup과 제안 연간 점수 제한 산식에 동시에 넣은 A/B 비교 결과. |
+| `judge_demo_view_model.json` | React 심사위원 데모가 바로 읽는 통합 view model. persona lab, 연간 A/B 비교, 월별 evidence, 기존 tier segment 요약을 포함한다. |
+
+월별 핵심 컬럼:
+
+| 컬럼 | 설명 |
+|---|---|
+| `basis_status` | `pre_policy_60_day_dbscan` 또는 `rolling_60_day_dbscan`. 1월도 profile anchor cold-start가 아니라 사전 baseline 60일로 시작한다. |
+| `living_zone_departure_p90_threshold_m` | `max(500m, min(P90, 2km))` 규칙으로 clamp한 생활권 이탈 기준 |
+| `mileage_score` | 해당 월 주행거리의 연간화 점수. 할인율이 아니다. |
+| `in_zone_safe_driving_score` | 기존/버퍼 생활권 안 안전운전 점수 |
+| `out_zone_safe_driving_score` | 생활권 밖 구간의 안전운전 점수 |
+| `out_zone_pattern_change_risk` | 생활권 밖 비율, 야간, 위험행동 변화 기반 위험변화 점수 |
+| `dominant_interpretation` | `existing_living_zone`, `candidate_living_zone`, `out_zone_safe_driving`, `out_zone_pattern_change_risk` 중 월 대표 해석 |
+
+연간 핵심 컬럼:
+
+| 컬럼 | 설명 |
+|---|---|
+| `annual_total_distance_km` | 평가기간 12개월 총 주행거리. 사전 baseline 60일 주행거리는 제외 |
+| `annual_mileage_score` | 연간 주행거리 기반 점수 |
+| `annual_in_zone_safe_driving_score` | 월별 생활권 안 안전 점수의 노출 가중 종합 |
+| `annual_out_zone_safe_driving_score` | 월별 생활권 밖 안전 점수의 노출 가중 종합 |
+| `annual_out_zone_pattern_change_risk` | 월별 위험변화의 연간 종합. 지속적 하반기 변화가 평균에 묻히지 않도록 `max(weighted_annual_avg, trailing_quarter_avg, monthly_p90)` 규칙을 사용한다. |
+| `annual_senior_safe_mileage_score` | 선택된 deterministic policy weight로 계산한 연간 통합 점수 |
+| `annual_decision_signal` | 연간 통합 점수와 위험변화 기준에 따른 `우대`, `기본`, `예방 케어` 신호 |
+
+연간 A/B 핵심 컬럼:
+
+| 컬럼 | 설명 |
+|---|---|
+| `annual_distance_scope` | `evaluation_period_only` 고정. 사전 baseline 60일은 할인액 산출에서 제외한다. |
+| `baseline_60_day_excluded_from_discount` | baseline 제외 계약을 기계적으로 확인하는 1/0 플래그 |
+| `existing_discount_rate_pct` | 기존 삼성화재 마일리지 공개 할인표 lookup 결과 |
+| `proposed_discount_rate_pct` | 연간 Senior Safe Mileage Score와 care signal로 기존 mileage rate를 유지/제한한 제안 할인율 |
+| `discount_amount_delta_krw` | 제안 할인액 - 기존 할인액. 음수는 위험변화 또는 기본 판정으로 할인액이 줄어든 경우다. |
+| `preventive_care_required` | 제안 산식이 할인 판단보다 예방 케어 검토를 우선해야 한다고 표시한 경우 |
+| `same_input_contract_id` | 기존/제안 계산이 같은 운전자, 같은 평가연도, 같은 12개월 주행거리, 같은 차종, 같은 입력 보험료를 썼음을 나타내는 stable hash |

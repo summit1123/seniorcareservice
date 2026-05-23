@@ -14,7 +14,7 @@ constraints:
   - Python 기반 로컬 웹앱 또는 이에 준하는 화면 제공
   - 합성 데이터 중심
   - 6개 페르소나 x 5명 = 30명 시뮬레이션
-  - baseline 60일 + recent 30일의 90일 trip log 생성
+  - baseline 60일 + recent 30일의 단기 trip log 생성
   - 시뮬레이션 산출물은 JSON/CSV fixture로 재현 가능하게 저장
   - 실제 사고/클레임 데이터는 1차 범위에서 사용하지 않음
   - 외부 OpenAI API 사용 가능
@@ -22,7 +22,7 @@ constraints:
   - 고객명, 전화번호, 주소, 차량번호, 정확한 GPS 좌표, 원본 trip id 전송 금지
   - OpenAI API 실패 시 LLM 리포트만 fallback 템플릿으로 대체하고 핵심 점수/검증/A-B 비교는 계속 진행
 acceptance_criteria:
-  - 6개 페르소나 x 5명, baseline 60일 + recent 30일의 90일 합성 trip log fixture가 생성됨
+  - 6개 페르소나 x 5명, baseline 60일 + recent 30일의 단기 합성 trip log fixture가 생성됨
   - 오케스트레이터 기반 멀티 Agent 구조가 Persona, Scenario, AI Simulation, Consistency Check, Policy Search, Evaluation, Critic, Report Agent를 실행함
   - DBSCAN/P90 기반 생활권 분석이 수행됨
   - Senior Safe Mileage Score 산정 엔진이 생활권 내 안정운전, 생활권 밖 안전운전, 생활권 밖 위험변화를 반영함
@@ -41,7 +41,7 @@ acceptance_criteria:
   - 주요 내비게이션은 Agent 시뮬레이션/검증, 정책 후보 탐색, A/B 비교, 고객별 판정/리포트 순서로 구성됨
 ontology_schema:
   name: SeniorSafeMileageProduct
-  description: 시니어 운전자의 90일 합성 trip log를 기반으로 생활권, 운전 안정성, 위험변화, 정책 후보, Agent 검증, A/B 비교, 케어 판정, reason code, LLM 리포트를 통합 관리하는 제품 도메인 모델
+  description: 시니어 운전자의 단기 합성 trip log를 기반으로 생활권, 운전 안정성, 위험변화, 정책 후보, Agent 검증, A/B 비교, 케어 판정, reason code, LLM 리포트를 통합 관리하는 제품 도메인 모델
   fields:
     - name: customer_id
       type: string
@@ -57,7 +57,7 @@ ontology_schema:
       required: true
     - name: trip_logs
       type: array
-      description: 90일 합성 주행 기록
+      description: 단기 합성 주행 기록
       required: true
     - name: living_zone
       type: object

@@ -1,42 +1,85 @@
 {
-  "project": "생활권 기반 시니어 안심주행 특약",
+  "project": "안심반경 시니어 마일리지 React 데모",
   "selection": "priority-order",
+  "mode": "product-ui",
+  "quality_profile": "product-ui",
+  "workflow_stage": "frontend-integration",
+  "source_of_truth_reminder": "Primary source of truth: the design contract, approved assets, screenshots, and the actual UI implementation.",
+  "design_contract": {
+    "preset": "product-ops",
+    "reference_pack": "impeccable-operator",
+    "must_hold": [
+      "첫 화면은 문제정의, 기존 마일리지와 제안 산식 차이, 핵심 수치를 20초 안에 이해시킨다.",
+      "첫 화면 골격은 왼쪽 운전자/페르소나 탐색 레일, 가운데 연간 A/B와 월별 타임라인, 오른쪽 생활권 지도와 XAI inspector의 3영역 운영 콘솔로 고정한다.",
+      "UI는 보험사 직원과 심사위원이 함께 볼 수 있는 조용하고 정밀한 운영형 데모여야 한다."
+    ]
+  },
+  "refresh_reason": "2026-05-11 product-ui evidence closure completed: first-screen contract proof, driver-change runtime proof, final React report proof, workflow/state cleanup, model summary refresh, and legacy source framing cleanup.",
+  "next_task_id": null,
   "tasks": [
     {
       "id": "001",
-      "title": "Trip 샘플 데이터와 feature pipeline 만들기",
-      "status": "completed",
+      "title": "기존 마일리지 할인표와 산식 도출 계약 고정",
+      "status": "done",
       "priority": "p0",
       "file": "tasks/TASK-001.json"
     },
     {
       "id": "002",
-      "title": "AI 점수와 판단 결과 만들기",
-      "status": "completed",
+      "title": "30명 1년 페르소나와 월별 주행 시나리오 생성",
+      "status": "done",
       "priority": "p0",
       "file": "tasks/TASK-002.json"
     },
     {
       "id": "003",
-      "title": "제출용 시각화 자료와 리포트 만들기",
-      "status": "completed",
+      "title": "rolling 60일 생활권과 월별 4지표 계산",
+      "status": "done",
       "priority": "p0",
       "file": "tasks/TASK-003.json"
     },
     {
       "id": "004",
-      "title": "팀원 실제 CSV 수신 후 컬럼 매핑 검증하기",
-      "status": "waiting",
+      "title": "기존 마일리지 vs 제안 산식 연간 A/B 비교 엔진",
+      "status": "done",
       "priority": "p0",
       "file": "tasks/TASK-004.json"
     },
     {
       "id": "005",
-      "title": "수상 전략 관점에서 AI 설계 재검토하기",
-      "status": "completed",
+      "title": "첫 화면 3영역 운영 콘솔 UI 재구성",
+      "status": "done",
       "priority": "p0",
       "file": "tasks/TASK-005.json"
+    },
+    {
+      "id": "006",
+      "title": "7섹션 Markdown streaming 리포트 계약 완성",
+      "status": "done",
+      "priority": "p0",
+      "file": "tasks/TASK-006.json"
+    },
+    {
+      "id": "007",
+      "title": "검증 전용: build/test/API/report/screenshot 증거 재생성",
+      "status": "done",
+      "priority": "p0",
+      "file": "tasks/TASK-007.json"
+    },
+    {
+      "id": "008",
+      "title": "product-ui 완료 증거와 source framing 정합성 복구",
+      "status": "done",
+      "priority": "p0",
+      "file": "tasks/TASK-008.json"
+    },
+    {
+      "id": "009",
+      "title": "workflow/state/model summary 정합성 최종 복구",
+      "status": "done",
+      "priority": "p0",
+      "file": "tasks/TASK-009.json"
     }
   ],
-  "source": "seniorcareservice-project-plan"
+  "source": "2026-05-11-evaluator-replan-product-ui-evidence-and-source-framing"
 }

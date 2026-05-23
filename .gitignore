@@ -11,6 +11,8 @@ __pycache__/
 .venv/
 venv/
 env/
+node_modules/
+dist/
 
 data/raw/*
 !data/raw/.gitkeep
@@ -19,6 +21,7 @@ data/raw/*
 data/processed/*
 !data/processed/.gitkeep
 !data/processed/*.csv
+!data/processed/monthly_zone_snapshots.json
 
 reports/*.pdf
 reports/*.png

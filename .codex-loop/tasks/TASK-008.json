@@ -1,0 +1,66 @@
+{
+  "id": "008",
+  "title": "product-ui 완료 증거와 source framing 정합성 복구",
+  "status": "done",
+  "priority": "p0",
+  "summary": "핵심 React/API/data 구현과 build/test 로그는 보존하되, goal evaluator가 남긴 product-ui 완료 차단 항목을 실제 runtime screenshot과 source 문서 정합성 증거로 닫는다.",
+  "dependsOn": [
+    "005",
+    "006",
+    "007"
+  ],
+  "deliverables": [
+    "reports/react-demo-screenshots/",
+    "reports/judge-demo-summary.md",
+    ".codex-loop/logs/LOG.md",
+    "docs/ai-model-work-plan.md",
+    "docs/submissions/proposal.md",
+    "docs/data-contract.md",
+    "reports/model_demo_summary.md",
+    ".codex-loop/tasks.json"
+  ],
+  "acceptance": [
+    "첫 화면 runtime screenshot은 디자인 계약의 읽기 순서인 `문제정의 -> 같은 기존 할인구간 안의 미구분 문제 -> 선택 운전자 상세 근거`를 한 화면에서 증명한다.",
+    "첫 화면 runtime screenshot은 왼쪽 운전자/페르소나 탐색 레일, 가운데 연간 A/B 비교와 1월~12월 월별 타임라인, 오른쪽 생활권 지도와 XAI inspector의 3영역 운영 콘솔을 명확히 증명한다.",
+    "선택 운전자 변경 증거는 변경 전/변경 중 또는 변경 후 상태를 캡처하고, 연간 A/B 비교, 월별 timeline, 지도 inspector, XAI reason code 또는 report 입력이 같은 선택 상태로 함께 바뀌었음을 보여준다.",
+    "리포트 최종 상태 screenshot은 raw Markdown 로그만이 아니라 실제 React report panel에서 7개 필수 섹션이 생성 완료된 상태를 증명한다.",
+    "리포트 증거에는 현재 생성 중 섹션 progress와 완료 상태가 모두 남아야 하며, 보험료 입력값이 report/API 입력에 반영됨을 확인한다.",
+    "`docs/ai-model-work-plan.md`, `docs/submissions/proposal.md`, `docs/data-contract.md`, `reports/model_demo_summary.md` 등 제출/source 문서의 구버전 `추가 리워드` framing을 현재 PRD와 맞는 `우대/기본/예방 케어`, `통합 산식 판정`, `기존 거리 기준선의 미구분 보완` 표현으로 정리한다.",
+    "문서 정리 후 `rg -n \"추가 리워드|리워드|보너스|90일|8003|customer_decision_app|1,389|90-day|Python public demo|public demo\" README.md docs reports scripts .codex-loop/artifacts` 결과를 검토하고, 남는 항목이 있으면 의도된 금지/경계 문구인지 기록한다.",
+    "`npm run build`, `python3 -m unittest discover -s tests`, `python3 scripts/preflight.py run`을 다시 실행해 source 문서와 UI 증거 갱신 후에도 회귀가 없음을 남긴다.",
+    "증거 파일명, driver-change 확인 방법, 문서 표현 정리 결과를 `reports/judge-demo-summary.md` 또는 `.codex-loop/logs/LOG.md`에 연결해 goal evaluator가 재검증할 수 있게 한다.",
+    "위 항목이 모두 충족되기 전까지 task 008과 `tasks.json.next_task_id`는 열린 상태로 둔다."
+  ],
+  "notes": [
+    "이번 task는 001-007의 구현 완료를 취소하지 않는다. 남은 문제는 product-ui 완료 주장에 필요한 증거와 source 문서 정합성이다.",
+    "Primary source of truth: the design contract, approved assets, screenshots, and the actual UI implementation.",
+    "UI가 screenshot으로 계약을 증명하지 못하면 증거만 추가하지 말고 필요한 최소 UI/copy 수정을 포함한다.",
+    "구버전 source 표현 정리는 실제 보험료 산정, 실제 사고 예측, 기존 할인에 단순 혜택 추가처럼 읽히지 않게 하는 데 집중한다.",
+    "완료 후에만 task 008을 `done`으로 바꾸고 `next_task_id`를 비운다."
+  ],
+  "verification": [
+    "npm run build",
+    "python3 -m unittest discover -s tests",
+    "python3 scripts/preflight.py run",
+    "Playwright or browser capture of first-screen structure",
+    "Playwright or browser capture of driver-change linked state",
+    "Playwright or browser capture of final 7-section React report panel",
+    "rg -n \"추가 리워드|리워드|보너스|90일|8003|customer_decision_app|1,389|90-day|Python public demo|public demo\" README.md docs reports scripts .codex-loop/artifacts"
+  ],
+  "evidence": [
+    ".codex-loop/logs/latest-build.log",
+    ".codex-loop/logs/latest-unittest.log",
+    ".codex-loop/logs/latest-preflight.log",
+    ".codex-loop/logs/latest-report-stream.md",
+    ".codex-loop/logs/latest-framing-check.log",
+    ".codex-loop/logs/latest-first-screen-evidence.md",
+    ".codex-loop/logs/latest-driver-change-evidence.md",
+    "reports/react-demo-screenshots/ralph-first-screen-decision-contract-fullpage.png",
+    "reports/react-demo-screenshots/ralph-first-screen-decision-dashboard-element.png",
+    "reports/react-demo-screenshots/ralph-driver-change-decision-dashboard.png",
+    "reports/react-demo-screenshots/ralph-report-current-named-section-panel.png",
+    "reports/react-demo-screenshots/ralph-report-seven-sections-expanded-panel.png",
+    "reports/react-demo-screenshots/ralph-report-seven-sections-stream-only.png"
+  ],
+  "evaluator_source": ".codex-loop/evals/precomplete-eval-last.md"
+}

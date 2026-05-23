@@ -1,53 +1,31 @@
 {
   "id": "005",
-  "title": "수상 전략 관점에서 AI 설계 재검토하기",
-  "status": "completed",
+  "title": "React 심사위원 데모 UI 구축",
+  "status": "done",
   "priority": "p0",
-  "summary": "현재 설계가 AI 활용 대회와 삼성화재 공모전 맥락에서 최선인지 Ralph가 비판적으로 재검토하고, 필요한 보완을 source-first 방식으로 반영합니다.",
+  "summary": "심사위원이 기존 마일리지와 제안 산식의 차이를 직관적으로 이해할 수 있는 React 기반 제품 데모를 구축한다.",
   "dependsOn": [
-    "001",
-    "002",
-    "003"
+    "004"
   ],
   "deliverables": [
-    "docs/submissions/proposal.md",
-    "docs/ai-model-work-plan.md",
-    "docs/taas-data-notes.md",
-    "reports/model_demo_summary.md"
+    "package.json",
+    "src/react-demo/",
+    "src/react-demo/App.tsx",
+    "src/react-demo/styles.css"
   ],
   "acceptance": [
-    "AI 활용 포인트가 DBSCAN, 이상탐지, 설명 리포트로 선명하게 드러납니다.",
-    "TAAS는 개인 예측 라벨이 아니라 위험행동 가중치와 상품 필요성 근거로 정확히 표현됩니다.",
-    "기존 마일리지/착한운전 특약과의 차별점이 한 문장으로 정리됩니다.",
-    "심사위원이 '그래서 AI가 무엇을 했는가'라고 물었을 때 답할 수 있는 근거가 문서에 반영됩니다.",
-    "모델 파이프라인과 분석 결과 산출물이 계속 정상 실행됩니다."
+    "첫 화면은 상품명, 문제정의, 기존 방식 1개 할인율 vs 제안 방식 연간 종합판정 비교를 20초 안에 이해시키는 구조다.",
+    "30명 페르소나 프로필을 탐색할 수 있고, 각 프로필은 생활 목적지, 외출 빈도, 성향, 변화 이벤트를 보여준다.",
+    "선택 운전자에 대해 1월~12월 주행, 생활권 변화, 위험변화 추이를 한 화면에서 볼 수 있다.",
+    "DBSCAN/P90 생활권 지도 패널이 기존 생활권, 후보 생활권, 생활권 밖 구간을 구분한다.",
+    "기존 할인액, 제안 할인액, 차액이 입력 보험료 기준으로 명확히 보인다.",
+    "UI는 product-ops + impeccable-operator 기준을 따르며, generic card spam이나 빈 KPI 타일처럼 보이면 실패다.",
+    "React 앱은 서버 API에서 view model을 조회하는 구조를 전제로 하며, 정적 JSON import만으로 모든 상호작용을 끝내지 않는다."
   ],
   "notes": [
-    "과장된 사고예측 표현은 금지합니다.",
-    "보험료 패널티가 아니라 추가 리워드와 예방 케어 중심으로 유지합니다.",
-    "필요하다면 설계 보완 문서 또는 발표용 핵심 문장을 추가합니다.",
-    "2026-05-03: 제안서 source에 DBSCAN 생활권 생성, 평소패턴 이상탐지, 설명 리포트의 AI 활용 포인트를 표로 반영했습니다.",
-    "2026-05-03: `docs/ai-model-work-plan.md`에 수상 전략 재검토 결과와 기존 마일리지·착한운전 특약 대비 차별점 문장을 추가했습니다.",
-    "2026-05-03: `docs/taas-data-notes.md`에서 TAAS를 개인 예측 라벨이 아니라 상품 필요성과 위험행동 가중치 근거로 쓰는 경계를 명확히 했습니다.",
-    "2026-05-03: `src/features/zone_features.py`를 DBSCAN 방식 밀도 기반 클러스터링으로 정리하고 `zone_model_backend`를 산출물에 남겼습니다.",
-    "2026-05-03: `src/models/pattern_model.py`와 `reports/model_demo_summary.md`에 이상탐지 설명 신호(`top_change_signal`)를 추가했습니다."
-  ],
-  "progress": [
-    {
-      "date": "2026-05-03",
-      "status": "done",
-      "item": "수상 전략 관점의 AI 설계 재검토 및 source 문서 반영"
-    },
-    {
-      "date": "2026-05-03",
-      "status": "done",
-      "item": "DBSCAN 생활권 생성 backend와 평소패턴 이상탐지 설명 signal 산출물 추가"
-    },
-    {
-      "date": "2026-05-03",
-      "status": "done",
-      "item": "generate_sample_trip_data, validate_trip_csv_mapping, run_pipeline, generate_analysis_outputs, review_submission_source, preflight 통과"
-    }
-  ],
-  "completedAt": "2026-05-03"
+    "React scaffold만 만들고 끝내면 실패다.",
+    "시각화 패널은 예쁘기만 한 것이 아니라 판단을 도와야 한다.",
+    "가능하면 local dev server와 browser screenshot 검증까지 포함한다.",
+    "완료 검증: npm run build, 핵심 unittest 17개, Playwright 1440px viewport 렌더링/콘솔 오류 없음."
+  ]
 }

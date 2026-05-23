@@ -1,0 +1,40 @@
+{
+  "id": "009",
+  "title": "workflow/state/model summary 정합성 최종 복구",
+  "status": "done",
+  "priority": "p0",
+  "summary": "Ralph precomplete evaluator가 지적한 남은 repo-state 충돌을 닫는다. product-ui/frontend-integration 상태, 30명 12개월 React 데모 요약, 최종 검증 준비 상태가 서로 같은 목표를 가리키게 한다.",
+  "dependsOn": [
+    "008"
+  ],
+  "deliverables": [
+    ".codex-loop/workflow/STATUS.md",
+    ".codex-loop/state.json",
+    "reports/model_demo_summary.md",
+    ".codex-loop/tasks.json",
+    ".codex-loop/logs/LOG.md"
+  ],
+  "acceptance": [
+    ".codex-loop/workflow/STATUS.md가 proposal-only/proposal-package가 아니라 product-ui/frontend-integration 상태를 설명한다.",
+    ".codex-loop/state.json이 이전 READY_FOR_RERUN 실패 상태를 계속 노출하지 않고, 정합성 복구 후 최종 Ralph 확인 대기 상태를 설명한다.",
+    "reports/model_demo_summary.md가 예전 6명 견본이 아니라 30명, 사전 60일, 평가 12개월, 기존 마일리지 vs 제안 통합 산식, 우대/기본/예방 케어 결과를 요약한다.",
+    "tasks.json에 이번 cleanup task가 기록되어 evaluator가 어떤 지적을 닫았는지 추적할 수 있다.",
+    "수정 후 build/test/preflight/API stream/source framing check가 다시 통과한다."
+  ],
+  "verification": [
+    "npm run build",
+    "python3 -m unittest discover -s tests",
+    "python3 scripts/preflight.py run",
+    "curl -N --max-time 25 'http://127.0.0.1:5174/api/reports/stream?driverId=cust_011&month=9&basePremiumKrw=915000'",
+    "rg -n \"proposal-only|proposal-package|driver_074|driver_075|driver_076|driver_077|driver_078|driver_079|총 6명\" .codex-loop/workflow/STATUS.md docs/ralph-visual-workflow.md reports/model_demo_summary.md reports/figures",
+    "rg -n \"추가 리워드|리워드|보너스|90일|8003|customer_decision_app|1,389|90-day|Python public demo|public demo\" README.md docs reports scripts .codex-loop/artifacts"
+  ],
+  "evidence": [
+    ".codex-loop/logs/latest-build.log",
+    ".codex-loop/logs/latest-unittest.log",
+    ".codex-loop/logs/latest-preflight.log",
+    ".codex-loop/logs/latest-report-stream.md",
+    ".codex-loop/logs/latest-framing-check.log"
+  ],
+  "evaluator_source": ".codex-loop/evals/precomplete-eval-last.md"
+}

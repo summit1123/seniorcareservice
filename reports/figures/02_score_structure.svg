@@ -9,8 +9,8 @@
   <text x="48" y="92" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="17" font-weight="400" fill="#666666">운전 안정성, 생활권 안정성, 패턴 변화, 생활권 밖 위험행동을 분리해 판단한다.</text>
   <rect x="455" y="156" width="290" height="116" rx="4" fill="#F7F7F7" stroke="#B8B8B8" stroke-width="1"/>
 <text x="473" y="190" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" fill="#111111">최종 판단</text>
-<text x="473" y="220" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">추가 리워드</text>
-<text x="473" y="242" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">기본 유지</text>
+<text x="473" y="220" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">우대</text>
+<text x="473" y="242" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">기본</text>
 <text x="473" y="264" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="400" fill="#666666">예방 케어</text>
 <rect x="62" y="138" width="300" height="112" rx="4" fill="#F7F7F7" stroke="#B8B8B8" stroke-width="1"/>
 <text x="80" y="172" font-family="Apple SD Gothic Neo, Noto Sans KR, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" fill="#111111">Safe Driving Score</text>

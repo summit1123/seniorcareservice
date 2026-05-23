@@ -17,11 +17,12 @@ CSV / Python script / Markdown source / SVG figure
 
 | 항목 | 값 |
 |---|---|
-| workflow profile | proposal-only |
-| mode | proposal |
-| reference pack | editorial-signal |
-| 보조 성격 | analyst-workbench |
-| 목표 | AI 모델 견본과 제출용 시각화 자료 생성 |
+| workflow profile | product-ui |
+| mode | product-ui |
+| workflow stage | frontend-integration |
+| reference pack | impeccable-operator |
+| 보조 성격 | decision-dashboard |
+| 목표 | 30명 1년 시뮬레이션과 React 심사위원 데모 완성 |
 
 ## 3. 시각화 산출물
 
@@ -29,7 +30,7 @@ CSV / Python script / Markdown source / SVG figure
 |---|---|
 | `reports/figures/01_ai_pipeline.svg` | 생활권 생성 AI, 평소패턴 학습 AI, 점수화, 케어 판단 흐름 |
 | `reports/figures/02_score_structure.svg` | 최종 점수 4종 구조 |
-| `reports/figures/03_decision_flow.svg` | 추가 리워드, 기본 유지, 예방 케어 판단 흐름 |
+| `reports/figures/03_decision_flow.svg` | 통합 산식 우대, 기본 유지, 예방 케어 판단 흐름 |
 | `reports/model_demo_summary.md` | 모델 결과 요약 리포트 |
 | `docs/submissions/proposal.md` | 제출용 제안서 source |
 

@@ -1,0 +1,33 @@
+{
+  "id": "006",
+  "title": "서버 기반 Markdown streaming 리포트 구현",
+  "status": "done",
+  "priority": "p0",
+  "summary": "React 단독 화면이 아니라, 서버 API가 선택 운전자 데이터와 XAI reason code를 조회하고 보험사 직원용 Markdown 리포트를 streaming으로 내려주는 구조를 만든다.",
+  "dependsOn": [
+    "004",
+    "005"
+  ],
+  "deliverables": [
+    "vite.config.ts",
+    "src/react-demo/api.ts",
+    "src/react-demo/App.tsx",
+    "src/react-demo/styles.css"
+  ],
+  "acceptance": [
+    "서버는 페르소나 목록, 운전자 연간 요약, 월별 snapshot, 월별 생활권 지도 데이터, 리포트 stream endpoint를 제공한다.",
+    "리포트 stream은 선택 운전자의 월별 운전 패턴, 생활권 변화, 위험행동 변화, 기존 마일리지 결과, 제안 산식 결과를 Markdown chunk로 순차 전송한다.",
+    "React의 리포트 패널은 생성 중 상태, 현재 생성 섹션, streaming Markdown, 완료 상태를 보여준다.",
+    "리포트 필수 섹션은 운전자 페르소나 요약, 기존 마일리지 결과, 월별 운전 패턴 해석, 생활권 변화 해석, 4개 지표 영향, 보험사 직원용 판단 가이드, 한계 고지다.",
+    "reason code는 4개 지표와 연결된다: Mileage, In-Zone Safe, Out-Zone Safe, Pattern Change Risk.",
+    "OpenAI API key가 없으면 리포트 생성을 중단하고 설정 오류를 표시한다.",
+    "LLM 요청 또는 fallback 입력에는 원본 GPS, 실제 식별자, raw trip log가 포함되지 않는다.",
+    "리포트는 보험료 결정을 수행하지 않고, 이미 계산된 산식 결과와 reason code를 설명한다."
+  ],
+  "notes": [
+    "이 기능은 단순 텍스트 박스가 아니라 보험사 직원이 실제로 한눈에 검토할 수 있는 리포트 프레임이다.",
+    "서버는 API key 보호와 streaming 책임을 갖고, React는 시각화와 상태 표시를 맡는다.",
+    "SSE, fetch ReadableStream, chunked response 중 repo 환경에 맞는 구현을 선택한다.",
+    "완료 구현은 Vite dev middleware의 chunked Markdown stream과 React fetch ReadableStream 패널이다."
+  ]
+}

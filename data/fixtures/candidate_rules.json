@@ -1,6 +1,6 @@
 {
   "schema_version": "senior-policy-candidate-rules/v1",
-  "generated_at": "2026-05-07T02:20:06+00:00",
+  "generated_at": "2026-05-10T17:35:54+00:00",
   "search_input": {
     "schema_version": "senior-policy-candidate-rules/v1/search-input",
     "source_artifacts": {
@@ -186,15 +186,15 @@
       "w_out_zone_change": 0.2
     },
     "thresholds": {
-      "care_threshold": 41.14,
+      "care_threshold": 70.0,
       "care_threshold_percentile": 0.2,
-      "threshold_candidate_id": "threshold_p20_s85_a75_b65",
-      "care_threshold_source": "risk_change_score_top_percentile",
+      "threshold_candidate_id": "threshold_proposal_r70_s85_a75_b55",
+      "care_threshold_source": "proposal_fixed_pattern_change_risk_gate",
       "care_threshold_expected_top_n": 6,
       "tier_threshold": {
         "S": 85,
         "A": 75,
-        "B": 65,
+        "B": 55,
         "C": 0
       }
     },
