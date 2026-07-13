@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { demoApi } from "./api";
+import { normalizeProductWeights } from "./gaip-decision";
+import type { ProductRules } from "./gaip-types";
 import type {
   DecisionSignal,
   Destination,
@@ -29,40 +31,12 @@ import type {
 
 const numberFormatter = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
 
-const personaNames = [
-  "김영호",
-  "박순자",
-  "이정식",
-  "최명희",
-  "정기철",
-  "윤복순",
-  "한상일",
-  "오미자",
-  "강문수",
-  "서정례",
-  "조한기",
-  "문영희",
-  "배상국",
-  "신옥자",
-  "유만호",
-  "임경자",
-  "노성식",
-  "홍금자",
-  "권태식",
-  "장순덕",
-  "고재훈",
-  "백영도",
-  "남기철",
-  "송화자",
-  "양춘호",
-  "차미경",
-  "주병일",
-  "민정례",
-  "하석준",
-  "도영자"
-];
-
 const decisionMeta: Record<string, { label: string; className: string }> = {
+  Reward: { label: "Reward", className: "good" },
+  Neutral: { label: "Neutral", className: "base" },
+  Hold: { label: "판단 보류", className: "hold" },
+  "Care Review": { label: "Care Review", className: "care" },
+  "Reward + Care Review": { label: "Reward + Care", className: "care" },
   우대: { label: "우대", className: "good" },
   기본: { label: "기본", className: "base" },
   "예방 케어": { label: "예방 케어", className: "care" },
@@ -76,10 +50,18 @@ const interpretationMeta: Record<string, { label: string; className: string; sho
   existing_living_zone: { label: "기준 생활권 안", className: "stable", short: "생활권 안" },
   candidate_living_zone: { label: "반복 외부 후보", className: "candidate", short: "후보 생활권" },
   out_zone_safe_driving: { label: "생활권 밖 안정", className: "safeout", short: "외부 안정" },
-  out_zone_pattern_change_risk: { label: "위험변화 관찰", className: "risk", short: "위험변화" }
+  out_zone_pattern_change_risk: { label: "동시변화 검토", className: "risk", short: "Care 검토" }
 };
 
 const reasonLabels: Record<string, string> = {
+  BASELINE_OBSERVATION: "기준선 관찰월",
+  CARE_EVIDENCE_INSUFFICIENT: "Care 근거 부족",
+  HUMAN_CARE_REVIEW_SUGGESTED: "사람 검토 제안",
+  REWARD_EVIDENCE_INSUFFICIENT: "Reward 근거 부족",
+  REWARD_REQUIRED_MONTHS_MET: "Reward 충족월 기준 통과",
+  REWARD_REQUIRED_MONTHS_NOT_MET: "Reward 충족월 기준 미달",
+  SAME_MONTH_CARE_GATE_MET: "같은 달 이동·위험행동 동시변화",
+  SAME_MONTH_CARE_GATE_NOT_MET: "동시변화 게이트 미충족",
   CANDIDATE_LIVING_ZONE: "후보 생활권 관찰",
   HARSH_BRAKE_INCREASE: "급감속 증가",
   LOW_MILEAGE: "저주행 조건",
@@ -98,62 +80,26 @@ const reasonLabels: Record<string, string> = {
 };
 
 const personaTypeLabels: Record<string, string> = {
-  stable_local_low_mileage: "생활권 안 저주행 안정형",
-  stable_outer_safe: "생활권 밖 안정 주행형",
-  recent_outer_risk_change: "최근 생활권 밖 위험변화형",
-  in_zone_risky_low_mileage: "생활권 안 저주행 위험행동형",
-  medical_visit_pattern: "병원 방문 반복 외부 목적지형",
-  irregular_family_support: "가족 돌봄 불규칙 외부 이동형"
+  stable_local_safe: "안정적 근거리 안전형",
+  low_mileage_risky: "저주행 위험행동형",
+  safe_multi_hub: "복수 거점 안전형",
+  safe_wide_area: "광역 이동 안전형",
+  mobility_change_only: "이동 변화 단독형",
+  mobility_risk_cochange: "이동·위험행동 동시변화형"
 };
 
 const destinationTypeLabels: Record<string, string> = {
-  clinic: "병원",
-  family: "자녀 집",
-  family_home: "자녀 집",
-  home: "자택",
-  leisure: "근교 외출지",
-  market: "마트",
-  pharmacy: "약국",
-  unknown_outer: "신규 외부 목적지"
+  routine_hub_a: "반복 거점 A",
+  routine_hub_b: "반복 거점 B",
+  routine_hub_c: "반복 거점 C",
+  new_visit: "신규 방문",
+  outer_context: "Outer Context"
 };
 
 const dynamicTextTranslations: Record<string, string> = {
-  "Stable Local Low-Mileage": "생활권 안 저주행 안정형",
-  "Stable Out-Zone Driver": "생활권 밖 안정 주행형",
-  "Recent Out-Zone Risk Change": "최근 생활권 밖 위험변화형",
-  "In-Zone Risk Behavior": "생활권 안 저주행 위험행동형",
-  "Repeated Medical-Visit Pattern": "병원 방문 반복 외부 목적지형",
-  "Irregular Family-Care Travel": "가족 돌봄 불규칙 외부 이동형",
-  "About 2 trips/week": "주 2회 내외",
-  "3-4 trips/week": "주 3~4회",
-  "Under 3,000 km": "3천km 이하",
-  "Under 4,000 km": "4천km 이하",
-  "Under 5,000 km": "5천km 이하",
-  "Under 6,000 km": "6천km 이하",
-  "Under 7,000 km": "7천km 이하",
-  "Under 8,000 km": "8천km 이하",
-  "Under 9,000 km": "9천km 이하",
-  "Mostly In-Zone": "생활권 안 중심",
-  "Repeated external destinations with stable behavior": "반복 외부 목적지 안정",
-  "Increase in external destinations in the second half": "하반기 외부 목적지 증가",
-  "Increase in night driving and harsh braking in the second half": "하반기 야간/급제동 증가",
-  "Repeated In-Zone speeding and harsh braking": "생활권 안 과속/급감속 반복",
-  "Repeated external hospital trips": "반복 병원 목적 외부 이동",
-  "Mostly daytime hospital trips with low risk events": "주간 병원 이동 중심, 위험행동 낮음",
-  "Variable external travel for family care": "가족 돌봄 외부 이동 변동",
-  "External travel varies, but risk events remain limited": "외부 이동은 변동하나 위험행동 제한적",
-  "Low risk events": "위험행동 낮음",
-  "Standard": "기본",
-  "Favorable": "우대",
-  "Preventive Care": "예방 케어",
-  "New External Destination": "신규 외부 목적지",
-  "Nearby Outing": "근교 외출지",
-  "Family House": "자녀 집",
-  "House": "자택",
-  "Home": "자택",
-  "Hospital": "병원",
-  "Mart": "마트",
-  "Pharmacy": "약국"
+  Standard: "Neutral",
+  Favorable: "Reward",
+  "Preventive Care": "Care Review"
 };
 
 const selectedPolicy = {
@@ -225,7 +171,7 @@ type PageMode = "overview" | "profiles";
 
 function App() {
   const [directory, setDirectory] = useState<PersonaDirectoryResponse | null>(null);
-  const [selectedCustomerId, setSelectedCustomerId] = useState("cust_011");
+  const [selectedCustomerId, setSelectedCustomerId] = useState("gaip-051");
   const [pageMode, setPageMode] = useState<PageMode>("overview");
   const [driver, setDriver] = useState<DriverAnnualSummary | null>(null);
   const [monthlyEvidence, setMonthlyEvidence] = useState<MonthlyEvidence[]>([]);
@@ -235,6 +181,7 @@ function App() {
   const [driverState, setDriverState] = useState<LoadState>("loading");
   const [zoneState, setZoneState] = useState<LoadState>("loading");
   const [errorMessage, setErrorMessage] = useState("");
+  const [productRules, setProductRules] = useState<ProductRules | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -243,7 +190,8 @@ function App() {
       .then((payload) => {
         if (!active) return;
         setDirectory(payload);
-        setSelectedCustomerId(payload.default_customer_id ?? payload.driver_options[0]?.customer_id ?? "cust_011");
+        setProductRules(payload.product_rules ?? null);
+        setSelectedCustomerId(payload.default_customer_id ?? payload.driver_options[0]?.customer_id ?? "gaip-051");
         setDirectoryState("ready");
       })
       .catch((error: Error) => {
@@ -258,13 +206,26 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (!productRules || !directory) return;
+    let active = true;
+    demoApi.getPersonaDirectory(productRules).then((payload) => {
+      if (active) setDirectory(payload);
+    }).catch((error: Error) => {
+      if (active) setErrorMessage(error.message);
+    });
+    return () => {
+      active = false;
+    };
+  }, [productRules]);
+
+  useEffect(() => {
     if (!directory) return;
     let active = true;
     setDriverState("loading");
     setZoneMap(null);
     Promise.all([
-      demoApi.getAnnualSummary(selectedCustomerId),
-      demoApi.getMonthlySnapshots(selectedCustomerId)
+      demoApi.getAnnualSummary(selectedCustomerId, productRules ?? undefined),
+      demoApi.getMonthlySnapshots(selectedCustomerId, productRules ?? undefined)
     ])
       .then(([summary, monthly]) => {
         if (!active) return;
@@ -283,14 +244,14 @@ function App() {
     return () => {
       active = false;
     };
-  }, [directory, selectedCustomerId]);
+  }, [selectedCustomerId, productRules]);
 
   useEffect(() => {
     if (!driver) return;
     let active = true;
     setZoneState("loading");
     demoApi
-      .getZoneMap(driver.customer_id, selectedMonth)
+      .getZoneMap(driver.customer_id, selectedMonth, productRules ?? undefined)
       .then((payload) => {
         if (!active) return;
         setZoneMap(payload);
@@ -305,7 +266,7 @@ function App() {
     return () => {
       active = false;
     };
-  }, [driver, selectedMonth]);
+  }, [driver, selectedMonth, productRules]);
 
   const selectedOption = useMemo(
     () => directory?.driver_options.find((option) => option.customer_id === selectedCustomerId),
@@ -318,7 +279,7 @@ function App() {
   };
 
   if (directoryState === "loading") {
-    return <ScreenState title="데모 데이터 연결 중" detail="30명 페르소나와 연간 비교 결과를 불러오는 중입니다." />;
+    return <ScreenState title="시뮬레이션 근거 연결 중" detail="60명 합성 코호트와 14개월 판단 근거를 불러오는 중입니다." />;
   }
 
   if (directoryState === "error" || !directory) {
@@ -330,9 +291,9 @@ function App() {
       <header className="app-header">
         <div className="brand-block">
           <div>
-            <p className="eyebrow">삼성화재 AI 활용 공모전 · 의사결정 대시보드</p>
-            <h1>안심반경 시니어 마일리지</h1>
-            <p>기존 마일리지의 저주행 우대 원칙은 유지하되, 생활권 안정성과 최근 위험변화 신호로 연간 판단을 보정합니다.</p>
+            <p className="eyebrow">FOURSURE · MASIL · GAIP 2026</p>
+            <h1>시니어 생활권 기반 보험 설계 대시보드</h1>
+            <p>한국 마일리지 특약을 참조하되, 반복 생활권과 운전행동의 변화를 분리해 Reward와 Care 검토 근거를 제안합니다.</p>
           </div>
         </div>
         <div className="header-actions">
@@ -355,15 +316,15 @@ function App() {
             </button>
           </div>
           <div className="contract-box">
-            <span>판정 단위</span>
-            <strong>연간 판정 · 월별 근거</strong>
-            <small>최초 60일은 생활권 산출 전용</small>
+            <span>데모 범위</span>
+            <strong>합성 시뮬레이션 · 사람 검토 지원</strong>
+            <small>2개월 기준선 + 12개월 평가 · 실제 요율 아님</small>
           </div>
         </div>
       </header>
 
       {pageMode === "overview" ? (
-        <DesignOverviewPage directory={directory} />
+        <DesignOverviewPage directory={directory} rules={productRules} onRulesChange={setProductRules} />
       ) : (
         <main className="decision-dashboard">
           <CaseRail
@@ -393,6 +354,7 @@ function App() {
               zoneMap={zoneMap}
               rows={monthlyEvidence}
               selectedMonth={selectedMonth}
+              rules={productRules}
             />
 
             <MonthlyEvidenceLane
@@ -400,6 +362,7 @@ function App() {
               selectedMonth={selectedMonth}
               loading={driverState === "loading"}
               onSelectMonth={setSelectedMonth}
+              rules={productRules}
             />
 
             <AnalysisTabs
@@ -415,8 +378,10 @@ function App() {
           <DecisionPanel
             driver={driver}
             zoneMap={zoneMap}
+            rows={monthlyEvidence}
             selectedMonth={selectedMonth}
             loading={driverState === "loading"}
+            rules={productRules}
           />
         </main>
       )}
@@ -424,19 +389,121 @@ function App() {
   );
 }
 
-function DesignOverviewPage({ directory }: { directory: PersonaDirectoryResponse }) {
+function DesignOverviewPage({
+  directory,
+  rules,
+  onRulesChange
+}: {
+  directory: PersonaDirectoryResponse;
+  rules: ProductRules | null;
+  onRulesChange: (rules: ProductRules) => void;
+}) {
   return (
     <main className="overview-page" aria-label="상품 설계구조 화면">
       <OverviewComparisonPanel directory={directory} />
-
+      {rules ? <ScenarioControlPanel rules={rules} onChange={onRulesChange} /> : null}
       <ProductBlueprintPanel directory={directory} />
     </main>
   );
 }
 
+const referenceProductRules: ProductRules = {
+  weights: { mileage: 30, in_zone_safe: 30, out_zone_safe: 20, pattern_stability: 20 },
+  reward_score_threshold: 75,
+  minimum_data_coverage_pct: 80,
+  reward_required_months: 9,
+  care_mobility_change_threshold: 25,
+  care_risky_behavior_threshold: 20,
+  reward_discount_rate_pct: 3,
+  candidate_discount_cap_pct: 45
+};
+
+function ScenarioControlPanel({ rules, onChange }: { rules: ProductRules; onChange: (rules: ProductRules) => void }) {
+  const normalized = normalizeProductWeights(rules.weights);
+  const updateWeight = (key: keyof ProductRules["weights"], value: number) => {
+    onChange({ ...rules, weights: { ...rules.weights, [key]: value } });
+  };
+  const updateRule = (key: keyof ProductRules, value: number) => {
+    onChange({ ...rules, [key]: value });
+  };
+  const weightRows: Array<{ key: keyof ProductRules["weights"]; label: string }> = [
+    { key: "mileage", label: "주행거리" },
+    { key: "in_zone_safe", label: "생활권 안 안전" },
+    { key: "out_zone_safe", label: "생활권 밖 안전" },
+    { key: "pattern_stability", label: "패턴 안정성" }
+  ];
+
+  return (
+    <section className="panel scenario-control-panel" aria-label="상품 규칙 민감도 설정">
+      <div className="panel-head">
+        <div>
+          <p className="eyebrow">PRODUCT RULE SANDBOX</p>
+          <h2>상품 담당자가 후보 가중치와 임계치를 바꾸면 동일한 60명 결과가 즉시 다시 계산됩니다</h2>
+        </div>
+        <button type="button" className="sandbox-reset" onClick={() => onChange(referenceProductRules)}>30:30:20:20 복원</button>
+      </div>
+      <div className="sandbox-layout">
+        <div className="sandbox-weight-grid">
+          {weightRows.map((row) => (
+            <label key={row.key}>
+              <span>{row.label}</span>
+              <strong>{normalized[row.key]}%</strong>
+              <input
+                type="range"
+                min="0"
+                max="60"
+                step="5"
+                value={rules.weights[row.key]}
+                onChange={(event) => updateWeight(row.key, Number(event.target.value))}
+              />
+            </label>
+          ))}
+        </div>
+        <div className="sandbox-threshold-grid">
+          <RuleNumber label="Reward 점수" value={rules.reward_score_threshold} min={50} max={95} onChange={(value) => updateRule("reward_score_threshold", value)} />
+          <RuleNumber label="Reward 충족월" value={rules.reward_required_months} min={1} max={12} suffix="개월" onChange={(value) => updateRule("reward_required_months", value)} />
+          <RuleNumber label="최소 데이터" value={rules.minimum_data_coverage_pct} min={50} max={100} suffix="%" onChange={(value) => updateRule("minimum_data_coverage_pct", value)} />
+          <RuleNumber label="이동 변화" value={rules.care_mobility_change_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_mobility_change_threshold", value)} />
+          <RuleNumber label="위험행동 변화" value={rules.care_risky_behavior_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_risky_behavior_threshold", value)} />
+        </div>
+      </div>
+      <p className="sandbox-footnote">DBSCAN의 eps·최소 방문일수는 이 상품 화면에서 조정하지 않습니다. 가중치 합계는 계산 시 100%로 재정규화되며, 모든 값은 시뮬레이션 후보입니다.</p>
+    </section>
+  );
+}
+
+function RuleNumber({
+  label,
+  value,
+  min,
+  max,
+  suffix = "점",
+  onChange
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  suffix?: string;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <label>
+      <span>{label}</span>
+      <input type="number" min={min} max={max} value={value} onChange={(event) => onChange(Math.max(min, Math.min(max, Number(event.target.value))))} />
+      <em>{suffix}</em>
+    </label>
+  );
+}
+
 function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryResponse }) {
   const summary = directory.summary;
-  const donutBackground = "conic-gradient(#0b63f6 0 33.333%, #344054 33.333% 66.666%, #d97706 66.666% 100%)";
+  const total = Math.max(1, directory.driver_options.length);
+  const rewardCount = directory.driver_options.filter((option) => option.reward_state === "Reward").length;
+  const careCount = directory.driver_options.filter((option) => option.care_state === "Care Review").length;
+  const holdCount = directory.driver_options.filter((option) => option.reward_state === "Hold" || option.care_state === "Hold").length;
+  const rewardShare = (rewardCount / total) * 100;
+  const donutBackground = `conic-gradient(#116466 0 ${rewardShare}%, #dfe8e5 ${rewardShare}% 100%)`;
   const avgRateDelta = summary.avg_proposed_discount_rate_pct - summary.avg_existing_discount_rate_pct;
 
   return (
@@ -444,92 +511,93 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
       <div className="panel-head">
         <div>
           <p className="eyebrow">전체 비교</p>
-          <h2>같은 30명 연간 주행 데이터로 기존 마일리지와 제안 산식을 비교합니다</h2>
+          <h2>같은 60명·14개월 합성 데이터로 Korea Reference와 Masil 후보를 비교합니다</h2>
         </div>
-        <span className="count-badge">12개월 평가 · {summary.customer_count}명</span>
+        <span className="count-badge">기준선 2개월 + 평가 12개월 · {summary.customer_count}명</span>
       </div>
 
       <div className="judge-takeaway" aria-label="핵심 평가 포인트">
         <div>
           <span>문제</span>
-          <strong>기존 마일리지는 같은 저주행 안의 위험 차이를 구분하기 어렵습니다</strong>
-          <p>연간 주행거리 구간이 같으면 생활권 이탈, 야간 주행, 급감속 변화가 있어도 같은 할인율이 적용됩니다.</p>
+          <strong>기존 마일리지는 저주행 여부는 보지만 이동 맥락의 차이는 설명하기 어렵습니다</strong>
+          <p>같은 주행거리 안에서도 안정적 반복 이동과 갑작스러운 이동·위험행동 동시변화를 구분할 근거가 부족합니다.</p>
         </div>
         <div>
           <span>제안 차별점</span>
-          <strong>거리 기준 위에 생활권 안정성과 위험변화 신호를 추가합니다</strong>
-          <p>안정형은 우대 후보로 설명하고, 최근 위험변화가 커진 사례는 할인 축소 또는 예방 케어로 분리합니다.</p>
+          <strong>거리 혜택과 Care 검토를 서로 독립된 두 축으로 설계합니다</strong>
+          <p>안전운전은 Reward로 인정하고, 같은 달 이동 변화와 위험행동 변화가 함께 나타날 때만 사람에게 Care Review를 제안합니다.</p>
         </div>
         <div>
           <span>검증 결과</span>
-          <strong>같은 저주행 고객도 우대·기본·예방 케어로 다른 판단이 가능합니다</strong>
-          <p>대시보드는 실제 계약보험료가 아니라, 검증 가능한 평균 할인율과 판정 등급 변화를 중심으로 보여줍니다.</p>
+          <strong>도심·교외·광역 저밀도 환경에서도 동일한 안전 원칙을 검증합니다</strong>
+          <p>결과는 합성 시나리오의 일관성과 예외 처리를 보여주는 것이며, 실제 사고감소·손해율·확정 요율을 뜻하지 않습니다.</p>
         </div>
       </div>
 
       <div className="comparison-ledger" aria-label="기존 마일리지와 제안 산식 비교표">
         <div className="ledger-head">
           <span>비교 항목</span>
-          <strong>기존 마일리지 특약</strong>
-          <strong>제안 통합 산식</strong>
+          <strong>Korea Mileage Reference</strong>
+          <strong>Masil Simulation Candidate</strong>
         </div>
         <ComparisonLedgerRow
           label="판단 기준"
           legacy="연간 주행거리와 차종으로 할인율 결정"
-          proposed="주행거리 + 생활권 안 안전 + 생활권 밖 안전 + 위험변화"
+          proposed="주행거리 + 생활권 안/밖 안전 + 패턴 안정성"
         />
         <ComparisonLedgerRow
           label="같은 저주행 구간 처리"
           legacy="같은 거리구간이면 생활권 변화와 관계없이 같은 할인율"
-          proposed="같은 저주행 안에서도 생활권 근거에 따라 우대·기본·예방 케어로 분리"
+          proposed="Reward는 안전 점수로, Care는 같은 달 두 변화지표의 AND Gate로 별도 계산"
         />
         <ComparisonLedgerRow
           label="연간 할인 계산"
           legacy="거리구간 할인율을 그대로 적용"
-          proposed="기존 할인표를 기준선으로 두고 통합점수로 할인 방향을 보정"
+          proposed="한국 할인표를 참조하고 후보 가중치·임계치의 민감도만 비교"
         />
         <ComparisonLedgerRow
           label="설명 가능성"
           legacy="조정 근거가 ‘적게 탔다’에 머물러 설명력이 약함"
-          proposed="생활권 지도, 월별 4지표, XAI 리포트로 조정 이유 설명 가능"
+          proposed="비식별 반복 거점, 월별 근거, Reason Code와 사람 검토 기록 제공"
         />
       </div>
 
       <div className="overview-evidence-grid">
         <div className="decision-donut-card">
-          <span>제안 산식의 판정 등급 구조</span>
+          <span>Reward와 Care의 독립 결과</span>
           <div className="decision-donut-wrap">
             <div className="decision-donut" style={{ background: donutBackground }}>
               <div>
-                <strong>3등급</strong>
-                <small>연간 판정 기준</small>
+                <strong>2축</strong>
+                <small>혜택 · 검토</small>
               </div>
             </div>
             <div className="decision-donut-legend">
-              <DecisionLegend label="우대" detail="생활권 안정형" className="preferred" />
-              <DecisionLegend label="기본" detail="변화 낮음" className="standard" />
-              <DecisionLegend label="예방 케어" detail="위험변화 관찰" className="care" />
+              <DecisionLegend label={`Reward ${rewardCount}명`} detail="혜택 후보" className="preferred" />
+              <DecisionLegend label={`Neutral ${total - rewardCount - holdCount}명`} detail="혜택 유지" className="standard" />
+              <DecisionLegend label={`Care Review ${careCount}명`} detail="사람 검토" className="care" />
+              {holdCount ? <DecisionLegend label={`Hold ${holdCount}명`} detail="근거 부족·불이익 없음" className="hold" /> : null}
             </div>
           </div>
         </div>
 
         <div className="simulation-result-card">
-          <span>30명 A/B 시뮬레이션 결과</span>
-          <strong>총액을 맞춰 끼운 값이 아니라, 두 산식을 각각 계산한 결과입니다</strong>
+          <span>60명 합성 코호트 비교 결과</span>
+          <strong>6개 운전자 유형 × 10명, 3개 이동환경 × 20명을 같은 규칙으로 계산했습니다</strong>
           <p>
-            동일한 30명 연간 주행 데이터를 기존 마일리지 산식과 제안 통합 산식에 각각 넣어 비교했습니다. 실제 계약보험료를 확정하지 않은 단계이므로,
-            평균 할인율과 우대·기본·예방 케어 판정 구조를 중심으로 검증합니다.
+            2개월은 개인 기준선을 만들고 이후 12개월은 평가 근거로만 사용합니다. 실제 계약보험료를 확정하지 않은 단계이므로
+            Korea Reference와 비구속적 Masil 후보의 할인율·판정 민감도만 비교합니다.
           </p>
           <div className="budget-compare-grid no-money">
             <div>
-              <span>기존 평균 할인율</span>
+              <span>Korea Reference 평균</span>
               <strong>{percent(summary.avg_existing_discount_rate_pct)}</strong>
               <small>연간 주행거리 구간 기준</small>
             </div>
             <div>
-              <span>제안 평균 할인율</span>
+              <span>Masil Candidate 평균</span>
               <strong>{percent(summary.avg_proposed_discount_rate_pct)}</strong>
-              <small>4개 지표 통합점수 기준</small>
+              <small>30:30:20:20 후보 설정</small>
             </div>
             <div>
               <span>평균 할인율 변화</span>
@@ -538,7 +606,7 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
             </div>
           </div>
           <p className="portfolio-footnote">
-            실제 보험료와 담보 조건이 확정되기 전에는 할인율과 판정 근거만 제시합니다.
+            합성 시뮬레이션 결과입니다. 실제 요율·인수·Care 결정은 계리·상품·심사 권한자의 검토 없이 확정하지 않습니다.
           </p>
         </div>
       </div>
@@ -579,12 +647,12 @@ function CaseRail({
   const [decisionFilter, setDecisionFilter] = useState("all");
   const decisionFilters = [
     { value: "all", label: "전체" },
-    { value: "우대", label: "우대" },
-    { value: "기본", label: "기본" },
-    { value: "예방 케어", label: "예방 케어" }
+    { value: "Reward", label: "Reward" },
+    { value: "Care Review", label: "Care" },
+    { value: "Hold", label: "보류" }
   ];
   const filtered = options.filter((option) => {
-    const text = `${personaName(option.customer_id)} ${caseNo(option.customer_id)} ${caseType(option)} ${decisionClass(option.annual_decision_signal).label}`.toLowerCase();
+    const text = `${personaName(option.customer_id)} ${caseNo(option.customer_id)} ${caseType(option)} ${option.environment_display_name_ko ?? ""} ${option.reward_state ?? ""} ${option.care_state ?? ""}`.toLowerCase();
     const queryMatch = text.includes(query.toLowerCase());
     const decisionMatch = matchesCaseFilter(option, decisionFilter);
     return queryMatch && decisionMatch;
@@ -599,11 +667,11 @@ function CaseRail({
     <aside className="case-rail" aria-label="가상 시니어 사례 목록">
       <div className="rail-heading">
         <p className="eyebrow">가상 사례</p>
-        <h2>30명 사례</h2>
+        <h2>{options.length}명 사례</h2>
       </div>
       <label className="search-box">
         <Search size={15} />
-        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="이름 또는 태그 검색" />
+        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="유형·환경·상태 검색" />
       </label>
       <div className="filter-row">
         {decisionFilters.map((filter) => (
@@ -614,7 +682,6 @@ function CaseRail({
       </div>
       <div className="case-list">
         {ordered.map((option) => {
-          const risk = riskBadgeForOption(option);
           const changeTag = coreChangeTag(option.persona_type);
           return (
             <button
@@ -627,10 +694,14 @@ function CaseRail({
               <span>
                 <strong>{personaName(option.customer_id)}</strong>
                 <small>
-                  {personaAge(option.customer_id)}세 · {changeTag}
+                  {option.environment_display_name_ko ?? "이동환경"} · {changeTag}
                 </small>
               </span>
-              <em className={`risk-pill ${risk.className}`}>{risk.label}</em>
+              <span className="case-state-pills">
+                <em className={`risk-pill ${decisionClass(option.reward_state ?? "Neutral").className}`}>{option.reward_state ?? "Neutral"}</em>
+                {option.care_state === "Care Review" ? <em className="risk-pill care">Care</em> : null}
+                {option.reward_state === "Hold" || option.care_state === "Hold" ? <em className="risk-pill hold">Hold</em> : null}
+              </span>
             </button>
           );
         })}
@@ -653,49 +724,57 @@ function DecisionSummaryCard({
   driverState: LoadState;
 }) {
   if (!driver) {
-    return <InspectorState title="사례 선택 대기" detail="좌측 사례를 선택하면 최종 판단 요약이 표시됩니다." />;
+    return <InspectorState title="사례 선택 대기" detail="좌측 사례를 선택하면 Reward·Care 검토 요약이 표시됩니다." />;
   }
 
   const comparison = driver.ab_comparison;
   const selectedRow = rows.find((row) => row.month === selectedMonth);
-  const profile = zoneMap ? deriveEvidenceProfile(driver, zoneMap.snapshot) : null;
-  const risk = riskBadgeForDriver(driver);
-  const rateDelta = comparison.proposed_discount_rate_pct - comparison.existing_discount_rate_pct;
-  const action = recommendedAction(driver, selectedRow);
+  const profile = zoneMap ? deriveEvidenceProfile(driver, zoneMap.snapshot, selectedRow) : null;
+  const reward = decisionClass(driver.reward_state ?? comparison.annual_decision_signal);
+  const selectedCare = selectedRow?.care_state ?? "None";
+  const care = decisionClass(selectedCare);
+  const reviewHeadline = selectedCare === "Care Review"
+    ? "이동 맥락과 위험행동의 동시변화 검토"
+    : selectedCare === "Hold"
+      ? "근거 부족 · 판단 보류"
+      : selectedCare === "Observation"
+        ? "개인 기준선 관찰 · Care 평가 제외"
+        : profile?.headline;
   const decisionReasons = profile
     ? [profile.headline, profile.outerPattern, profile.riskPattern]
     : driver.annual_score.annual_reason_codes.slice(0, 3).map((code) => reasonLabels[code] ?? code);
 
   return (
-    <section className={`decision-summary-card ${driverState === "loading" ? "is-loading" : ""}`} aria-label="최종 판단 요약">
+    <section className={`decision-summary-card ${driverState === "loading" ? "is-loading" : ""}`} aria-label="검토 제안 요약">
       <div className="summary-identity">
-        <p className="eyebrow">최종 판단 요약</p>
+        <p className="eyebrow">검토 제안 요약</p>
         <h2>{personaName(driver.customer_id)}</h2>
-        <span>{personaAge(driver.customer_id)}세 · {personaResidence(driver)} · {personaTypeLabel(driver.persona_type)}</span>
+        <span>{driver.environment_display_name_ko ?? personaResidence(driver)} · {personaTypeLabel(driver.persona_type)}</span>
       </div>
 
       <div className="summary-verdict">
-        <span>현재 판단</span>
-        <strong>{profile?.headline ?? decisionReasons[0]}</strong>
+        <span>선택 월 근거</span>
+        <strong>{reviewHeadline ?? decisionReasons[0]}</strong>
         <p>{decisionReasons.slice(1, 3).join(" ")}</p>
       </div>
 
       <div className="summary-decision-stack">
-        <div className={`risk-score-block ${risk.className}`}>
-          <span>판정 등급</span>
-          <strong>{risk.label}</strong>
-          <b>통합점수 {numberFormatter.format(driver.annual_score.annual_senior_safe_mileage_score)}점</b>
+        <div className={`risk-score-block ${reward.className}`}>
+          <span>연간 혜택 축</span>
+          <strong>{reward.label}</strong>
+          <b>후보점수 {numberFormatter.format(driver.annual_score.annual_senior_safe_mileage_score)}점</b>
         </div>
 
-        <div className="premium-delta-block">
-          <span>할인율 변화</span>
-          <strong>{signedPercentPoint(rateDelta)}</strong>
-          <small>{percent(comparison.existing_discount_rate_pct)} → {percent(comparison.proposed_discount_rate_pct)}</small>
+        <div className={`premium-delta-block ${care.className}`}>
+          <span>선택 월 Care 축</span>
+          <strong>{selectedCare === "Care Review" ? "Care Review" : selectedCare === "Hold" ? "판단 보류" : selectedCare === "Observation" ? "기준선 관찰" : "미충족"}</strong>
+          <small>같은 달 이동 변화 AND 위험행동 변화</small>
         </div>
 
         <div className="summary-action">
-          <span>추천 조치</span>
-          <strong>{action}</strong>
+          <span>근거 상태</span>
+          <strong>{zoneIsReady(driver.zone_status) ? "생활권 근거 사용 가능" : "근거 부족 · 불이익 없음"}</strong>
+          <small>{selectedRow ? `데이터 커버리지 ${numberFormatter.format(selectedRow.data_coverage_pct ?? 0)}%` : driver.evidence_status ?? "simulated"}</small>
         </div>
       </div>
     </section>
@@ -706,12 +785,14 @@ function DecisionProcessFrame({
   driver,
   zoneMap,
   rows,
-  selectedMonth
+  selectedMonth,
+  rules
 }: {
   driver: DriverAnnualSummary | null;
   zoneMap: ZoneMapResponse | null;
   rows: MonthlyEvidence[];
   selectedMonth: number;
+  rules: ProductRules | null;
 }) {
   if (!driver) {
     return <InspectorState title="판단 과정 대기" detail="사례를 선택하면 할인 보정 과정이 표시됩니다." />;
@@ -720,45 +801,48 @@ function DecisionProcessFrame({
   const comparison = driver.ab_comparison;
   const selectedRow = rows.find((row) => row.month === selectedMonth);
   const profile = zoneMap ? deriveEvidenceProfile(driver, zoneMap.snapshot) : null;
-  const decision = decisionClass(comparison.annual_decision_signal);
-  const riskScore = selectedRow?.out_zone_pattern_change_risk ?? comparison.annual_out_zone_pattern_change_risk;
-  const zoneBasis = zoneMap
-    ? `P90 ${Math.round(zoneMap.snapshot.living_zone.buffer.departure_p90_threshold_m).toLocaleString("en-US")}m`
+  const mobilityChange = selectedRow?.mobility_change_index_pct ?? selectedRow?.out_zone_pattern_change_risk ?? 0;
+  const riskyBehaviorChange = selectedRow?.risky_behavior_change_index_pct ?? 0;
+  const careGate = selectedRow?.care_state === "Care Review";
+  const zoneBasis = !zoneIsReady(driver.zone_status) || !zoneMap?.snapshot.living_zone.clusters.length
+    ? "No Zone · 판단 보류"
+    : zoneMap
+      ? `Core 500m · P90 ${Math.round(zoneMap.snapshot.living_zone.buffer.departure_p90_threshold_m).toLocaleString("en-US")}m`
       : "생활권 산출 중";
   const steps = [
     {
-      title: "기존 기준선",
+      title: "Korea Reference",
       value: `${translateText(comparison.existing_matched_tier_label)} · ${percent(comparison.existing_discount_rate_pct)}`,
-      detail: "연간 주행거리와 차종만 반영",
+      detail: "한국 마일리지 특약을 비교 기준으로 사용",
       icon: Route
     },
     {
       title: "생활권 생성",
       value: zoneBasis,
-      detail: "직전 60일 반복 목적지와 이동 반경 반영",
+      detail: "방문 이벤트 기반 DBSCAN 반복 거점 · radial P90 Buffer",
       icon: MapPinned
     },
     {
-      title: `${selectedMonth}월 변화`,
-      value: profile ? `생활권 밖 ${percent(profile.outZoneRatio * 100)}` : "월별 근거 산출 중",
-      detail: profile?.riskPattern ?? "생활권 밖·야간·위험행동 변화를 확인",
+      title: `${selectedRow?.service_month ?? selectedMonth + "월"} 변화`,
+      value: `이동 ${numberFormatter.format(mobilityChange)} · 위험 ${numberFormatter.format(riskyBehaviorChange)}`,
+      detail: careGate ? "같은 평가월 두 변화지표가 함께 임계치 통과" : "한 지표만으로 Care를 제안하지 않음",
       icon: Activity
     },
     {
-      title: "연간 판단",
-      value: `${percent(comparison.proposed_discount_rate_pct)} · ${decision.label}`,
-      detail: `위험변화 ${numberFormatter.format(riskScore)}점`,
+      title: "Human Review",
+      value: `${driver.reward_state ?? "Neutral"} · 월 Care ${selectedRow?.care_state ?? "None"}`,
+      detail: "연간 Reward와 선택 월 Care 근거를 사람이 별도 검토",
       icon: AlertTriangle
     }
   ];
 
   return (
-    <section className="decision-process-frame" aria-label="할인 보정 판단 과정">
+    <section className="decision-process-frame" aria-label="상품 근거와 사람 검토 과정">
       <div className="decision-process-copy">
         <p className="eyebrow">판단 과정</p>
-        <h2>같은 저주행이라도 생활권 밖 위험변화가 있으면 다른 결론이 납니다</h2>
+        <h2>어디를 갔는지가 아니라, 평소 대비 두 변화가 함께 나타났는지를 봅니다</h2>
         <p>
-          기존 마일리지는 비교 기준선으로 두고, 생활권 안/밖 안전성과 최근 위험변화를 연간 통합점수로 계산해 {personaName(driver.customer_id)}의 판정 근거를 설명합니다.
+          Outer 이동 자체는 중립입니다. Reward는 안전운전 근거로 계산하고, Care는 같은 달 이동 맥락과 위험행동이 동시에 달라질 때만 사람에게 검토를 제안합니다.
         </p>
       </div>
       <div className="process-rail">
@@ -790,7 +874,7 @@ function LivingZoneDecisionMap({
   selectedMonth: number;
   zoneState: LoadState;
 }) {
-  if (!driver) return <InspectorState title="생활권 지도 대기" detail="사례를 선택하면 생활권 반경과 최근 외부 목적지가 표시됩니다." />;
+  if (!driver) return <InspectorState title="생활권 지도 대기" detail="사례를 선택하면 비식별 반복 거점과 상품 Zone이 표시됩니다." />;
 
   const profile = zoneMap ? deriveEvidenceProfile(driver, zoneMap.snapshot) : null;
 
@@ -799,13 +883,13 @@ function LivingZoneDecisionMap({
       <div className="decision-section-head">
         <div>
           <p className="eyebrow">생활권 판단 지도</p>
-          <h2>자택 중심 생활권과 최근 변화 목적지</h2>
+          <h2>{zoneIsReady(driver.zone_status) ? "비식별 반복 거점과 Core 500m · radial P90 기반 Product Buffer" : "No Zone · 반복 거점 근거 부족"}</h2>
         </div>
-        {profile && zoneMap ? (
+        {profile && zoneMap && zoneIsReady(driver.zone_status) ? (
           <div className="map-kpis">
-            <span>P90 {Math.round(zoneMap.snapshot.living_zone.buffer.departure_p90_threshold_m).toLocaleString("ko-KR")}m</span>
-            <span>생활권 밖 {percent(profile.outZoneRatio * 100)}</span>
-            <span>위험구간 {profile.riskEvents}건</span>
+            <span>radial P90 {Math.round(zoneMap.snapshot.living_zone.buffer.departure_p90_threshold_m).toLocaleString("ko-KR")}m</span>
+            <span>Outer {percent(profile.outZoneRatio * 100)} · 감점 0</span>
+            <span>위험행동 {profile.riskEvents}건</span>
           </div>
         ) : null}
       </div>
@@ -813,17 +897,23 @@ function LivingZoneDecisionMap({
       <div className="map-stage">
         {zoneState === "loading" || !zoneMap || !profile ? (
           <p>생활권 지도를 불러오는 중입니다.</p>
+        ) : !zoneIsReady(driver.zone_status) ? (
+          <div className="no-zone-state">
+            <MapPinned size={24} />
+            <strong>반복 거점 근거가 충분하지 않습니다</strong>
+            <p>가짜 중심을 만들지 않고 No Zone으로 유지합니다. Reward와 Care는 판단 보류이며 불이익을 주지 않습니다.</p>
+          </div>
         ) : (
           <GeoLivingZoneCanvas driver={driver} snapshot={zoneMap.snapshot} profile={profile} />
         )}
       </div>
 
       <div className="map-legend-row">
-        <span><i className="legend-home" />자택 / 생활권 중심</span>
-        <span><i className="legend-normal" />평소 반복 경로</span>
-        <span><i className="legend-out" />생활권 밖 목적지</span>
-        <span><i className="legend-risk" />위험 주행 구간</span>
-        <b>{selectedMonth}월 선택 근거</b>
+        <span><i className="legend-home" />Routine Hub</span>
+        <span><i className="legend-normal" />Core 500m</span>
+        <span><i className="legend-out" />Product Buffer = max(500m, min(radial P90, 2km))</span>
+        <span><i className="legend-risk" />Outer · 위치만으로 감점 없음</span>
+        <b>{zoneMap?.snapshot.service_month ?? `${selectedMonth}월`} 선택 근거</b>
       </div>
     </section>
   );
@@ -846,12 +936,12 @@ function AnalysisTabs({
 }) {
   const [activeTab, setActiveTab] = useState("Overview");
   const selectedRow = rows.find((row) => row.month === selectedMonth) ?? rows[0];
-  const profile = driver && zoneMap ? deriveEvidenceProfile(driver, zoneMap.snapshot) : null;
+  const profile = driver && zoneMap ? deriveEvidenceProfile(driver, zoneMap.snapshot, selectedRow) : null;
   const tabs = [
     { key: "Overview", label: "요약" },
     { key: "Monthly Pattern", label: "월별 패턴" },
     { key: "Risk Signals", label: "위험 신호" },
-    { key: "Premium Simulation", label: "연간 할인" },
+    { key: "Premium Simulation", label: "Pricing Sandbox" },
     { key: "Report", label: "리포트" }
   ];
 
@@ -869,8 +959,8 @@ function AnalysisTabs({
         {activeTab === "Overview" && driver && selectedRow ? (
           <div className="insight-grid">
             <InsightCard title="분류 근거" value={profile?.headline ?? "월별 근거 확인"} detail={profile?.summary ?? translateText(driver.care_context.message_focus)} />
-            <InsightCard title="생활권 변화" value={`위험변화 ${numberFormatter.format(selectedRow.out_zone_pattern_change_risk ?? 0)}점`} detail={`${selectedMonth}월 기준: ${basisLabel(selectedRow.basis_status)} 적용`} />
-            <InsightCard title="상품 판단" value={decisionClass(driver.ab_comparison.annual_decision_signal).label} detail={translateText(driver.care_context.product_role)} />
+            <InsightCard title="생활권 변화" value={`이동 ${numberFormatter.format(selectedRow.mobility_change_index_pct ?? 0)} · 위험 ${numberFormatter.format(selectedRow.risky_behavior_change_index_pct ?? 0)}`} detail={`${selectedRow.service_month}: 같은 달 AND Gate 적용`} />
+            <InsightCard title="상품 제안" value={`연간 Reward ${driver.reward_state ?? "Neutral"} · 월 Care ${selectedRow.care_state ?? "None"}`} detail="연간 Reward와 선택 월 Care를 독립 계산 후 사람이 검토합니다." />
           </div>
         ) : null}
 
@@ -883,7 +973,12 @@ function AnalysisTabs({
             <ScoreMeter label="주행거리 점수" value={selectedRow.mileage_score} helper="월별 주행거리를 연환산해 저주행일수록 높게 계산" />
             <ScoreMeter label="생활권 안 안전점수" value={selectedRow.in_zone_safe_driving_score} helper="생활권 안 급감속·과속·야간 비율이 낮을수록 높음" />
             <ScoreMeter label="생활권 밖 안전점수" value={selectedRow.out_zone_safe_driving_score} helper="생활권 밖 위험행동과 야간 비율이 낮을수록 높음" />
-            <ScoreMeter label="위험변화 점수" value={selectedRow.out_zone_pattern_change_risk} inverse helper="직전 60일 대비 생활권 밖·야간·위험행동이 늘수록 높음" />
+            <ScoreMeter label="패턴 안정성" value={selectedRow.pattern_stability_score ?? Math.max(0, 100 - selectedRow.out_zone_pattern_change_risk)} helper="개인 기준선 대비 이동 맥락의 안정성" />
+            <div className={`care-gate-card ${selectedRow.care_state === "Care Review" ? "active" : ""}`}>
+              <span>Care AND Gate</span>
+              <strong>이동 {numberFormatter.format(selectedRow.mobility_change_index_pct ?? 0)} + 위험행동 {numberFormatter.format(selectedRow.risky_behavior_change_index_pct ?? 0)}</strong>
+              <small>{selectedRow.care_state === "Care Review" ? "사람 검토 제안" : "Care 자동 제안 없음"}</small>
+            </div>
             <div className="reason-chip-row">
               {[...driver.annual_score.annual_reason_codes, ...selectedRow.reason_codes].slice(0, 8).map((code) => (
                 <span key={`${code}-${selectedMonth}`}>{reasonLabels[code] ?? code}</span>
@@ -900,7 +995,7 @@ function AnalysisTabs({
           <div className="report-tab-summary">
             <strong>리포트 입력 근거</strong>
             <p>{profile.summary}</p>
-            <span>우측 최종 판단 패널에서 이 근거를 직원용 리포트로 생성합니다. 월별 값은 월 보험료가 아니라 연간 판단에 누적되는 설명 근거입니다.</span>
+            <span>우측 Human Review 패널에서 근거 초안을 생성합니다. 설명문은 최종 보험료·인수·Care 결정을 대신하지 않습니다.</span>
           </div>
         ) : null}
       </div>
@@ -938,16 +1033,16 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
   return (
     <div className="premium-simulation">
       <div>
-        <span>기존 마일리지 특약 할인율</span>
+        <span>Korea Mileage Reference</span>
         <strong>{percent(existingRate)}</strong>
         <i><b style={{ width: `${(existingRate / maxRate) * 100}%` }} /></i>
       </div>
       <div>
-        <span>제안 통합 산식 할인율</span>
+        <span>Masil Simulation Candidate</span>
         <strong>{percent(proposedRate)}</strong>
         <i><b style={{ width: `${(proposedRate / maxRate) * 100}%` }} /></i>
       </div>
-      <p>같은 연간 주행거리에 생활권 안정성, 생활권 밖 안전성, 위험변화 신호를 반영해 할인율 차이를 비교합니다. 실제 계약보험료는 계산하지 않습니다.</p>
+      <p>한국 할인율은 비교용 참조값이며 Masil 값은 후보 설정의 민감도 결과입니다. 해외 요율 DB나 실제 계약보험료를 의미하지 않습니다.</p>
     </div>
   );
 }
@@ -955,31 +1050,48 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
 function DecisionPanel({
   driver,
   zoneMap,
+  rows,
   selectedMonth,
-  loading
+  loading,
+  rules
 }: {
   driver: DriverAnnualSummary | null;
   zoneMap: ZoneMapResponse | null;
+  rows: MonthlyEvidence[];
   selectedMonth: number;
   loading: boolean;
+  rules: ProductRules | null;
 }) {
   const [state, setState] = useState<"idle" | "streaming" | "ready" | "error">("idle");
   const [markdown, setMarkdown] = useState("");
   const [error, setError] = useState("");
   const [progress, setProgress] = useState("");
+  const [reviewDecision, setReviewDecision] = useState<"pending" | "approved" | "held" | "requested">("pending");
+  const [reviewNote, setReviewNote] = useState("");
 
   useEffect(() => {
     setState("idle");
     setMarkdown("");
     setError("");
     setProgress("");
+    setReviewDecision("pending");
+    setReviewNote("");
   }, [driver?.customer_id, selectedMonth]);
 
-  if (!driver) return <aside className="decision-panel"><InspectorState title="최종 판단 패널" detail="사례를 선택하면 최종 액션 패널이 표시됩니다." /></aside>;
+  if (!driver) return <aside className="decision-panel"><InspectorState title="Human Review 패널" detail="사례를 선택하면 근거와 검토 작업이 표시됩니다." /></aside>;
 
   const comparison = driver.ab_comparison;
-  const decision = decisionClass(comparison.annual_decision_signal);
-  const profile = zoneMap ? deriveEvidenceProfile(driver, zoneMap.snapshot) : null;
+  const decision = decisionClass(driver.reward_state ?? comparison.annual_decision_signal);
+  const selectedRow = rows.find((row) => row.month === selectedMonth);
+  const selectedCare = selectedRow?.care_state ?? "None";
+  const profile = zoneMap ? deriveEvidenceProfile(driver, zoneMap.snapshot, selectedRow) : null;
+  const reviewHeadline = selectedCare === "Care Review"
+    ? "이동 맥락과 위험행동의 동시변화 검토"
+    : selectedCare === "Hold"
+      ? "근거 부족 · 판단 보류"
+      : selectedCare === "Observation"
+        ? "개인 기준선 관찰 · Care 평가 제외"
+        : profile?.headline;
   const xaiReasons = topXaiReasons(driver, zoneMap, selectedMonth);
   const rateDelta = comparison.proposed_discount_rate_pct - comparison.existing_discount_rate_pct;
   const generate = async () => {
@@ -993,7 +1105,7 @@ function DecisionPanel({
         next += chunk;
         setProgress(`생성 중: ${latestReportSection(next)}`);
         setMarkdown(next);
-      });
+      }, rules ?? undefined);
       setProgress("리포트 생성 완료");
       setState("ready");
     } catch (reportError) {
@@ -1003,39 +1115,39 @@ function DecisionPanel({
   };
 
   return (
-    <aside className={`decision-panel ${loading ? "is-loading" : ""} ${markdown ? "has-report" : ""}`} aria-label="최종 판단 패널">
+    <aside className={`decision-panel ${loading ? "is-loading" : ""} ${markdown ? "has-report" : ""}`} aria-label="사람 검토 패널">
       <div className="decision-panel-head">
-        <p className="eyebrow">최종 판단 패널</p>
-        <h2>최종 액션</h2>
+        <p className="eyebrow">HUMAN REVIEW</p>
+        <h2>검토 제안</h2>
         <em className={`decision ${decision.className}`}>{decision.label}</em>
       </div>
 
       <div className="decision-money-stack">
         <div>
-          <span>기존 마일리지 할인율</span>
+          <span>Korea Reference</span>
           <strong>{percent(comparison.existing_discount_rate_pct)}</strong>
           <small>{translateText(comparison.existing_matched_tier_label)}</small>
         </div>
         <div>
-          <span>제안 할인율</span>
+          <span>Masil Candidate</span>
           <strong>{percent(comparison.proposed_discount_rate_pct)}</strong>
           <small>통합점수 {numberFormatter.format(comparison.annual_senior_safe_mileage_score)}점</small>
         </div>
         <div className="money-delta">
-          <span>기존 대비 보정폭</span>
+          <span>후보 차이</span>
           <strong>{signedPercentPoint(rateDelta)}</strong>
-          <small>실제 계약 조건 확정 후 별도 계산</small>
+          <small>후보 민감도 · 확정 요율 아님</small>
         </div>
       </div>
 
       <div className="decision-reason-box">
-        <span>조정 사유</span>
-        <strong>{translateText(profile?.headline ?? driver.care_context.product_role)}</strong>
+        <span>검토 근거</span>
+        <strong>{translateText(reviewHeadline ?? driver.care_context.product_role)}</strong>
         <p>{translateText(profile?.summary ?? driver.care_context.message_focus)}</p>
       </div>
 
-      <div className="xai-inspector" aria-label="XAI Decision Evidence">
-        <span>XAI 판단 근거 · {selectedMonth}월</span>
+      <div className="xai-inspector" aria-label="Reason Code evidence">
+        <span>Reason Code · {zoneMap?.snapshot.service_month ?? selectedMonth + "월"}</span>
         {xaiReasons.map((reason) => (
           <div key={reason.label}>
             <strong>{reason.label}</strong>
@@ -1045,9 +1157,43 @@ function DecisionPanel({
         ))}
       </div>
 
+      <div className="review-state-box" aria-label="현재 화면의 사람 검토 상태">
+        <div>
+          <span>연간 Reward</span>
+          <strong>{driver.reward_state ?? "Neutral"}</strong>
+        </div>
+        <div>
+          <span>선택 월 Care</span>
+          <strong>{selectedCare === "Care Review" ? "Care Review" : selectedCare === "Hold" ? "판단 보류" : selectedCare === "Observation" ? "기준선" : "None"}</strong>
+        </div>
+        <div>
+          <span>모델</span>
+          <strong>{driver.model_version ?? "masil-gaip-simulation/v1"}</strong>
+        </div>
+      </div>
+
+      <label className="review-note-field">
+        <span>담당자 메모</span>
+        <textarea value={reviewNote} onChange={(event) => setReviewNote(event.target.value)} placeholder="승인·보류 이유 또는 추가 확인사항" />
+      </label>
+      <div className="review-actions">
+        <button type="button" className={reviewDecision === "approved" ? "active approve" : ""} onClick={() => setReviewDecision("approved")}>근거 확인</button>
+        <button type="button" className={reviewDecision === "requested" ? "active request" : ""} onClick={() => setReviewDecision("requested")}>추가근거 요청</button>
+        <button type="button" className={reviewDecision === "held" ? "active hold" : ""} onClick={() => setReviewDecision("held")}>판단 보류</button>
+      </div>
+      <p className="review-audit-line">
+        {reviewDecision === "pending"
+          ? "검토 전 · AI 제안은 실제 결정에 반영되지 않음 · 저장되지 않은 데모 상태"
+          : reviewDecision === "approved"
+            ? "현재 화면에서 근거 확인 표시 · 저장되지 않음 · 실제 상품 결정은 별도 권한자 승인 필요"
+            : reviewDecision === "requested"
+              ? "현재 화면에서 추가근거 요청 표시 · 저장되지 않음 · 자동 판단 없음"
+              : "현재 화면에서 판단 보류 표시 · 저장되지 않음 · 고객 불이익 없음"}
+      </p>
+
       <button className="report-button" type="button" onClick={generate} disabled={state === "streaming"}>
         {state === "streaming" ? <RefreshCcw size={15} /> : <FileText size={15} />}
-        {state === "streaming" ? "리포트 생성 중" : `${selectedMonth}월 리포트 생성`}
+        {state === "streaming" ? "근거 초안 생성 중" : `${zoneMap?.snapshot.service_month ?? selectedMonth + "월"} 근거 초안`}
       </button>
 
       {state === "error" ? <p className="error-copy">{error}</p> : null}
@@ -1056,8 +1202,8 @@ function DecisionPanel({
         <div className="report-popout" role="status" aria-live="polite">
           <div className="report-popout-head">
             <div>
-              <span>보험사 직원용 리포트</span>
-              <strong>{personaName(driver.customer_id)} · {selectedMonth}월 근거 분석</strong>
+              <span>보험사 직원용 검토 초안</span>
+              <strong>{personaName(driver.customer_id)} · {zoneMap?.snapshot.service_month ?? selectedMonth + "월"} 근거 분석</strong>
             </div>
             <button
               className="report-close-button"
@@ -1178,30 +1324,32 @@ function renderInlineMarkdown(text: string) {
 function topXaiReasons(driver: DriverAnnualSummary, zoneMap: ZoneMapResponse | null, selectedMonth: number) {
   const monthly = zoneMap?.snapshot.scores;
   const risk = monthly?.out_zone_pattern_change_risk ?? driver.annual_score.annual_out_zone_pattern_change_risk;
-  const inZone = monthly?.in_zone_safe_driving_score ?? driver.annual_score.annual_in_zone_safe_driving_score;
-  const outZone = monthly?.out_zone_safe_driving_score ?? driver.annual_score.annual_out_zone_safe_driving_score;
+  const inZone = monthly ? monthly.in_zone_safe_driving_score : driver.annual_score.annual_in_zone_safe_driving_score;
+  const outZone = monthly ? monthly.out_zone_safe_driving_score : driver.annual_score.annual_out_zone_safe_driving_score;
   const mileage = monthly?.mileage_score ?? driver.annual_score.annual_mileage_score;
   const tripCount = zoneMap?.snapshot.basis_window.scored_trip_count ?? driver.annual_score.annual_trip_count;
+  const meterWidth = (value: number | null) => value === null || !Number.isFinite(value) ? 0 : Math.max(8, Math.min(100, value));
+  const scoreDetail = (value: number | null) => value === null || !Number.isFinite(value) ? "N/A · 관측 없음" : `${numberFormatter.format(value)}점`;
   return [
     {
-      label: "생활권 밖 위험변화",
-      width: Math.max(8, Math.min(100, risk)),
-      detail: `${numberFormatter.format(risk)}점`
+      label: "이동 맥락 변화",
+      width: meterWidth(risk),
+      detail: scoreDetail(risk)
     },
     {
       label: "선택 월 생활권 안 안전점수",
-      width: Math.max(8, Math.min(100, inZone)),
-      detail: `${numberFormatter.format(inZone)}점`
+      width: meterWidth(inZone),
+      detail: scoreDetail(inZone)
     },
     {
       label: "선택 월 생활권 밖 안전점수",
-      width: Math.max(8, Math.min(100, outZone)),
-      detail: `${numberFormatter.format(outZone)}점`
+      width: meterWidth(outZone),
+      detail: scoreDetail(outZone)
     },
     {
       label: "선택 월 주행거리 점수",
-      width: Math.max(8, Math.min(100, mileage)),
-      detail: `${numberFormatter.format(mileage)}점 · ${tripCount}건`
+      width: meterWidth(mileage),
+      detail: `${scoreDetail(mileage)} · ${tripCount}건`
     }
   ];
 }
@@ -1271,12 +1419,13 @@ function ProblemFrame({ directory, driver }: { directory: PersonaDirectoryRespon
 }
 
 function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryResponse }) {
+  const weights = normalizeProductWeights(directory.product_rules?.weights ?? referenceProductRules.weights);
   return (
     <section className="panel blueprint-panel" aria-label="데이터 생성 방식과 최종 산식">
       <div className="panel-head">
         <div>
-          <p className="eyebrow">AI 활용과 산식 근거</p>
-          <h2>AI는 보험료를 직접 결정하지 않고, 생활권 생성·후보 산식 탐색·판정 설명을 보조합니다.</h2>
+          <p className="eyebrow">AI 활용과 상품 검증</p>
+          <h2>기존 설계 흐름 안에서 방문 이벤트, 생활권 근거, 상품 Sandbox, 사람 검토를 연결합니다.</h2>
         </div>
         <span className="count-badge">4개 지표 가중치 비교</span>
       </div>
@@ -1284,38 +1433,38 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
       <div className="ai-proof-row" aria-label="AI 활용 위치">
         <div>
           <span>AI 1</span>
-          <strong>생활권 자동 생성</strong>
-          <p>최초 60일 목적지를 DBSCAN으로 군집화하고, P90 반경으로 주차·우회 같은 작은 흔들림을 흡수합니다.</p>
+          <strong>Visit Event → 반복 거점</strong>
+          <p>한 번의 방문 중 생긴 GPS 흔들림은 하나의 이벤트로 묶고, 서로 다른 날의 반복 방문을 DBSCAN으로 찾습니다.</p>
         </div>
         <div>
           <span>AI 2</span>
-          <strong>4개 지표 가중치 선택</strong>
-          <p>주행거리, 생활권 안 안전, 생활권 밖 안전, 위험변화를 어느 비율로 반영할지 후보 산식을 비교합니다.</p>
+          <strong>상품 Rule Sandbox</strong>
+          <p>30:30:20:20 균형안을 기준 후보로 두고 가중치·임계치 변화가 Reward와 Care 결과에 미치는 영향을 즉시 비교합니다.</p>
         </div>
         <div>
           <span>AI 3</span>
-          <strong>XAI + 직원용 리포트</strong>
-          <p>XAI는 4개 지표가 판정에 미친 영향을 추출하고, LLM은 이를 보험사 직원이 읽을 수 있는 설명문으로 바꿉니다.</p>
+          <strong>Reason Code → Human Review</strong>
+          <p>AI는 계산된 근거와 설명 초안만 제공하며 보험료·인수·Care를 최종 결정하지 않습니다.</p>
         </div>
       </div>
 
       <div className="blueprint-flow" aria-label="산식 설계 흐름">
         <div className="flow-step">
           <span>1</span>
-          <strong>시니어 주행 시나리오 생성</strong>
-          <p>6개 운전자 유형과 총 {directory.summary.customer_count}명에게 자택, 병원, 마트, 자녀 집, 근교 외출지, 외출 성향을 부여합니다.</p>
+          <strong>합성 코호트 생성</strong>
+          <p>6개 운전자 유형 × 10명, 도심·교외·광역 저밀도 환경 각 20명으로 총 {directory.summary.customer_count}명을 구성합니다.</p>
         </div>
         <ArrowRight size={18} />
         <div className="flow-step">
           <span>2</span>
-          <strong>최초 60일로 생활권 생성</strong>
-          <p>DBSCAN으로 반복 목적지를 묶고, P90 반경으로 주차·짧은 우회 이동을 생활권 안에 포함합니다.</p>
+          <strong>2개월 기준선으로 생활권 생성</strong>
+          <p>DBSCAN은 반복 거점을 찾고, 각 거점에 Core 500m와 중심–방문점 radial P90 Buffer를 별도로 적용합니다.</p>
         </div>
         <ArrowRight size={18} />
         <div className="flow-step">
           <span>3</span>
-          <strong>동일 조건으로 12개월 평가 비교</strong>
-          <p>같은 연간 주행 데이터를 기존 마일리지 산식과 제안 산식에 각각 적용해 할인율 변화와 판정 결과를 비교합니다.</p>
+          <strong>12개월 평가와 사람 검토</strong>
+          <p>Reward와 Care를 독립 계산하고, Care는 같은 달 이동 변화와 위험행동 변화가 모두 있을 때만 검토를 제안합니다.</p>
         </div>
       </div>
 
@@ -1326,33 +1475,33 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
             <strong>최종 통합점수 산식</strong>
           </div>
           <p className="formula-lead">
-            기존 마일리지의 거리 기준은 유지하되, 같은 저주행 안에서 안정형과 예방 케어 대상을 나누기 위해 생활권 지표를 함께 반영합니다.
+            한국 마일리지 거리 기준은 참조값으로 유지하되, Reward 산식과 Care AND Gate를 분리해 처벌 없는 예방지원 구조를 검증합니다.
           </p>
           <div className="weight-layout" aria-label="Final Formula Weights">
             <div className="weight-block mileage">
               <span>주행거리</span>
-              <strong>30%</strong>
+              <strong>{weights.mileage}%</strong>
               <small>저주행 우대 기준 유지</small>
             </div>
             <div className="weight-block in-zone">
               <span>생활권 안 안전</span>
-              <strong>30%</strong>
+              <strong>{weights.in_zone_safe}%</strong>
               <small>익숙한 반경 안 안정운전</small>
             </div>
             <div className="weight-block out-zone">
               <span>생활권 밖 안전</span>
-              <strong>20%</strong>
+              <strong>{weights.out_zone_safe}%</strong>
               <small>외부 주행 자체를 불리하게 보지 않음</small>
             </div>
             <div className="weight-block risk">
-              <span>위험변화 보정</span>
-              <strong>20%</strong>
-              <small>위험변화가 커질수록 점수 하락</small>
+              <span>패턴 안정성</span>
+              <strong>{weights.pattern_stability}%</strong>
+              <small>개인 기준선 대비 변화 맥락</small>
             </div>
           </div>
           <div className="formula-box simplified">
             <span>계산 방식</span>
-            <strong>통합점수 = 주행거리 점수 × 0.30 + 생활권 안 안전점수 × 0.30 + 생활권 밖 안전점수 × 0.20 + (100 - 위험변화) × 0.20</strong>
+            <strong>Reward 후보점수 = 주행거리 {weights.mileage}% + 생활권 안 안전 {weights.in_zone_safe}% + 생활권 밖 안전 {weights.out_zone_safe}% + 패턴 안정성 {weights.pattern_stability}%</strong>
           </div>
         </div>
 
@@ -1373,9 +1522,9 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
               <p>반복 외부 목적지와 안정 주행은 기본 또는 우대 판단이 가능해야 합니다.</p>
             </div>
             <div>
-              <span>예방 조건</span>
-              <strong>위험변화형은 예방 케어로 분리</strong>
-              <p>최근 외부·야간·급제동 변화가 커진 사례는 리포트와 예방 안내로 연결합니다.</p>
+              <span>Care 조건</span>
+              <strong>같은 달의 이동 변화 AND 위험행동 변화</strong>
+              <p>한 지표만 변하거나 데이터가 부족하면 자동 Care가 아니라 정상 또는 판단 보류로 남깁니다.</p>
             </div>
           </div>
           <CandidateSearchChart />
@@ -1487,9 +1636,9 @@ function ProfileLandingPanel({
               <div key={row.label}>
                 <span>{row.label}</span>
                 <strong>
-                  {numberFormatter.format(row.score)} × {row.weight.toFixed(2)}
+                  {row.score === null ? "N/A" : numberFormatter.format(row.score)} × {row.weight.toFixed(2)}
                 </strong>
-                <em>{numberFormatter.format(row.score * row.weight)}</em>
+                <em>{row.score === null ? "재정규화" : numberFormatter.format(row.score * row.weight)}</em>
               </div>
             ))}
             <div className="formula-total">
@@ -1508,31 +1657,31 @@ function CandidateSearchChart() {
   return (
     <div className="candidate-search formula-choice-board">
       <div className="candidate-chart-head">
-        <span>산식 후보 비교 결과</span>
-        <strong>최종 비율은 위 산식에 반영하고, 이 영역은 다른 후보를 왜 제외했는지 설명합니다.</strong>
+        <span>생활권 알고리즘 운영 역할</span>
+        <strong>화면에서는 DBSCAN 결과만 사용하며, 다른 알고리즘의 결과를 실행한 것처럼 표시하지 않습니다.</strong>
       </div>
 
       <div className="candidate-comparison-grid" aria-label="후보 산식 비교">
-        <div className="rejected">
-          <span>거리 중심안</span>
-          <strong>탈락</strong>
-          <p>기존 마일리지와 차이가 작아 저주행 위험변화군을 설명하기 어렵습니다.</p>
-        </div>
         <div className="selected">
-          <span>균형안</span>
-          <strong>선택</strong>
-          <p>저주행 우대는 남기고, 생활권 안/밖 안정성과 위험변화를 함께 설명합니다.</p>
+          <span>DBSCAN</span>
+          <strong>운영 참조</strong>
+          <p>같은 미터 단위의 방문 이벤트에서 설명 가능한 반복 거점을 생성합니다.</p>
         </div>
         <div className="deferred">
-          <span>위험변화 과대안</span>
-          <strong>보류</strong>
-          <p>반복 외부 목적지까지 과도하게 불리하게 볼 수 있어 보류했습니다.</p>
+          <span>HDBSCAN</span>
+          <strong>오프라인 Challenger</strong>
+          <p>도시와 광역 저밀도처럼 밀도가 다른 경우를 동일 입력으로 비교할 후보입니다.</p>
+        </div>
+        <div className="deferred">
+          <span>Grid Count</span>
+          <strong>Sanity Check</strong>
+          <p>군집 알고리즘의 복잡도가 실제 개선을 만드는지 확인하는 최소 기준선입니다.</p>
         </div>
       </div>
 
       <div className="selection-criteria">
-        <span>선택 기준</span>
-        <strong>평균 할인율 변화가 과도하지 않음 · 위험변화군 분리 가능 · 외부 안정주행 오분류 방지</strong>
+        <span>채택 기준</span>
+        <strong>생활권 생성률 · noise · 복수 거점 · 도시/광역 공정성 · 설명 가능성 · 사람 검토 부담</strong>
       </div>
     </div>
   );
@@ -1572,25 +1721,35 @@ function MonthlyEvidenceLane({
   rows,
   selectedMonth,
   loading,
-  onSelectMonth
+  onSelectMonth,
+  rules
 }: {
   rows: MonthlyEvidence[];
   selectedMonth: number;
   loading: boolean;
   onSelectMonth: (month: number) => void;
+  rules: ProductRules | null;
 }) {
+  const weights = normalizeProductWeights(rules?.weights ?? referenceProductRules.weights);
   const selectedRow = rows.find((row) => row.month === selectedMonth) ?? rows[0];
   const selectedMeta = selectedRow ? interpretationClass(selectedRow.dominant_interpretation) : null;
   const monthlyIntegratedScore = selectedRow
     ? selectedRow.monthly_integrated_evidence_score ?? monthlyIntegratedEvidenceScore(selectedRow)
     : 0;
+  const monthlyIntegratedLabel = !selectedRow
+    ? "N/A"
+    : selectedRow.period_role === "baseline"
+      ? `${numberFormatter.format(monthlyIntegratedScore)}점 · 기준선 관찰`
+      : selectedRow.basis_status === "evaluation_ready"
+        ? `${numberFormatter.format(monthlyIntegratedScore)}점`
+        : "N/A · 판단 보류";
 
   return (
     <section className={`panel evidence-lane ${loading ? "is-loading" : ""}`} aria-label="월별 4지표 근거">
       <div className="panel-head">
         <div>
           <p className="eyebrow">월별 근거</p>
-          <h2>12개월 동안 어떤 근거가 연간 판단에 누적됐는지 확인합니다</h2>
+          <h2>2개월 기준선과 12개월 평가 근거를 같은 흐름에서 확인합니다</h2>
         </div>
         <div className="legend">
           {Object.entries(interpretationMeta).map(([key, meta]) => (
@@ -1608,23 +1767,28 @@ function MonthlyEvidenceLane({
             </strong>
             <p>
               {numberFormatter.format(selectedRow.monthly_total_distance_km)}km 주행, {basisLabel(selectedRow.basis_status)}으로 생활권을 판단했습니다.
-              아래 값은 월별 할인율이 아니라 연간 산식에 누적되는 근거 점수입니다.
+              {selectedRow.period_role === "baseline" ? " 이 달은 개인 기준선 관찰용이며 Reward·Care 평가에서 제외됩니다." : " 아래 값은 월 보험료가 아니라 상품 검토 근거입니다."}
             </p>
           </div>
           <div className="score-meter-grid">
             <ScoreMeter label="주행거리 점수" value={selectedRow.mileage_score} helper="월별 주행거리가 낮을수록 높음" />
             <ScoreMeter label="생활권 안 안전점수" value={selectedRow.in_zone_safe_driving_score} helper="생활권 안 위험행동이 낮을수록 높음" />
             <ScoreMeter label="생활권 밖 안전점수" value={selectedRow.out_zone_safe_driving_score} helper="생활권 밖 주행이 안정적일수록 높음" />
-            <ScoreMeter label="위험변화 점수" value={selectedRow.out_zone_pattern_change_risk} inverse helper="높을수록 주의 필요" />
+            <ScoreMeter label="패턴 안정성" value={selectedRow.pattern_stability_score ?? Math.max(0, 100 - selectedRow.out_zone_pattern_change_risk)} helper="개인 기준선 대비 이동 맥락 안정성" />
           </div>
           <p className="score-legend-copy">
-            4개 값은 월 보험료가 아니라 연간 산식에 들어가는 0~100 표준화 입력값입니다. 안전점수는 높을수록 좋고, 위험변화 점수는 낮을수록 안정적입니다.
+            안전점수의 관측값이 없으면 100점으로 채우지 않고 N/A로 남긴 뒤, 관측된 구성요소의 가중치만 재정규화합니다.
           </p>
           <div className="monthly-integrated-formula" aria-label="월별 통합 근거점수 산식">
             <span>월별 통합 근거점수</span>
-            <strong>{numberFormatter.format(monthlyIntegratedScore)}점</strong>
-            <p>주행거리 30% + 생활권 안 안전 30% + 생활권 밖 안전 20% + (100 - 위험변화) 20%</p>
-            <small>이 점수는 월 보험료를 직접 결정하지 않고, 12개월 근거를 누적해 연간 제안 할인율 비교에 사용합니다.</small>
+            <strong>{monthlyIntegratedLabel}</strong>
+            <p>주행거리 {weights.mileage}% + 생활권 안 안전 {weights.in_zone_safe}% + 생활권 밖 안전 {weights.out_zone_safe}% + 패턴 안정성 {weights.pattern_stability}%</p>
+            <small>Reward 후보점수와 Care AND Gate는 독립 계산되며, 어느 쪽도 보험료·인수 결정을 자동 확정하지 않습니다.</small>
+            <div className={`monthly-care-gate ${selectedRow.care_state === "Care Review" ? "active" : ""}`}>
+              <b>Care AND Gate</b>
+              <span>이동 {numberFormatter.format(selectedRow.mobility_change_index_pct ?? 0)} · 위험행동 {numberFormatter.format(selectedRow.risky_behavior_change_index_pct ?? 0)}</span>
+              <em>{selectedRow.period_role === "baseline" ? "기준선" : selectedRow.care_state === "Care Review" ? "사람 검토 제안" : "미충족"}</em>
+            </div>
           </div>
         </div>
       ) : null}
@@ -1636,14 +1800,14 @@ function MonthlyEvidenceLane({
             <button
               key={row.service_month}
               type="button"
-              className={`month-card ${meta.className} ${selectedMonth === row.month ? "selected" : ""}`}
+              className={`month-card ${meta.className} ${row.period_role === "baseline" ? "baseline" : "evaluation"} ${selectedMonth === row.month ? "selected" : ""}`}
               onClick={() => onSelectMonth(row.month)}
             >
-              <span>{row.month}월</span>
+              <span>{row.service_month.slice(2)} · {row.period_role === "baseline" ? "기준선" : "평가"}</span>
               <strong>{numberFormatter.format(row.monthly_total_distance_km)}km</strong>
               <small>{basisLabel(row.basis_status)}</small>
-              <em>변화 {numberFormatter.format(row.out_zone_pattern_change_risk)}점</em>
-              <i style={{ width: `${Math.min(100, row.out_zone_pattern_change_risk)}%` }} />
+              <em>{row.care_state === "Care Review" ? "Care AND" : row.reward_state ?? "관찰"}</em>
+              <i style={{ width: `${Math.min(100, row.mobility_change_index_pct ?? row.out_zone_pattern_change_risk)}%` }} />
             </button>
           );
         })}
@@ -1732,6 +1896,15 @@ function EvidenceProfile({
 }
 
 function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnualSummary; snapshot: ZoneSnapshot; profile: DerivedProfile }) {
+  if (!snapshot.living_zone.clusters.length) {
+    return (
+      <div className="no-zone-state">
+        <MapPinned size={24} />
+        <strong>반복 거점 근거가 충분하지 않습니다</strong>
+        <p>가짜 중심을 만들지 않고 No Zone으로 유지합니다. Reward와 Care는 판단 보류이며 불이익을 주지 않습니다.</p>
+      </div>
+    );
+  }
   const groups = Object.values(groupTrips(snapshot.trip_interpretations)).sort((a, b) => b.count - a.count);
   const home = destinationForType(driver, "home");
   const destinations = groups
@@ -1756,7 +1929,10 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
   const homePoint = home ? projector(home.longitude, home.latitude) : { x: 230, y: 300 };
   const primaryCluster = snapshot.living_zone.clusters[0];
   const clusterCenter = primaryCluster ? projector(primaryCluster.center_longitude, primaryCluster.center_latitude) : homePoint;
-  const p90Radius = Math.max(58, Math.min(128, (primaryCluster?.p90_radius_m ?? snapshot.living_zone.buffer.departure_p90_threshold_m) / 10));
+  const radialP90M = primaryCluster?.p90_radius_m ?? snapshot.living_zone.buffer.departure_p90_threshold_m;
+  const productBufferM = Math.max(500, Math.min(2000, radialP90M));
+  const coreRadius = 48;
+  const p90Radius = Math.max(coreRadius + 8, Math.min(128, productBufferM / 10));
   const routePath = (point: { x: number; y: number }, index: number) => {
     const bend = index % 2 === 0 ? -72 : 72;
     const midX = (homePoint.x + point.x) / 2;
@@ -1781,7 +1957,7 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
 
   return (
     <div className="geo-canvas-shell">
-      <svg className="geo-map" viewBox={`0 0 ${mapWidth} ${mapHeight}`} role="img" aria-label="실제 좌표 기반 생활권 지도">
+      <svg className="geo-map" viewBox={`0 0 ${mapWidth} ${mapHeight}`} role="img" aria-label="비식별 정규화 좌표 기반 생활권 지도">
       <defs>
         <linearGradient id="mapSurface" x1="0" x2="1" y1="0" y2="1">
           <stop offset="0%" stopColor="#f9fbfd" />
@@ -1798,20 +1974,23 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
       <path className="map-road" d="M78 130 C214 190 324 222 470 232 S708 278 840 376" />
       <path className="map-road muted" d="M126 502 C236 424 325 366 436 318 S672 283 812 250" />
       <text className="geo-title" x="42" y="42">생활권 판단 지도</text>
-      <text className="geo-subtitle" x="42" y="63">실제 목적지 좌표 · 기준 생활권 · 최근 변화 목적지 · 위험 주행 구간</text>
+      <text className="geo-subtitle" x="42" y="63">비식별 정규화 개념도(not to scale) · Core 500m · Buffer = max(500m, min(P90, 2km))</text>
 
       <g className="geo-core-ring">
-        <circle cx={clusterCenter.x} cy={clusterCenter.y} r={p90Radius * 1.55} />
         <circle cx={clusterCenter.x} cy={clusterCenter.y} r={p90Radius} />
-        <circle cx={clusterCenter.x} cy={clusterCenter.y} r={Math.max(38, p90Radius * 0.48)} />
+        <circle cx={clusterCenter.x} cy={clusterCenter.y} r={coreRadius} />
+        <text x={clusterCenter.x} y={clusterCenter.y - p90Radius - 10} textAnchor="middle">Routine Hub A</text>
       </g>
 
       {snapshot.living_zone.clusters.slice(1).map((cluster, index) => {
         const point = projector(cluster.center_longitude, cluster.center_latitude);
-        const radius = Math.max(36, Math.min(92, cluster.p90_radius_m / 11));
+        const clusterProductBuffer = Math.max(500, Math.min(2000, cluster.p90_radius_m));
+        const radius = Math.max(coreRadius + 8, Math.min(92, clusterProductBuffer / 11));
         return (
           <g key={cluster.cluster_id} className="geo-cluster">
             <circle cx={point.x} cy={point.y} r={radius} />
+            <circle cx={point.x} cy={point.y} r={coreRadius} />
+            <text x={point.x} y={point.y - radius - 9} textAnchor="middle">Routine Hub {String.fromCharCode(66 + index)}</text>
           </g>
         );
       })}
@@ -1829,7 +2008,7 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
       {home ? (
         <g className="geo-node home">
           <circle cx={homePoint.x} cy={homePoint.y} r="18" />
-          <text x={homePoint.x} y={homePoint.y - 27} textAnchor="middle">자택</text>
+          <text x={homePoint.x} y={homePoint.y - 27} textAnchor="middle">기준 방문점</text>
         </g>
       ) : null}
 
@@ -1844,16 +2023,16 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
       })}
 
       <g className="geo-badge" transform="translate(42 500)">
-        <rect width="210" height="34" rx="9" />
-        <text x="13" y="22">P90 {Math.round(snapshot.living_zone.buffer.departure_p90_threshold_m).toLocaleString("ko-KR")}m 생활권</text>
+        <rect width="318" height="34" rx="9" />
+        <text x="13" y="22">Core 500m · Buffer {Math.round(productBufferM).toLocaleString("ko-KR")}m · radial P90 {Math.round(radialP90M).toLocaleString("ko-KR")}m</text>
       </g>
-      <g className="geo-badge risk" transform="translate(268 500)">
+      <g className="geo-badge risk" transform="translate(374 500)">
         <rect width="260" height="34" rx="9" />
-        <text x="13" y="22">생활권 밖 {percent(profile.outZoneRatio * 100)} · 위험행동 {profile.riskEvents}건</text>
+        <text x="13" y="22">Outer {percent(profile.outZoneRatio * 100)} · 위치 감점 0 · 위험행동 {profile.riskEvents}건</text>
       </g>
       </svg>
       <aside className="geo-detail-panel" aria-label="생활권 지도 근거 상세">
-        <span>목적지 근거</span>
+        <span>비식별 방문 근거</span>
         {visibleDestinations.map(({ group, destination }, index) => {
           const meta = interpretationClass(group.dominant);
           return (
@@ -2005,7 +2184,17 @@ function Metric({ label, value, tone = "default" }: { label: string; value: stri
   );
 }
 
-function ScoreMeter({ label, value, inverse = false, helper }: { label: string; value: number; inverse?: boolean; helper?: string }) {
+function ScoreMeter({ label, value, inverse = false, helper }: { label: string; value: number | null; inverse?: boolean; helper?: string }) {
+  if (value === null || !Number.isFinite(value)) {
+    return (
+      <div className="score-meter unavailable">
+        <span>{translateText(label)}</span>
+        <strong>N/A</strong>
+        {helper ? <small>{translateText(helper)}</small> : null}
+        <i><b style={{ width: "0%" }} /></i>
+      </div>
+    );
+  }
   const normalized = Math.max(0, Math.min(100, value));
   const tone = inverse && normalized >= careReviewRiskThreshold ? "risk" : normalized >= 70 ? "good" : "base";
   return (
@@ -2075,7 +2264,7 @@ type TripGroup = {
   dominant: Interpretation;
 };
 
-function deriveEvidenceProfile(driver: DriverAnnualSummary, snapshot: ZoneSnapshot): DerivedProfile {
+function deriveEvidenceProfile(driver: DriverAnnualSummary, snapshot: ZoneSnapshot, selectedRow?: MonthlyEvidence): DerivedProfile {
   const trips = snapshot.trip_interpretations;
   const grouped = Object.values(groupTrips(trips)).sort((a, b) => b.count - a.count);
   const topDestinations = grouped.slice(0, 3).map((item) => item.label);
@@ -2084,16 +2273,34 @@ function deriveEvidenceProfile(driver: DriverAnnualSummary, snapshot: ZoneSnapsh
   const repeatTrips = trips.reduce((sum, trip) => sum + Number(trip.route_repeat_flag), 0);
   const newDestinationTrips = trips.reduce((sum, trip) => sum + Number(trip.new_destination_flag), 0);
   const repeatRate = trips.length ? repeatTrips / trips.length : 0;
+  if (!snapshot.living_zone.clusters.length) {
+    const riskObservation = riskEvents > 0
+      ? `위험행동 ${riskEvents}건은 관찰됐지만 생활권 안·밖으로 분류하지 않습니다.`
+      : "위험행동 관찰값도 생활권 안·밖으로 분류하지 않습니다.";
+    return {
+      headline: "근거 부족 · 판단 보류",
+      summary: `${snapshot.service_month}은 반복 거점 근거가 없어 No Zone입니다. ${riskObservation} Reward·Care는 보류하며 위치로 불이익을 주지 않습니다.`,
+      topDestinations: [],
+      outerPattern: "생활권 안·밖 미분류",
+      riskPattern: "No Zone · 상품 판단 보류",
+      repeatRate: 0,
+      outZoneRatio: 0,
+      riskEvents,
+      nightTrips,
+      newDestinationTrips
+    };
+  }
   const outZoneRatio = snapshot.monthly_evidence.out_zone_distance_ratio;
   const riskScore = snapshot.scores.out_zone_pattern_change_risk;
 
   let headline = "생활권 안 반복 주행";
-  if (riskScore >= careReviewRiskThreshold) headline = "선택 월 생활권 밖 위험변화 포착";
+  if (selectedRow?.care_state === "Care Review") headline = "이동 맥락과 위험행동의 동시변화 검토";
+  else if (riskScore >= careReviewRiskThreshold) headline = "선택 월 이동 맥락 변화 관찰";
   else if (riskEvents > 0 && riskScore < preferredRiskCeiling) headline = "위험행동은 있으나 변화위험은 낮음";
   else if (outZoneRatio > 0.25 && repeatRate > 0.55 && riskEvents <= trips.length * 0.2) headline = "반복 외부 목적지 안정";
   else if (newDestinationTrips > 0 && outZoneRatio > 0.15) headline = "신규 외부 목적지 관찰";
-  else if (driver.persona_type === "medical_visit_pattern") headline = "반복 병원 방문 관찰";
-  else if (driver.persona_type === "irregular_family_support") headline = "가족 돌봄 외부 이동 관찰";
+  else if (driver.persona_type === "medical_visit_pattern") headline = "정기 반복 외부 이동 관찰";
+  else if (driver.persona_type === "irregular_family_support") headline = "비정기 외부 이동 관찰";
 
   const outerPattern =
     outZoneRatio < 0.12
@@ -2104,7 +2311,9 @@ function deriveEvidenceProfile(driver: DriverAnnualSummary, snapshot: ZoneSnapsh
           ? "신규 외부 목적지 포함"
           : "분산된 외부 이동";
   const riskPattern =
-    riskEvents === 0
+    selectedRow?.care_state === "Care Review"
+      ? `이동 맥락 변화와 위험행동 변화가 같은 평가월에 함께 나타나 사람 검토가 필요함`
+      : riskEvents === 0
       ? "위험행동 거의 없음"
       : riskScore >= careReviewRiskThreshold
         ? `위험행동 ${riskEvents}건 · 변화위험 높음`
@@ -2355,25 +2564,41 @@ function badge(label: string, x: number, y: number, width: number, tone: SceneBa
 
 function chooseFocusMonth(rows: MonthlyEvidence[]) {
   if (rows.length === 0) return 1;
-  return rows.reduce((best, row) => (row.out_zone_pattern_change_risk > best.out_zone_pattern_change_risk ? row : best)).month;
+  const evaluation = rows.filter((row) => row.period_role !== "baseline");
+  const candidates = evaluation.length ? evaluation : rows;
+  return candidates.reduce((best, row) => {
+    if (row.care_state === "Care Review" && best.care_state !== "Care Review") return row;
+    return (row.mobility_change_index_pct ?? row.out_zone_pattern_change_risk) > (best.mobility_change_index_pct ?? best.out_zone_pattern_change_risk) ? row : best;
+  }).month;
 }
 
 function monthlyIntegratedEvidenceScore(row: MonthlyEvidence) {
-  const score =
-    row.mileage_score * selectedPolicy.weights.mileage +
-    row.in_zone_safe_driving_score * selectedPolicy.weights.inZone +
-    row.out_zone_safe_driving_score * selectedPolicy.weights.outZone +
-    (100 - row.out_zone_pattern_change_risk) * selectedPolicy.weights.riskChange;
+  const components = [
+    { value: row.mileage_score, weight: selectedPolicy.weights.mileage },
+    { value: row.in_zone_safe_driving_score, weight: selectedPolicy.weights.inZone },
+    { value: row.out_zone_safe_driving_score, weight: selectedPolicy.weights.outZone },
+    { value: row.pattern_stability_score ?? 100 - row.out_zone_pattern_change_risk, weight: selectedPolicy.weights.riskChange }
+  ].filter((item): item is { value: number; weight: number } => item.value !== null && Number.isFinite(item.value));
+  const observedWeight = components.reduce((sum, item) => sum + item.weight, 0);
+  if (!observedWeight) return 0;
+  const score = components.reduce((sum, item) => sum + item.value * item.weight, 0) / observedWeight;
   return Math.max(0, Math.min(100, score));
 }
 
 function matchesCaseFilter(option: DriverOption, filter: string) {
   if (filter === "all") return true;
-  return decisionClass(option.annual_decision_signal).label === filter;
+  if (filter === "Reward") return option.reward_state === "Reward";
+  if (filter === "Care Review") return option.care_state === "Care Review";
+  if (filter === "Hold") return option.reward_state === "Hold" || option.care_state === "Hold";
+  return false;
+}
+
+function zoneIsReady(status: string | undefined) {
+  return status === "available" || status === "ready";
 }
 
 function personaName(customerId: string) {
-  return `${personaNames[personaIndex(customerId)] ?? "시니어 운전자"} 어르신`;
+  return `합성 시니어 ${String(personaIndex(customerId) + 1).padStart(2, "0")}`;
 }
 
 function personaIndex(customerId: string) {
@@ -2391,19 +2616,7 @@ function personaAge(customerId: string) {
 }
 
 function personaResidence(driver: DriverAnnualSummary) {
-  const districts = [
-    "서울 강남구",
-    "서울 송파구",
-    "서울 노원구",
-    "서울 은평구",
-    "서울 강서구",
-    "경기 성남시",
-    "경기 고양시",
-    "경기 수원시",
-    "인천 남동구",
-    "서울 금천구"
-  ];
-  return districts[personaIndex(driver.customer_id) % districts.length];
+  return driver.environment_display_name_ko ?? "이동환경 미지정";
 }
 
 function caseType(option: DriverOption) {
@@ -2412,11 +2625,17 @@ function caseType(option: DriverOption) {
 
 function coreChangeTag(personaType: string) {
   const tags: Record<string, string> = {
+    stable_local_safe: "근거리 안정",
+    low_mileage_risky: "저주행 위험행동",
+    safe_multi_hub: "복수 거점",
+    safe_wide_area: "광역 안전",
+    mobility_change_only: "이동 변화",
+    mobility_risk_cochange: "동시변화",
     stable_local_low_mileage: "반복 안정",
     stable_outer_safe: "외부 안정",
     recent_outer_risk_change: "활동반경 확대",
     in_zone_risky_low_mileage: "생활권 안 위험",
-    medical_visit_pattern: "반복 병원",
+    medical_visit_pattern: "정기 외부",
     irregular_family_support: "불규칙 외부"
   };
   return tags[personaType] ?? "패턴 관찰";
@@ -2431,41 +2650,45 @@ function riskBadgeForDriver(driver: DriverAnnualSummary) {
 }
 
 function recommendedAction(driver: DriverAnnualSummary, selectedRow?: MonthlyEvidence) {
-  if (driver.ab_comparison.preventive_care_required) return "예방 케어 안내 및 안전운전 리포트 발송";
-  if ((selectedRow?.out_zone_pattern_change_risk ?? 0) >= 50) return "다음 달 변화폭 재확인";
-  if (decisionClass(driver.ab_comparison.annual_decision_signal).label === "우대") return "우대 유지 후보";
-  return "기본 유지 및 월별 모니터링";
+  if (driver.reward_state === "Hold" || driver.care_state === "Hold") return "근거 부족 · 판단 보류 · 불이익 없음";
+  if (driver.care_state === "Care Review") return "담당자가 근거 확인 후 비징벌적 Care 여부 검토";
+  if (driver.reward_state === "Reward") return "Reward 후보 근거 확인";
+  if ((selectedRow?.mobility_change_index_pct ?? 0) > 0) return "변화 추세 관찰 · 자동 조치 없음";
+  return "Neutral 유지";
 }
 
 function personaTone(type: string) {
-  if (type === "recent_outer_risk_change" || type === "in_zone_risky_low_mileage") return "risk";
-  if (type === "medical_visit_pattern") return "care";
-  if (type === "stable_outer_safe" || type === "stable_local_low_mileage") return "safe";
+  if (type === "mobility_risk_cochange" || type === "low_mileage_risky") return "risk";
+  if (type === "mobility_change_only") return "care";
+  if (type === "safe_multi_hub" || type === "stable_local_safe" || type === "safe_wide_area") return "safe";
   return "base";
 }
 
 function personaNarrative(type: string) {
   const text: Record<string, string> = {
+    stable_local_safe: "짧은 반복 이동과 안정운전이 함께 나타나는 Reward 기준군",
+    low_mileage_risky: "적게 운전해도 위험행동이 있어 mileage-only의 한계를 보여주는 군",
+    safe_multi_hub: "멀리 떨어진 복수 반복 거점을 하나의 큰 원으로 합치지 않아야 하는 검증군",
+    safe_wide_area: "이동반경이 넓어도 안전행동을 유지해 Outer 자체를 감점하지 않아야 하는 공정성 검증군",
+    mobility_change_only: "이동 맥락만 달라지고 위험행동은 변하지 않아 Care를 제안하면 안 되는 음성 대조군",
+    mobility_risk_cochange: "같은 평가월에 이동과 위험행동이 함께 달라져 사람 검토가 필요한 핵심군",
     stable_local_low_mileage: "짧은 반복 주행이 많아 기존 마일리지와 제안 산식 모두 우대 가능성이 높은 기준군",
     stable_outer_safe: "생활권 밖 이동이 있어도 목적지 반복성과 낮은 위험행동으로 오분류를 막아야 하는 공정성 검증군",
     recent_outer_risk_change: "저주행이지만 하반기 외부 목적지와 위험행동이 함께 늘어 예방 케어가 필요한 핵심군",
     in_zone_risky_low_mileage: "멀리 가지 않아도 생활권 안 급감속과 과속이 누적되는 저주행 함정군",
-    medical_visit_pattern: "병원·약국 반복 방문을 무조건 외부 위험으로 보지 않고 후보 생활권으로 관찰하는 군",
-    irregular_family_support: "가족 돌봄성 외부 이동처럼 목적이 정당하지만 불규칙성이 큰 관찰군"
+    medical_visit_pattern: "정기적으로 반복되는 외부 방문을 위험으로 단정하지 않고 후보 생활권으로 관찰하는 군",
+    irregular_family_support: "이동 목적을 추정하지 않고 불규칙한 외부 이동의 변화 근거만 관찰하는 군"
   };
   return text[type] ?? "월별 주행 근거에 따라 연간 판단이 달라지는 사례군";
 }
 
 function destinationLabels(driver: DriverAnnualSummary) {
   const fallback: Record<string, string> = {
-    clinic: "병원",
-    family: "자녀 집",
-    family_home: "자녀 집",
-    home: "자택",
-    leisure: "근교 외출지",
-    market: "마트",
-    pharmacy: "약국",
-    unknown_outer: "신규 외부 목적지"
+    home: "기준 방문점",
+    routine_hub_a: "반복 거점 A",
+    routine_hub_b: "반복 거점 B",
+    routine_hub_c: "반복 거점 C",
+    new_visit: "신규 방문"
   };
 
   return driver.living_pattern.primary_destinations.map((key) => {
@@ -2475,6 +2698,10 @@ function destinationLabels(driver: DriverAnnualSummary) {
 }
 
 function basisLabel(value: string) {
+  if (value === "baseline_observation") return "개인 기준선 관찰";
+  if (value === "evaluation_ready") return "평가 근거 사용 가능";
+  if (value === "living_zone_evidence_hold") return "생활권 근거 부족 · 보류";
+  if (value === "data_coverage_hold") return "데이터 충분성 미달 · 보류";
   if (value === "pre_policy_60_day_dbscan") return "가입 전 60일 기준";
   if (value === "rolling_60_day_dbscan") return "직전 60일 갱신";
   return value;
