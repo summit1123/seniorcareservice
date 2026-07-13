@@ -1,3 +1,12 @@
+import { gaipStudioApi } from "./gaip-api";
+import {
+  adaptAnnualSummary,
+  adaptDirectory,
+  adaptMonthlySnapshots,
+  adaptZoneMap,
+  buildEvidenceReport
+} from "./legacy-gaip-adapter";
+import type { GaipStudioBundle, ProductRules } from "./gaip-types";
 import type {
   DriverAnnualSummary,
   MonthlySnapshotResponse,
@@ -5,76 +14,42 @@ import type {
   ZoneMapResponse
 } from "./types";
 
-async function getJson<T>(path: string): Promise<T> {
-  const response = await fetch(path, {
-    headers: {
-      Accept: "application/json"
-    }
-  });
+let studioPromise: Promise<GaipStudioBundle> | null = null;
 
-  if (!response.ok) {
-    let message = `${response.status} ${response.statusText}`;
-    try {
-      const payload = (await response.json()) as { message?: string };
-      message = payload.message ?? message;
-    } catch {
-      // Keep the HTTP status message when the server returns non-JSON errors.
-    }
-    throw new Error(message);
-  }
+function studio(): Promise<GaipStudioBundle> {
+  studioPromise ??= gaipStudioApi.getStudio();
+  return studioPromise;
+}
 
-  return (await response.json()) as T;
+function reportChunks(report: string): string[] {
+  const sections = report.split(/(?=^##\s)/gm).filter(Boolean);
+  return sections.length ? sections : [report];
 }
 
 export const demoApi = {
-  getPersonaDirectory(): Promise<PersonaDirectoryResponse> {
-    return getJson<PersonaDirectoryResponse>("/api/personas");
+  async getPersonaDirectory(rules?: ProductRules): Promise<PersonaDirectoryResponse> {
+    return adaptDirectory(await studio(), rules);
   },
-  getAnnualSummary(driverId: string): Promise<DriverAnnualSummary> {
-    return getJson<DriverAnnualSummary>(`/api/drivers/${encodeURIComponent(driverId)}/annual-summary`);
+  async getAnnualSummary(driverId: string, rules?: ProductRules): Promise<DriverAnnualSummary> {
+    return adaptAnnualSummary(await studio(), driverId, rules);
   },
-  getMonthlySnapshots(driverId: string): Promise<MonthlySnapshotResponse> {
-    return getJson<MonthlySnapshotResponse>(`/api/drivers/${encodeURIComponent(driverId)}/monthly-snapshots`);
+  async getMonthlySnapshots(driverId: string, rules?: ProductRules): Promise<MonthlySnapshotResponse> {
+    return adaptMonthlySnapshots(await studio(), driverId, rules);
   },
-  getZoneMap(driverId: string, month: number): Promise<ZoneMapResponse> {
-    const params = new URLSearchParams({ month: String(month) });
-    return getJson<ZoneMapResponse>(`/api/drivers/${encodeURIComponent(driverId)}/zone-map?${params.toString()}`);
+  async getZoneMap(driverId: string, month: number, rules?: ProductRules): Promise<ZoneMapResponse> {
+    return adaptZoneMap(await studio(), driverId, month, rules);
   },
-  async streamMonthlyReport(driverId: string, month: number, onChunk: (chunk: string) => void): Promise<string> {
-    const params = new URLSearchParams({ month: String(month) });
-    params.set("driverId", driverId);
-    const response = await fetch(`/api/reports/stream?${params.toString()}`, {
-      headers: {
-        Accept: "text/markdown"
-      }
-    });
-
-    if (!response.ok || !response.body) {
-      let message = `${response.status} ${response.statusText}`;
-      try {
-        const raw = await response.text();
-        if (raw) {
-          const payload = JSON.parse(raw) as { message?: string };
-          message = payload.message ?? raw;
-        }
-      } catch {
-        // Keep the HTTP status message when the server returns plain text.
-      }
-      throw new Error(message);
-    }
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let report = "";
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      const chunk = decoder.decode(value, { stream: true });
-      report += chunk;
+  async streamMonthlyReport(
+    driverId: string,
+    month: number,
+    onChunk: (chunk: string) => void,
+    rules?: ProductRules
+  ): Promise<string> {
+    const report = buildEvidenceReport(await studio(), driverId, month, rules);
+    for (const chunk of reportChunks(report)) {
       onChunk(chunk);
+      await Promise.resolve();
     }
-
     return report;
   }
 };

@@ -1,3 +1,5 @@
+import type { AlgorithmCandidate, ProductRules } from "./gaip-types";
+
 export type DecisionSignal = "우대" | "기본" | "예방 케어" | string;
 
 export type Interpretation =
@@ -12,6 +14,9 @@ export interface ProductFrame {
   existing_formula_ko: string;
   proposed_formula_ko: string;
   llm_boundary_ko: string;
+  competition_context_ko?: string;
+  data_scope_ko?: string;
+  algorithm_role_ko?: string;
 }
 
 export interface DemoSummary {
@@ -59,6 +64,12 @@ export interface DriverOption {
   persona_type: string;
   annual_decision_signal: DecisionSignal;
   existing_matched_tier_label: string;
+  environment_id?: string;
+  environment_display_name_ko?: string;
+  reward_state?: string;
+  care_state?: string;
+  zone_status?: string;
+  data_coverage_pct?: number;
 }
 
 export interface PersonaDirectoryResponse {
@@ -69,6 +80,9 @@ export interface PersonaDirectoryResponse {
   driver_options: DriverOption[];
   source_artifacts: Record<string, string>;
   default_customer_id: string;
+  product_rules?: ProductRules;
+  algorithm_candidates?: AlgorithmCandidate[];
+  source_status?: string;
 }
 
 export interface Destination {
@@ -76,6 +90,7 @@ export interface Destination {
   living_zone_role: "core" | "buffer" | "outer" | string;
   longitude: number;
   latitude: number;
+  coordinate_space?: "schematic_normalized" | string;
 }
 
 export interface LivingPattern {
@@ -96,8 +111,8 @@ export interface AnnualScore {
   annual_total_distance_km: number;
   annual_trip_count: number;
   annual_mileage_score: number;
-  annual_in_zone_safe_driving_score: number;
-  annual_out_zone_safe_driving_score: number;
+  annual_in_zone_safe_driving_score: number | null;
+  annual_out_zone_safe_driving_score: number | null;
   annual_senior_safe_mileage_score: number;
   annual_score_tier: string;
   annual_decision_signal: DecisionSignal;
@@ -141,13 +156,20 @@ export interface MonthlyEvidence {
   scored_trip_count: number;
   monthly_total_distance_km: number;
   mileage_score: number;
-  in_zone_safe_driving_score: number;
-  out_zone_safe_driving_score: number;
+  in_zone_safe_driving_score: number | null;
+  out_zone_safe_driving_score: number | null;
   out_zone_pattern_change_risk: number;
   monthly_integrated_evidence_score: number;
   dominant_interpretation: Interpretation;
   reason_codes: string[];
   scenario_phase: string;
+  period_role?: "baseline" | "evaluation" | string;
+  data_coverage_pct?: number;
+  mobility_change_index_pct?: number;
+  risky_behavior_change_index_pct?: number;
+  pattern_stability_score?: number;
+  reward_state?: string;
+  care_state?: string;
 }
 
 export interface DriverAnnualSummary {
@@ -162,6 +184,13 @@ export interface DriverAnnualSummary {
   living_destinations: Record<string, Destination>;
   annual_score: AnnualScore;
   ab_comparison: AbComparison;
+  environment_id?: string;
+  environment_display_name_ko?: string;
+  reward_state?: string;
+  care_state?: string;
+  zone_status?: string;
+  evidence_status?: string;
+  model_version?: string;
 }
 
 export interface MonthlySnapshotResponse {
@@ -178,6 +207,10 @@ export interface ZoneCluster {
   p90_radius_m: number;
   radius_metric_m: number;
   boundary_area_km2: number;
+  display_x?: number;
+  display_y?: number;
+  core_radius_m?: number;
+  label_ko?: string;
 }
 
 export interface ZoneTripInterpretation {
@@ -230,8 +263,8 @@ export interface ZoneSnapshot {
   };
   scores: {
     mileage_score: number;
-    in_zone_safe_driving_score: number;
-    out_zone_safe_driving_score: number;
+    in_zone_safe_driving_score: number | null;
+    out_zone_safe_driving_score: number | null;
     out_zone_pattern_change_risk: number;
     monthly_integrated_evidence_score: number;
     score_role: string;

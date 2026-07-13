@@ -51,3 +51,4 @@ tmp/
 .codex-loop/preflight/REPORT.md
 output/html/*
 output/pdf/*
+.gstack/

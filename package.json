@@ -1,13 +1,25 @@
 {
-  "name": "senior-safe-mileage-judge-demo",
+  "name": "masil-gaip-existing-dashboard",
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
+    "generate:gaip": "python3 scripts/generate_gaip_simulation.py",
+    "test:gaip": "python3 -m unittest tests.test_gaip_simulation",
+    "test:server": "node --test tests_js/gaip-server-policy.test.ts tests_js/gaip-vite-integration.test.ts",
+    "test:frontend": "node --test tests_js/*.test.ts",
+    "typecheck:server": "tsc --noEmit --strict --target ES2022 --lib ES2022,DOM --module ESNext --moduleResolution Bundler --types node,vite/client --skipLibCheck --esModuleInterop --allowImportingTsExtensions vite.config.ts src/gaip_server_policy.ts tests_js/gaip-server-policy.test.ts tests_js/gaip-vite-integration.test.ts",
+    "typecheck:gaip": "tsc --project tsconfig.gaip.json",
     "dev": "node ./node_modules/vite/bin/vite.js --host 127.0.0.1",
     "build": "node ./node_modules/vite/bin/vite.js build",
     "check:react-demo": "node ./node_modules/vite/bin/vite.js build",
-    "preview": "node ./node_modules/vite/bin/vite.js preview --host 127.0.0.1"
+    "preview": "node ./node_modules/vite/bin/vite.js preview --host 127.0.0.1",
+    "audit": "npm audit --audit-level=moderate",
+    "verify:server": "npm run generate:gaip && npm run test:server && npm run typecheck:server && npm run build && npm run audit",
+    "verify:gaip": "npm run generate:gaip && npm run test:gaip && npm run test:frontend && npm run typecheck:gaip && npm run build && npm run audit"
   },
   "dependencies": {
     "lucide-react": "0.574.0",
@@ -15,6 +27,10 @@
     "react-dom": "18.3.1"
   },
   "devDependencies": {
-    "vite": "5.4.21"
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "typescript": "^5.6.3",
+    "vite": "^8.1.4"
   }
 }
