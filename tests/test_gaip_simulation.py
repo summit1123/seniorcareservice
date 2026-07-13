@@ -1,0 +1,441 @@
+from __future__ import annotations
+
+import csv
+import hashlib
+import json
+from collections import Counter, defaultdict
+from pathlib import Path
+import unittest
+
+from src.gaip_simulation import (
+    ENVIRONMENTS,
+    build_gaip_simulation_bundle,
+    classify_month,
+    pricing_sandbox,
+)
+from src.gaip_simulation.clustering import dbscan_distinct_days, haversine_m
+from src.gaip_simulation.engine import _annual_state, _safety_score
+from src.product.mileage_discount_table import PERSONAL_PASSENGER_GENERAL
+
+
+ROOT = Path(__file__).resolve().parents[1]
+BUNDLE_PATH = ROOT / "data" / "fixtures" / "gaip_simulation_bundle.json"
+RAW_VISIT_EVENTS_PATH = ROOT / "data" / "fixtures" / "gaip_visit_events.csv"
+
+
+class TestGaipSimulation(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.bundle = build_gaip_simulation_bundle()
+        with RAW_VISIT_EVENTS_PATH.open(newline="", encoding="utf-8") as file:
+            cls.visit_events = list(csv.DictReader(file))
+
+    def test_generation_is_deterministic_and_persisted_bundle_matches(self) -> None:
+        regenerated = build_gaip_simulation_bundle()
+        self.assertEqual(self.bundle, regenerated)
+        persisted = json.loads(BUNDLE_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(persisted, regenerated)
+        artifact = regenerated["metadata"]["source_artifacts"]["raw_visit_events"]
+        self.assertEqual(artifact["path"], "data/fixtures/gaip_visit_events.csv")
+        self.assertEqual(artifact["row_count"], len(self.visit_events))
+        self.assertEqual(artifact["sha256"], hashlib.sha256(RAW_VISIT_EVENTS_PATH.read_bytes()).hexdigest())
+        self.assertNotIn("visit_events", regenerated)
+
+    def test_cohort_has_sixty_drivers_six_personas_and_balanced_environments(self) -> None:
+        drivers = self.bundle["drivers"]
+        self.assertEqual(len(drivers), 60)
+        self.assertEqual(set(Counter(driver["persona_type"] for driver in drivers).values()), {10})
+        self.assertEqual(
+            Counter(driver["environment_id"] for driver in drivers),
+            Counter({
+                "dense_urban": 20,
+                "suburban_mid_density": 20,
+                "wide_low_density": 20,
+            }),
+        )
+        for persona_type in self.bundle["cohort"]["persona_counts"]:
+            distribution = Counter(
+                driver["environment_id"]
+                for driver in drivers
+                if driver["persona_type"] == persona_type
+            )
+            self.assertEqual(sorted(distribution.values()), [3, 3, 4], persona_type)
+
+    def test_each_driver_has_two_baseline_and_twelve_evaluation_months(self) -> None:
+        for driver in self.bundle["drivers"]:
+            monthly = driver["monthly_results"]
+            self.assertEqual(len(monthly), 14, driver["driver_id"])
+            self.assertEqual(sum(row["period_role"] == "baseline" for row in monthly), 2)
+            self.assertEqual(sum(row["period_role"] == "evaluation" for row in monthly), 12)
+            self.assertEqual({row["month"] for row in monthly}, set(self.bundle["periods"]["baseline_months"] + self.bundle["periods"]["evaluation_months"]))
+
+    def test_deterministic_partitions_are_sized_and_stratified(self) -> None:
+        drivers = self.bundle["drivers"]
+        self.assertEqual(
+            Counter(driver["dataset_partition"] for driver in drivers),
+            Counter({"development": 30, "validation": 18, "holdout": 12}),
+        )
+        for partition, per_persona, per_environment in (
+            ("development", 5, 10),
+            ("validation", 3, 6),
+            ("holdout", 2, 4),
+        ):
+            subset = [driver for driver in drivers if driver["dataset_partition"] == partition]
+            self.assertEqual(set(Counter(driver["persona_type"] for driver in subset).values()), {per_persona})
+            self.assertEqual(set(Counter(driver["environment_id"] for driver in subset).values()), {per_environment})
+            self.assertEqual(self.bundle["portfolio_results"]["partition_summaries"][partition]["driver_count"], len(subset))
+
+    def test_one_visit_event_per_trip_and_repeated_visits_are_preserved_across_dates(self) -> None:
+        events = self.visit_events
+        self.assertEqual(len(events), len({event["trip_id"] for event in events}))
+        self.assertEqual(len(events), len({event["visit_event_id"] for event in events}))
+        grouped: dict[tuple[str, str], set[str]] = defaultdict(set)
+        for event in events:
+            grouped[(event["driver_id"], event["visit_label"])].add(event["visit_date"])
+        for driver in self.bundle["drivers"]:
+            self.assertTrue(
+                any(len(dates) >= 3 for (driver_id, _label), dates in grouped.items() if driver_id == driver["driver_id"]),
+                driver["driver_id"],
+            )
+
+    def test_only_generic_visit_labels_are_exposed(self) -> None:
+        self.assertEqual(
+            {event["visit_label"] for event in self.visit_events},
+            {"Routine Hub A", "Routine Hub B", "New Hub"},
+        )
+        serialized = json.dumps(self.bundle, ensure_ascii=False).lower()
+        for forbidden in ("hospital", "clinic", "pharmacy", "child_house", "family_home", "병원", "약국", "자녀집"):
+            self.assertNotIn(forbidden, serialized)
+            self.assertNotIn(forbidden, RAW_VISIT_EVENTS_PATH.read_text(encoding="utf-8").lower())
+
+    def test_ui_bundle_excludes_raw_coordinates(self) -> None:
+        serialized = json.dumps(self.bundle, ensure_ascii=False).lower()
+        for forbidden_key in ('"latitude"', '"longitude"', '"centroid"'):
+            self.assertNotIn(forbidden_key, serialized)
+        self.assertTrue(any("latitude" in event and "longitude" in event for event in self.visit_events))
+
+    def test_dbscan_uses_haversine_meters_and_distinct_days(self) -> None:
+        reference = self.bundle["algorithm"]["reference"]
+        self.assertEqual(reference["distance_metric"], "haversine_m")
+        self.assertEqual(reference["min_distinct_days"], 3)
+        self.assertNotIn("eps_degrees", reference)
+        self.assertEqual(reference["environment_eps_m"], {key: value["dbscan_eps_m"] for key, value in ENVIRONMENTS.items()})
+        self.assertNotEqual(
+            set(reference["environment_eps_m"].values()),
+            {self.bundle["algorithm"]["product_zone"]["core_radius_m"]},
+        )
+        self.assertAlmostEqual(haversine_m(37.0, 127.0, 37.0, 127.001), 88.8, delta=1.0)
+
+        same_day_only = [
+            {"visit_date": "2026-01-01", "latitude": 37.0, "longitude": 127.0 + offset}
+            for offset in (0.0, 0.00001, 0.00002, 0.00003)
+        ]
+        result = dbscan_distinct_days(same_day_only, eps_m=100.0, min_distinct_days=3)
+        self.assertEqual(result["cluster_count"], 0)
+
+    def test_outer_share_alone_is_neutral(self) -> None:
+        metrics = {
+            "zone_available": True,
+            "data_coverage_pct": 100.0,
+            "mileage_score": 90.0,
+            "in_zone_safe_score": 94.0,
+            "out_zone_safe_score": 96.0,
+            "pattern_stability_score": 92.0,
+            "mobility_change_index": 0.0,
+            "risky_behavior_change_index": 0.0,
+            "outer_visit_share": 0.0,
+        }
+        before = classify_month(metrics)
+        after = classify_month({**metrics, "outer_visit_share": 0.95})
+        self.assertEqual(before, after)
+        self.assertEqual(after["location_penalty"], 0.0)
+
+    def test_missing_zone_component_is_not_treated_as_perfect_safety(self) -> None:
+        self.assertIsNone(_safety_score([]))
+        metrics = {
+            "zone_available": True,
+            "data_coverage_pct": 100.0,
+            "mileage_score": 80.0,
+            "in_zone_safe_score": 90.0,
+            "out_zone_safe_score": None,
+            "pattern_stability_score": 70.0,
+            "mobility_change_index": 0.0,
+            "risky_behavior_change_index": 0.0,
+        }
+        result = classify_month(metrics)
+        expected = ((80.0 * 30) + (90.0 * 30) + (70.0 * 20)) / 80
+        self.assertEqual(result["integrated_score"], round(expected, 2))
+        self.assertEqual(result["observed_score_weight_pct"], 80.0)
+        self.assertFalse(result["component_availability"]["out_zone_safe_score"])
+        self.assertIn("PARTIAL_SCORE_COMPONENTS_RENORMALIZED", result["reason_codes"])
+
+        for driver in self.bundle["drivers"]:
+            for row in driver["monthly_results"]:
+                self.assertEqual(row["in_zone_trip_count"] > 0, row["in_zone_safe_score"] is not None)
+                self.assertEqual(row["out_zone_trip_count"] > 0, row["out_zone_safe_score"] is not None)
+
+    def test_partial_annual_reward_evidence_is_hold(self) -> None:
+        required = self.bundle["product_rules"]["reward_required_months"]
+        monthly = [
+            *(
+                {"period_role": "evaluation", "reward_state": "reward", "care_state": "none"}
+                for _ in range(required - 1)
+            ),
+            *(
+                {"period_role": "evaluation", "reward_state": "hold", "care_state": "hold"}
+                for _ in range(12 - required + 1)
+            ),
+        ]
+        reward, care = _annual_state(monthly, self.bundle["product_rules"])
+        self.assertEqual(reward, "hold")
+        self.assertEqual(care, "none")
+
+    def test_pattern_stability_is_defined_by_risky_behavior_change_not_mobility_change(self) -> None:
+        self.assertEqual(
+            self.bundle["product_rules"]["pattern_stability_basis"],
+            "risky_behavior_change_index",
+        )
+        for driver in self.bundle["drivers"]:
+            for row in driver["monthly_results"]:
+                self.assertEqual(
+                    row["pattern_stability_score"],
+                    round(max(0.0, 100.0 - row["risky_behavior_change_index"] * 100.0), 2),
+                )
+        risk_only = classify_month(
+            {
+                "zone_available": True,
+                "data_coverage_pct": 100.0,
+                "mileage_score": 90.0,
+                "in_zone_safe_score": 60.0,
+                "out_zone_safe_score": 60.0,
+                "pattern_stability_score": 100.0,
+                "mobility_change_index": 0.0,
+                "risky_behavior_change_index": 0.8,
+            }
+        )
+        self.assertIn("RISKY_BEHAVIOR_CHANGED", risk_only["reason_codes"])
+        self.assertNotIn("MOBILITY_CONTEXT_CHANGED", risk_only["reason_codes"])
+
+    def test_risky_behavior_rate_is_risky_trip_share_and_intensity_is_preserved(self) -> None:
+        grouped: dict[tuple[str, str], list[dict[str, str]]] = defaultdict(list)
+        for event in self.visit_events:
+            grouped[(event["driver_id"], event["month"])].append(event)
+
+        for driver in self.bundle["drivers"]:
+            for row in driver["monthly_results"]:
+                events = grouped[(driver["driver_id"], row["month"])]
+                risky_trip_share = sum(int(event["risk_event_count"]) > 0 for event in events) / len(events)
+                total_risk_events = sum(int(event["risk_event_count"]) for event in events)
+                total_distance = sum(float(event["trip_distance_km"]) for event in events)
+                self.assertAlmostEqual(row["risky_behavior_rate"], round(risky_trip_share, 4), places=4)
+                self.assertAlmostEqual(
+                    row["risky_events_per_100_km"],
+                    round((total_risk_events / max(total_distance, 1.0)) * 100.0, 4),
+                    places=4,
+                )
+                self.assertGreaterEqual(row["risky_behavior_change_index"], 0.0)
+                self.assertLessEqual(row["risky_behavior_change_index"], 1.0)
+
+    def test_mobility_only_change_does_not_reduce_pattern_stability_or_reward_score(self) -> None:
+        typical_drivers = [
+            driver
+            for driver in self.bundle["drivers"]
+            if driver["persona_type"] == "mobility_change_only"
+            and driver["scenario_variant"] == "typical"
+        ]
+        self.assertTrue(typical_drivers)
+        for driver in typical_drivers:
+            changed = [
+                row
+                for row in driver["monthly_results"]
+                if row["period_role"] == "evaluation" and row["mobility_change_index"] > 0
+            ]
+            self.assertTrue(changed, driver["driver_id"])
+            self.assertTrue(all(row["risky_behavior_change_index"] == 0.0 for row in changed))
+            self.assertTrue(all(row["pattern_stability_score"] == 100.0 for row in changed))
+            self.assertTrue(all(row["reward_state"] == "reward" for row in changed))
+
+    def test_mobility_only_change_does_not_trigger_care(self) -> None:
+        mobility_drivers = [
+            driver for driver in self.bundle["drivers"] if driver["persona_type"] == "mobility_change_only"
+        ]
+        self.assertTrue(mobility_drivers)
+        for driver in mobility_drivers:
+            changed = [
+                row
+                for row in driver["monthly_results"]
+                if row["period_role"] == "evaluation" and row["mobility_change_index"] >= 0.25
+            ]
+            self.assertTrue(changed, driver["driver_id"])
+            self.assertTrue(all(row["care_state"] == "none" for row in changed), driver["driver_id"])
+
+    def test_mobility_and_risky_behavior_cochange_can_trigger_care_review(self) -> None:
+        cochange_drivers = [
+            driver for driver in self.bundle["drivers"] if driver["persona_type"] == "mobility_risk_cochange"
+        ]
+        self.assertTrue(cochange_drivers)
+        for driver in cochange_drivers:
+            care_months = [row for row in driver["monthly_results"] if row["care_state"] == "care_review"]
+            self.assertTrue(care_months, driver["driver_id"])
+            self.assertTrue(
+                all(row["mobility_change_index"] >= 0.25 and row["risky_behavior_change_index"] >= 0.20 for row in care_months)
+            )
+
+    def test_persona_behavior_contract_is_visible_in_annual_states(self) -> None:
+        by_persona: dict[str, list[dict[str, object]]] = defaultdict(list)
+        for driver in self.bundle["drivers"]:
+            if driver["scenario_variant"] == "typical":
+                by_persona[driver["persona_type"]].append(driver)
+        self.assertTrue(all(driver["annual_reward_state"] == "reward" for driver in by_persona["stable_local_safe"]))
+        self.assertTrue(all(driver["annual_reward_state"] == "neutral" for driver in by_persona["low_mileage_risky"]))
+        self.assertTrue(all(driver["annual_care_state"] == "none" for driver in by_persona["mobility_change_only"]))
+        self.assertTrue(
+            all(driver["annual_care_state"] == "care_review" for driver in by_persona["mobility_risk_cochange"])
+        )
+
+    def test_explicit_no_zone_and_low_coverage_variants_reach_hold_end_to_end(self) -> None:
+        variants = Counter(driver["scenario_variant"] for driver in self.bundle["drivers"])
+        self.assertEqual(
+            variants,
+            Counter({"typical": 58, "no_zone_evidence_gap": 1, "low_data_coverage": 1}),
+        )
+        no_zone = next(
+            driver
+            for driver in self.bundle["drivers"]
+            if driver["scenario_variant"] == "no_zone_evidence_gap"
+        )
+        low_coverage = next(
+            driver
+            for driver in self.bundle["drivers"]
+            if driver["scenario_variant"] == "low_data_coverage"
+        )
+        self.assertEqual(no_zone["mobility"]["zone_status"], "insufficient")
+        self.assertEqual(no_zone["mobility"]["repeated_hub_count"], 0)
+        self.assertEqual(no_zone["annual_reward_state"], "hold")
+        self.assertEqual(no_zone["annual_care_state"], "hold")
+        self.assertTrue(no_zone["scenario_label"])
+        self.assertLess(low_coverage["data_coverage_pct"], self.bundle["product_rules"]["min_data_coverage_pct"])
+        self.assertEqual(low_coverage["annual_reward_state"], "hold")
+        self.assertEqual(low_coverage["annual_care_state"], "hold")
+        self.assertTrue(low_coverage["scenario_label"])
+        for driver in (no_zone, low_coverage):
+            evaluation = [row for row in driver["monthly_results"] if row["period_role"] == "evaluation"]
+            self.assertTrue(all(row["reward_state"] == "hold" for row in evaluation))
+            self.assertTrue(all(row["care_state"] == "hold" for row in evaluation))
+            self.assertTrue(all(row["location_penalty"] == 0.0 for row in evaluation))
+
+    def test_annual_reward_required_months_is_declared_and_applied(self) -> None:
+        required_months = self.bundle["product_rules"]["reward_required_months"]
+        self.assertEqual(required_months, 9)
+        for driver in self.bundle["drivers"]:
+            evaluation = [row for row in driver["monthly_results"] if row["period_role"] == "evaluation"]
+            reward_months = sum(row["reward_state"] == "reward" for row in evaluation)
+            self.assertEqual(driver["reward_month_count"], reward_months)
+            if driver["annual_reward_state"] == "hold":
+                self.assertTrue(all(row["reward_state"] == "hold" for row in evaluation))
+            else:
+                self.assertEqual(driver["annual_reward_state"] == "reward", reward_months >= required_months)
+
+    def test_no_zone_means_hold_without_penalty_or_invented_hub(self) -> None:
+        metrics = {
+            "zone_available": False,
+            "data_coverage_pct": 100.0,
+            "mileage_score": 100.0,
+            "in_zone_safe_score": 100.0,
+            "out_zone_safe_score": 100.0,
+            "pattern_stability_score": 100.0,
+            "mobility_change_index": 0.0,
+            "risky_behavior_change_index": 0.0,
+        }
+        result = classify_month(metrics)
+        self.assertEqual(result["reward_state"], "hold")
+        self.assertEqual(result["care_state"], "hold")
+        self.assertEqual(result["location_penalty"], 0.0)
+        self.assertIsNone(result["integrated_score"])
+        self.assertEqual(self.bundle["algorithm"]["reference"]["no_cluster_policy"], "insufficient_evidence_hold_without_invented_hub")
+
+    def test_reward_and_care_states_are_separate(self) -> None:
+        thresholds = self.bundle["product_rules"]["care_thresholds"]
+        self.assertEqual(thresholds["gate_logic"], "AND")
+        self.assertEqual(thresholds["unit"], "normalized_ratio_0_to_1")
+        for driver in self.bundle["drivers"]:
+            self.assertIn("mobility_change_index", driver)
+            self.assertIn("risky_behavior_change_index", driver)
+            self.assertNotIn("pattern_change_risk", driver)
+            for row in driver["monthly_results"]:
+                self.assertNotIn("pattern_change_risk", row)
+                self.assertIn(row["reward_state"], {"observation", "reward", "neutral", "hold"})
+                self.assertIn(row["care_state"], {"observation", "none", "care_review", "hold"})
+                if row["care_state"] == "care_review":
+                    self.assertNotEqual(row["reward_state"], "hold")
+
+    def test_pricing_sandbox_math_and_no_surcharge(self) -> None:
+        result = pricing_sandbox(
+            base_premium_krw=1_000_000,
+            annual_distance_km=2_500.0,
+            vehicle_class=PERSONAL_PASSENGER_GENERAL,
+            annual_reward_state="reward",
+        )
+        self.assertEqual(
+            result["korea_mileage_net_premium_krw"],
+            round(1_000_000 * (1 - result["korea_mileage_discount_rate_pct"] / 100)),
+        )
+        self.assertEqual(
+            result["masil_candidate_net_premium_krw"],
+            round(1_000_000 * (1 - result["masil_candidate_discount_rate_pct"] / 100)),
+        )
+        self.assertEqual(result["candidate_surcharge_rate_pct"], 0.0)
+        self.assertIn("not_final_tariff", result["source_status"])
+
+    def test_offline_candidates_are_not_faked(self) -> None:
+        candidates = self.bundle["algorithm"]["offline_comparison_candidates"]
+        self.assertEqual({row["name"] for row in candidates}, {"HDBSCAN", "Grid Count"})
+        self.assertTrue(all(row["result_status"] == "not_run" for row in candidates))
+
+    def test_generation_truth_is_excluded_from_decision_features_and_reasons(self) -> None:
+        contract = self.bundle["product_rules"]["decision_feature_contract"]
+        allowed = set(contract["allowed_inputs"])
+        excluded = set(contract["generation_only_fields_excluded"])
+        self.assertTrue(allowed.isdisjoint(excluded))
+        self.assertIn("scenario_variant", excluded)
+        self.assertIn("scenario_label", excluded)
+        self.assertIn("not_fit_to_any_partition", self.bundle["product_rules"]["rule_origin"])
+        reason_codes = {
+            reason
+            for driver in self.bundle["drivers"]
+            for month in driver["monthly_results"]
+            for reason in month["reason_codes"]
+        }
+        self.assertFalse(any(token in reason for reason in reason_codes for token in ("PERSONA", "EXPECTED", "SCENARIO_TRUTH")))
+        leakage_check = next(
+            check
+            for check in self.bundle["validation_results"]["checks"]
+            if check["check_id"] == "generation_label_leakage_guard"
+        )
+        self.assertEqual(leakage_check["result_status"], "passed")
+
+    def test_bundle_validation_contract_passes(self) -> None:
+        self.assertEqual(self.bundle["validation_results"]["result_status"], "passed")
+        self.assertTrue(
+            all(check["result_status"] == "passed" for check in self.bundle["validation_results"]["checks"])
+        )
+
+    def test_every_source_status_has_a_legend_entry(self) -> None:
+        statuses: set[str] = set()
+
+        def collect(value: object) -> None:
+            if isinstance(value, dict):
+                for key, child in value.items():
+                    if key == "source_status" and isinstance(child, str):
+                        statuses.add(child)
+                    collect(child)
+            elif isinstance(value, list):
+                for child in value:
+                    collect(child)
+
+        collect(self.bundle)
+        self.assertTrue(statuses.issubset(self.bundle["source_status_legend"]))
+
+
+if __name__ == "__main__":
+    unittest.main()
