@@ -33,7 +33,6 @@ from src.agents.policy_search_agent import (
 from src.agents.structured_outputs import validate_evaluation_view_model, write_structured_json
 from src.features.build_model_features import write_csv
 from src.features.zone_features import (
-    DEFAULT_CUSTOMER_LIVING_ZONE_RECORD_STORE_PATH,
     living_zone_decision_summary,
     load_customer_living_zone_record_store,
 )
@@ -47,6 +46,7 @@ from src.product.ab_comparison import build_customer_ab_comparison_dataset
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CANDIDATE_RULES_INPUT = ROOT / "data" / "fixtures" / "candidate_rules.json"
+DEFAULT_LIVING_ZONE_STORE_INPUT = ROOT / "data" / "fixtures" / "customer_living_zone_records_by_id.json"
 DEFAULT_OUTPUT = ROOT / "data" / "fixtures" / "ab_test_results.csv"
 DEFAULT_VIEW_MODEL_OUTPUT = ROOT / "data" / "fixtures" / "evaluation_view_model.json"
 SCHEMA_VERSION = "senior-evaluation-results/v1"
@@ -182,7 +182,7 @@ def build_evaluation_input(
     candidate_rules_input: Path = DEFAULT_CANDIDATE_RULES_INPUT,
     trip_input: Path = DEFAULT_TRIP_INPUT,
     scenario_input: Path = DEFAULT_SCENARIO_INPUT,
-    living_zone_store_input: Path = DEFAULT_CUSTOMER_LIVING_ZONE_RECORD_STORE_PATH,
+    living_zone_store_input: Path = DEFAULT_LIVING_ZONE_STORE_INPUT,
     selected_candidate_id: str | None = None,
     selected_scenario_id: str | None = None,
 ) -> dict[str, Any]:

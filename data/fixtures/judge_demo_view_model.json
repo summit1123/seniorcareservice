@@ -25,9 +25,9 @@
     "discount_amount_delta_krw": -312231,
     "preventive_care_count": 6,
     "decision_counts": {
-      "기본": 14,
+      "기본": 13,
       "예방 케어": 6,
-      "우대": 10
+      "우대": 11
     },
     "existing_tier_count": 7,
     "avg_existing_discount_rate_pct": 20.87,
@@ -69,8 +69,8 @@
       "avg_annual_distance_km": 6020,
       "avg_annual_score": 76.27,
       "decision_counts": {
-        "기본": 2,
-        "우대": 3
+        "기본": 1,
+        "우대": 4
       },
       "preventive_care_count": 0,
       "avg_existing_discount_rate_pct": 19.8,
@@ -480,7 +480,7 @@
       "driver_id": "driver_025",
       "label": "driver_025 · 병원 방문 반복 외부 목적지형",
       "persona_type": "medical_visit_pattern",
-      "annual_decision_signal": "기본",
+      "annual_decision_signal": "우대",
       "existing_matched_tier_label": "7천km 이하"
     },
     {
@@ -9302,8 +9302,8 @@
         "annual_in_zone_safe_driving_score": 92.08,
         "annual_out_zone_safe_driving_score": 92.3,
         "annual_senior_safe_mileage_score": 75.52,
-        "annual_score_tier": "B",
-        "annual_decision_signal": "기본",
+        "annual_score_tier": "A",
+        "annual_decision_signal": "우대",
         "annual_out_zone_pattern_change_risk": 21.56,
         "dominant_annual_interpretation": "existing_living_zone",
         "annual_reason_codes": [
@@ -9332,7 +9332,7 @@
         "premium_delta_krw": -36887,
         "annual_senior_safe_mileage_score": 75.52,
         "annual_score_tier": "A",
-        "annual_decision_signal": "기본",
+        "annual_decision_signal": "우대",
         "annual_out_zone_pattern_change_risk": 21.56,
         "proposed_pricing_action": "annual_integrated_score_adjusted_discount",
         "preventive_care_required": false,
