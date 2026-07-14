@@ -1004,6 +1004,13 @@ function LivingZoneDecisionMap({
         <span><i className="legend-risk" />생활권 밖 · 위치만으로 감점 없음</span>
         <b>{zoneMap?.snapshot.service_month ?? `${selectedMonth}월`} 선택 근거</b>
       </div>
+      <div className="map-route-legend" aria-label="경로선 색 안내">
+        <b>경로선(도식) = 자택→목적지 연결이며 색은 선택 월의 해석입니다:</b>
+        <span className="rl-stable"><i />생활권 안</span>
+        <span className="rl-candidate"><i />반복 외부 후보</span>
+        <span className="rl-safeout"><i />생활권 밖 안정 · 중립</span>
+        <span className="rl-risk"><i />동시변화 검토</span>
+      </div>
       <p className="map-formula-note">완충권 = max(500m, min(개인 P90, 2km)) — 군집이 만들어진 뒤 적용하는 상품 인정 반경입니다.</p>
     </section>
   );
@@ -2141,13 +2148,13 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
       </g>
       </svg>
       <aside className="geo-detail-panel" aria-label="생활권 지도 근거 상세">
-        <span>비식별 방문 근거</span>
+        <span>방문 근거 · 합성 라벨</span>
         {visibleDestinations.map(({ group, destination }, index) => {
           const meta = interpretationClass(group.dominant);
           return (
             <div key={`geo-detail-${group.key}`} className={`geo-detail-row ${meta.className}`}>
               <b>{index + 1}</b>
-              <strong>{destinationTypeLabel(group.key)}</strong>
+              <strong>{group.label ?? destinationTypeLabel(group.key)}</strong>
               <small>{meta.label} · {group.count}회 방문</small>
               <em>{group.distanceKm.toFixed(0)}km · 위험행동 {group.riskEvents}건</em>
             </div>
@@ -2448,7 +2455,7 @@ function groupTrips(trips: ZoneTripInterpretation[]) {
   trips.forEach((trip) => {
     const current = grouped[trip.destination_type] ?? {
       key: trip.destination_type,
-      label: destinationTypeLabel(trip.destination_type),
+      label: trip.destination_label_ko ?? destinationTypeLabel(trip.destination_type),
       count: 0,
       distanceKm: 0,
       riskEvents: 0,
