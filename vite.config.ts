@@ -14,9 +14,11 @@ import {
   isViteFileSystemRequest,
   sanitizeGaipBundleForUi
 } from "./src/gaip_server_policy";
+import { streamGaipReport } from "./src/gaip_report_server";
 
 const repoRoot = dirname(fileURLToPath(import.meta.url));
 const gaipStudioPath = resolve(repoRoot, "data", "fixtures", "gaip_simulation_bundle.json");
+const gaipLabPath = resolve(repoRoot, "data", "fixtures", "gaip_algorithm_lab.json");
 
 function sendJson(res: ServerResponse, statusCode: number, payload: unknown): void {
   const body = `${JSON.stringify(payload)}\n`;
@@ -86,10 +88,33 @@ function configureGaipServer(server: ViteDevServer | PreviewServer): void {
       return;
     }
 
-    if (requestUrl.pathname !== "/api/gaip/studio") {
+    const knownRoutes = ["/api/gaip/studio", "/api/gaip/lab", "/api/gaip/report/stream"];
+    if (!knownRoutes.includes(requestUrl.pathname)) {
       sendJson(res, 404, {
-        message: "Unknown API route. The dashboard exposes only /api/gaip/studio."
+        message: "Unknown API route. The dashboard exposes only /api/gaip/studio, /api/gaip/lab and /api/gaip/report/stream."
       });
+      return;
+    }
+
+    if (requestUrl.pathname === "/api/gaip/lab") {
+      if (!existsSync(gaipLabPath)) {
+        sendJson(res, 503, {
+          message: "Algorithm lab bundle is not generated yet. Run scripts/generate_gaip_algorithm_lab.py first."
+        });
+        return;
+      }
+      try {
+        const lab = (await readJson(gaipLabPath)) as { metadata?: { synthetic_data?: boolean } };
+        if (lab?.metadata?.synthetic_data !== true) {
+          sendJson(res, 500, { message: "Algorithm lab bundle must declare synthetic_data: true." });
+          return;
+        }
+        sendJson(res, 200, lab);
+      } catch (error) {
+        sendJson(res, 500, {
+          message: error instanceof Error ? error.message : "Unable to load the algorithm lab bundle."
+        });
+      }
       return;
     }
 
@@ -97,6 +122,32 @@ function configureGaipServer(server: ViteDevServer | PreviewServer): void {
       sendJson(res, 503, {
         message: "GAIP simulation bundle is not generated yet. Run npm run generate:gaip first."
       });
+      return;
+    }
+
+    if (requestUrl.pathname === "/api/gaip/report/stream") {
+      try {
+        const bundle = sanitizeGaipBundleForUi(await readJson(gaipStudioPath)) as Record<string, unknown>;
+        const driverId = requestUrl.searchParams.get("driver") ?? "";
+        const monthNumber = Number(requestUrl.searchParams.get("month") ?? "0");
+        if (!driverId || !Number.isFinite(monthNumber) || monthNumber < 1 || monthNumber > 12) {
+          sendJson(res, 400, { message: "driver and month(1-12) query parameters are required." });
+          return;
+        }
+        await streamGaipReport(res, bundle, driverId, monthNumber, repoRoot);
+      } catch (error) {
+        const statusCode =
+          typeof (error as { statusCode?: unknown })?.statusCode === "number"
+            ? ((error as { statusCode: number }).statusCode)
+            : 500;
+        if (!res.headersSent) {
+          sendJson(res, statusCode, {
+            message: error instanceof Error ? error.message : "AI report stream failed."
+          });
+        } else {
+          res.end();
+        }
+      }
       return;
     }
 

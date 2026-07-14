@@ -45,6 +45,29 @@ export const demoApi = {
     onChunk: (chunk: string) => void,
     rules?: ProductRules
   ): Promise<string> {
+    // 1순위: 서버 AI 리포트 스트림(OpenAI, 7섹션 Markdown). 실패 시 로컬 결정적 리포트로 대체.
+    try {
+      const response = await fetch(
+        `/api/gaip/report/stream?driver=${encodeURIComponent(driverId)}&month=${encodeURIComponent(String(month))}`
+      );
+      if (response.ok && response.body && response.headers.get("X-Report-Mode") === "openai-responses-stream") {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let full = "";
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          if (chunk) {
+            full += chunk;
+            onChunk(chunk);
+          }
+        }
+        if (full.trim()) return full;
+      }
+    } catch {
+      // 네트워크/키 부재 — 아래 로컬 리포트로 진행
+    }
     const report = buildEvidenceReport(await studio(), driverId, month, rules);
     for (const chunk of reportChunks(report)) {
       onChunk(chunk);
