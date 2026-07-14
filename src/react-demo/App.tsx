@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { demoApi } from "./api";
+import { AlgorithmLabPanel } from "./AlgorithmLab";
 import { normalizeProductWeights } from "./gaip-decision";
 import type { ProductRules } from "./gaip-types";
 import type {
@@ -93,8 +94,29 @@ const destinationTypeLabels: Record<string, string> = {
   routine_hub_b: "반복 거점 B",
   routine_hub_c: "반복 거점 C",
   new_visit: "신규 방문",
-  outer_context: "Outer Context"
+  outer_context: "생활권 밖 맥락"
 };
+
+const decisionStateKo: Record<string, string> = {
+  Reward: "우대",
+  Neutral: "기본",
+  "Care Review": "예방 케어",
+  Hold: "판단 보류",
+  None: "해당 없음",
+  Observation: "기준선 관찰"
+};
+
+function stateLabelKo(value: string | null | undefined) {
+  if (!value) return "—";
+  return decisionStateKo[value] ?? value;
+}
+
+function tierLabelKo(reward?: string | null, care?: string | null) {
+  if (care === "Care Review") return "예방 케어";
+  if (reward === "Hold" || care === "Hold") return "판단 보류";
+  if (reward === "Reward") return "우대";
+  return "기본";
+}
 
 const dynamicTextTranslations: Record<string, string> = {
   Standard: "Neutral",
@@ -189,6 +211,7 @@ function App() {
       .getPersonaDirectory()
       .then((payload) => {
         if (!active) return;
+        registerPersonaNames(payload.driver_options);
         setDirectory(payload);
         setProductRules(payload.product_rules ?? null);
         setSelectedCustomerId(payload.default_customer_id ?? payload.driver_options[0]?.customer_id ?? "gaip-051");
@@ -209,7 +232,9 @@ function App() {
     if (!productRules || !directory) return;
     let active = true;
     demoApi.getPersonaDirectory(productRules).then((payload) => {
-      if (active) setDirectory(payload);
+      if (!active) return;
+      registerPersonaNames(payload.driver_options);
+      setDirectory(payload);
     }).catch((error: Error) => {
       if (active) setErrorMessage(error.message);
     });
@@ -291,9 +316,9 @@ function App() {
       <header className="app-header">
         <div className="brand-block">
           <div>
-            <p className="eyebrow">FOURSURE · MASIL · GAIP 2026</p>
+            <p className="eyebrow">FOURSURE · MASIL · GAIP Insurance Innovation Competition 2026</p>
             <h1>시니어 생활권 기반 보험 설계 대시보드</h1>
-            <p>한국 마일리지 특약을 참조하되, 반복 생활권과 운전행동의 변화를 분리해 Reward와 Care 검토 근거를 제안합니다.</p>
+            <p>한국 마일리지 특약을 참조하되, 반복 생활권과 운전행동의 변화를 분리해 혜택과 예방 케어 검토 근거를 제안합니다.</p>
           </div>
         </div>
         <div className="header-actions">
@@ -433,14 +458,58 @@ function ScenarioControlPanel({ rules, onChange }: { rules: ProductRules; onChan
     { key: "pattern_stability", label: "패턴 안정성" }
   ];
 
+  const presets: Array<{ id: string; label: string; hint: string; rules: ProductRules }> = [
+    {
+      id: "kr",
+      label: "국내 기준 (기본)",
+      hint: "국내 수상안 PoC 설정 — 30:30:20:20 · 우대 75점/9개월",
+      rules: referenceProductRules
+    },
+    {
+      id: "intl-conservative",
+      label: "국제 예시 A · 보수적",
+      hint: "혜택 문턱을 높이고 케어를 더 민감하게 보는 시장 가정",
+      rules: {
+        ...referenceProductRules,
+        reward_score_threshold: 80,
+        reward_required_months: 10,
+        care_mobility_change_threshold: 20,
+        care_risky_behavior_threshold: 15
+      }
+    },
+    {
+      id: "intl-wide",
+      label: "국제 예시 B · 광역 시장",
+      hint: "장거리 이동이 일상인 시장 가정 — 이동 변화 허용 폭 확대",
+      rules: {
+        ...referenceProductRules,
+        weights: { mileage: 25, in_zone_safe: 30, out_zone_safe: 25, pattern_stability: 20 },
+        reward_score_threshold: 70,
+        reward_required_months: 8,
+        care_mobility_change_threshold: 35,
+        care_risky_behavior_threshold: 25
+      }
+    }
+  ];
+
   return (
     <section className="panel scenario-control-panel" aria-label="상품 규칙 민감도 설정">
       <div className="panel-head">
         <div>
-          <p className="eyebrow">PRODUCT RULE SANDBOX</p>
+          <p className="eyebrow">상품 규칙 SANDBOX</p>
           <h2>상품 담당자가 후보 가중치와 임계치를 바꾸면 동일한 60명 결과가 즉시 다시 계산됩니다</h2>
         </div>
         <button type="button" className="sandbox-reset" onClick={() => onChange(referenceProductRules)}>30:30:20:20 복원</button>
+      </div>
+      <div className="sandbox-presets" role="group" aria-label="시장 기준 프리셋">
+        <span className="sandbox-presets-title">기준 프리셋 — 시장이 달라도 같은 엔진이 다시 계산합니다</span>
+        <div className="sandbox-presets-row">
+          {presets.map((preset) => (
+            <button key={preset.id} type="button" title={preset.hint} onClick={() => onChange(preset.rules)}>
+              {preset.label}
+            </button>
+          ))}
+        </div>
       </div>
       <div className="sandbox-layout">
         <div className="sandbox-weight-grid">
@@ -467,7 +536,10 @@ function ScenarioControlPanel({ rules, onChange }: { rules: ProductRules; onChan
           <RuleNumber label="위험행동 변화" value={rules.care_risky_behavior_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_risky_behavior_threshold", value)} />
         </div>
       </div>
-      <p className="sandbox-footnote">DBSCAN의 eps·최소 방문일수는 이 상품 화면에서 조정하지 않습니다. 가중치 합계는 계산 시 100%로 재정규화되며, 모든 값은 시뮬레이션 후보입니다.</p>
+      <p className="sandbox-footnote">
+        가중치 합계는 계산 시 100%로 재정규화되며, 모든 값은 시뮬레이션 후보입니다. 알고리즘 파라미터(eps·최소
+        방문일수)는 결정 주체가 달라 이 화면이 아니라 <b>알고리즘 실험실</b> 탭에서 비교합니다.
+      </p>
     </section>
   );
 }
@@ -499,11 +571,18 @@ function RuleNumber({
 function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryResponse }) {
   const summary = directory.summary;
   const total = Math.max(1, directory.driver_options.length);
-  const rewardCount = directory.driver_options.filter((option) => option.reward_state === "Reward").length;
   const careCount = directory.driver_options.filter((option) => option.care_state === "Care Review").length;
-  const holdCount = directory.driver_options.filter((option) => option.reward_state === "Hold" || option.care_state === "Hold").length;
-  const rewardShare = (rewardCount / total) * 100;
-  const donutBackground = `conic-gradient(#116466 0 ${rewardShare}%, #dfe8e5 ${rewardShare}% 100%)`;
+  const holdCount = directory.driver_options.filter(
+    (option) => option.reward_state === "Hold" || option.care_state === "Hold"
+  ).length;
+  const preferredCount = directory.driver_options.filter(
+    (option) => option.reward_state === "Reward" && option.care_state !== "Care Review" && option.care_state !== "Hold"
+  ).length;
+  const standardCount = Math.max(0, total - preferredCount - careCount - holdCount);
+  const p1 = (preferredCount / total) * 100;
+  const p2 = p1 + (standardCount / total) * 100;
+  const p3 = p2 + (careCount / total) * 100;
+  const donutBackground = `conic-gradient(#116466 0 ${p1}%, #8aa6a0 ${p1}% ${p2}%, #c96f4a ${p2}% ${p3}%, #dfe8e5 ${p3}% 100%)`;
   const avgRateDelta = summary.avg_proposed_discount_rate_pct - summary.avg_existing_discount_rate_pct;
 
   return (
@@ -511,7 +590,7 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
       <div className="panel-head">
         <div>
           <p className="eyebrow">전체 비교</p>
-          <h2>같은 60명·14개월 합성 데이터로 Korea Reference와 Masil 후보를 비교합니다</h2>
+          <h2>같은 60명·14개월 합성 데이터로 기존 마일리지 기준과 제안 산식을 비교합니다</h2>
         </div>
         <span className="count-badge">기준선 2개월 + 평가 12개월 · {summary.customer_count}명</span>
       </div>
@@ -524,8 +603,8 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
         </div>
         <div>
           <span>제안 차별점</span>
-          <strong>거리 혜택과 Care 검토를 서로 독립된 두 축으로 설계합니다</strong>
-          <p>안전운전은 Reward로 인정하고, 같은 달 이동 변화와 위험행동 변화가 함께 나타날 때만 사람에게 Care Review를 제안합니다.</p>
+          <strong>거리 혜택과 예방 케어 검토를 서로 독립된 두 축으로 설계합니다</strong>
+          <p>안전운전은 혜택(Reward)으로 인정하고, 같은 달 이동 변화와 위험행동 변화가 함께 나타날 때만 사람에게 예방 케어 검토를 제안합니다.</p>
         </div>
         <div>
           <span>검증 결과</span>
@@ -537,8 +616,8 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
       <div className="comparison-ledger" aria-label="기존 마일리지와 제안 산식 비교표">
         <div className="ledger-head">
           <span>비교 항목</span>
-          <strong>Korea Mileage Reference</strong>
-          <strong>Masil Simulation Candidate</strong>
+          <strong>기존 마일리지 산식 · 국내 기준</strong>
+          <strong>마실 제안 산식 · 시뮬레이션 후보</strong>
         </div>
         <ComparisonLedgerRow
           label="판단 기준"
@@ -548,7 +627,7 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
         <ComparisonLedgerRow
           label="같은 저주행 구간 처리"
           legacy="같은 거리구간이면 생활권 변화와 관계없이 같은 할인율"
-          proposed="Reward는 안전 점수로, Care는 같은 달 두 변화지표의 AND Gate로 별도 계산"
+          proposed="혜택은 안전 점수로, 예방 케어는 같은 달 두 변화지표의 동시 충족 조건으로 별도 계산"
         />
         <ComparisonLedgerRow
           label="연간 할인 계산"
@@ -564,40 +643,47 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
 
       <div className="overview-evidence-grid">
         <div className="decision-donut-card">
-          <span>Reward와 Care의 독립 결과</span>
+          <span>제안 산식의 판정 등급 구조</span>
           <div className="decision-donut-wrap">
             <div className="decision-donut" style={{ background: donutBackground }}>
               <div>
-                <strong>2축</strong>
-                <small>혜택 · 검토</small>
+                <strong>3등급</strong>
+                <small>연간 판정 기준</small>
               </div>
             </div>
             <div className="decision-donut-legend">
-              <DecisionLegend label={`Reward ${rewardCount}명`} detail="혜택 후보" className="preferred" />
-              <DecisionLegend label={`Neutral ${total - rewardCount - holdCount}명`} detail="혜택 유지" className="standard" />
-              <DecisionLegend label={`Care Review ${careCount}명`} detail="사람 검토" className="care" />
-              {holdCount ? <DecisionLegend label={`Hold ${holdCount}명`} detail="근거 부족·불이익 없음" className="hold" /> : null}
+              <DecisionLegend label={`우대 ${preferredCount}명`} detail="생활권 안정형" className="preferred" />
+              <DecisionLegend label={`기본 ${standardCount}명`} detail="변화 낮음" className="standard" />
+              <DecisionLegend label={`예방 케어 ${careCount}명`} detail="위험변화 관찰 · 사람 검토" className="care" />
+              {holdCount ? (
+                <DecisionLegend label={`판단 보류 ${holdCount}명`} detail="근거 부족 · 불이익 없음" className="hold" />
+              ) : null}
             </div>
           </div>
+          <p className="portfolio-footnote">
+            국내 수상안의 3등급 표기를 유지합니다. 내부 계산은 혜택(Reward)과 케어 검토(Care)를 독립된 두 축으로
+            나눠 수행하므로, 기준이 다른 시장에서도 같은 엔진이 등급을 다시 계산할 수 있습니다.
+          </p>
         </div>
 
         <div className="simulation-result-card">
-          <span>60명 합성 코호트 비교 결과</span>
-          <strong>6개 운전자 유형 × 10명, 3개 이동환경 × 20명을 같은 규칙으로 계산했습니다</strong>
+          <span>국내 기준 A/B 시뮬레이션 · 합성 60명</span>
+          <strong>총액을 맞춰 끼운 값이 아니라, 두 산식을 각각 계산한 결과입니다</strong>
           <p>
-            2개월은 개인 기준선을 만들고 이후 12개월은 평가 근거로만 사용합니다. 실제 계약보험료를 확정하지 않은 단계이므로
-            Korea Reference와 비구속적 Masil 후보의 할인율·판정 민감도만 비교합니다.
+            동일한 60명(6개 운전자 유형 × 10명, 3개 이동환경)의 연간 주행 데이터를 기존 마일리지 산식과 제안 통합
+            산식에 각각 넣어 비교했습니다. 실제 계약보험료를 확정하지 않은 단계이므로, 평균 할인율과
+            우대·기본·예방 케어 판정 구조를 중심으로 검증합니다.
           </p>
           <div className="budget-compare-grid no-money">
             <div>
-              <span>Korea Reference 평균</span>
+              <span>기존 평균 할인율</span>
               <strong>{percent(summary.avg_existing_discount_rate_pct)}</strong>
               <small>연간 주행거리 구간 기준</small>
             </div>
             <div>
-              <span>Masil Candidate 평균</span>
+              <span>제안 평균 할인율</span>
               <strong>{percent(summary.avg_proposed_discount_rate_pct)}</strong>
-              <small>30:30:20:20 후보 설정</small>
+              <small>4개 지표 통합점수 기준</small>
             </div>
             <div>
               <span>평균 할인율 변화</span>
@@ -606,7 +692,8 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
             </div>
           </div>
           <p className="portfolio-footnote">
-            합성 시뮬레이션 결과입니다. 실제 요율·인수·Care 결정은 계리·상품·심사 권한자의 검토 없이 확정하지 않습니다.
+            합성 시뮬레이션 결과입니다. 실제 요율·인수·케어 결정은 계리·상품·심사 권한자의 검토 없이 확정하지
+            않습니다. 기준을 다른 시장 값으로 바꾸면 아래 상품 Sandbox가 같은 60명을 즉시 다시 계산합니다.
           </p>
         </div>
       </div>
@@ -647,8 +734,8 @@ function CaseRail({
   const [decisionFilter, setDecisionFilter] = useState("all");
   const decisionFilters = [
     { value: "all", label: "전체" },
-    { value: "Reward", label: "Reward" },
-    { value: "Care Review", label: "Care" },
+    { value: "Reward", label: "우대" },
+    { value: "Care Review", label: "케어" },
     { value: "Hold", label: "보류" }
   ];
   const filtered = options.filter((option) => {
@@ -698,9 +785,9 @@ function CaseRail({
                 </small>
               </span>
               <span className="case-state-pills">
-                <em className={`risk-pill ${decisionClass(option.reward_state ?? "Neutral").className}`}>{option.reward_state ?? "Neutral"}</em>
-                {option.care_state === "Care Review" ? <em className="risk-pill care">Care</em> : null}
-                {option.reward_state === "Hold" || option.care_state === "Hold" ? <em className="risk-pill hold">Hold</em> : null}
+                <em className={`risk-pill ${decisionClass(option.reward_state ?? "Neutral").className}`}>{stateLabelKo(option.reward_state ?? "Neutral")}</em>
+                {option.care_state === "Care Review" ? <em className="risk-pill care">케어</em> : null}
+                {option.reward_state === "Hold" || option.care_state === "Hold" ? <em className="risk-pill hold">보류</em> : null}
               </span>
             </button>
           );
@@ -761,14 +848,14 @@ function DecisionSummaryCard({
       <div className="summary-decision-stack">
         <div className={`risk-score-block ${reward.className}`}>
           <span>연간 혜택 축</span>
-          <strong>{reward.label}</strong>
+          <strong>{stateLabelKo(reward.label)}</strong>
           <b>후보점수 {numberFormatter.format(driver.annual_score.annual_senior_safe_mileage_score)}점</b>
         </div>
 
         <div className={`premium-delta-block ${care.className}`}>
-          <span>선택 월 Care 축</span>
-          <strong>{selectedCare === "Care Review" ? "Care Review" : selectedCare === "Hold" ? "판단 보류" : selectedCare === "Observation" ? "기준선 관찰" : "미충족"}</strong>
-          <small>같은 달 이동 변화 AND 위험행동 변화</small>
+          <span>선택 월 케어 축</span>
+          <strong>{stateLabelKo(selectedCare === "None" ? "미충족" : selectedCare)}</strong>
+          <small>같은 달 이동 변화와 위험행동 변화가 함께 있을 때만</small>
         </div>
 
         <div className="summary-action">
@@ -809,29 +896,30 @@ function DecisionProcessFrame({
     : zoneMap
       ? `Core 500m · P90 ${Math.round(zoneMap.snapshot.living_zone.buffer.departure_p90_threshold_m).toLocaleString("en-US")}m`
       : "생활권 산출 중";
+  const annualTierKo = tierLabelKo(driver.reward_state, driver.care_state);
   const steps = [
     {
-      title: "Korea Reference",
-      value: `${translateText(comparison.existing_matched_tier_label)} · ${percent(comparison.existing_discount_rate_pct)}`,
-      detail: "한국 마일리지 특약을 비교 기준으로 사용",
+      title: "기존 기준선",
+      value: translateText(comparison.existing_matched_tier_label),
+      detail: "연간 주행거리와 차종만 반영하는 비교 기준",
       icon: Route
     },
     {
       title: "생활권 생성",
       value: zoneBasis,
-      detail: "방문 이벤트 기반 DBSCAN 반복 거점 · radial P90 Buffer",
+      detail: "기준선 2개월의 반복 목적지와 이동 반경 반영",
       icon: MapPinned
     },
     {
       title: `${selectedRow?.service_month ?? selectedMonth + "월"} 변화`,
-      value: `이동 ${numberFormatter.format(mobilityChange)} · 위험 ${numberFormatter.format(riskyBehaviorChange)}`,
-      detail: careGate ? "같은 평가월 두 변화지표가 함께 임계치 통과" : "한 지표만으로 Care를 제안하지 않음",
+      value: `이동 변화 ${numberFormatter.format(mobilityChange)}% · 위험행동 ${numberFormatter.format(riskyBehaviorChange)}%`,
+      detail: careGate ? "같은 달 두 변화가 함께 임계치를 넘어 예방 케어 검토" : "한 지표만으로는 케어를 제안하지 않음",
       icon: Activity
     },
     {
-      title: "Human Review",
-      value: `${driver.reward_state ?? "Neutral"} · 월 Care ${selectedRow?.care_state ?? "None"}`,
-      detail: "연간 Reward와 선택 월 Care 근거를 사람이 별도 검토",
+      title: "연간 판단",
+      value: `${percent(comparison.proposed_discount_rate_pct)} · ${annualTierKo}`,
+      detail: "판정 근거는 사람이 최종 검토하며 자동 확정하지 않음",
       icon: AlertTriangle
     }
   ];
@@ -840,9 +928,10 @@ function DecisionProcessFrame({
     <section className="decision-process-frame" aria-label="상품 근거와 사람 검토 과정">
       <div className="decision-process-copy">
         <p className="eyebrow">판단 과정</p>
-        <h2>어디를 갔는지가 아니라, 평소 대비 두 변화가 함께 나타났는지를 봅니다</h2>
+        <h2>같은 저주행이라도 생활권 밖 위험변화가 있으면 다른 결론이 납니다</h2>
         <p>
-          Outer 이동 자체는 중립입니다. Reward는 안전운전 근거로 계산하고, Care는 같은 달 이동 맥락과 위험행동이 동시에 달라질 때만 사람에게 검토를 제안합니다.
+          생활권 밖 이동 자체는 중립입니다. 혜택(우대)은 안전운전 근거로 계산하고, 같은 달 이동 맥락과
+          위험행동이 동시에 달라질 때만 사람에게 예방 케어 검토를 제안합니다.
         </p>
       </div>
       <div className="process-rail">
@@ -874,7 +963,7 @@ function LivingZoneDecisionMap({
   selectedMonth: number;
   zoneState: LoadState;
 }) {
-  if (!driver) return <InspectorState title="생활권 지도 대기" detail="사례를 선택하면 비식별 반복 거점과 상품 Zone이 표시됩니다." />;
+  if (!driver) return <InspectorState title="생활권 지도 대기" detail="사례를 선택하면 반복 거점과 상품 구간이 표시됩니다." />;
 
   const profile = zoneMap ? deriveEvidenceProfile(driver, zoneMap.snapshot) : null;
 
@@ -883,12 +972,12 @@ function LivingZoneDecisionMap({
       <div className="decision-section-head">
         <div>
           <p className="eyebrow">생활권 판단 지도</p>
-          <h2>{zoneIsReady(driver.zone_status) ? "비식별 반복 거점과 Core 500m · radial P90 기반 Product Buffer" : "No Zone · 반복 거점 근거 부족"}</h2>
+          <h2>{zoneIsReady(driver.zone_status) ? "자택 중심 생활권과 최근 변화 목적지" : "생활권 미확정 · 반복 거점 근거 부족"}</h2>
         </div>
         {profile && zoneMap && zoneIsReady(driver.zone_status) ? (
           <div className="map-kpis">
-            <span>radial P90 {Math.round(zoneMap.snapshot.living_zone.buffer.departure_p90_threshold_m).toLocaleString("ko-KR")}m</span>
-            <span>Outer {percent(profile.outZoneRatio * 100)} · 감점 0</span>
+            <span>개인 P90 {Math.round(zoneMap.snapshot.living_zone.buffer.departure_p90_threshold_m).toLocaleString("ko-KR")}m</span>
+            <span>생활권 밖 {percent(profile.outZoneRatio * 100)} · 감점 0</span>
             <span>위험행동 {profile.riskEvents}건</span>
           </div>
         ) : null}
@@ -909,12 +998,13 @@ function LivingZoneDecisionMap({
       </div>
 
       <div className="map-legend-row">
-        <span><i className="legend-home" />Routine Hub</span>
-        <span><i className="legend-normal" />Core 500m</span>
-        <span><i className="legend-out" />Product Buffer = max(500m, min(radial P90, 2km))</span>
-        <span><i className="legend-risk" />Outer · 위치만으로 감점 없음</span>
+        <span><i className="legend-home" />반복 거점</span>
+        <span><i className="legend-normal" />중심권 500m</span>
+        <span><i className="legend-out" />완충권 · 개인 P90 반영</span>
+        <span><i className="legend-risk" />생활권 밖 · 위치만으로 감점 없음</span>
         <b>{zoneMap?.snapshot.service_month ?? `${selectedMonth}월`} 선택 근거</b>
       </div>
+      <p className="map-formula-note">완충권 = max(500m, min(개인 P90, 2km)) — 군집이 만들어진 뒤 적용하는 상품 인정 반경입니다.</p>
     </section>
   );
 }
@@ -941,7 +1031,8 @@ function AnalysisTabs({
     { key: "Overview", label: "요약" },
     { key: "Monthly Pattern", label: "월별 패턴" },
     { key: "Risk Signals", label: "위험 신호" },
-    { key: "Premium Simulation", label: "Pricing Sandbox" },
+    { key: "Premium Simulation", label: "요율 Sandbox" },
+    { key: "Algorithm Lab", label: "알고리즘 실험실" },
     { key: "Report", label: "리포트" }
   ];
 
@@ -959,8 +1050,8 @@ function AnalysisTabs({
         {activeTab === "Overview" && driver && selectedRow ? (
           <div className="insight-grid">
             <InsightCard title="분류 근거" value={profile?.headline ?? "월별 근거 확인"} detail={profile?.summary ?? translateText(driver.care_context.message_focus)} />
-            <InsightCard title="생활권 변화" value={`이동 ${numberFormatter.format(selectedRow.mobility_change_index_pct ?? 0)} · 위험 ${numberFormatter.format(selectedRow.risky_behavior_change_index_pct ?? 0)}`} detail={`${selectedRow.service_month}: 같은 달 AND Gate 적용`} />
-            <InsightCard title="상품 제안" value={`연간 Reward ${driver.reward_state ?? "Neutral"} · 월 Care ${selectedRow.care_state ?? "None"}`} detail="연간 Reward와 선택 월 Care를 독립 계산 후 사람이 검토합니다." />
+            <InsightCard title="생활권 변화" value={`이동 ${numberFormatter.format(selectedRow.mobility_change_index_pct ?? 0)} · 위험 ${numberFormatter.format(selectedRow.risky_behavior_change_index_pct ?? 0)}`} detail={`${selectedRow.service_month}: 같은 달 동시조건 적용`} />
+            <InsightCard title="상품 제안" value={`연간 ${stateLabelKo(driver.reward_state ?? "Neutral")} · 월 케어 ${stateLabelKo(selectedRow.care_state ?? "None")}`} detail="연간 혜택과 선택 월 케어를 독립 계산한 뒤 사람이 검토합니다." />
           </div>
         ) : null}
 
@@ -975,9 +1066,9 @@ function AnalysisTabs({
             <ScoreMeter label="생활권 밖 안전점수" value={selectedRow.out_zone_safe_driving_score} helper="생활권 밖 위험행동과 야간 비율이 낮을수록 높음" />
             <ScoreMeter label="패턴 안정성" value={selectedRow.pattern_stability_score ?? Math.max(0, 100 - selectedRow.out_zone_pattern_change_risk)} helper="개인 기준선 대비 이동 맥락의 안정성" />
             <div className={`care-gate-card ${selectedRow.care_state === "Care Review" ? "active" : ""}`}>
-              <span>Care AND Gate</span>
+              <span>케어 동시조건</span>
               <strong>이동 {numberFormatter.format(selectedRow.mobility_change_index_pct ?? 0)} + 위험행동 {numberFormatter.format(selectedRow.risky_behavior_change_index_pct ?? 0)}</strong>
-              <small>{selectedRow.care_state === "Care Review" ? "사람 검토 제안" : "Care 자동 제안 없음"}</small>
+              <small>{selectedRow.care_state === "Care Review" ? "사람 검토 제안" : "케어 자동 제안 없음"}</small>
             </div>
             <div className="reason-chip-row">
               {[...driver.annual_score.annual_reason_codes, ...selectedRow.reason_codes].slice(0, 8).map((code) => (
@@ -989,6 +1080,10 @@ function AnalysisTabs({
 
         {activeTab === "Premium Simulation" && driver ? (
           <PremiumSimulation driver={driver} />
+        ) : null}
+
+        {activeTab === "Algorithm Lab" ? (
+          <AlgorithmLabPanel preferredDriverId={driver?.customer_id ?? null} />
         ) : null}
 
         {activeTab === "Report" && profile ? (
@@ -1025,6 +1120,14 @@ function MonthlyPatternChart({ rows, selectedMonth, onSelectMonth }: { rows: Mon
   );
 }
 
+const DEMO_USD_RATE = 1350; // 예시 환율(비교 열람용) — 실제 환율 아님
+
+function krwWithUsd(amount: number | null | undefined) {
+  if (amount === null || amount === undefined || Number.isNaN(amount)) return "—";
+  const usd = amount / DEMO_USD_RATE;
+  return `₩${Math.round(amount).toLocaleString("ko-KR")} (≈$${usd.toLocaleString("en-US", { maximumFractionDigits: 0 })})`;
+}
+
 function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
   const comparison = driver.ab_comparison;
   const existingRate = comparison.existing_discount_rate_pct;
@@ -1033,16 +1136,22 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
   return (
     <div className="premium-simulation">
       <div>
-        <span>Korea Mileage Reference</span>
+        <span>기존 마일리지 기준 · 국내</span>
         <strong>{percent(existingRate)}</strong>
         <i><b style={{ width: `${(existingRate / maxRate) * 100}%` }} /></i>
+        <small>적용 시 {krwWithUsd(comparison.existing_net_premium_krw)}</small>
       </div>
       <div>
-        <span>Masil Simulation Candidate</span>
+        <span>마실 제안 산식 · 후보</span>
         <strong>{percent(proposedRate)}</strong>
         <i><b style={{ width: `${(proposedRate / maxRate) * 100}%` }} /></i>
+        <small>적용 시 {krwWithUsd(comparison.proposed_net_premium_krw)}</small>
       </div>
-      <p>한국 할인율은 비교용 참조값이며 Masil 값은 후보 설정의 민감도 결과입니다. 해외 요율 DB나 실제 계약보험료를 의미하지 않습니다.</p>
+      <p>
+        기준 보험료 {krwWithUsd(comparison.base_premium_krw)} 가정의 합성 비교입니다. 달러 표기는 해외 심사위원의
+        규모 비교를 위한 예시 환율(1$≈₩{DEMO_USD_RATE.toLocaleString("ko-KR")}) 환산이며, 실제 계약보험료·해외
+        요율을 의미하지 않습니다.
+      </p>
     </div>
   );
 }
@@ -1119,17 +1228,17 @@ function DecisionPanel({
       <div className="decision-panel-head">
         <p className="eyebrow">HUMAN REVIEW</p>
         <h2>검토 제안</h2>
-        <em className={`decision ${decision.className}`}>{decision.label}</em>
+        <em className={`decision ${decision.className}`}>{stateLabelKo(decision.label)}</em>
       </div>
 
       <div className="decision-money-stack">
         <div>
-          <span>Korea Reference</span>
+          <span>기존 마일리지 기준</span>
           <strong>{percent(comparison.existing_discount_rate_pct)}</strong>
           <small>{translateText(comparison.existing_matched_tier_label)}</small>
         </div>
         <div>
-          <span>Masil Candidate</span>
+          <span>마실 제안 후보</span>
           <strong>{percent(comparison.proposed_discount_rate_pct)}</strong>
           <small>통합점수 {numberFormatter.format(comparison.annual_senior_safe_mileage_score)}점</small>
         </div>
@@ -1147,7 +1256,7 @@ function DecisionPanel({
       </div>
 
       <div className="xai-inspector" aria-label="Reason Code evidence">
-        <span>Reason Code · {zoneMap?.snapshot.service_month ?? selectedMonth + "월"}</span>
+        <span>XAI 판단 근거 · {zoneMap?.snapshot.service_month ?? selectedMonth + "월"}</span>
         {xaiReasons.map((reason) => (
           <div key={reason.label}>
             <strong>{reason.label}</strong>
@@ -1159,16 +1268,16 @@ function DecisionPanel({
 
       <div className="review-state-box" aria-label="현재 화면의 사람 검토 상태">
         <div>
-          <span>연간 Reward</span>
-          <strong>{driver.reward_state ?? "Neutral"}</strong>
+          <span>연간 혜택</span>
+          <strong>{stateLabelKo(driver.reward_state ?? "Neutral")}</strong>
         </div>
         <div>
-          <span>선택 월 Care</span>
-          <strong>{selectedCare === "Care Review" ? "Care Review" : selectedCare === "Hold" ? "판단 보류" : selectedCare === "Observation" ? "기준선" : "None"}</strong>
+          <span>선택 월 케어</span>
+          <strong>{stateLabelKo(selectedCare)}</strong>
         </div>
         <div>
           <span>모델</span>
-          <strong>{driver.model_version ?? "masil-gaip-simulation/v1"}</strong>
+          <strong title={driver.model_version ?? "masil-gaip-simulation/v1"}>합성 시뮬레이션 엔진 v1</strong>
         </div>
       </div>
 
@@ -1425,7 +1534,7 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
       <div className="panel-head">
         <div>
           <p className="eyebrow">AI 활용과 상품 검증</p>
-          <h2>기존 설계 흐름 안에서 방문 이벤트, 생활권 근거, 상품 Sandbox, 사람 검토를 연결합니다.</h2>
+          <h2>AI는 보험료를 직접 결정하지 않고, 생활권 생성·후보 산식 탐색·판정 설명을 보조합니다.</h2>
         </div>
         <span className="count-badge">4개 지표 가중치 비교</span>
       </div>
@@ -1433,26 +1542,26 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
       <div className="ai-proof-row" aria-label="AI 활용 위치">
         <div>
           <span>AI 1</span>
-          <strong>Visit Event → 반복 거점</strong>
-          <p>한 번의 방문 중 생긴 GPS 흔들림은 하나의 이벤트로 묶고, 서로 다른 날의 반복 방문을 DBSCAN으로 찾습니다.</p>
+          <strong>생활권 자동 생성</strong>
+          <p>기준선 2개월의 목적지를 DBSCAN으로 군집화하고, 개인 P90 반경으로 주차·우회 같은 작은 흔들림을 흡수합니다.</p>
         </div>
         <div>
           <span>AI 2</span>
-          <strong>상품 Rule Sandbox</strong>
-          <p>30:30:20:20 균형안을 기준 후보로 두고 가중치·임계치 변화가 Reward와 Care 결과에 미치는 영향을 즉시 비교합니다.</p>
+          <strong>4개 지표 가중치 선택</strong>
+          <p>주행거리, 생활권 안 안전, 생활권 밖 안전, 위험변화를 어느 비율로 반영할지 후보 산식을 비교합니다.</p>
         </div>
         <div>
           <span>AI 3</span>
-          <strong>Reason Code → Human Review</strong>
-          <p>AI는 계산된 근거와 설명 초안만 제공하며 보험료·인수·Care를 최종 결정하지 않습니다.</p>
+          <strong>XAI + 직원용 리포트</strong>
+          <p>XAI가 4개 지표의 영향을 추출하면 LLM이 직원용 설명문으로 바꿉니다. 보험료·인수·케어는 사람이 최종 결정합니다.</p>
         </div>
       </div>
 
       <div className="blueprint-flow" aria-label="산식 설계 흐름">
         <div className="flow-step">
           <span>1</span>
-          <strong>합성 코호트 생성</strong>
-          <p>6개 운전자 유형 × 10명, 도심·교외·광역 저밀도 환경 각 20명으로 총 {directory.summary.customer_count}명을 구성합니다.</p>
+          <strong>시니어 주행 시나리오 생성</strong>
+          <p>6개 운전자 유형 × 10명, 3개 이동환경 각 20명 — 총 {directory.summary.customer_count}명에게 자택, 마트, 병원, 자녀 집, 경로당 같은 합성 목적지와 외출 성향을 부여합니다.</p>
         </div>
         <ArrowRight size={18} />
         <div className="flow-step">
@@ -1475,7 +1584,7 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
             <strong>최종 통합점수 산식</strong>
           </div>
           <p className="formula-lead">
-            한국 마일리지 거리 기준은 참조값으로 유지하되, Reward 산식과 Care AND Gate를 분리해 처벌 없는 예방지원 구조를 검증합니다.
+            한국 마일리지 거리 기준은 참조값으로 유지하되, Reward 산식과 케어 동시조건를 분리해 처벌 없는 예방지원 구조를 검증합니다.
           </p>
           <div className="weight-layout" aria-label="Final Formula Weights">
             <div className="weight-block mileage">
@@ -1523,7 +1632,7 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
             </div>
             <div>
               <span>Care 조건</span>
-              <strong>같은 달의 이동 변화 AND 위험행동 변화</strong>
+              <strong>같은 달의 이동 변화와 위험행동 변화 동시 충족</strong>
               <p>한 지표만 변하거나 데이터가 부족하면 자동 Care가 아니라 정상 또는 판단 보류로 남깁니다.</p>
             </div>
           </div>
@@ -1573,7 +1682,7 @@ function ProfileLandingPanel({
           </h2>
           <p>{translateText(driver.care_context.message_focus)}</p>
         </div>
-        <em className={`decision ${decision.className}`}>{decision.label}</em>
+        <em className={`decision ${decision.className}`}>{stateLabelKo(decision.label)}</em>
       </div>
 
       <div className="profile-landing-grid">
@@ -1783,9 +1892,9 @@ function MonthlyEvidenceLane({
             <span>월별 통합 근거점수</span>
             <strong>{monthlyIntegratedLabel}</strong>
             <p>주행거리 {weights.mileage}% + 생활권 안 안전 {weights.in_zone_safe}% + 생활권 밖 안전 {weights.out_zone_safe}% + 패턴 안정성 {weights.pattern_stability}%</p>
-            <small>Reward 후보점수와 Care AND Gate는 독립 계산되며, 어느 쪽도 보험료·인수 결정을 자동 확정하지 않습니다.</small>
+            <small>Reward 후보점수와 케어 동시조건은 독립 계산되며, 어느 쪽도 보험료·인수 결정을 자동 확정하지 않습니다.</small>
             <div className={`monthly-care-gate ${selectedRow.care_state === "Care Review" ? "active" : ""}`}>
-              <b>Care AND Gate</b>
+              <b>케어 동시조건</b>
               <span>이동 {numberFormatter.format(selectedRow.mobility_change_index_pct ?? 0)} · 위험행동 {numberFormatter.format(selectedRow.risky_behavior_change_index_pct ?? 0)}</span>
               <em>{selectedRow.period_role === "baseline" ? "기준선" : selectedRow.care_state === "Care Review" ? "사람 검토 제안" : "미충족"}</em>
             </div>
@@ -1806,7 +1915,7 @@ function MonthlyEvidenceLane({
               <span>{row.service_month.slice(2)} · {row.period_role === "baseline" ? "기준선" : "평가"}</span>
               <strong>{numberFormatter.format(row.monthly_total_distance_km)}km</strong>
               <small>{basisLabel(row.basis_status)}</small>
-              <em>{row.care_state === "Care Review" ? "Care AND" : row.reward_state ?? "관찰"}</em>
+              <em>{row.care_state === "Care Review" ? "케어 검토" : stateLabelKo(row.reward_state ?? "Observation")}</em>
               <i style={{ width: `${Math.min(100, row.mobility_change_index_pct ?? row.out_zone_pattern_change_risk)}%` }} />
             </button>
           );
@@ -1828,7 +1937,7 @@ function AnnualComparison({ driver, loading }: { driver: DriverAnnualSummary | n
           <p className="eyebrow">연간 산식 비교</p>
           <h2>연간 할인 기준</h2>
         </div>
-        <em className={`decision ${decision.className}`}>{decision.label}</em>
+        <em className={`decision ${decision.className}`}>{stateLabelKo(decision.label)}</em>
       </div>
       <div className="premium-grid">
         <div>
@@ -1974,12 +2083,12 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
       <path className="map-road" d="M78 130 C214 190 324 222 470 232 S708 278 840 376" />
       <path className="map-road muted" d="M126 502 C236 424 325 366 436 318 S672 283 812 250" />
       <text className="geo-title" x="42" y="42">생활권 판단 지도</text>
-      <text className="geo-subtitle" x="42" y="63">비식별 정규화 개념도(not to scale) · Core 500m · Buffer = max(500m, min(P90, 2km))</text>
+      <text className="geo-subtitle" x="42" y="63">개념도(축척 아님) · 중심권 500m · 완충권은 개인 P90 반영(최대 2km)</text>
 
       <g className="geo-core-ring">
         <circle cx={clusterCenter.x} cy={clusterCenter.y} r={p90Radius} />
         <circle cx={clusterCenter.x} cy={clusterCenter.y} r={coreRadius} />
-        <text x={clusterCenter.x} y={clusterCenter.y - p90Radius - 10} textAnchor="middle">Routine Hub A</text>
+        <text x={clusterCenter.x} y={clusterCenter.y - p90Radius - 10} textAnchor="middle">{snapshot.living_zone.clusters[0]?.label_ko ?? "반복 거점 A"}</text>
       </g>
 
       {snapshot.living_zone.clusters.slice(1).map((cluster, index) => {
@@ -1990,7 +2099,7 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
           <g key={cluster.cluster_id} className="geo-cluster">
             <circle cx={point.x} cy={point.y} r={radius} />
             <circle cx={point.x} cy={point.y} r={coreRadius} />
-            <text x={point.x} y={point.y - radius - 9} textAnchor="middle">Routine Hub {String.fromCharCode(66 + index)}</text>
+            <text x={point.x} y={point.y - radius - 9} textAnchor="middle">{cluster.label_ko ?? `반복 거점 ${String.fromCharCode(66 + index)}`}</text>
           </g>
         );
       })}
@@ -2597,8 +2706,16 @@ function zoneIsReady(status: string | undefined) {
   return status === "available" || status === "ready";
 }
 
+const personaNameRegistry = new Map<string, string>();
+
+export function registerPersonaNames(options: Array<{ customer_id: string; label: string }>) {
+  options.forEach((option) => {
+    if (option.label) personaNameRegistry.set(option.customer_id, option.label);
+  });
+}
+
 function personaName(customerId: string) {
-  return `합성 시니어 ${String(personaIndex(customerId) + 1).padStart(2, "0")}`;
+  return personaNameRegistry.get(customerId) ?? `합성 시니어 ${String(personaIndex(customerId) + 1).padStart(2, "0")}`;
 }
 
 function personaIndex(customerId: string) {
@@ -2693,7 +2810,7 @@ function destinationLabels(driver: DriverAnnualSummary) {
 
   return driver.living_pattern.primary_destinations.map((key) => {
     const destination = driver.living_destinations[key] ?? driver.living_destinations[`${key}_home`];
-    return destinationTypeLabel(key) ?? translateText(destination?.label_ko ?? fallback[key] ?? key);
+    return translateText(destination?.label_ko ?? destinationTypeLabel(key) ?? fallback[key] ?? key);
   });
 }
 
