@@ -260,8 +260,10 @@ function normalizeHubs(mobility: JsonRecord): RoutineHub[] {
 
   return source.map((hub, index) => ({
     id: text(first(hub, ["id", "hub_id", "cluster_id", "source_cluster_id"]), `routine_hub_${index + 1}`),
-    // Location semantics and raw coordinates are intentionally never propagated to the insurer UI.
+    // Raw coordinates are intentionally never propagated to the insurer UI.
     label: `Routine Hub ${String.fromCharCode(65 + index)}`,
+    // Synthetic semantic display label produced by the engine (never a real place).
+    display_label_ko: text(first(hub, ["display_label_ko"])) || undefined,
     visit_count: number(first(hub, ["visit_count", "visits", "basis_visit_count"]), 0),
     p90_radius_m: number(first(hub, ["p90_radius_m", "radial_p90_m", "radius_metric_m", "buffer_radius_m"]), 0) || undefined,
     core_radius_m: number(first(hub, ["core_radius_m"]), 0) || undefined,
@@ -286,6 +288,8 @@ function normalizeDrivers(root: JsonRecord, personas: PersonaType[], environment
     const id = text(first(item, ["id", "driver_id", "customer_id"]), `synthetic-driver-${String(index + 1).padStart(3, "0")}`);
     const hubs = normalizeHubs(mobility);
     const monthlyResults = normalizeMonthlyResults(item);
+    const driverNameKo = text(first(item, ["driver_name_ko"])) || undefined;
+    const driverAge = nullableNumber(first(item, ["age"])) ?? undefined;
 
     const monthlyReasonCodes = array(item.monthly_results)
       .filter(isRecord)
@@ -298,7 +302,14 @@ function normalizeDrivers(root: JsonRecord, personas: PersonaType[], environment
 
     return {
       id,
-      display_label: text(first(item, ["display_label", "display_name", "label"]), `합성 운전자 ${String(index + 1).padStart(2, "0")}`),
+      display_label: text(
+        first(item, ["display_label", "display_name", "label"]),
+        driverNameKo && driverAge !== undefined
+          ? `${driverNameKo} (${driverAge}세)`
+          : `합성 운전자 ${String(index + 1).padStart(2, "0")}`
+      ),
+      driver_name_ko: driverNameKo,
+      age: driverAge,
       persona_id: personaId,
       persona_label: text(first(item, ["persona_label", "persona_display_name_ko"]), personas.find((persona) => persona.id === personaId)?.label ?? personaLabel(personaId)),
       environment_id: environmentId,
@@ -319,6 +330,7 @@ function normalizeDrivers(root: JsonRecord, personas: PersonaType[], environment
         min_distinct_days: number(first(mobility, ["min_distinct_days", "min_samples_distinct_days"]), 0) || undefined,
         repeated_hub_count: number(first(mobility, ["repeated_hub_count", "hub_count", "cluster_count"]), hubs.length),
         routine_hubs: hubs,
+        new_hub_label_ko: text(first(mobility, ["new_hub_label_ko"])) || undefined,
         basis_visit_count: number(first(mobility, ["basis_visit_count", "visit_count"]), 0) || undefined,
         noise_ratio_pct: noiseRatio === undefined ? undefined : number(noiseRatio, 0),
         note: text(first(mobility, ["note", "explanation"])) || undefined

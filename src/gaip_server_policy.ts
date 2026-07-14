@@ -93,6 +93,7 @@ function projectHub(value: unknown): JsonRecord {
   return fields(value, [
     "hub_id",
     "display_label",
+    "display_label_ko",
     "visit_count",
     "distinct_day_count",
     "radial_p90_m",
@@ -141,6 +142,8 @@ function projectDriver(value: unknown): JsonRecord {
   return {
     ...fields(driver, [
       "driver_id",
+      "driver_name_ko",
+      "age",
       "persona_type",
       "persona_display_name_ko",
       "persona_summary_ko",
@@ -173,6 +176,7 @@ function projectDriver(value: unknown): JsonRecord {
         "eps_m",
         "min_distinct_days",
         "repeated_hub_count",
+        "new_hub_label_ko",
         "basis_visit_count",
         "noise_visit_count",
         "noise_ratio_pct"
@@ -220,6 +224,7 @@ export function sanitizeGaipBundleForUi(payload: unknown): unknown {
       "project",
       "competition_context",
       "synthetic_data",
+      "persona_naming_note",
       "decision_scope",
       "disclaimer"
     ]),

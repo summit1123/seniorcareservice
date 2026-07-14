@@ -6,6 +6,7 @@
     "project": "FourSure · Masil",
     "competition_context": "GAIP 2026",
     "synthetic_data": true,
+    "persona_naming_note": "이름·나이·장소 라벨은 전원 합성(실존 인물·장소 아님)",
     "decision_scope": "product_design_and_human_review_support_only",
     "partition_policy": "deterministic_stratified_development_validation_holdout",
     "rule_origin": "korea_reference_and_proposed_assumption_not_fit_to_any_partition",
@@ -300,6 +301,8 @@
       "simulation_seed": 11686278059925970933,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 780000,
+      "driver_name_ko": "민영순",
+      "age": 67,
       "mileage_score": 100.0,
       "in_zone_safe_score": 95.02,
       "out_zone_safe_score": null,
@@ -330,7 +333,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택·마트 동선"
           },
           {
             "visit_count": 3,
@@ -340,9 +344,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "경로당"
           }
         ],
+        "new_hub_label_ko": "신규 외출지",
         "basis_visit_count": 14,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -890,6 +896,8 @@
       "simulation_seed": 17916495109407584143,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 793000,
+      "driver_name_ko": "홍옥선",
+      "age": 77,
       "mileage_score": 100.0,
       "in_zone_safe_score": 85.43,
       "out_zone_safe_score": null,
@@ -920,7 +928,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택·마트 동선"
           },
           {
             "visit_count": 3,
@@ -930,9 +939,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "경로당"
           }
         ],
+        "new_hub_label_ko": "신규 외출지",
         "basis_visit_count": 14,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -1480,6 +1491,8 @@
       "simulation_seed": 16899476058840991976,
       "vehicle_class": "personal_passenger_ev_hydrogen",
       "base_premium_krw": 806000,
+      "driver_name_ko": "고재술",
+      "age": 81,
       "mileage_score": 100.0,
       "in_zone_safe_score": 97.12,
       "out_zone_safe_score": null,
@@ -1510,7 +1523,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택·마트 동선"
           },
           {
             "visit_count": 4,
@@ -1520,9 +1534,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "경로당"
           }
         ],
+        "new_hub_label_ko": "신규 외출지",
         "basis_visit_count": 13,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -2070,6 +2086,8 @@
       "simulation_seed": 15699129964984823672,
       "vehicle_class": "personal_business",
       "base_premium_krw": 819000,
+      "driver_name_ko": "주병호",
+      "age": 66,
       "mileage_score": 100.0,
       "in_zone_safe_score": 97.21,
       "out_zone_safe_score": null,
@@ -2100,7 +2118,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택·마트 동선"
           },
           {
             "visit_count": 6,
@@ -2110,9 +2129,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "경로당"
           }
         ],
+        "new_hub_label_ko": "신규 외출지",
         "basis_visit_count": 15,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -2660,6 +2681,8 @@
       "simulation_seed": 9274090003253592009,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 832000,
+      "driver_name_ko": "석재구",
+      "age": 68,
       "mileage_score": 100.0,
       "in_zone_safe_score": 99.55,
       "out_zone_safe_score": 100.0,
@@ -2690,7 +2713,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택·마트 동선"
           },
           {
             "visit_count": 7,
@@ -2700,9 +2724,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "경로당"
           }
         ],
+        "new_hub_label_ko": "신규 외출지",
         "basis_visit_count": 14,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -3247,6 +3273,8 @@
       "simulation_seed": 16063127243459652571,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 780000,
+      "driver_name_ko": "윤갑수",
+      "age": 73,
       "mileage_score": 100.0,
       "in_zone_safe_score": 100.0,
       "out_zone_safe_score": null,
@@ -3277,7 +3305,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택·마트 동선"
           },
           {
             "visit_count": 4,
@@ -3287,9 +3316,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "경로당"
           }
         ],
+        "new_hub_label_ko": "신규 외출지",
         "basis_visit_count": 15,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -3837,6 +3868,8 @@
       "simulation_seed": 9450552998913776405,
       "vehicle_class": "personal_passenger_ev_hydrogen",
       "base_premium_krw": 793000,
+      "driver_name_ko": "명옥녀",
+      "age": 78,
       "mileage_score": 100.0,
       "in_zone_safe_score": 100.0,
       "out_zone_safe_score": 100.0,
@@ -3867,9 +3900,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택·마트 동선"
           }
         ],
+        "new_hub_label_ko": "신규 외출지",
         "basis_visit_count": 13,
         "noise_visit_count": 2,
         "noise_ratio_pct": 15.4
@@ -4407,6 +4442,8 @@
       "simulation_seed": 11149397567422875124,
       "vehicle_class": "personal_business",
       "base_premium_krw": 806000,
+      "driver_name_ko": "설기순",
+      "age": 71,
       "mileage_score": 100.0,
       "in_zone_safe_score": 100.0,
       "out_zone_safe_score": 100.0,
@@ -4437,9 +4474,11 @@
             "buffer_radius_m": 517.6,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택·마트 동선"
           }
         ],
+        "new_hub_label_ko": "신규 외출지",
         "basis_visit_count": 13,
         "noise_visit_count": 1,
         "noise_ratio_pct": 7.7
@@ -4982,6 +5021,8 @@
       "simulation_seed": 2394368838981044992,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 819000,
+      "driver_name_ko": "서말자",
+      "age": 76,
       "mileage_score": 100.0,
       "in_zone_safe_score": 91.83,
       "out_zone_safe_score": 90.0,
@@ -5012,9 +5053,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택·마트 동선"
           }
         ],
+        "new_hub_label_ko": "신규 외출지",
         "basis_visit_count": 13,
         "noise_visit_count": 1,
         "noise_ratio_pct": 7.7
@@ -5557,6 +5600,8 @@
       "simulation_seed": 14172786156694592864,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 832000,
+      "driver_name_ko": "구본달",
+      "age": 67,
       "mileage_score": 100.0,
       "in_zone_safe_score": null,
       "out_zone_safe_score": null,
@@ -5579,6 +5624,7 @@
         "min_distinct_days": 3,
         "repeated_hub_count": 0,
         "routine_hubs": [],
+        "new_hub_label_ko": "신규 외출지",
         "basis_visit_count": 12,
         "noise_visit_count": 12,
         "noise_ratio_pct": 100.0
@@ -6102,6 +6148,8 @@
       "simulation_seed": 6719213899737282825,
       "vehicle_class": "personal_passenger_ev_hydrogen",
       "base_premium_krw": 804000,
+      "driver_name_ko": "소순예",
+      "age": 71,
       "mileage_score": 100.0,
       "in_zone_safe_score": 0.0,
       "out_zone_safe_score": 0.0,
@@ -6132,9 +6180,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           }
         ],
+        "new_hub_label_ko": "야간 신규 목적지",
         "basis_visit_count": 12,
         "noise_visit_count": 2,
         "noise_ratio_pct": 16.7
@@ -6662,6 +6712,8 @@
       "simulation_seed": 3607911041998232312,
       "vehicle_class": "personal_business",
       "base_premium_krw": 817000,
+      "driver_name_ko": "연순복",
+      "age": 78,
       "mileage_score": 100.0,
       "in_zone_safe_score": 0.0,
       "out_zone_safe_score": 0.0,
@@ -6692,9 +6744,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           }
         ],
+        "new_hub_label_ko": "야간 신규 목적지",
         "basis_visit_count": 11,
         "noise_visit_count": 1,
         "noise_ratio_pct": 9.1
@@ -7222,6 +7276,8 @@
       "simulation_seed": 14141888751663723181,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 830000,
+      "driver_name_ko": "조영자",
+      "age": 81,
       "mileage_score": 100.0,
       "in_zone_safe_score": 0.0,
       "out_zone_safe_score": 0.0,
@@ -7252,9 +7308,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           }
         ],
+        "new_hub_label_ko": "야간 신규 목적지",
         "basis_visit_count": 12,
         "noise_visit_count": 2,
         "noise_ratio_pct": 16.7
@@ -7782,6 +7840,8 @@
       "simulation_seed": 10383570231488195810,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 843000,
+      "driver_name_ko": "길병옥",
+      "age": 78,
       "mileage_score": 100.0,
       "in_zone_safe_score": 0.0,
       "out_zone_safe_score": 6.71,
@@ -7812,7 +7872,8 @@
             "buffer_radius_m": 537.3,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 5,
@@ -7822,9 +7883,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "시장"
           }
         ],
+        "new_hub_label_ko": "야간 신규 목적지",
         "basis_visit_count": 11,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -8359,6 +8422,8 @@
       "simulation_seed": 3730031147153318946,
       "vehicle_class": "personal_passenger_ev_hydrogen",
       "base_premium_krw": 856000,
+      "driver_name_ko": "염금분",
+      "age": 67,
       "mileage_score": 100.0,
       "in_zone_safe_score": 0.23,
       "out_zone_safe_score": 11.42,
@@ -8389,7 +8454,8 @@
             "buffer_radius_m": 546.8,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 3,
@@ -8399,9 +8465,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "시장"
           }
         ],
+        "new_hub_label_ko": "야간 신규 목적지",
         "basis_visit_count": 13,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -8932,6 +9000,8 @@
       "simulation_seed": 7419017958086358135,
       "vehicle_class": "personal_business",
       "base_premium_krw": 804000,
+      "driver_name_ko": "이말순",
+      "age": 74,
       "mileage_score": 100.0,
       "in_zone_safe_score": 0.0,
       "out_zone_safe_score": null,
@@ -8962,7 +9032,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 4,
@@ -8972,9 +9043,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "시장"
           }
         ],
+        "new_hub_label_ko": "야간 신규 목적지",
         "basis_visit_count": 12,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -9510,6 +9583,8 @@
       "simulation_seed": 8472538657613007955,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 817000,
+      "driver_name_ko": "공재만",
+      "age": 67,
       "mileage_score": 100.0,
       "in_zone_safe_score": 0.0,
       "out_zone_safe_score": 0.0,
@@ -9540,9 +9615,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           }
         ],
+        "new_hub_label_ko": "야간 신규 목적지",
         "basis_visit_count": 12,
         "noise_visit_count": 2,
         "noise_ratio_pct": 16.7
@@ -10076,6 +10153,8 @@
       "simulation_seed": 17252080368445753504,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 830000,
+      "driver_name_ko": "하영철",
+      "age": 82,
       "mileage_score": 100.0,
       "in_zone_safe_score": 0.0,
       "out_zone_safe_score": 8.18,
@@ -10106,9 +10185,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           }
         ],
+        "new_hub_label_ko": "야간 신규 목적지",
         "basis_visit_count": 12,
         "noise_visit_count": 1,
         "noise_ratio_pct": 8.3
@@ -10638,6 +10719,8 @@
       "simulation_seed": 2118087171347636832,
       "vehicle_class": "personal_passenger_ev_hydrogen",
       "base_premium_krw": 843000,
+      "driver_name_ko": "배금순",
+      "age": 83,
       "mileage_score": 100.0,
       "in_zone_safe_score": 0.0,
       "out_zone_safe_score": 0.0,
@@ -10668,9 +10751,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           }
         ],
+        "new_hub_label_ko": "야간 신규 목적지",
         "basis_visit_count": 11,
         "noise_visit_count": 1,
         "noise_ratio_pct": 9.1
@@ -11201,6 +11286,8 @@
       "simulation_seed": 8981088019136021678,
       "vehicle_class": "personal_business",
       "base_premium_krw": 856000,
+      "driver_name_ko": "최병철",
+      "age": 67,
       "mileage_score": 100.0,
       "in_zone_safe_score": 0.0,
       "out_zone_safe_score": null,
@@ -11231,7 +11318,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 3,
@@ -11241,9 +11329,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "시장"
           }
         ],
+        "new_hub_label_ko": "야간 신규 목적지",
         "basis_visit_count": 11,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -11767,6 +11857,8 @@
       "simulation_seed": 7645964118156694391,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 828000,
+      "driver_name_ko": "성일만",
+      "age": 79,
       "mileage_score": 100.0,
       "in_zone_safe_score": 92.78,
       "out_zone_safe_score": null,
@@ -11797,7 +11889,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(본가)"
           },
           {
             "visit_count": 9,
@@ -11807,9 +11900,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자녀 집"
           }
         ],
+        "new_hub_label_ko": "새 모임 장소",
         "basis_visit_count": 20,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -12358,6 +12453,8 @@
       "simulation_seed": 12685376666193575673,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 841000,
+      "driver_name_ko": "신동철",
+      "age": 73,
       "mileage_score": 100.0,
       "in_zone_safe_score": 95.21,
       "out_zone_safe_score": null,
@@ -12388,7 +12485,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(본가)"
           },
           {
             "visit_count": 9,
@@ -12398,9 +12496,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자녀 집"
           }
         ],
+        "new_hub_label_ko": "새 모임 장소",
         "basis_visit_count": 20,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -12949,6 +13049,8 @@
       "simulation_seed": 2086178485543019808,
       "vehicle_class": "personal_passenger_ev_hydrogen",
       "base_premium_krw": 854000,
+      "driver_name_ko": "우금자",
+      "age": 71,
       "mileage_score": 100.0,
       "in_zone_safe_score": 98.74,
       "out_zone_safe_score": null,
@@ -12979,7 +13081,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(본가)"
           },
           {
             "visit_count": 8,
@@ -12989,9 +13092,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자녀 집"
           }
         ],
+        "new_hub_label_ko": "새 모임 장소",
         "basis_visit_count": 19,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -13539,6 +13644,8 @@
       "simulation_seed": 1002125357258987623,
       "vehicle_class": "personal_business",
       "base_premium_krw": 867000,
+      "driver_name_ko": "권점례",
+      "age": 76,
       "mileage_score": 90.0,
       "in_zone_safe_score": 99.71,
       "out_zone_safe_score": 100.0,
@@ -13569,7 +13676,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(본가)"
           },
           {
             "visit_count": 8,
@@ -13579,9 +13687,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자녀 집"
           }
         ],
+        "new_hub_label_ko": "새 모임 장소",
         "basis_visit_count": 19,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -14121,6 +14231,8 @@
       "simulation_seed": 6302064938542890976,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 880000,
+      "driver_name_ko": "왕금희",
+      "age": 70,
       "mileage_score": 93.75,
       "in_zone_safe_score": 100.0,
       "out_zone_safe_score": 100.0,
@@ -14151,7 +14263,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(본가)"
           },
           {
             "visit_count": 10,
@@ -14161,9 +14274,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자녀 집"
           }
         ],
+        "new_hub_label_ko": "새 모임 장소",
         "basis_visit_count": 22,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -14706,6 +14821,8 @@
       "simulation_seed": 15863812638635025625,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 828000,
+      "driver_name_ko": "한순덕",
+      "age": 70,
       "mileage_score": 100.0,
       "in_zone_safe_score": 97.19,
       "out_zone_safe_score": null,
@@ -14736,7 +14853,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(본가)"
           },
           {
             "visit_count": 9,
@@ -14746,9 +14864,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자녀 집"
           }
         ],
+        "new_hub_label_ko": "새 모임 장소",
         "basis_visit_count": 20,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -15296,6 +15416,8 @@
       "simulation_seed": 10210866388799321177,
       "vehicle_class": "personal_passenger_ev_hydrogen",
       "base_premium_krw": 841000,
+      "driver_name_ko": "박정호",
+      "age": 66,
       "mileage_score": 100.0,
       "in_zone_safe_score": 100.0,
       "out_zone_safe_score": null,
@@ -15326,7 +15448,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(본가)"
           },
           {
             "visit_count": 9,
@@ -15336,9 +15459,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자녀 집"
           }
         ],
+        "new_hub_label_ko": "새 모임 장소",
         "basis_visit_count": 21,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -15886,6 +16011,8 @@
       "simulation_seed": 6543253557664124685,
       "vehicle_class": "personal_business",
       "base_premium_krw": 854000,
+      "driver_name_ko": "라병순",
+      "age": 70,
       "mileage_score": 92.5,
       "in_zone_safe_score": 98.11,
       "out_zone_safe_score": 100.0,
@@ -15916,7 +16043,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(본가)"
           },
           {
             "visit_count": 9,
@@ -15926,9 +16054,11 @@
             "buffer_radius_m": 526.7,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자녀 집"
           }
         ],
+        "new_hub_label_ko": "새 모임 장소",
         "basis_visit_count": 21,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -16471,6 +16601,8 @@
       "simulation_seed": 14347209791068003033,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 867000,
+      "driver_name_ko": "장금례",
+      "age": 78,
       "mileage_score": 100.0,
       "in_zone_safe_score": 98.06,
       "out_zone_safe_score": null,
@@ -16501,7 +16633,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(본가)"
           },
           {
             "visit_count": 7,
@@ -16511,9 +16644,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자녀 집"
           }
         ],
+        "new_hub_label_ko": "새 모임 장소",
         "basis_visit_count": 20,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -17061,6 +17196,8 @@
       "simulation_seed": 2295228572716538072,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 880000,
+      "driver_name_ko": "노귀순",
+      "age": 67,
       "mileage_score": 92.5,
       "in_zone_safe_score": 99.71,
       "out_zone_safe_score": 100.0,
@@ -17091,7 +17228,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(본가)"
           },
           {
             "visit_count": 8,
@@ -17101,9 +17239,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자녀 집"
           }
         ],
+        "new_hub_label_ko": "새 모임 장소",
         "basis_visit_count": 20,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -17644,6 +17784,8 @@
       "simulation_seed": 3984814375982434097,
       "vehicle_class": "personal_passenger_ev_hydrogen",
       "base_premium_krw": 852000,
+      "driver_name_ko": "유정순",
+      "age": 66,
       "mileage_score": 100.0,
       "in_zone_safe_score": 92.0,
       "out_zone_safe_score": null,
@@ -17674,7 +17816,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(농가)"
           },
           {
             "visit_count": 7,
@@ -17684,9 +17827,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "읍내 마트·병원"
           }
         ],
+        "new_hub_label_ko": "원거리 정기 방문지",
         "basis_visit_count": 16,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -18235,6 +18380,8 @@
       "simulation_seed": 15380437817478003845,
       "vehicle_class": "personal_business",
       "base_premium_krw": 865000,
+      "driver_name_ko": "류재복",
+      "age": 78,
       "mileage_score": 100.0,
       "in_zone_safe_score": 91.09,
       "out_zone_safe_score": null,
@@ -18265,7 +18412,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(농가)"
           },
           {
             "visit_count": 7,
@@ -18275,9 +18423,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "읍내 마트·병원"
           }
         ],
+        "new_hub_label_ko": "원거리 정기 방문지",
         "basis_visit_count": 16,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -18826,6 +18976,8 @@
       "simulation_seed": 10746995722111623898,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 878000,
+      "driver_name_ko": "전병국",
+      "age": 70,
       "mileage_score": 100.0,
       "in_zone_safe_score": 96.84,
       "out_zone_safe_score": null,
@@ -18856,7 +19008,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(농가)"
           },
           {
             "visit_count": 6,
@@ -18866,9 +19019,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "읍내 마트·병원"
           }
         ],
+        "new_hub_label_ko": "원거리 정기 방문지",
         "basis_visit_count": 16,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -19417,6 +19572,8 @@
       "simulation_seed": 16844725690936536559,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 891000,
+      "driver_name_ko": "현말녀",
+      "age": 81,
       "mileage_score": 100.0,
       "in_zone_safe_score": 96.04,
       "out_zone_safe_score": null,
@@ -19447,7 +19604,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(농가)"
           },
           {
             "visit_count": 6,
@@ -19457,9 +19615,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "읍내 마트·병원"
           }
         ],
+        "new_hub_label_ko": "원거리 정기 방문지",
         "basis_visit_count": 17,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -20007,6 +20167,8 @@
       "simulation_seed": 15864435319309768001,
       "vehicle_class": "personal_passenger_ev_hydrogen",
       "base_premium_krw": 904000,
+      "driver_name_ko": "임종달",
+      "age": 74,
       "mileage_score": 91.25,
       "in_zone_safe_score": 99.1,
       "out_zone_safe_score": 100.0,
@@ -20037,7 +20199,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(농가)"
           },
           {
             "visit_count": 8,
@@ -20047,9 +20210,11 @@
             "buffer_radius_m": 502.7,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "읍내 마트·병원"
           }
         ],
+        "new_hub_label_ko": "원거리 정기 방문지",
         "basis_visit_count": 16,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -20588,6 +20753,8 @@
       "simulation_seed": 13735883653901145915,
       "vehicle_class": "personal_business",
       "base_premium_krw": 852000,
+      "driver_name_ko": "추옥임",
+      "age": 69,
       "mileage_score": 100.0,
       "in_zone_safe_score": 94.27,
       "out_zone_safe_score": null,
@@ -20618,7 +20785,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(농가)"
           },
           {
             "visit_count": 6,
@@ -20628,9 +20796,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "읍내 마트·병원"
           }
         ],
+        "new_hub_label_ko": "원거리 정기 방문지",
         "basis_visit_count": 17,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -21178,6 +21348,8 @@
       "simulation_seed": 8062825560244991285,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 865000,
+      "driver_name_ko": "채순임",
+      "age": 71,
       "mileage_score": 100.0,
       "in_zone_safe_score": 96.14,
       "out_zone_safe_score": null,
@@ -21208,7 +21380,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(농가)"
           },
           {
             "visit_count": 7,
@@ -21218,9 +21391,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "읍내 마트·병원"
           }
         ],
+        "new_hub_label_ko": "원거리 정기 방문지",
         "basis_visit_count": 15,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -21768,6 +21943,8 @@
       "simulation_seed": 9698247182277996326,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 878000,
+      "driver_name_ko": "진갑룡",
+      "age": 67,
       "mileage_score": 93.75,
       "in_zone_safe_score": 97.85,
       "out_zone_safe_score": 98.1,
@@ -21798,7 +21975,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(농가)"
           },
           {
             "visit_count": 5,
@@ -21808,9 +21986,11 @@
             "buffer_radius_m": 640.3,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "읍내 마트·병원"
           }
         ],
+        "new_hub_label_ko": "원거리 정기 방문지",
         "basis_visit_count": 16,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -22353,6 +22533,8 @@
       "simulation_seed": 4972043171114917760,
       "vehicle_class": "personal_passenger_ev_hydrogen",
       "base_premium_krw": 891000,
+      "driver_name_ko": "강복남",
+      "age": 74,
       "mileage_score": 100.0,
       "in_zone_safe_score": 98.66,
       "out_zone_safe_score": null,
@@ -22383,7 +22565,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(농가)"
           },
           {
             "visit_count": 4,
@@ -22393,9 +22576,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "읍내 마트·병원"
           }
         ],
+        "new_hub_label_ko": "원거리 정기 방문지",
         "basis_visit_count": 14,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -22943,6 +23128,8 @@
       "simulation_seed": 3904954292086467887,
       "vehicle_class": "personal_business",
       "base_premium_krw": 904000,
+      "driver_name_ko": "위갑례",
+      "age": 81,
       "mileage_score": 91.25,
       "in_zone_safe_score": 97.97,
       "out_zone_safe_score": 100.0,
@@ -22973,7 +23160,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택(농가)"
           },
           {
             "visit_count": 7,
@@ -22983,9 +23171,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "읍내 마트·병원"
           }
         ],
+        "new_hub_label_ko": "원거리 정기 방문지",
         "basis_visit_count": 18,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -23531,6 +23721,8 @@
       "simulation_seed": 5726688666303954124,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 876000,
+      "driver_name_ko": "양덕수",
+      "age": 69,
       "mileage_score": 100.0,
       "in_zone_safe_score": 100.0,
       "out_zone_safe_score": 100.0,
@@ -23561,7 +23753,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 7,
@@ -23571,9 +23764,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "복지관"
           }
         ],
+        "new_hub_label_ko": "병원 정기 경로",
         "basis_visit_count": 17,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -24120,6 +24315,8 @@
       "simulation_seed": 8465164150280889820,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 889000,
+      "driver_name_ko": "방옥자",
+      "age": 82,
       "mileage_score": 100.0,
       "in_zone_safe_score": 100.0,
       "out_zone_safe_score": 100.0,
@@ -24150,7 +24347,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 5,
@@ -24160,9 +24358,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "복지관"
           }
         ],
+        "new_hub_label_ko": "병원 정기 경로",
         "basis_visit_count": 14,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -24709,6 +24909,8 @@
       "simulation_seed": 3150369256399498370,
       "vehicle_class": "personal_passenger_ev_hydrogen",
       "base_premium_krw": 902000,
+      "driver_name_ko": "반말숙",
+      "age": 81,
       "mileage_score": 100.0,
       "in_zone_safe_score": 100.0,
       "out_zone_safe_score": 100.0,
@@ -24739,7 +24941,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 4,
@@ -24749,9 +24952,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "복지관"
           }
         ],
+        "new_hub_label_ko": "병원 정기 경로",
         "basis_visit_count": 15,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -25299,6 +25504,8 @@
       "simulation_seed": 10863844280127780464,
       "vehicle_class": "personal_business",
       "base_premium_krw": 915000,
+      "driver_name_ko": "함덕례",
+      "age": 69,
       "mileage_score": 97.5,
       "in_zone_safe_score": 100.0,
       "out_zone_safe_score": 100.0,
@@ -25329,7 +25536,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 5,
@@ -25339,9 +25547,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "복지관"
           }
         ],
+        "new_hub_label_ko": "병원 정기 경로",
         "basis_visit_count": 17,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -25886,6 +26096,8 @@
       "simulation_seed": 8734969787154717928,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 928000,
+      "driver_name_ko": "엄정자",
+      "age": 76,
       "mileage_score": 97.5,
       "in_zone_safe_score": 100.0,
       "out_zone_safe_score": 100.0,
@@ -25916,9 +26128,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           }
         ],
+        "new_hub_label_ko": "병원 정기 경로",
         "basis_visit_count": 17,
         "noise_visit_count": 2,
         "noise_ratio_pct": 11.8
@@ -26459,6 +26673,8 @@
       "simulation_seed": 9111749529960507259,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 876000,
+      "driver_name_ko": "김순애",
+      "age": 67,
       "mileage_score": 100.0,
       "in_zone_safe_score": 100.0,
       "out_zone_safe_score": 100.0,
@@ -26489,7 +26705,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 6,
@@ -26499,9 +26716,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "복지관"
           }
         ],
+        "new_hub_label_ko": "병원 정기 경로",
         "basis_visit_count": 16,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -27048,6 +27267,8 @@
       "simulation_seed": 14498672353073934021,
       "vehicle_class": "personal_passenger_ev_hydrogen",
       "base_premium_krw": 889000,
+      "driver_name_ko": "오병수",
+      "age": 71,
       "mileage_score": 100.0,
       "in_zone_safe_score": 100.0,
       "out_zone_safe_score": 100.0,
@@ -27078,7 +27299,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 3,
@@ -27088,9 +27310,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "복지관"
           }
         ],
+        "new_hub_label_ko": "병원 정기 경로",
         "basis_visit_count": 14,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -27638,6 +27862,8 @@
       "simulation_seed": 15351842519541300323,
       "vehicle_class": "personal_business",
       "base_premium_krw": 902000,
+      "driver_name_ko": "원병희",
+      "age": 69,
       "mileage_score": 96.25,
       "in_zone_safe_score": 100.0,
       "out_zone_safe_score": 100.0,
@@ -27668,7 +27894,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 4,
@@ -27678,9 +27905,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "복지관"
           }
         ],
+        "new_hub_label_ko": "병원 정기 경로",
         "basis_visit_count": 14,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -28223,6 +28452,8 @@
       "simulation_seed": 9642872505615359819,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 915000,
+      "driver_name_ko": "마종례",
+      "age": 71,
       "mileage_score": 100.0,
       "in_zone_safe_score": 100.0,
       "out_zone_safe_score": 100.0,
@@ -28253,9 +28484,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           }
         ],
+        "new_hub_label_ko": "병원 정기 경로",
         "basis_visit_count": 17,
         "noise_visit_count": 2,
         "noise_ratio_pct": 11.8
@@ -28796,6 +29029,8 @@
       "simulation_seed": 6350008933606605768,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 928000,
+      "driver_name_ko": "문분례",
+      "age": 74,
       "mileage_score": 100.0,
       "in_zone_safe_score": 100.0,
       "out_zone_safe_score": 100.0,
@@ -28826,7 +29061,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 4,
@@ -28836,9 +29072,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "복지관"
           }
         ],
+        "new_hub_label_ko": "병원 정기 경로",
         "basis_visit_count": 17,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -29386,6 +29624,8 @@
       "simulation_seed": 6450574783392407231,
       "vehicle_class": "personal_passenger_ev_hydrogen",
       "base_premium_krw": 900000,
+      "driver_name_ko": "선분남",
+      "age": 79,
       "mileage_score": 100.0,
       "in_zone_safe_score": 56.42,
       "out_zone_safe_score": 0.0,
@@ -29416,7 +29656,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 4,
@@ -29426,9 +29667,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "마트"
           }
         ],
+        "new_hub_label_ko": "야간 외곽 경로",
         "basis_visit_count": 16,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -29981,6 +30224,8 @@
       "simulation_seed": 6569600909975684200,
       "vehicle_class": "personal_business",
       "base_premium_krw": 913000,
+      "driver_name_ko": "정옥분",
+      "age": 82,
       "mileage_score": 100.0,
       "in_zone_safe_score": 58.33,
       "out_zone_safe_score": 0.0,
@@ -30011,7 +30256,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 4,
@@ -30021,9 +30267,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "마트"
           }
         ],
+        "new_hub_label_ko": "야간 외곽 경로",
         "basis_visit_count": 16,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -30574,6 +30822,8 @@
       "simulation_seed": 7863848615881560254,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 926000,
+      "driver_name_ko": "도병선",
+      "age": 69,
       "mileage_score": 100.0,
       "in_zone_safe_score": 59.91,
       "out_zone_safe_score": 44.75,
@@ -30604,7 +30854,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 5,
@@ -30614,9 +30865,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "마트"
           }
         ],
+        "new_hub_label_ko": "야간 외곽 경로",
         "basis_visit_count": 15,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -31169,6 +31422,8 @@
       "simulation_seed": 5008852358394523915,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 939000,
+      "driver_name_ko": "여상철",
+      "age": 68,
       "mileage_score": 96.25,
       "in_zone_safe_score": 76.32,
       "out_zone_safe_score": 87.65,
@@ -31199,7 +31454,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 4,
@@ -31209,9 +31465,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "마트"
           }
         ],
+        "new_hub_label_ko": "야간 외곽 경로",
         "basis_visit_count": 15,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -31760,6 +32018,8 @@
       "simulation_seed": 11028945935489753795,
       "vehicle_class": "personal_passenger_ev_hydrogen",
       "base_premium_krw": 952000,
+      "driver_name_ko": "남정례",
+      "age": 83,
       "mileage_score": 97.5,
       "in_zone_safe_score": 80.73,
       "out_zone_safe_score": 83.08,
@@ -31790,7 +32050,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 6,
@@ -31800,9 +32061,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "마트"
           }
         ],
+        "new_hub_label_ko": "야간 외곽 경로",
         "basis_visit_count": 17,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -32349,6 +32612,8 @@
       "simulation_seed": 10195240529275522294,
       "vehicle_class": "personal_business",
       "base_premium_krw": 900000,
+      "driver_name_ko": "황기석",
+      "age": 70,
       "mileage_score": 100.0,
       "in_zone_safe_score": 54.09,
       "out_zone_safe_score": 0.0,
@@ -32379,7 +32644,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 5,
@@ -32389,9 +32655,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "마트"
           }
         ],
+        "new_hub_label_ko": "야간 외곽 경로",
         "basis_visit_count": 15,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -32942,6 +33210,8 @@
       "simulation_seed": 2309849049059381015,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 913000,
+      "driver_name_ko": "천기수",
+      "age": 80,
       "mileage_score": 100.0,
       "in_zone_safe_score": 67.19,
       "out_zone_safe_score": 31.6,
@@ -32972,7 +33242,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 3,
@@ -32982,9 +33253,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "마트"
           }
         ],
+        "new_hub_label_ko": "야간 외곽 경로",
         "basis_visit_count": 16,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -33537,6 +33810,8 @@
       "simulation_seed": 149743580529316406,
       "vehicle_class": "personal_passenger_general",
       "base_premium_krw": 926000,
+      "driver_name_ko": "안순자",
+      "age": 81,
       "mileage_score": 96.25,
       "in_zone_safe_score": 81.77,
       "out_zone_safe_score": 83.26,
@@ -33567,7 +33842,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 4,
@@ -33577,9 +33853,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "마트"
           }
         ],
+        "new_hub_label_ko": "야간 외곽 경로",
         "basis_visit_count": 18,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -34127,6 +34405,8 @@
       "simulation_seed": 7372850471236923884,
       "vehicle_class": "personal_passenger_ev_hydrogen",
       "base_premium_krw": 939000,
+      "driver_name_ko": "기정수",
+      "age": 70,
       "mileage_score": 100.0,
       "in_zone_safe_score": 55.03,
       "out_zone_safe_score": 55.81,
@@ -34157,7 +34437,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 5,
@@ -34167,9 +34448,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "마트"
           }
         ],
+        "new_hub_label_ko": "야간 외곽 경로",
         "basis_visit_count": 17,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0
@@ -34717,6 +35000,8 @@
       "simulation_seed": 18092732145693280773,
       "vehicle_class": "personal_business",
       "base_premium_krw": 952000,
+      "driver_name_ko": "곽점순",
+      "age": 71,
       "mileage_score": 95.0,
       "in_zone_safe_score": 82.81,
       "out_zone_safe_score": 83.41,
@@ -34747,7 +35032,8 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-1",
             "display_label": "Routine Hub A",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "자택 인근"
           },
           {
             "visit_count": 5,
@@ -34757,9 +35043,11 @@
             "buffer_radius_m": 500.0,
             "hub_id": "hub-2",
             "display_label": "Routine Hub B",
-            "zone_source_status": "simulated_from_baseline_visits"
+            "zone_source_status": "simulated_from_baseline_visits",
+            "display_label_ko": "마트"
           }
         ],
+        "new_hub_label_ko": "야간 외곽 경로",
         "basis_visit_count": 16,
         "noise_visit_count": 0,
         "noise_ratio_pct": 0.0

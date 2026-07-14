@@ -42,6 +42,7 @@ test("UI DTO is an allowlist and drops coordinates, raw paths, hashes, and unkno
       schema_version: "test/v1",
       synthetic_data: true,
       simulation_seed: 7,
+      persona_naming_note: "이름·나이·장소 라벨은 전원 합성(실존 인물·장소 아님)",
       source_artifacts: { raw_visit_events: { path: "data/private.csv", sha256: "secret-hash" } }
     },
     periods: { baseline_months: ["2025-11"], evaluation_months: ["2026-01"] },
@@ -60,6 +61,8 @@ test("UI DTO is an allowlist and drops coordinates, raw paths, hashes, and unkno
     trip_visit_summary: { trip_count: 1 },
     drivers: [{
       driver_id: "gaip-001",
+      driver_name_ko: "김순애",
+      age: 74,
       persona_type: "safe",
       center_latitude: 37.5,
       center_longitude: 127,
@@ -69,7 +72,8 @@ test("UI DTO is an allowlist and drops coordinates, raw paths, hashes, and unkno
       unknown_profile_field: "drop-me",
       mobility: {
         zone_status: "available",
-        routine_hubs: [{ hub_id: "hub-1", visit_count: 3, coordinates: [127, 37.5] }]
+        new_hub_label_ko: "신규 외출지",
+        routine_hubs: [{ hub_id: "hub-1", display_label_ko: "경로당", visit_count: 3, coordinates: [127, 37.5] }]
       },
       tariff: { base_premium_krw: 1_000_000 },
       monthly_results: [{
@@ -95,6 +99,12 @@ test("UI DTO is an allowlist and drops coordinates, raw paths, hashes, and unkno
   const sanitized = sanitizeGaipBundleForUi(source) as Record<string, unknown>;
   const serialized = JSON.stringify(sanitized).toLowerCase();
   assert.equal(serialized.includes("gaip-001"), true);
+  // Synthetic naming fields are explicitly allowlisted for UI display.
+  assert.equal(serialized.includes('"driver_name_ko":"김순애"'), true);
+  assert.equal(serialized.includes('"age":74'), true);
+  assert.equal(serialized.includes('"display_label_ko":"경로당"'), true);
+  assert.equal(serialized.includes('"new_hub_label_ko":"신규 외출지"'), true);
+  assert.equal(serialized.includes("persona_naming_note"), true);
   assert.equal(serialized.includes("out_zone_safe_score"), true);
   assert.equal(serialized.includes("outer_visit_share"), true);
   assert.equal(serialized.includes("risky_events_per_100_km"), true);

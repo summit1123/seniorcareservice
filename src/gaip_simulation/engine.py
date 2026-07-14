@@ -33,6 +33,68 @@ BASELINE_MONTHS = ("2025-11", "2025-12")
 EVALUATION_MONTHS = tuple(f"2026-{month:02d}" for month in range(1, 13))
 ALL_MONTHS = BASELINE_MONTHS + EVALUATION_MONTHS
 
+# Fully synthetic Korean senior names (성+이름, mixed gender). These are stock
+# senior-generation name patterns, not references to real people; the bundle
+# metadata carries an explicit persona_naming_note disclaimer.
+KOREAN_SENIOR_NAME_POOL: tuple[str, ...] = (
+    "김순애", "박정호", "이말순", "최병철", "정옥분", "강복남", "조영자", "윤갑수",
+    "장금례", "임종달", "한순덕", "오병수", "서말자", "신동철", "권점례", "황기석",
+    "안순자", "송만복", "유정순", "전병국", "홍옥선", "고재술", "문분례", "양덕수",
+    "배금순", "남정례", "심우섭", "노귀순", "하영철", "곽점순", "성일만", "차옥례",
+    "주병호", "우금자", "구본달", "민영순", "류재복", "나종순", "진갑룡", "엄정자",
+    "원병희", "채순임", "천기수", "방옥자", "공재만", "현말녀", "함덕례", "변종수",
+    "염금분", "여상철", "추옥임", "도병선", "소순예", "석재구", "선분남", "설기순",
+    "마종례", "길병옥", "연순복", "위갑례", "표만술", "명옥녀", "기정수", "반말숙",
+    "라병순", "왕금희",
+)
+
+# Slight, deterministic per-persona age bias on top of the seeded 66-84 range.
+PERSONA_AGE_BIAS: dict[str, int] = {
+    "stable_local_safe": 0,
+    "low_mileage_risky": 1,
+    "safe_multi_hub": -1,
+    "safe_wide_area": -1,
+    "mobility_change_only": 1,
+    "mobility_risk_cochange": 2,
+}
+
+# Synthetic semantic display labels for the generic hub labels. UI-only strings;
+# the raw visit event CSV keeps the generic Routine Hub A/B/New Hub labels.
+PERSONA_HUB_LABELS: dict[str, dict[str, str]] = {
+    "stable_local_safe": {
+        "Routine Hub A": "자택·마트 동선",
+        "Routine Hub B": "경로당",
+        "New Hub": "신규 외출지",
+    },
+    "low_mileage_risky": {
+        "Routine Hub A": "자택 인근",
+        "Routine Hub B": "시장",
+        "New Hub": "야간 신규 목적지",
+    },
+    "safe_multi_hub": {
+        "Routine Hub A": "자택(본가)",
+        "Routine Hub B": "자녀 집",
+        "New Hub": "새 모임 장소",
+    },
+    "safe_wide_area": {
+        "Routine Hub A": "자택(농가)",
+        "Routine Hub B": "읍내 마트·병원",
+        "New Hub": "원거리 정기 방문지",
+    },
+    "mobility_change_only": {
+        "Routine Hub A": "자택 인근",
+        "Routine Hub B": "복지관",
+        "New Hub": "병원 정기 경로",
+    },
+    "mobility_risk_cochange": {
+        "Routine Hub A": "자택 인근",
+        "Routine Hub B": "마트",
+        "New Hub": "야간 외곽 경로",
+    },
+}
+
+PERSONA_NAMING_NOTE = "이름·나이·장소 라벨은 전원 합성(실존 인물·장소 아님)"
+
 PERSONA_TYPES: dict[str, dict[str, Any]] = {
     "stable_local_safe": {
         "display_name_ko": "안정 생활권·저주행 안전형",
@@ -246,6 +308,28 @@ _PARTITION_ENV_COUNTS = (
 )
 
 
+def _assign_driver_names(seed: int, driver_count: int) -> list[str]:
+    """Deterministic unique synthetic name per driver via a seeded index shuffle.
+
+    Uses a dedicated ``_stable_seed("naming", ...)`` stream so name assignment
+    never consumes draws from the visit-generation RNG streams.
+    """
+
+    if driver_count > len(KOREAN_SENIOR_NAME_POOL):
+        raise ValueError("synthetic name pool is smaller than the driver cohort")
+    names = list(KOREAN_SENIOR_NAME_POOL)
+    random.Random(_stable_seed("naming", seed)).shuffle(names)
+    return names[:driver_count]
+
+
+def _driver_age(driver_id: str, persona_type: str) -> int:
+    """Deterministic synthetic age in 66-84 with a slight persona bias."""
+
+    rng = random.Random(_stable_seed("naming", driver_id, "age"))
+    base = 66 + rng.randrange(17)
+    return min(84, max(66, base + PERSONA_AGE_BIAS.get(persona_type, 0)))
+
+
 def _stratified_assignments(persona_index: int) -> list[tuple[str, str]]:
     """Return 5/3/2 split assignments balanced over every three personas."""
 
@@ -286,6 +370,10 @@ def _build_driver_contracts(seed: int) -> list[dict[str, Any]]:
                     "base_premium_krw": 780_000 + (persona_index * 24_000) + ((global_index % 5) * 13_000),
                 }
             )
+    names = _assign_driver_names(seed, len(drivers))
+    for index, driver in enumerate(drivers):
+        driver["driver_name_ko"] = names[index]
+        driver["age"] = _driver_age(str(driver["driver_id"]), str(driver["persona_type"]))
     return drivers
 
 
@@ -654,11 +742,15 @@ def _driver_summary(
         core_radius_m=float(product_rules["core_radius_m"]),
         buffer_cap_m=float(product_rules["buffer_cap_m"]),
     )
+    persona_hub_labels = PERSONA_HUB_LABELS[str(driver["persona_type"])]
     public_hubs = [
         {
-            key: value
-            for key, value in hub.items()
-            if key not in {"centroid", "source_cluster_id"}
+            **{
+                key: value
+                for key, value in hub.items()
+                if key not in {"centroid", "source_cluster_id"}
+            },
+            "display_label_ko": persona_hub_labels[str(hub["display_label"])],
         }
         for hub in hubs
     ]
@@ -710,6 +802,7 @@ def _driver_summary(
             "min_distinct_days": 3,
             "repeated_hub_count": len(hubs),
             "routine_hubs": public_hubs,
+            "new_hub_label_ko": persona_hub_labels["New Hub"],
             "basis_visit_count": len(baseline_events),
             "noise_visit_count": clustering["noise_count"],
             "noise_ratio_pct": round(
@@ -1199,6 +1292,7 @@ def _build_bundle_and_events(
             "project": "FourSure · Masil",
             "competition_context": "GAIP 2026",
             "synthetic_data": True,
+            "persona_naming_note": PERSONA_NAMING_NOTE,
             "decision_scope": "product_design_and_human_review_support_only",
             "partition_policy": "deterministic_stratified_development_validation_holdout",
             "rule_origin": product_rules["rule_origin"],

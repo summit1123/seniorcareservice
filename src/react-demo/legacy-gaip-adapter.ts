@@ -94,7 +94,17 @@ function decisionSignal(result: SandboxResult): DecisionSignal {
 }
 
 function koreaReferenceLabel(driver: StudioDriver): string {
-  return `Korea Mileage Reference ${round(driver.tariff?.korea_mileage_discount_rate_pct ?? 0, 1)}%`;
+  return `기존 마일리지 기준 ${round(driver.tariff?.korea_mileage_discount_rate_pct ?? 0, 1)}%`;
+}
+
+// Synthetic semantic hub labels for display; fallbacks stay clearly generic.
+function hubDisplayLabel(driver: StudioDriver, index: number): string {
+  return driver.mobility.routine_hubs[index]?.display_label_ko
+    ?? `반복 거점 ${String.fromCharCode(65 + index)}`;
+}
+
+function newHubDisplayLabel(driver: StudioDriver): string {
+  return driver.mobility.new_hub_label_ko ?? "신규 목적지";
 }
 
 function evaluationMonths(driver: StudioDriver): StudioMonthlyResult[] {
@@ -224,7 +234,7 @@ function schematicDestinations(driver: StudioDriver): Record<string, Destination
     const key = `routine_hub_${String.fromCharCode(97 + index)}`;
     const point = schematicPoint(driver.id, index);
     destinations[key] = {
-      label_ko: `Routine Hub ${String.fromCharCode(65 + index)}`,
+      label_ko: hubDisplayLabel(driver, index),
       living_zone_role: "core",
       longitude: point.x,
       latitude: point.y,
@@ -235,7 +245,7 @@ function schematicDestinations(driver: StudioDriver): Record<string, Destination
   if (hasOuterContext) {
     const point = schematicPoint(driver.id, 3);
     destinations.outer_context = {
-      label_ko: "Outer Context",
+      label_ko: newHubDisplayLabel(driver),
       living_zone_role: "outer",
       longitude: point.x,
       latitude: point.y,
@@ -316,7 +326,7 @@ export function adaptAnnualSummary(
         : "생활권 근거 없음 · 거점 생성 보류",
       weekly_outing_frequency_ko: `기준선 2개월 방문 이벤트 ${sum(baseline.map((month) => month.trip_count))}건`,
       primary_destinations: primaryDestinations,
-      outer_trip_tendency: `평가기간 Outer Context 평균 ${round(mean(evaluation.map((month) => month.outer_visit_share_pct)), 1)}% · 위치 자체 중립`,
+      outer_trip_tendency: `평가기간 생활권 밖 맥락 평균 ${round(mean(evaluation.map((month) => month.outer_visit_share_pct)), 1)}% · 위치 자체 중립`,
       risk_behavior_tendency: `위험행동 변화지수 최고 ${round(annualRiskChange, 1)}%`,
     },
     care_context: {
@@ -510,7 +520,7 @@ function schematicClusters(driver: StudioDriver): ZoneCluster[] {
       center_latitude: point.y,
       display_x: point.x,
       display_y: point.y,
-      label_ko: `Routine Hub ${String.fromCharCode(65 + index)}`,
+      label_ko: hubDisplayLabel(driver, index),
       visit_count: hub.visit_count,
       p90_radius_m: round(p90, 1),
       radius_metric_m: round(p90, 1),
@@ -545,8 +555,8 @@ function schematicTrips(
       ? "outer_context"
       : `routine_hub_${String.fromCharCode(97 + hubIndex)}`;
     const destinationLabel = isOuter
-      ? "Outer Context"
-      : `Routine Hub ${String.fromCharCode(65 + hubIndex)}`;
+      ? newHubDisplayLabel(driver)
+      : hubDisplayLabel(driver, hubIndex);
     const riskEvents = Math.floor(totalRiskEvents / tripCount) + (index < totalRiskEvents % tripCount ? 1 : 0);
     trips.push({
       trip_id: `${driver.id}-${month.month}-schematic-${String(index + 1).padStart(2, "0")}`,
@@ -682,7 +692,7 @@ export function buildEvidenceReport(
     `- 주행: ${selected.trip_count}건 · ${round(selected.total_distance_km)}km`,
     `- 생활권 안 안전점수: ${selected.in_zone_safe_score === null ? "N/A" : `${round(selected.in_zone_safe_score)}점`}`,
     `- 생활권 밖 안전점수: ${outScore}`,
-    `- Outer Context 비중: ${round(selected.outer_visit_share_pct)}% (위치 자체는 중립)`,
+    `- 생활권 밖 맥락 비중: ${round(selected.outer_visit_share_pct)}% (위치 자체는 중립)`,
     `- 이동맥락 변화지수: ${round(selected.mobility_change_index_pct)}%`,
     `- 위험행동 변화지수: ${round(selected.risky_behavior_change_index_pct)}%`,
     "",

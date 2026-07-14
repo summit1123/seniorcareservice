@@ -23,6 +23,13 @@ test("legacy dashboard adapter preserves the original IA contract with 60 driver
   assert.equal(directory.algorithm_candidates?.filter((candidate) => candidate.status === "active").length, 1);
   assert.equal(directory.algorithm_candidates?.find((candidate) => candidate.status === "active")?.label, "DBSCAN");
 
+  // Driver options display the synthetic person name with age, and the Korea
+  // reference tier label is now rendered in Korean (display-only change).
+  for (const option of directory.driver_options) {
+    assert.match(option.label, /^[가-힣]{2,4} \(\d{2}세\)$/, option.label);
+    assert.match(option.existing_matched_tier_label, /^기존 마일리지 기준 \d+(\.\d+)?%$/);
+  }
+
   const months = adaptMonthlySnapshots(bundle, "gaip-051").monthly_evidence;
   assert.equal(months.length, 14);
   assert.equal(months.filter((month) => month.period_role === "baseline").length, 2);
@@ -52,12 +59,34 @@ test("no-zone evidence never fabricates a hub and results in a no-penalty hold",
   assert.deepEqual(map.snapshot.trip_interpretations, []);
 });
 
-test("map and evidence report use only generic place labels and explicit human-review boundaries", () => {
+// Policy change (2026-07): hub labels shown to the UI are synthetic semantic
+// Korean labels from the engine's PERSONA_HUB_LABELS union. They must stay in
+// this approved union, and raw coordinate field names must remain absent.
+const APPROVED_SYNTHETIC_HUB_LABELS = new Set([
+  // PERSONA_HUB_LABELS values (src/gaip_simulation/engine.py)
+  "자택·마트 동선", "경로당", "신규 외출지",
+  "자택 인근", "시장", "야간 신규 목적지",
+  "자택(본가)", "자녀 집", "새 모임 장소",
+  "자택(농가)", "읍내 마트·병원", "원거리 정기 방문지",
+  "복지관", "병원 정기 경로",
+  "마트", "야간 외곽 경로",
+  // display-only fallbacks in the legacy adapter
+  "반복 거점 A", "반복 거점 B", "신규 목적지"
+]);
+
+test("map and evidence report use only approved synthetic labels and explicit human-review boundaries", () => {
   const map = adaptZoneMap(bundle, "gaip-051", 10);
   const serialized = JSON.stringify(map);
-  assert.match(serialized, /Routine Hub/);
-  for (const forbidden of ["병원", "자녀", "자택", "마트", "약국"]) {
-    assert.equal(serialized.includes(forbidden), false, forbidden);
+  const mapLabels = [
+    ...map.snapshot.living_zone.clusters.map((cluster) => cluster.label_ko ?? ""),
+    ...map.snapshot.trip_interpretations.map((trip) => trip.destination_label_ko ?? "")
+  ].filter((label): label is string => label.length > 0);
+  assert.ok(mapLabels.length > 0);
+  for (const label of mapLabels) {
+    assert.ok(APPROVED_SYNTHETIC_HUB_LABELS.has(label), `unapproved label: ${label}`);
+  }
+  for (const forbiddenField of ['"latitude"', '"longitude"']) {
+    assert.equal(serialized.includes(forbiddenField), false, forbiddenField);
   }
 
   const report = buildEvidenceReport(bundle, "gaip-051", 10);

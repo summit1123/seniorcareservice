@@ -85,6 +85,8 @@ export interface StudioMonthlyResult {
 export interface RoutineHub {
   id: string;
   label: string;
+  /** Synthetic semantic label for UI display (e.g. 마트, 경로당); never a real place. */
+  display_label_ko?: string;
   visit_count: number;
   p90_radius_m?: number;
   core_radius_m?: number;
@@ -101,6 +103,8 @@ export interface DriverMobilityEvidence {
   min_distinct_days?: number;
   repeated_hub_count: number;
   routine_hubs: RoutineHub[];
+  /** Synthetic semantic label for New-Hub/outer destinations (UI display only). */
+  new_hub_label_ko?: string;
   basis_visit_count?: number;
   noise_ratio_pct?: number;
   note?: string;
@@ -118,6 +122,10 @@ export interface TariffComparison {
 export interface StudioDriver {
   id: string;
   display_label: string;
+  /** Synthetic Korean person name (실존 인물 아님). */
+  driver_name_ko?: string;
+  /** Synthetic age (66-84). */
+  age?: number;
   persona_id: string;
   persona_label: string;
   environment_id: MobilityEnvironmentId;

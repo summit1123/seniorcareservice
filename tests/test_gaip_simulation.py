@@ -14,7 +14,12 @@ from src.gaip_simulation import (
     pricing_sandbox,
 )
 from src.gaip_simulation.clustering import dbscan_distinct_days, haversine_m
-from src.gaip_simulation.engine import _annual_state, _safety_score
+from src.gaip_simulation.engine import (
+    KOREAN_SENIOR_NAME_POOL,
+    PERSONA_HUB_LABELS,
+    _annual_state,
+    _safety_score,
+)
 from src.product.mileage_discount_table import PERSONAL_PASSENGER_GENERAL
 
 
@@ -99,14 +104,58 @@ class TestGaipSimulation(unittest.TestCase):
             )
 
     def test_only_generic_visit_labels_are_exposed(self) -> None:
+        # The raw CSV keeps generic visit labels and never carries place semantics.
         self.assertEqual(
             {event["visit_label"] for event in self.visit_events},
             {"Routine Hub A", "Routine Hub B", "New Hub"},
         )
+        raw_csv = RAW_VISIT_EVENTS_PATH.read_text(encoding="utf-8").lower()
+        for forbidden in (
+            "hospital", "clinic", "pharmacy", "child_house", "family_home",
+            "병원", "약국", "자녀", "자택", "마트", "경로당", "복지관", "시장",
+        ):
+            self.assertNotIn(forbidden, raw_csv)
+        # Policy change (2026-07): the summary bundle may carry synthetic
+        # semantic hub labels, but only values from the approved
+        # PERSONA_HUB_LABELS union; English place-code tokens stay forbidden.
         serialized = json.dumps(self.bundle, ensure_ascii=False).lower()
-        for forbidden in ("hospital", "clinic", "pharmacy", "child_house", "family_home", "병원", "약국", "자녀집"):
+        for forbidden in ("hospital", "clinic", "pharmacy", "child_house", "family_home"):
             self.assertNotIn(forbidden, serialized)
-            self.assertNotIn(forbidden, RAW_VISIT_EVENTS_PATH.read_text(encoding="utf-8").lower())
+        approved_labels = {
+            label
+            for labels in PERSONA_HUB_LABELS.values()
+            for label in labels.values()
+        }
+        for driver in self.bundle["drivers"]:
+            for hub in driver["mobility"]["routine_hubs"]:
+                self.assertIn(hub["display_label_ko"], approved_labels, driver["driver_id"])
+            self.assertIn(driver["mobility"]["new_hub_label_ko"], approved_labels, driver["driver_id"])
+
+    def test_synthetic_naming_fields_are_deterministic_and_clearly_synthetic(self) -> None:
+        self.assertEqual(
+            self.bundle["metadata"]["persona_naming_note"],
+            "이름·나이·장소 라벨은 전원 합성(실존 인물·장소 아님)",
+        )
+        drivers = self.bundle["drivers"]
+        names = [driver["driver_name_ko"] for driver in drivers]
+        self.assertEqual(len(names), len(set(names)), "driver names must be unique")
+        self.assertTrue(set(names).issubset(set(KOREAN_SENIOR_NAME_POOL)))
+        for driver in drivers:
+            self.assertIsInstance(driver["age"], int)
+            self.assertGreaterEqual(driver["age"], 66)
+            self.assertLessEqual(driver["age"], 84)
+            persona_labels = PERSONA_HUB_LABELS[driver["persona_type"]]
+            for hub in driver["mobility"]["routine_hubs"]:
+                self.assertEqual(
+                    hub["display_label_ko"],
+                    persona_labels[hub["display_label"]],
+                    driver["driver_id"],
+                )
+            self.assertEqual(
+                driver["mobility"]["new_hub_label_ko"],
+                persona_labels["New Hub"],
+                driver["driver_id"],
+            )
 
     def test_ui_bundle_excludes_raw_coordinates(self) -> None:
         serialized = json.dumps(self.bundle, ensure_ascii=False).lower()
