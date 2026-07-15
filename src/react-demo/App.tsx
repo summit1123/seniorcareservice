@@ -1795,31 +1795,31 @@ function CandidateSearchChart() {
   return (
     <div className="candidate-search formula-choice-board">
       <div className="candidate-chart-head">
-        <span>{t("생활권 알고리즘 운영 역할")}</span>
-        <strong>{t("화면에서는 DBSCAN 결과만 사용하며, 다른 알고리즘의 결과를 실행한 것처럼 표시하지 않습니다.")}</strong>
+        <span>{t("산식 후보 비교 결과")}</span>
+        <strong>{t("최종 비율은 위 산식에 반영하고, 이 영역은 다른 후보를 왜 제외했는지 설명합니다.")}</strong>
       </div>
 
       <div className="candidate-comparison-grid" aria-label={t("후보 산식 비교")}>
+        <div className="rejected">
+          <span>{t("거리 중심안")}</span>
+          <strong>{t("탈락")}</strong>
+          <p>{t("기존 마일리지와 차이가 작아 저주행 위험변화군을 설명하기 어렵습니다.")}</p>
+        </div>
         <div className="selected">
-          <span>DBSCAN</span>
-          <strong>{t("운영 참조")}</strong>
-          <p>{t("같은 미터 단위의 방문 이벤트에서 설명 가능한 반복 거점을 생성합니다.")}</p>
+          <span>{t("균형안")}</span>
+          <strong>{t("선택")}</strong>
+          <p>{t("저주행 우대는 남기고, 생활권 안/밖 안정성과 위험변화를 함께 설명합니다.")}</p>
         </div>
         <div className="deferred">
-          <span>HDBSCAN</span>
-          <strong>{t("오프라인 Challenger")}</strong>
-          <p>{t("도시와 광역 저밀도처럼 밀도가 다른 경우를 동일 입력으로 비교할 후보입니다.")}</p>
-        </div>
-        <div className="deferred">
-          <span>Grid Count</span>
-          <strong>Sanity Check</strong>
-          <p>{t("군집 알고리즘의 복잡도가 실제 개선을 만드는지 확인하는 최소 기준선입니다.")}</p>
+          <span>{t("위험변화 과대안")}</span>
+          <strong>{t("보류")}</strong>
+          <p>{t("반복 외부 목적지까지 과도하게 불리하게 볼 수 있어 보류했습니다.")}</p>
         </div>
       </div>
 
       <div className="selection-criteria">
-        <span>{t("채택 기준")}</span>
-        <strong>{t("생활권 생성률 · noise · 복수 거점 · 도시/광역 공정성 · 설명 가능성 · 사람 검토 부담")}</strong>
+        <span>{t("선택 기준")}</span>
+        <strong>{t("평균 할인율 변화가 과도하지 않음 · 위험변화군 분리 가능 · 외부 안정주행 오분류 방지")}</strong>
       </div>
     </div>
   );

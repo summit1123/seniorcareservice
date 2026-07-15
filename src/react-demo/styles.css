@@ -1455,10 +1455,9 @@ p {
   gap: 14px;
   margin-top: 12px;
   padding: 18px;
-  border: 1px solid #dfe7f3;
+  border: 1px solid var(--line);
   border-radius: 18px;
-  background:
-    var(--panel);
+  background: var(--panel);
 }
 
 .candidate-chart-head span,
@@ -1498,7 +1497,7 @@ p {
   display: grid;
   gap: 6px;
   padding: 12px;
-  border: 1px solid #e3e9f4;
+  border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--panel);
 }
@@ -4407,10 +4406,6 @@ body {
 
 .formula-evidence-card .candidate-search {
   margin-top: 0;
-}
-
-.formula-evidence-card .candidate-search svg {
-  max-height: 230px;
 }
 
 .ai-proof-row {
