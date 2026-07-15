@@ -179,7 +179,7 @@ def main():
 
     showcase = {}
     for d in drivers:
-        p = by_driver[d][0]["persona_type"]
+        p = by_driver[d][0]["designed_type"]
         showcase.setdefault(p, d)
     showcase_ids = set(showcase.values()) | {"gaip-051"}
 
