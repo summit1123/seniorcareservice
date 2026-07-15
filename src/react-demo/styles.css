@@ -6867,3 +6867,16 @@ h1, h2, h3 { letter-spacing: -0.014em; }
   line-height: 1.55;
 }
 .agent-mobility-note { margin-top: 9px; font-size: 11.5px; color: var(--faint); line-height: 1.5; }
+
+/* ---- Option C: synthetic visit-density scatter + on-map destination labels ---- */
+.geo-scatter circle { fill: color-mix(in srgb, var(--primary) 34%, transparent); }
+.geo-scatter circle.outer { fill: color-mix(in srgb, var(--amber) 46%, transparent); }
+.geo-node-label {
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: var(--panel);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}

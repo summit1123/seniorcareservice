@@ -591,21 +591,47 @@ def _profile_home_anchor(driver: Mapping[str, Any]) -> tuple[float, float]:
     )
 
 
-def _profile_band_center(
-    home_lat: float, home_lon: float, environment: Mapping[str, Any], band: str, bearing_deg: float
-) -> tuple[float, float]:
+def _band_straight_line_m(
+    environment: Mapping[str, Any], band: str, disposition: Mapping[str, Any] | None = None
+) -> float:
+    """Straight-line distance from home to a destination band (metres).
+
+    ONE source of truth for a band's distance: the map coordinate AND the logged
+    trip distance both derive from this, so a nearby destination can never be
+    placed 300 m away yet logged as a 6 km drive. In-zone destinations sit close
+    to home (tight, legible living zone); a secondary zone is a genuinely separate
+    cluster; an outer destination is out of zone. Wide-ranging drivers get a wider
+    in-zone reach (their living zone genuinely spans more ground).
+    """
+
     reach = float(environment["zone_reach_m"])
     outer = float(environment["outer_distance_m"])
-    distance_m = {
-        "near": reach * 0.32,
-        # kept <= the parametric in-zone reach (0.62) so an in-zone destination
-        # stays inside the home buffer (radial P90) and does NOT inflate the
-        # baseline out-of-zone share, which would suppress mobility-change.
-        "mid_in": reach * 0.60,
-        "secondary": outer * 0.5,  # beyond home buffer → its own cluster
-        "outer": outer,            # genuinely out of zone
-    }.get(band, reach * 0.5)
-    return _offset_coordinate(home_lat, home_lon, distance_m, bearing_deg)
+    # ONLY genuinely wide-area drivers widen their living zone; others stay tight
+    # so their in-zone stops never drift past the home buffer (which would inflate
+    # the baseline out-of-zone share and suppress the mobility-change signal).
+    reach_scale = 1.0
+    if disposition is not None:
+        max_frac = max(float(f) for f in disposition["in_zone_reach_frac"])
+        reach_scale = 1.0 + max(0.0, max_frac - 0.82) * 3.5  # <=0.82 -> 1.0; 0.95 -> ~1.46
+    return {
+        "near": reach * 0.24 * reach_scale,
+        "mid_in": reach * 0.52 * reach_scale,
+        "secondary": outer * 0.5,   # beyond the home buffer → its own cluster
+        "outer": outer,             # genuinely out of zone
+    }.get(band, reach * 0.4)
+
+
+def _profile_band_center(
+    home_lat: float,
+    home_lon: float,
+    environment: Mapping[str, Any],
+    band: str,
+    bearing_deg: float,
+    disposition: Mapping[str, Any] | None = None,
+) -> tuple[float, float]:
+    return _offset_coordinate(
+        home_lat, home_lon, _band_straight_line_m(environment, band, disposition), bearing_deg
+    )
 
 
 def _profile_destinations(driver: Mapping[str, Any], profile: Mapping[str, Any]) -> list[dict[str, Any]]:
@@ -626,7 +652,9 @@ def _profile_destinations(driver: Mapping[str, Any], profile: Mapping[str, Any])
             band = "secondary"
         else:
             band = agent_band if agent_band in ("near", "mid_in") else "near"
-        center = _profile_band_center(home_lat, home_lon, environment, band, float(zone["bearing_deg"]))
+        center = _profile_band_center(
+            home_lat, home_lon, environment, band, float(zone["bearing_deg"]), driver["disposition"]
+        )
         # Keep the raw event's visit_label in the generic vocabulary so the event
         # schema is unchanged; role drives risk/distance, the agent label is shown
         # from the profile at display time.
@@ -719,12 +747,24 @@ def _profile_risk_event_count(
 def _profile_trip_distance_km(
     disposition: Mapping[str, Any], environment_id: str, dest: Mapping[str, Any], rng: random.Random
 ) -> float:
+    """Odometer km for one visit, DERIVED FROM the destination's actual distance.
+
+    A trip is home -> destination -> home (round trip) over real roads (not a
+    straight line), plus a little local wandering (parking, an errand nearby). So
+    a nearby stop is a short drive and a far stop is a long drive — the logged
+    distance is now coherent with where the person actually goes on the map.
+    """
+
     environment = ENVIRONMENTS[environment_id]
-    multiplier = {"near": 0.72, "mid_in": 1.05, "secondary": 1.35, "outer": 1.5}.get(str(dest["band"]), 1.0)
+    straight_km = _band_straight_line_m(environment, str(dest["band"]), disposition) / 1000.0
+    road_factor = rng.uniform(1.3, 1.6)            # roads are not straight lines
+    local_wander_km = rng.uniform(0.6, 2.2)        # parking / a nearby errand / getting to a main road
+    km = 2.0 * straight_km * road_factor + local_wander_km
+    # wider-ranging drivers cover a bit more ground per trip
     if max(float(frac) for frac in disposition["in_zone_reach_frac"]) >= 0.8:
-        multiplier *= 1.2
-    multiplier *= float(disposition.get("trip_distance_scale", 1.0))
-    return round(float(environment["base_trip_distance_km"]) * multiplier * rng.uniform(0.84, 1.18), 2)
+        km *= 1.2
+    km *= float(disposition.get("trip_distance_scale", 1.0))
+    return round(max(0.3, km), 2)
 
 
 def _generate_visits_from_profile(

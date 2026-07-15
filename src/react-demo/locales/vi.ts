@@ -187,7 +187,7 @@ const dict: Record<string, string> = {
   "보류": "Tạm hoãn",
   "가상 시니어 사례 목록": "Danh sách trường hợp người cao tuổi giả định",
   "가상 사례": "Trường hợp giả định",
-  "{count}명 사례": "{count} trường hợp",
+  "{count}개 시나리오": "{count} kịch bản",
   "유형·환경·상태 검색": "Tìm theo loại · môi trường · trạng thái",
   "이동환경": "Môi trường di chuyển",
   "사례 선택 대기": "Chờ chọn trường hợp",

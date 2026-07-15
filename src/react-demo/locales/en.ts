@@ -173,7 +173,7 @@ const dict: Record<string, string> = {
   "보류": "Hold",
   "가상 시니어 사례 목록": "Simulated senior case list",
   "가상 사례": "Simulated case",
-  "{count}명 사례": "{count} cases",
+  "{count}개 시나리오": "{count} scenarios",
   "유형·환경·상태 검색": "Search by type · environment · state",
   "이동환경": "Mobility environment",
   "사례 선택 대기": "Awaiting case selection",

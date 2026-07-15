@@ -924,7 +924,7 @@ function CaseRail({
     <aside className="case-rail" aria-label={t("가상 시니어 사례 목록")}>
       <div className="rail-heading">
         <p className="eyebrow">{t("가상 사례")}</p>
-        <h2>{tf("{count}명 사례", { count: options.length })}</h2>
+        <h2>{tf("{count}개 시나리오", { count: options.length })}</h2>
       </div>
       <label className="search-box">
         <Search size={15} />
@@ -1923,6 +1923,25 @@ function MonthlyEvidenceLane({
   );
 }
 
+// Deterministic synthetic visit scatter for the schematic map (NO real
+// coordinates — reconstructed from a seed so it renders as a plausible cloud of
+// month-long visits around each destination, not a single bare dot).
+function scatterDots(cx: number, cy: number, count: number, spread: number, seed: number) {
+  const n = Math.max(5, Math.min(34, Math.round(count)));
+  const out: { x: number; y: number; r: number }[] = [];
+  let s = ((seed * 9301 + 49297) % 233280 + 233280) % 233280;
+  const rand = () => {
+    s = (s * 9301 + 49297) % 233280;
+    return s / 233280;
+  };
+  for (let i = 0; i < n; i += 1) {
+    const angle = rand() * Math.PI * 2;
+    const radius = Math.sqrt(rand()) * spread;
+    out.push({ x: cx + Math.cos(angle) * radius, y: cy + Math.sin(angle) * radius, r: 1.5 + rand() * 1.7 });
+  }
+  return out;
+}
+
 function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnualSummary; snapshot: ZoneSnapshot; profile: DerivedProfile }) {
   if (!snapshot.living_zone.clusters.length) {
     return (
@@ -2011,6 +2030,16 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
       {[bufferRadius + 108, bufferRadius + 48].map((r) => (
         <circle key={`guide-${r}`} className="geo-guide-ring" cx={center.x} cy={center.y} r={r} />
       ))}
+      <g className="geo-scatter" aria-hidden="true">
+        {scatterDots(center.x, center.y, 26, coreRadius * 0.85, 7).map((d, i) => (
+          <circle key={`sc-home-${i}`} cx={d.x} cy={d.y} r={d.r} />
+        ))}
+        {destinationViews.map(({ group, point, outer }, gi) =>
+          scatterDots(point.x, point.y, group.count, outer ? 27 : 19, gi * 53 + 11).map((d, i) => (
+            <circle key={`sc-${gi}-${i}`} className={outer ? "outer" : ""} cx={d.x} cy={d.y} r={d.r} />
+          ))
+        )}
+      </g>
       <text className="geo-title" x="42" y="42">{t("생활권 판단 지도")}</text>
       <text className="geo-subtitle" x="42" y="63">{t("개념도(축척 아님) · 중심권 500m · 완충권은 개인 P90 반영(최대 2km)")}</text>
 
@@ -2029,6 +2058,11 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
         const secBuffer = Math.max(40, Math.min(78, cluster.p90_radius_m / 16));
         return (
           <g key={cluster.cluster_id} className="geo-cluster">
+            <g className="geo-scatter" aria-hidden="true">
+              {scatterDots(cx, cy, 16, secBuffer * 0.78, index * 71 + 29).map((d, i) => (
+                <circle key={`scs-${index}-${i}`} cx={d.x} cy={d.y} r={d.r} />
+              ))}
+            </g>
             <circle cx={cx} cy={cy} r={secBuffer} />
             <circle cx={cx} cy={cy} r={Math.min(coreRadius - 6, secBuffer - 12)} />
             <text x={cx} y={cy - secBuffer - 9} textAnchor="middle">{secondaryQueue[index] ?? (cluster.label_ko ? t(cluster.label_ko) : tf("반복 거점 {letter}", { letter: String.fromCharCode(66 + index) }))}</text>
@@ -2061,6 +2095,9 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
             {risk ? <circle className="geo-node-halo" cx={point.x} cy={point.y} r="24" /> : null}
             <circle cx={point.x} cy={point.y} r={risk ? 15 : 12} />
             <text className="geo-node-index" x={point.x} y={point.y + 4}>{index + 1}</text>
+            <text className="geo-node-label" x={point.x} y={point.y + (risk ? 33 : 29)} textAnchor="middle">
+              {agentDestLabels[index] ?? group.label ?? destinationTypeLabel(group.key)}
+            </text>
           </g>
         );
       })}
