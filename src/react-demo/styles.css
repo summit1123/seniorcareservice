@@ -2490,6 +2490,21 @@ p {
   grid-column: 2;
 }
 
+.risk-signal-grid .profile-formula-card {
+  grid-column: 1 / -1;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+}
+
+.formula-substitution-note {
+  margin: 10px 2px 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .profile-card {
   min-width: 0;
   padding: 15px;

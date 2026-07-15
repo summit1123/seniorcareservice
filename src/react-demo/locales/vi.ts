@@ -387,6 +387,8 @@ const dict: Record<string, string> = {
   "위험행동 성향": "Xu hướng hành vi rủi ro",
   "상품상 의미": "Ý nghĩa về mặt sản phẩm",
   "이 프로필의 산식 적용": "Áp dụng công thức cho hồ sơ này",
+  "관측 없음": "Không có quan sát",
+  "선택 월의 4개 지표 점수에 상품 가중치를 적용해 통합 근거점수를 만들고, 기존 마일리지 요율과 제안 산식 요율을 비교합니다. 요율은 예시이며 최종 보험료가 아닙니다.": "Điểm của bốn chỉ số trong tháng được chọn được áp trọng số sản phẩm để tạo điểm căn cứ tích hợp, rồi so sánh tỷ lệ dặm hiện có với tỷ lệ theo công thức đề xuất. Tỷ lệ chỉ mang tính minh họa, không phải phí bảo hiểm cuối cùng.",
   "기존 마일리지": "Quãng đường hiện hành",
   "제안 산식": "Công thức đề xuất",
   "재정규화": "Chuẩn hóa lại",

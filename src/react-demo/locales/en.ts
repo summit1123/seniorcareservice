@@ -373,6 +373,8 @@ const dict: Record<string, string> = {
   "위험행동 성향": "Risky-behaviour tendency",
   "상품상 의미": "Product meaning",
   "이 프로필의 산식 적용": "Formula applied to this profile",
+  "관측 없음": "No observation",
+  "선택 월의 4개 지표 점수에 상품 가중치를 적용해 통합 근거점수를 만들고, 기존 마일리지 요율과 제안 산식 요율을 비교합니다. 요율은 예시이며 최종 보험료가 아닙니다.": "The four indicator scores for the selected month are weighted by the product weights to form the integrated evidence score, then the existing mileage rate is compared with the proposed-formula rate. Rates are illustrative, not a final premium.",
   "기존 마일리지": "Existing mileage",
   "제안 산식": "Proposed formula",
   "재정규화": "Renormalisation",

@@ -1244,6 +1244,7 @@ function AnalysisTabs({
             <ScoreMeter label={t("생활권 안 안전점수")} value={selectedRow.in_zone_safe_driving_score} helper={t("생활권 안 급감속·과속·야간 비율이 낮을수록 높음")} />
             <ScoreMeter label={t("생활권 밖 안전점수")} value={selectedRow.out_zone_safe_driving_score} helper={t("생활권 밖 위험행동과 야간 비율이 낮을수록 높음")} />
             <ScoreMeter label={t("패턴 안정성")} value={selectedRow.pattern_stability_score ?? Math.max(0, 100 - selectedRow.out_zone_pattern_change_risk)} helper={t("개인 기준선 대비 이동 맥락의 안정성")} />
+            <FormulaSubstitution driver={driver} selectedRow={selectedRow} />
             <div className={`care-gate-card ${selectedRow.care_state === "Care Review" ? "active" : ""}`}>
               <span>{t("케어 동시조건")}</span>
               <strong>{tf("이동 {mob} + 위험행동 {risk}", { mob: numberFormatter.format(selectedRow.mobility_change_index_pct ?? 0), risk: numberFormatter.format(selectedRow.risky_behavior_change_index_pct ?? 0) })}</strong>
@@ -1295,6 +1296,56 @@ function MonthlyPatternChart({ rows, selectedMonth, onSelectMonth }: { rows: Mon
           </button>
         );
       })}
+    </div>
+  );
+}
+
+function FormulaSubstitution({ driver, selectedRow }: { driver: DriverAnnualSummary; selectedRow: MonthlyEvidence }) {
+  const weights = normalizeProductWeights(referenceProductRules.weights);
+  const comparison = driver.ab_comparison;
+  const integrated = selectedRow.monthly_integrated_evidence_score ?? monthlyIntegratedEvidenceScore(selectedRow);
+  const formulaRows: Array<{ label: string; score: number | null; weight: number }> = [
+    { label: t("주행거리"), score: selectedRow.mileage_score, weight: weights.mileage },
+    { label: t("생활권 안 안전"), score: selectedRow.in_zone_safe_driving_score, weight: weights.in_zone_safe },
+    { label: t("생활권 밖 안전"), score: selectedRow.out_zone_safe_driving_score, weight: weights.out_zone_safe },
+    { label: t("패턴 안정성"), score: selectedRow.pattern_stability_score ?? Math.max(0, 100 - selectedRow.out_zone_pattern_change_risk), weight: weights.pattern_stability }
+  ];
+  return (
+    <div className="profile-formula-card">
+      <div className="blueprint-title">
+        <BarChart3 size={17} />
+        <strong>{t("이 프로필의 산식 적용")}</strong>
+      </div>
+      <div className="same-driver-compare">
+        <div>
+          <span>{t("기존 마일리지")}</span>
+          <strong>{percent(comparison.existing_discount_rate_pct)}</strong>
+          <small>{translateText(comparison.existing_matched_tier_label)}</small>
+        </div>
+        <ArrowRight size={18} />
+        <div>
+          <span>{t("제안 산식")}</span>
+          <strong>{percent(comparison.proposed_discount_rate_pct)}</strong>
+          <small>{tf("통합점수 {score}점", { score: numberFormatter.format(integrated) })}</small>
+        </div>
+      </div>
+      <div className="formula-substitution profile">
+        {formulaRows.map((row) => (
+          <div key={row.label}>
+            <span>{row.label}</span>
+            <strong>
+              {row.score === null ? t("관측 없음") : `${numberFormatter.format(row.score)} × ${(row.weight / 100).toFixed(2)}`}
+            </strong>
+            <em>{row.score === null ? "—" : (row.score * row.weight / 100).toFixed(1)}</em>
+          </div>
+        ))}
+        <div className="formula-total">
+          <span>{t("통합점수")}</span>
+          <strong>{tf("{score}점", { score: numberFormatter.format(integrated) })}</strong>
+          <em>{stateLabelKo(selectedRow.reward_state ?? "Neutral")}</em>
+        </div>
+      </div>
+      <p className="formula-substitution-note">{t("선택 월의 4개 지표 점수에 상품 가중치를 적용해 통합 근거점수를 만들고, 기존 마일리지 요율과 제안 산식 요율을 비교합니다. 요율은 예시이며 최종 보험료가 아닙니다.")}</p>
     </div>
   );
 }
