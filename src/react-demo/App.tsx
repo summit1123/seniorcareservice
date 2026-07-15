@@ -138,13 +138,11 @@ const dynamicTextTranslations: Record<string, string> = {
   "Preventive Care": "Care Review"
 };
 
+// Display-only mirror of the engine's product formula (weights + mobility-change
+// gate). These drive on-screen narrative text and score-meter tone ONLY — never a
+// decision. The single source of truth is the bundle's product_rules; these values
+// mirror DEFAULT_PRODUCT_RULES so the on-screen story matches the actual gate.
 const selectedPolicy = {
-  id: "policy_30_30_20_20_p20_a75",
-  candidateCount: 114,
-  rankingScore: 120.4,
-  baselineRiskCapture: 0,
-  riskTargetCapture: 5,
-  falsePositiveCount: 1,
   weights: {
     mileage: 0.3,
     inZone: 0.3,
@@ -152,21 +150,14 @@ const selectedPolicy = {
     riskChange: 0.2
   },
   thresholds: {
-    care: 70,
-    S: 85,
-    A: 75,
-    B: 55,
-    C: 0
-  },
-  discountFactors: {
-    preferred: "Favorable allocation for high integrated scores",
-    standard: "Standard allocation by integrated score",
-    care: "Lower allocation + Preventive Care"
+    // mobility_change_index gate = 0.25 → 25pt on the 0–100 change-index scale
+    // (the engine's real Care mobility gate; previously a stray hardcoded 70).
+    care: 25
   }
 };
 
 const careReviewRiskThreshold = selectedPolicy.thresholds.care;
-const preferredRiskCeiling = 35;
+const preferredRiskCeiling = 25;
 
 function translateText(value: string) {
   let translated = value;
@@ -184,23 +175,6 @@ function destinationTypeLabel(type: string) {
   return t(destinationTypeLabels[type] ?? translateText(type));
 }
 
-const candidateDots = [
-  { id: "c1", falsePositive: 4.4, capture: 1.1, score: 42 },
-  { id: "c2", falsePositive: 3.7, capture: 2.2, score: 56 },
-  { id: "c3", falsePositive: 2.9, capture: 2.9, score: 68 },
-  { id: "c4", falsePositive: 2.2, capture: 3.1, score: 73 },
-  { id: "c5", falsePositive: 1.8, capture: 3.7, score: 85 },
-  { id: "c6", falsePositive: 0.7, capture: 2.6, score: 77 },
-  { id: "c7", falsePositive: 3.1, capture: 4.1, score: 81 },
-  { id: "c8", falsePositive: 2.4, capture: 4.6, score: 91 },
-  { id: "c9", falsePositive: 1.5, capture: 4.8, score: 104 },
-  { id: "selected", falsePositive: selectedPolicy.falsePositiveCount, capture: selectedPolicy.riskTargetCapture, score: selectedPolicy.rankingScore, selected: true },
-  { id: "c10", falsePositive: 0.4, capture: 3.4, score: 94 },
-  { id: "c11", falsePositive: 4.8, capture: 4.4, score: 70 },
-  { id: "c12", falsePositive: 3.8, capture: 5.0, score: 89 },
-  { id: "c13", falsePositive: 0.9, capture: 1.8, score: 66 },
-  { id: "c14", falsePositive: 2.7, capture: 1.4, score: 51 }
-];
 
 type LoadState = "loading" | "ready" | "error";
 type PageMode = "overview" | "profiles";
@@ -2231,7 +2205,7 @@ type TripGroup = {
   dominant: Interpretation;
 };
 
-function deriveEvidenceProfile(driver: DriverAnnualSummary, snapshot: ZoneSnapshot, selectedRow?: MonthlyEvidence): DerivedProfile {
+function deriveEvidenceProfile(_driver: DriverAnnualSummary, snapshot: ZoneSnapshot, selectedRow?: MonthlyEvidence): DerivedProfile {
   const trips = snapshot.trip_interpretations;
   const grouped = Object.values(groupTrips(trips)).sort((a, b) => b.count - a.count);
   const topDestinations = grouped.slice(0, 3).map((item) => t(item.label));
@@ -2259,6 +2233,11 @@ function deriveEvidenceProfile(driver: DriverAnnualSummary, snapshot: ZoneSnapsh
   }
   const outZoneRatio = snapshot.monthly_evidence.out_zone_distance_ratio;
   const riskScore = snapshot.scores.out_zone_pattern_change_risk;
+  // Zone STRUCTURE from the clusters (not the archetype label) — keeps the on-screen
+  // interpretation type-blind, consistent with the "engine analyses without knowing
+  // the type" claim. Multiple clusters ⇒ multi-zone; a wide radial P90 ⇒ wide-area.
+  const zoneCount = snapshot.living_zone.clusters.length;
+  const maxZoneRadiusM = Math.max(0, ...snapshot.living_zone.clusters.map((cluster) => cluster.p90_radius_m ?? 0));
 
   let headline = t("생활권 안 반복 주행");
   if (selectedRow?.care_state === "Care Review") headline = t("이동 맥락과 위험행동의 동시변화 검토");
@@ -2266,8 +2245,8 @@ function deriveEvidenceProfile(driver: DriverAnnualSummary, snapshot: ZoneSnapsh
   else if (riskEvents > 0 && riskScore < preferredRiskCeiling) headline = t("위험행동은 있으나 변화위험은 낮음");
   else if (outZoneRatio > 0.25 && repeatRate > 0.55 && riskEvents <= trips.length * 0.2) headline = t("반복 외부 목적지 안정");
   else if (newDestinationTrips > 0 && outZoneRatio > 0.15) headline = t("신규 외부 목적지 관찰");
-  else if (driver.persona_type === "multi_zone") headline = t("복수 생활권 반복 이동 관찰");
-  else if (driver.persona_type === "wide_area_safe") headline = t("광역 반복 외부 이동 관찰");
+  else if (zoneCount >= 2) headline = t("복수 생활권 반복 이동 관찰");
+  else if (maxZoneRadiusM >= 1200) headline = t("광역 반복 외부 이동 관찰");
 
   const outerPattern =
     outZoneRatio < 0.12
@@ -2447,25 +2426,6 @@ function recommendedAction(driver: DriverAnnualSummary, selectedRow?: MonthlyEvi
   if (driver.reward_state === "Reward") return t("Reward 후보 근거 확인");
   if ((selectedRow?.mobility_change_index_pct ?? 0) > 0) return t("변화 추세 관찰 · 자동 조치 없음");
   return t("Neutral 유지");
-}
-
-function personaTone(type: string) {
-  if (type === "mobility_risk_cochange" || type === "in_zone_risky") return "risk";
-  if (type === "mobility_change_safe") return "care";
-  if (type === "multi_zone" || type === "stable_reward" || type === "wide_area_safe") return "safe";
-  return "base";
-}
-
-function personaNarrative(type: string) {
-  const text: Record<string, string> = {
-    stable_reward: "짧은 반복 이동과 안정운전이 함께 나타나는 Reward 기준군",
-    in_zone_risky: "멀리 가지 않아도 생활권 안 급감속·과속이 누적되는 저주행 위험군",
-    mobility_change_safe: "이동 맥락만 달라지고 위험행동은 그대로여서 Care를 제안하면 안 되는 음성 대조군",
-    mobility_risk_cochange: "같은 평가월에 이동과 위험행동이 함께 달라져 사람 검토가 필요한 핵심군",
-    multi_zone: "멀리 떨어진 복수 반복 거점을 하나의 큰 원으로 합치지 않아야 하는 검증군",
-    wide_area_safe: "이동반경이 넓어도 안전행동을 유지해 Outer 자체를 감점하지 않아야 하는 공정성 검증군"
-  };
-  return t(text[type] ?? "월별 주행 근거에 따라 연간 판단이 달라지는 사례군");
 }
 
 function basisLabel(value: string) {
