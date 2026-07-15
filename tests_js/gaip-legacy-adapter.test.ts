@@ -129,16 +129,16 @@ test("map and evidence report use only approved synthetic labels and explicit hu
   assert.ok(careMonth && noneMonth);
 
   const report = buildEvidenceReport(bundle, careDriverId, careMonth.month);
-  assert.match(report, /실제 요율·인수·Care 결정이 아닙니다/);
-  assert.match(report, /같은 달 AND Gate: 충족/);
+  assert.match(report, /실제 요율·인수·케어 결정이 아닙니다/);
+  assert.match(report, /같은 달 동시 게이트: 충족/);
   assert.match(report, /원본 좌표는 이 보고서에 포함하지 않습니다/);
 
   const careSummary = adaptAnnualSummary(bundle, careDriverId);
   const nonCareMonth = buildEvidenceReport(bundle, careDriverId, noneMonth.month);
-  assert.match(nonCareMonth, /선택 월 Care 상태: None/);
-  assert.match(nonCareMonth, /같은 달 AND Gate: 미충족/);
+  assert.match(nonCareMonth, /선택 월 케어 상태: None/);
+  assert.match(nonCareMonth, /같은 달 동시 게이트: 미충족/);
   assert.match(
     nonCareMonth,
-    new RegExp(`연간 후보 상태\\(참고\\): Reward ${careSummary.reward_state} · Care ${careSummary.care_state}`)
+    new RegExp(`연간 후보 상태\\(참고\\): 우대 ${careSummary.reward_state} · 케어 ${careSummary.care_state}`)
   );
 });
