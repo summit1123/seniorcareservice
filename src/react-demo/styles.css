@@ -3032,6 +3032,55 @@ p {
   line-height: 1.35;
 }
 
+.persona-metrics {
+  display: flex;
+  gap: 14px;
+  margin: 8px 0;
+}
+
+.persona-metrics span {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.persona-metrics b {
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.persona-card .persona-metrics small {
+  margin: 0;
+  font-size: 10px;
+}
+
+.persona-card p.persona-decisions {
+  min-height: 0;
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.persona-card small.persona-rate {
+  margin-top: 6px;
+  color: var(--muted);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.persona-card.risk {
+  background: color-mix(in srgb, var(--care) 6%, var(--panel));
+  border-color: color-mix(in srgb, var(--care) 24%, var(--line));
+}
+
+.persona-card.safe {
+  background: color-mix(in srgb, var(--green) 5%, var(--panel));
+  border-color: color-mix(in srgb, var(--green) 20%, var(--line));
+}
+
 .mini-scene {
   position: relative;
   height: 28px;

@@ -34,11 +34,13 @@ import type {
 const numberFormatter = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
 
 const decisionMeta: Record<string, { label: string; className: string }> = {
-  Reward: { label: "Reward", className: "good" },
-  Neutral: { label: "Neutral", className: "base" },
+  // Labels are Korean source strings so t() localizes them (우대 → Favorable / 优待 / 優待 / Ưu đãi),
+  // keeping the whole dashboard on the aligned "Favorable" terminology instead of raw "Reward".
+  Reward: { label: "우대", className: "good" },
+  Neutral: { label: "기본", className: "base" },
   Hold: { label: "판단 보류", className: "hold" },
-  "Care Review": { label: "Care Review", className: "care" },
-  "Reward + Care Review": { label: "Reward + Care", className: "care" },
+  "Care Review": { label: "예방 케어", className: "care" },
+  "Reward + Care Review": { label: "우대 + 예방 케어", className: "care" },
   우대: { label: "우대", className: "good" },
   기본: { label: "기본", className: "base" },
   "예방 케어": { label: "예방 케어", className: "care" },
@@ -475,7 +477,56 @@ function DesignOverviewPage({
       <OverviewComparisonPanel directory={directory} />
       {rules ? <ScenarioControlPanel rules={rules} onChange={onRulesChange} directory={directory} /> : null}
       <ProductBlueprintPanel directory={directory} />
+      <PersonaMatrix summaries={directory.persona_summaries} />
     </main>
+  );
+}
+
+function personaToneFromDecisions(counts: Record<string, number>): string {
+  const care = (counts["Care Review"] ?? 0) + (counts["Reward + Care Review"] ?? 0);
+  const neutral = counts["Neutral"] ?? 0;
+  const reward = counts["Reward"] ?? 0;
+  const hold = counts["판단 보류"] ?? 0;
+  if (care > 0) return "risk";
+  if (hold > reward + neutral) return "base";
+  if (neutral > reward) return "base";
+  return "safe";
+}
+
+function PersonaMatrix({ summaries }: { summaries: PersonaSummary[] }) {
+  if (!summaries.length) return null;
+  const total = summaries.reduce((sum, item) => sum + item.customer_count, 0);
+  return (
+    <section className="panel persona-matrix" aria-label={t("페르소나 유형 비교")}>
+      <div className="panel-head">
+        <div>
+          <p className="eyebrow">{t("페르소나 유형")}</p>
+          <h2>{t("6개 유형이 서로 다른 판단 장면을 만듭니다")}</h2>
+        </div>
+        <span className="count-badge">{tf("{count}개 시나리오", { count: total })}</span>
+      </div>
+      <div className="persona-grid">
+        {summaries.map((summary) => (
+          <div className={`persona-card ${personaToneFromDecisions(summary.decision_counts)}`} key={summary.persona_type}>
+            <strong>{personaTypeLabel(summary.persona_type)}</strong>
+            <div className="persona-metrics">
+              <span>
+                <b>{tf("{km}km", { km: numberFormatter.format(Math.round(summary.avg_annual_distance_km)) })}</b>
+                <small>{t("평균 연간 주행")}</small>
+              </span>
+              <span>
+                <b>{tf("{score}점", { score: numberFormatter.format(summary.avg_annual_score) })}</b>
+                <small>{t("평균 통합점수")}</small>
+              </span>
+            </div>
+            <p className="persona-decisions">{formatDecisionCounts(summary.decision_counts)}</p>
+            <small className="persona-rate">
+              {tf("요율 {a}% → {b}%", { a: numberFormatter.format(summary.avg_existing_discount_rate_pct), b: numberFormatter.format(summary.avg_proposed_discount_rate_pct) })}
+            </small>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
