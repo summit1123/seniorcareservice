@@ -6094,6 +6094,27 @@ body,
   background: var(--panel);
 }
 
+.sandbox-axis-label {
+  display: block;
+  margin: 14px 2px 6px;
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.sandbox-axis-label.care {
+  color: color-mix(in srgb, var(--care) 65%, var(--ink));
+}
+
+.rule-number small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 10.5px;
+  line-height: 1.4;
+}
+
 .sandbox-weight-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }

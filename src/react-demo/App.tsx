@@ -61,9 +61,9 @@ const reasonLabels: Record<string, string> = {
   BASELINE_OBSERVATION: "기준선 관찰월",
   CARE_EVIDENCE_INSUFFICIENT: "Care 근거 부족",
   HUMAN_CARE_REVIEW_SUGGESTED: "사람 검토 제안",
-  REWARD_EVIDENCE_INSUFFICIENT: "Reward 근거 부족",
-  REWARD_REQUIRED_MONTHS_MET: "Reward 충족월 기준 통과",
-  REWARD_REQUIRED_MONTHS_NOT_MET: "Reward 충족월 기준 미달",
+  REWARD_EVIDENCE_INSUFFICIENT: "우대 근거 부족",
+  REWARD_REQUIRED_MONTHS_MET: "우대 충족월 기준 통과",
+  REWARD_REQUIRED_MONTHS_NOT_MET: "우대 충족월 기준 미달",
   SAME_MONTH_CARE_GATE_MET: "같은 달 이동·위험행동 동시변화",
   SAME_MONTH_CARE_GATE_NOT_MET: "동시변화 게이트 미충족",
   CANDIDATE_LIVING_ZONE: "후보 생활권 관찰",
@@ -637,6 +637,7 @@ function ScenarioControlPanel({
         </div>
       </div>
       <div className="sandbox-layout">
+        <span className="sandbox-axis-label">{t("① 우대 점수 가중치 — 4개 지표를 어떤 비율로 섞을지 (합계 100%로 재정규화)")}</span>
         <div className="sandbox-weight-grid">
           {weightRows.map((row) => (
             <label key={row.key}>
@@ -653,12 +654,16 @@ function ScenarioControlPanel({
             </label>
           ))}
         </div>
+        <span className="sandbox-axis-label">{t("② 우대 축 임계 — 위 점수를 우대로 인정하는 기준")}</span>
         <div className="sandbox-threshold-grid">
-          <RuleNumber label={t("Reward 점수")} value={rules.reward_score_threshold} min={50} max={95} onChange={(value) => updateRule("reward_score_threshold", value)} />
-          <RuleNumber label={t("Reward 충족월")} value={rules.reward_required_months} min={1} max={12} suffix={t("개월")} onChange={(value) => updateRule("reward_required_months", value)} />
-          <RuleNumber label={t("최소 데이터")} value={rules.minimum_data_coverage_pct} min={50} max={100} suffix="%" onChange={(value) => updateRule("minimum_data_coverage_pct", value)} />
-          <RuleNumber label={t("이동 변화")} value={rules.care_mobility_change_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_mobility_change_threshold", value)} />
-          <RuleNumber label={t("위험행동 변화")} value={rules.care_risky_behavior_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_risky_behavior_threshold", value)} />
+          <RuleNumber label={t("우대 점수")} helper={t("통합점수가 이 값 이상인 달을 우대 후보로 봄")} value={rules.reward_score_threshold} min={50} max={95} onChange={(value) => updateRule("reward_score_threshold", value)} />
+          <RuleNumber label={t("우대 충족월")} helper={t("12개월 중 우대 점수를 넘긴 달이 이만큼 있어야 연간 우대")} value={rules.reward_required_months} min={1} max={12} suffix={t("개월")} onChange={(value) => updateRule("reward_required_months", value)} />
+          <RuleNumber label={t("최소 데이터")} helper={t("이 커버리지 미만이면 판단 보류(불이익 없음)")} value={rules.minimum_data_coverage_pct} min={50} max={100} suffix="%" onChange={(value) => updateRule("minimum_data_coverage_pct", value)} />
+        </div>
+        <span className="sandbox-axis-label care">{t("③ 케어 축 게이트 — 가중치와 독립. 두 값을 같은 달에 동시 초과해야 예방 케어 검토")}</span>
+        <div className="sandbox-threshold-grid">
+          <RuleNumber label={t("이동 변화")} helper={t("기준선 대비 생활권 밖 비중 상승폭")} value={rules.care_mobility_change_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_mobility_change_threshold", value)} />
+          <RuleNumber label={t("위험행동 변화")} helper={t("기준선 대비 위험행동 상승폭 — 이동 변화와 함께 넘어야 케어")} value={rules.care_risky_behavior_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_risky_behavior_threshold", value)} />
         </div>
       </div>
       <div className="sandbox-live" aria-live="polite">
@@ -700,6 +705,7 @@ function RuleNumber({
   min,
   max,
   suffix = t("점"),
+  helper,
   onChange
 }: {
   label: string;
@@ -707,13 +713,15 @@ function RuleNumber({
   min: number;
   max: number;
   suffix?: string;
+  helper?: string;
   onChange: (value: number) => void;
 }) {
   return (
-    <label>
+    <label className="rule-number">
       <span>{label}</span>
       <input type="number" min={min} max={max} value={value} onChange={(event) => onChange(Math.max(min, Math.min(max, Number(event.target.value))))} />
       <em>{suffix}</em>
+      {helper ? <small>{helper}</small> : null}
     </label>
   );
 }
@@ -754,7 +762,7 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
         <div>
           <span>{t("제안 차별점")}</span>
           <strong>{t("거리 혜택과 예방 케어 검토를 서로 독립된 두 축으로 설계합니다")}</strong>
-          <p>{t("안전운전은 혜택(Reward)으로 인정하고, 같은 달 이동 변화와 위험행동 변화가 함께 나타날 때만 사람에게 예방 케어 검토를 제안합니다.")}</p>
+          <p>{t("안전운전은 혜택(우대)으로 인정하고, 같은 달 이동 변화와 위험행동 변화가 함께 나타날 때만 사람에게 예방 케어 검토를 제안합니다.")}</p>
           <p className="stakes-line">{t("예방 케어는 처벌이 아니라 조기 개입입니다 — 심각한 사고가 나기 전에 담당자가 가족·의료·이동지원과 연결할 근거를 만드는 것이 목표입니다.")}</p>
         </div>
         <div>
@@ -850,16 +858,16 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
               </div>
             </div>
             <div className="decision-donut-legend">
-              <DecisionLegend label={tf("우대 {count}", { count: preferredCount })} detail={t("Reward축 · 안전 인정")} className="preferred" />
+              <DecisionLegend label={tf("우대 {count}", { count: preferredCount })} detail={t("우대 축 · 안전 인정")} className="preferred" />
               <DecisionLegend label={tf("기본 {count}", { count: standardCount })} detail={t("변화 낮음 · 중립")} className="standard" />
-              <DecisionLegend label={tf("예방 케어 {count}", { count: careCount })} detail={t("Care축 · 사람 검토")} className="care" />
+              <DecisionLegend label={tf("예방 케어 {count}", { count: careCount })} detail={t("케어 축 · 사람 검토")} className="care" />
               {holdCount ? (
                 <DecisionLegend label={tf("판단 보류 {count}", { count: holdCount })} detail={t("근거 부족 · 불이익 없음")} className="hold" />
               ) : null}
             </div>
           </div>
           <p className="portfolio-footnote">
-            {t("안전운전 인정(Reward축)과 예방 케어 검토(Care축)를 독립된 두 축으로 계산하면, 두 축의 조합이 우대·기본·예방 케어·판단 보류의 네 상태로 나타납니다. 기준이 다른 시장에서도 같은 엔진이 두 축을 그대로 다시 계산합니다.")}
+            {t("안전운전 인정(우대 축)과 예방 케어 검토(케어 축)를 독립된 두 축으로 계산하면, 두 축의 조합이 우대·기본·예방 케어·판단 보류의 네 상태로 나타납니다. 기준이 다른 시장에서도 같은 엔진이 두 축을 그대로 다시 계산합니다.")}
           </p>
         </div>
 
@@ -1006,7 +1014,7 @@ function DecisionSummaryCard({
   driverState: LoadState;
 }) {
   if (!driver) {
-    return <InspectorState title={t("사례 선택 대기")} detail={t("좌측 사례를 선택하면 Reward·Care 검토 요약이 표시됩니다.")} />;
+    return <InspectorState title={t("사례 선택 대기")} detail={t("좌측 사례를 선택하면 우대·케어 검토 요약이 표시됩니다.")} />;
   }
 
   const comparison = driver.ab_comparison;
@@ -1184,7 +1192,7 @@ function LivingZoneDecisionMap({
           <div className="no-zone-state">
             <MapPinned size={24} />
             <strong>{t("반복 거점 근거가 충분하지 않습니다")}</strong>
-            <p>{t("가짜 중심을 만들지 않고 No Zone으로 유지합니다. Reward와 Care는 판단 보류이며 불이익을 주지 않습니다.")}</p>
+            <p>{t("가짜 중심을 만들지 않고 No Zone으로 유지합니다. 우대와 케어는 판단 보류이며 불이익을 주지 않습니다.")}</p>
           </div>
         ) : (
           <GeoLivingZoneCanvas driver={driver} snapshot={zoneMap.snapshot} profile={profile} />
@@ -1797,7 +1805,7 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
         <div className="flow-step">
           <span>3</span>
           <strong>{t("12개월 평가와 사람 검토")}</strong>
-          <p>{t("Reward와 Care를 독립 계산하고, Care는 같은 달 이동 변화와 위험행동 변화가 모두 있을 때만 검토를 제안합니다.")}</p>
+          <p>{t("우대와 케어를 독립 계산하고, 케어는 같은 달 이동 변화와 위험행동 변화가 모두 있을 때만 검토를 제안합니다.")}</p>
         </div>
       </div>
 
@@ -1808,7 +1816,7 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
             <strong>{t("최종 통합점수 산식")}</strong>
           </div>
           <p className="formula-lead">
-            {t("한국 마일리지 거리 기준은 참조값으로 유지하되, Reward 산식과 케어 동시조건를 분리해 처벌 없는 예방지원 구조를 검증합니다.")}
+            {t("한국 마일리지 거리 기준은 참조값으로 유지하되, 우대 산식과 케어 동시조건를 분리해 처벌 없는 예방지원 구조를 검증합니다.")}
           </p>
           <div className="weight-layout" aria-label="Final Formula Weights">
             <div className="weight-block mileage">
@@ -1834,7 +1842,7 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
           </div>
           <div className="formula-box simplified">
             <span>{t("계산 방식")}</span>
-            <strong>{tf("Reward 후보점수 = 주행거리 {mileage}% + 생활권 안 안전 {inZone}% + 생활권 밖 안전 {outZone}% + 패턴 안정성 {stability}%", { mileage: weights.mileage, inZone: weights.in_zone_safe, outZone: weights.out_zone_safe, stability: weights.pattern_stability })}</strong>
+            <strong>{tf("우대 후보점수 = 주행거리 {mileage}% + 생활권 안 안전 {inZone}% + 생활권 밖 안전 {outZone}% + 패턴 안정성 {stability}%", { mileage: weights.mileage, inZone: weights.in_zone_safe, outZone: weights.out_zone_safe, stability: weights.pattern_stability })}</strong>
           </div>
         </div>
 
@@ -1951,7 +1959,7 @@ function MonthlyEvidenceLane({
             </strong>
             <p>
               {tf("{dist}km 주행, {basis}으로 생활권을 판단했습니다.", { dist: numberFormatter.format(selectedRow.monthly_total_distance_km), basis: basisLabel(selectedRow.basis_status) })}
-              {selectedRow.period_role === "baseline" ? t(" 이 달은 개인 기준선 관찰용이며 Reward·Care 평가에서 제외됩니다.") : t(" 아래 값은 월 보험료가 아니라 상품 검토 근거입니다.")}
+              {selectedRow.period_role === "baseline" ? t(" 이 달은 개인 기준선 관찰용이며 우대·케어 평가에서 제외됩니다.") : t(" 아래 값은 월 보험료가 아니라 상품 검토 근거입니다.")}
             </p>
           </div>
           <div className="score-meter-grid">
@@ -1967,7 +1975,7 @@ function MonthlyEvidenceLane({
             <span>{t("월별 통합 근거점수")}</span>
             <strong>{monthlyIntegratedLabel}</strong>
             <p>{tf("주행거리 {mileage}% + 생활권 안 안전 {inZone}% + 생활권 밖 안전 {outZone}% + 패턴 안정성 {stability}%", { mileage: weights.mileage, inZone: weights.in_zone_safe, outZone: weights.out_zone_safe, stability: weights.pattern_stability })}</p>
-            <small>{t("Reward 후보점수와 케어 동시조건은 독립 계산되며, 어느 쪽도 보험료·인수 결정을 자동 확정하지 않습니다.")}</small>
+            <small>{t("우대 후보점수와 케어 동시조건은 독립 계산되며, 어느 쪽도 보험료·인수 결정을 자동 확정하지 않습니다.")}</small>
             <div className={`monthly-care-gate ${selectedRow.care_state === "Care Review" ? "active" : ""}`}>
               <b>{t("케어 동시조건")}</b>
               <span>{tf("이동 {mob} · 위험행동 {risk}", { mob: numberFormatter.format(selectedRow.mobility_change_index_pct ?? 0), risk: numberFormatter.format(selectedRow.risky_behavior_change_index_pct ?? 0) })}</span>
@@ -2025,7 +2033,7 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
       <div className="no-zone-state">
         <MapPinned size={24} />
         <strong>{t("반복 거점 근거가 충분하지 않습니다")}</strong>
-        <p>{t("가짜 중심을 만들지 않고 No Zone으로 유지합니다. Reward와 Care는 판단 보류이며 불이익을 주지 않습니다.")}</p>
+        <p>{t("가짜 중심을 만들지 않고 No Zone으로 유지합니다. 우대와 케어는 판단 보류이며 불이익을 주지 않습니다.")}</p>
       </div>
     );
   }
@@ -2322,7 +2330,7 @@ function deriveEvidenceProfile(_driver: DriverAnnualSummary, snapshot: ZoneSnaps
       : t("위험행동 관찰값도 생활권 안·밖으로 분류하지 않습니다.");
     return {
       headline: t("근거 부족 · 판단 보류"),
-      summary: tf("{month}은 반복 거점 근거가 없어 No Zone입니다. {obs} Reward·Care는 보류하며 위치로 불이익을 주지 않습니다.", { month: snapshot.service_month, obs: riskObservation }),
+      summary: tf("{month}은 반복 거점 근거가 없어 No Zone입니다. {obs} 우대·케어는 보류하며 위치로 불이익을 주지 않습니다.", { month: snapshot.service_month, obs: riskObservation }),
       topDestinations: [],
       outerPattern: t("생활권 안·밖 미분류"),
       riskPattern: t("No Zone · 상품 판단 보류"),
@@ -2525,7 +2533,7 @@ function riskBadgeForDriver(driver: DriverAnnualSummary) {
 function recommendedAction(driver: DriverAnnualSummary, selectedRow?: MonthlyEvidence) {
   if (driver.reward_state === "Hold" || driver.care_state === "Hold") return t("근거 부족 · 판단 보류 · 불이익 없음");
   if (driver.care_state === "Care Review") return t("담당자가 근거 확인 후 비징벌적 Care 여부 검토");
-  if (driver.reward_state === "Reward") return t("Reward 후보 근거 확인");
+  if (driver.reward_state === "Reward") return t("우대 후보 근거 확인");
   if ((selectedRow?.mobility_change_index_pct ?? 0) > 0) return t("변화 추세 관찰 · 자동 조치 없음");
   return t("Neutral 유지");
 }
