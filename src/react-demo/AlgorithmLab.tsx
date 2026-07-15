@@ -103,7 +103,7 @@ export function AlgorithmLabPanel({ preferredDriverId }: { preferredDriverId?: s
   const [lab, setLab] = useState<LabBundle | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [algo, setAlgo] = useState<"dbscan" | "hdbscan">("dbscan");
-  const [epsIndex, setEpsIndex] = useState(1); // 180m
+  const [epsIndex, setEpsIndex] = useState(1); // 도심 운영값(가장 조밀)
   const [minDays, setMinDays] = useState(3);
   const [hdbIndex, setHdbIndex] = useState(0);
 
@@ -112,7 +112,7 @@ export function AlgorithmLabPanel({ preferredDriverId }: { preferredDriverId?: s
   }, []);
 
   const epsGrid = lab?.grids.dbscan.eps_m ?? [];
-  const eps = epsGrid[epsIndex] ?? 180;
+  const eps = epsGrid[epsIndex] ?? 260;
   const hdbCombos = lab?.grids.hdbscan.combos ?? [];
   const hdb = hdbCombos[hdbIndex] ?? { min_cluster_size: 3, min_samples: 2 };
 
@@ -135,7 +135,13 @@ export function AlgorithmLabPanel({ preferredDriverId }: { preferredDriverId?: s
   }, [lab, preferredDriverId]);
 
   const detail = showcaseId ? lab?.showcase_drivers[showcaseId]?.[comboKey] ?? null : null;
-  const inSafeBand = algo === "dbscan" && eps >= 150 && eps <= 500;
+  // Whether the selected eps is an environment's operating value (engine's single
+  // source of truth). A single eps can't be "safe" for all three densities at once,
+  // so we flag which environment this eps is the operating value for rather than a
+  // fixed magic band.
+  const operatingEnv = algo === "dbscan"
+    ? Object.entries(lab?.grids.dbscan.operating_eps_by_env ?? {}).find(([, value]) => Math.round(value) === Math.round(eps))?.[0] ?? null
+    : null;
 
   if (error) {
     return <p className="lab-map-empty">{tf("실험실 데이터를 불러오지 못했습니다: {error}", { error })}</p>;
@@ -149,7 +155,11 @@ export function AlgorithmLabPanel({ preferredDriverId }: { preferredDriverId?: s
       <div className="lab-intro">
         <strong>{t("지역 어댑터 — 밀도가 다른 시장에는 기준 거리(eps) 하나만 다시 맞추면 됩니다. 모델을 새로 만들 필요가 없습니다.")}</strong>
         <p>
-          {t("같은 60명을 도심·교외·광역에 그대로 두고, 각 밀도에 맞춘 DBSCAN(도심 180m · 교외 420m · 광역 950m)으로 다시 군집화한 ")}
+          {tf("같은 60명을 도심·교외·광역에 그대로 두고, 각 밀도에 맞춘 DBSCAN(도심 {dense}m · 교외 {suburban}m · 광역 {wide}m)으로 다시 군집화한 ", {
+            dense: Math.round(lab.grids.dbscan.operating_eps_by_env.dense_urban ?? 260),
+            suburban: Math.round(lab.grids.dbscan.operating_eps_by_env.suburban_mid_density ?? 520),
+            wide: Math.round(lab.grids.dbscan.operating_eps_by_env.wide_low_density ?? 1100)
+          })}
           <b>{t("사전 실측 스냅샷")}</b>
           {t("입니다. eps를 바꿔 보면 어디서부터 서로 다른 목적지가 잘못 합쳐지는지 (과병합)가 드러납니다 — 이것이 ")}
           <b>{t("다른 국가·시장에도 파라미터만 조정해 이식할 수 있다")}</b>
@@ -171,7 +181,7 @@ export function AlgorithmLabPanel({ preferredDriverId }: { preferredDriverId?: s
             <label className="lab-slider">
               <span>
                 {t("기준 거리 eps ")}<strong>{Math.round(eps).toLocaleString("ko-KR")}m</strong>
-                {inSafeBand ? <em className="lab-band-chip ok">{t("실측 안전 구간")}</em> : <em className="lab-band-chip warn">{t("구간 밖 — 지표 확인")}</em>}
+                {operatingEnv ? <em className="lab-band-chip ok">{tf("{env} 운영값", { env: t(ENV_LABELS[operatingEnv] ?? operatingEnv) })}</em> : <em className="lab-band-chip warn">{t("실험값 — 운영 기준 아님")}</em>}
               </span>
               <input
                 type="range"

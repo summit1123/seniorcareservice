@@ -29,18 +29,23 @@ from src.gaip_simulation.clustering import (  # noqa: E402
     haversine_m,
     percentile_nearest_rank,
 )
+from src.gaip_simulation.engine import ENVIRONMENTS  # noqa: E402
 
 CSV_PATH = ROOT / "data" / "fixtures" / "gaip_visit_events.csv"
 OUT_PATH = ROOT / "data" / "fixtures" / "gaip_algorithm_lab.json"
 
-EPS_GRID_M = [100.0, 180.0, 300.0, 420.0, 600.0, 950.0, 1200.0]
+# Operating eps per environment = the engine's single source of truth, so the lab's
+# highlighted "operating value" always matches the eps that generated the dashboard
+# hubs (no drift between the shield and the main screen).
+ENV_OPERATING_EPS = {env: float(cfg["dbscan_eps_m"]) for env, cfg in ENVIRONMENTS.items()}
+# Sweep grid brackets each environment's operating eps AND contains it, so the
+# highlighted point is a real swept row rather than an interpolated claim.
+EPS_GRID_M = sorted({100.0, 300.0, 600.0, 900.0, 1200.0, *ENV_OPERATING_EPS.values()})
 MIN_DAYS_GRID = [2, 3, 5]
 HDBSCAN_GRID = [(3, 2), (3, 3), (5, 2), (5, 3)]  # (min_cluster_size, min_samples)
 CORE_M = 500.0
 CAP_M = 2000.0
 MERGE_TRUTH_MIN_SEP_M = 800.0
-ENV_OPERATING_EPS = {"dense_urban": 180.0, "suburban_mid_density": 420.0,
-                     "wide_low_density": 950.0}
 SHOWCASE_PER_PERSONA = 1  # 페르소나별 대표 1명 + 기본 고객
 
 
@@ -265,7 +270,11 @@ def main():
             "hdbscan_dependency": f"scikit-learn {skv} (사전계산 전용 — 대시보드 런타임 불필요)",
             "coordinate_policy": "운전자 기준점 대비 미터 오프셋(도식) — 원시 위경도 미포함",
             "truth_basis": "합성 생성 라벨(Routine Hub A/B/New Hub) 기준의 과병합·누락",
-            "note": "운영 기준은 환경별 DBSCAN(180/420/950m)이며 이 실험실은 열람·검증용",
+            "note": (
+                "운영 기준은 환경별 DBSCAN("
+                + "/".join(f"{int(ENV_OPERATING_EPS[e])}" for e in ("dense_urban", "suburban_mid_density", "wide_low_density"))
+                + "m)이며 이 실험실은 열람·검증용"
+            ),
         },
         "grids": {
             "dbscan": {"eps_m": EPS_GRID_M, "min_distinct_days": MIN_DAYS_GRID,

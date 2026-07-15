@@ -63,7 +63,7 @@ export function buildReportFeatures(bundle: JsonRecord, driverId: string, monthN
     data_status: "Simulated — 합성 시뮬레이션 근거이며 실제 고객 데이터가 아님",
     report_month: monthKey,
     driver: {
-      id: driver.id,
+      id: driver.driver_id ?? driver.id,
       name: driver.driver_name_ko ?? null,
       age: driver.age ?? null,
       persona: driver.persona_display_name_ko ?? driver.persona_type,
@@ -71,10 +71,10 @@ export function buildReportFeatures(bundle: JsonRecord, driverId: string, monthN
       scenario_variant: driver.scenario_variant ?? "typical"
     },
     annual: {
-      reward_state: driver.reward_state ?? toRecord(driver.annual).reward_state ?? null,
-      care_state: driver.care_state ?? toRecord(driver.annual).care_state ?? null,
+      reward_state: driver.annual_reward_state ?? driver.reward_state ?? toRecord(driver.annual).reward_state ?? null,
+      care_state: driver.annual_care_state ?? driver.care_state ?? toRecord(driver.annual).care_state ?? null,
       korea_reference_discount_rate_pct: tariff.korea_mileage_discount_rate_pct ?? null,
-      proposed_discount_rate_pct: tariff.proposed_discount_rate_pct ?? null
+      proposed_discount_rate_pct: tariff.masil_candidate_discount_rate_pct ?? tariff.proposed_discount_rate_pct ?? null
     },
     selected_month: {
       month: month.month ?? monthKey,
