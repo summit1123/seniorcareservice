@@ -1,6 +1,10 @@
 // 日本語 translations for the MASIL dashboard. Keys are the Korean source
 // strings. Missing keys fall back to Korean.
 const dict: Record<string, string> = {
+  "자택": "自宅",
+  "지표별 영향 분해 · {month}": "指標別の影響分解 · {month}",
+  "설명가능 AI(XAI) + 직원용 리포트": "説明可能AI（XAI）+ 職員用レポート",
+  "설명가능 AI(XAI)가 4개 지표의 영향을 추출하면 LLM이 직원용 설명문으로 바꿉니다. 보험료·인수·케어는 사람이 최종 결정합니다.": "説明可能AI（XAI）が4つの指標それぞれの影響を抽出し、LLMが職員向けの説明文に変換します。保険料・引受・ケアは人が最終決定します。",
   "방문이벤트 기반 실측에서 eps 150~500m가 안정 구간 — 하한 절벽(과소·흔들림), 상한 절벽(800m~ 과병합) 확인": "訪問イベントの実測では eps 150〜500m が安定区間 — 下限の崖（過小・ぶれ）と上限の崖（800m〜の過剰マージ）を確認",
   "기존 마일리지 기준 {rate}%": "既存マイレージ基準 {rate}%",
   "위험 가설": "リスク仮説",

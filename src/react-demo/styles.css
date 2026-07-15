@@ -6696,3 +6696,8 @@ h1, h2, h3 { letter-spacing: -0.014em; }
   font-weight: 600;
 }
 .business-case-line { margin-top: 9px; font-size: 13px; color: var(--muted); }
+
+/* ---- Living-zone map: radial guides + risk-destination halo ---- */
+.geo-guide-ring { fill: none; stroke: var(--line); stroke-width: 1.1; stroke-dasharray: 3 9; opacity: 0.55; }
+.geo-node-halo { fill: color-mix(in srgb, var(--amber) 22%, transparent); }
+.geo-node.risk .geo-node-halo { fill: color-mix(in srgb, var(--danger) 20%, transparent); }

@@ -1376,7 +1376,7 @@ function DecisionPanel({
       </div>
 
       <div className="xai-inspector" aria-label="Reason Code evidence">
-        <span>{tf("XAI 판단 근거 · {month}", { month: zoneMap?.snapshot.service_month ?? tf("{n}월", { n: selectedMonth }) })}</span>
+        <span>{tf("지표별 영향 분해 · {month}", { month: zoneMap?.snapshot.service_month ?? tf("{n}월", { n: selectedMonth }) })}</span>
         {xaiReasons.map((reason) => (
           <div key={reason.label}>
             <strong>{reason.label}</strong>
@@ -1618,8 +1618,8 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
         </div>
         <div>
           <span>AI 3</span>
-          <strong>{t("XAI + 직원용 리포트")}</strong>
-          <p>{t("XAI가 4개 지표의 영향을 추출하면 LLM이 직원용 설명문으로 바꿉니다. 보험료·인수·케어는 사람이 최종 결정합니다.")}</p>
+          <strong>{t("설명가능 AI(XAI) + 직원용 리포트")}</strong>
+          <p>{t("설명가능 AI(XAI)가 4개 지표의 영향을 추출하면 LLM이 직원용 설명문으로 바꿉니다. 보험료·인수·케어는 사람이 최종 결정합니다.")}</p>
         </div>
       </div>
 
@@ -1858,46 +1858,40 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
     .map((group) => ({ group, destination: destinationForType(driver, group.key) }))
     .filter((item): item is { group: TripGroup; destination: Destination } => Boolean(item.destination) && item.group.key !== "home");
   const visibleDestinations = destinations.slice(0, 6);
-  const clusterPoints = snapshot.living_zone.clusters.map((cluster) => ({
-    longitude: cluster.center_longitude,
-    latitude: cluster.center_latitude
-  }));
-  const mapWidth = 900;
-  const mapHeight = 560;
-  const projector = createProjector(
-    [
-      ...(home ? [home] : []),
-      ...visibleDestinations.map((item) => item.destination),
-      ...clusterPoints
-    ],
-    { width: mapWidth, height: mapHeight, marginX: 132, marginY: 96 }
-  );
 
-  const homePoint = home ? projector(home.longitude, home.latitude) : { x: 230, y: 300 };
-  const primaryCluster = snapshot.living_zone.clusters[0];
-  const clusterCenter = primaryCluster ? projector(primaryCluster.center_longitude, primaryCluster.center_latitude) : homePoint;
-  const radialP90M = primaryCluster?.p90_radius_m ?? snapshot.living_zone.buffer.departure_p90_threshold_m;
+  // Home-centred radial schematic (not a real map — coordinates are never
+  // exposed). The residence sits at the centre with its Core (500m) and Buffer
+  // (personal P90) rings; destinations fan out around it: in-zone stops inside
+  // the buffer, out-of-zone stops beyond it. This reads as one legible living
+  // zone instead of a projected "tadpole".
+  const mapWidth = 900;
+  const mapHeight = 520;
+  const center = { x: mapWidth * 0.45, y: mapHeight * 0.48 };
+  const radialP90M = snapshot.living_zone.clusters[0]?.p90_radius_m ?? snapshot.living_zone.buffer.departure_p90_threshold_m;
   const productBufferM = Math.max(500, Math.min(2000, radialP90M));
-  const coreRadius = 48;
-  const p90Radius = Math.max(coreRadius + 8, Math.min(128, productBufferM / 10));
-  const routePath = (point: { x: number; y: number }, index: number) => {
-    const bend = index % 2 === 0 ? -72 : 72;
-    const midX = (homePoint.x + point.x) / 2;
-    const midY = (homePoint.y + point.y) / 2;
-    return `M${homePoint.x} ${homePoint.y} C${midX} ${midY + bend}, ${midX} ${midY - bend}, ${point.x} ${point.y}`;
+  const coreRadius = 58;
+  const bufferRadius = Math.max(coreRadius + 30, Math.min(150, 64 + productBufferM / 15));
+
+  const destCount = Math.max(1, visibleDestinations.length);
+  const arcStart = -Math.PI * 0.82;
+  const arcSpan = Math.PI * 1.42;
+  const routePath = (point: { x: number; y: number }) => {
+    const dx = point.x - center.x;
+    const dy = point.y - center.y;
+    const midX = center.x + dx * 0.5 - dy * 0.1;
+    const midY = center.y + dy * 0.5 + dx * 0.1;
+    return `M${center.x} ${center.y} Q${midX} ${midY}, ${point.x} ${point.y}`;
   };
   const destinationViews = visibleDestinations.map((item, index) => {
-    const rawPoint = projector(item.destination.longitude, item.destination.latitude);
-    const distanceFromHome = Math.hypot(rawPoint.x - homePoint.x, rawPoint.y - homePoint.y);
-    const distanceFromCore = Math.hypot(rawPoint.x - clusterCenter.x, rawPoint.y - clusterCenter.y);
-    const needsSeparation = distanceFromHome < 88 || distanceFromCore < Math.max(82, p90Radius * 0.7);
-    const angle = -1.35 + index * 0.72;
-    const push = needsSeparation ? 72 : 0;
+    const outer = item.destination.living_zone_role === "outer";
+    const angle = destCount === 1 ? -Math.PI * 0.3 : arcStart + (index / (destCount - 1)) * arcSpan;
+    const dist = outer ? bufferRadius + 78 + (index % 3) * 26 : bufferRadius * 0.58;
     return {
       ...item,
+      outer,
       point: {
-        x: Math.max(42, Math.min(mapWidth - 42, rawPoint.x + Math.cos(angle) * push)),
-        y: Math.max(42, Math.min(mapHeight - 42, rawPoint.y + Math.sin(angle) * push))
+        x: Math.max(48, Math.min(mapWidth - 48, center.x + Math.cos(angle) * dist)),
+        y: Math.max(64, Math.min(mapHeight - 64, center.y + Math.sin(angle) * dist))
       }
     };
   });
@@ -1910,71 +1904,75 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
           <stop offset="0%" stopColor="var(--panel-soft)" />
           <stop offset="100%" stopColor="var(--bg)" />
         </linearGradient>
-        <filter id="nodeShadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="8" stdDeviation="8" floodColor="#0f172a" floodOpacity="0.14" />
-        </filter>
+        <radialGradient id="zoneGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="color-mix(in srgb, var(--primary) 15%, transparent)" />
+          <stop offset="100%" stopColor="transparent" />
+        </radialGradient>
       </defs>
       <rect x="0" y="0" width={mapWidth} height={mapHeight} rx="18" />
-      {[110, 185, 260, 335, 410, 485].map((y) => <line key={`h${y}`} className="map-grid" x1="44" y1={y} x2="856" y2={y} />)}
-      {[120, 240, 360, 480, 600, 720].map((x) => <line key={`v${x}`} className="map-grid" x1={x} y1="66" x2={x} y2="516" />)}
-      <path className="map-road arterial" d="M38 405 C195 344 253 384 392 300 S665 190 862 138" />
-      <path className="map-road" d="M78 130 C214 190 324 222 470 232 S708 278 840 376" />
-      <path className="map-road muted" d="M126 502 C236 424 325 366 436 318 S672 283 812 250" />
+      {[bufferRadius + 108, bufferRadius + 48].map((r) => (
+        <circle key={`guide-${r}`} className="geo-guide-ring" cx={center.x} cy={center.y} r={r} />
+      ))}
       <text className="geo-title" x="42" y="42">{t("생활권 판단 지도")}</text>
       <text className="geo-subtitle" x="42" y="63">{t("개념도(축척 아님) · 중심권 500m · 완충권은 개인 P90 반영(최대 2km)")}</text>
 
+      <circle cx={center.x} cy={center.y} r={bufferRadius + 6} fill="url(#zoneGlow)" />
       <g className="geo-core-ring">
-        <circle cx={clusterCenter.x} cy={clusterCenter.y} r={p90Radius} />
-        <circle cx={clusterCenter.x} cy={clusterCenter.y} r={coreRadius} />
-        <text x={clusterCenter.x} y={clusterCenter.y - p90Radius - 10} textAnchor="middle">{t(snapshot.living_zone.clusters[0]?.label_ko ?? "반복 거점 A")}</text>
+        <circle cx={center.x} cy={center.y} r={bufferRadius} />
+        <circle cx={center.x} cy={center.y} r={coreRadius} />
+        <text x={center.x} y={center.y - bufferRadius - 12} textAnchor="middle">{t(snapshot.living_zone.clusters[0]?.label_ko ?? "반복 거점 A")}</text>
       </g>
 
       {snapshot.living_zone.clusters.slice(1).map((cluster, index) => {
-        const point = projector(cluster.center_longitude, cluster.center_latitude);
-        const clusterProductBuffer = Math.max(500, Math.min(2000, cluster.p90_radius_m));
-        const radius = Math.max(coreRadius + 8, Math.min(92, clusterProductBuffer / 11));
+        const secAngle = Math.PI * 0.3;
+        const secDist = bufferRadius + 140;
+        const cx = Math.min(mapWidth - 96, center.x + Math.cos(secAngle) * secDist);
+        const cy = Math.min(mapHeight - 78, center.y + Math.sin(secAngle) * secDist);
+        const secBuffer = Math.max(40, Math.min(78, cluster.p90_radius_m / 16));
         return (
           <g key={cluster.cluster_id} className="geo-cluster">
-            <circle cx={point.x} cy={point.y} r={radius} />
-            <circle cx={point.x} cy={point.y} r={coreRadius} />
-            <text x={point.x} y={point.y - radius - 9} textAnchor="middle">{cluster.label_ko ? t(cluster.label_ko) : tf("반복 거점 {letter}", { letter: String.fromCharCode(66 + index) })}</text>
+            <circle cx={cx} cy={cy} r={secBuffer} />
+            <circle cx={cx} cy={cy} r={Math.min(coreRadius - 6, secBuffer - 12)} />
+            <text x={cx} y={cy - secBuffer - 9} textAnchor="middle">{cluster.label_ko ? t(cluster.label_ko) : tf("반복 거점 {letter}", { letter: String.fromCharCode(66 + index) })}</text>
           </g>
         );
       })}
 
-      {destinationViews.map(({ group, point }, index) => {
+      {destinationViews.map(({ group, point }) => {
         const meta = interpretationClass(group.dominant);
         return (
           <g key={`route-${group.key}`} className="route-layer">
-            <path className="geo-route-shadow" d={routePath(point, index)} />
-            <path className={`geo-route ${meta.className}`} d={routePath(point, index)} />
+            <path className="geo-route-shadow" d={routePath(point)} />
+            <path className={`geo-route ${meta.className}`} d={routePath(point)} />
           </g>
         );
       })}
 
       {home ? (
         <g className="geo-node home">
-          <circle cx={homePoint.x} cy={homePoint.y} r="18" />
-          <text x={homePoint.x} y={homePoint.y - 27} textAnchor="middle">{t("기준 방문점")}</text>
+          <circle cx={center.x} cy={center.y} r="20" />
+          <text x={center.x} y={center.y - 32} textAnchor="middle">{t("자택")}</text>
         </g>
       ) : null}
 
       {destinationViews.map(({ group, point }, index) => {
         const meta = interpretationClass(group.dominant);
+        const risk = group.riskEvents > 0;
         return (
-          <g key={`node-${group.key}`} className={`geo-node ${meta.className}`}>
-            <circle cx={point.x} cy={point.y} r={group.riskEvents > 0 ? 15 : 12} />
+          <g key={`node-${group.key}`} className={`geo-node ${meta.className}${risk ? " risk" : ""}`}>
+            {risk ? <circle className="geo-node-halo" cx={point.x} cy={point.y} r="24" /> : null}
+            <circle cx={point.x} cy={point.y} r={risk ? 15 : 12} />
             <text className="geo-node-index" x={point.x} y={point.y + 4}>{index + 1}</text>
           </g>
         );
       })}
 
-      <g className="geo-badge" transform="translate(42 500)">
+      <g className="geo-badge" transform="translate(42 466)">
         <rect width="318" height="34" rx="9" />
         <text x="13" y="22">{tf("중심권 500m · 완충권 {buffer}m · P90 {p90}m", { buffer: Math.round(productBufferM).toLocaleString("ko-KR"), p90: Math.round(radialP90M).toLocaleString("ko-KR") })}</text>
       </g>
-      <g className="geo-badge risk" transform="translate(374 500)">
-        <rect width="260" height="34" rx="9" />
+      <g className="geo-badge risk" transform="translate(374 466)">
+        <rect width="270" height="34" rx="9" />
         <text x="13" y="22">{tf("생활권 밖 {pct} · 위치 감점 0 · 위험행동 {n}건", { pct: percent(profile.outZoneRatio * 100), n: profile.riskEvents })}</text>
       </g>
       </svg>

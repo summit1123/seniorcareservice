@@ -1,6 +1,10 @@
 // Tiếng Việt translations for the MASIL dashboard. Keys are the Korean source
 // strings. Missing keys fall back to Korean.
 const dict: Record<string, string> = {
+  "자택": "Nhà",
+  "지표별 영향 분해 · {month}": "Phân tích tác động theo chỉ số · {month}",
+  "설명가능 AI(XAI) + 직원용 리포트": "AI giải thích được (XAI) + báo cáo cho nhân viên",
+  "설명가능 AI(XAI)가 4개 지표의 영향을 추출하면 LLM이 직원용 설명문으로 바꿉니다. 보험료·인수·케어는 사람이 최종 결정합니다.": "AI giải thích được (XAI) trích xuất mức ảnh hưởng của từng chỉ số trong bốn chỉ số, rồi LLM chuyển thành phần giải thích cho nhân viên. Phí, thẩm định và chăm sóc do con người quyết định cuối cùng.",
   "방문이벤트 기반 실측에서 eps 150~500m가 안정 구간 — 하한 절벽(과소·흔들림), 상한 절벽(800m~ 과병합) 확인": "Trong đo lường dựa trên sự kiện ghé thăm, eps 150–500m là dải ổn định — đã xác nhận vách dưới (thiếu phân cụm, nhiễu) và vách trên (hợp nhất quá mức từ 800m)",
   "기존 마일리지 기준 {rate}%": "Chuẩn quãng đường hiện hành {rate}%",
   "위험 가설": "Giả thuyết rủi ro",
