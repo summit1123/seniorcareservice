@@ -15,6 +15,8 @@ export interface SandboxDecisionInput {
   careMobilityThreshold: number;
   careRiskThreshold: number;
   rewardDiscount: number;
+  rewardBonusFloor?: number;
+  careDiscountReduction?: number;
   candidateDiscountCap: number;
 }
 
@@ -106,6 +108,8 @@ export function calculateSandboxDecision(input: SandboxDecisionInput): SandboxRe
     careMobilityThreshold,
     careRiskThreshold,
     rewardDiscount,
+    rewardBonusFloor = 1,
+    careDiscountReduction = 0,
     candidateDiscountCap
   } = input;
   const normalizedWeights = normalizeProductWeights(weights);
@@ -171,8 +175,21 @@ export function calculateSandboxDecision(input: SandboxDecisionInput): SandboxRe
   if (careReviewEligible) reasonCodes.push("HUMAN_CARE_REVIEW_SUGGESTED");
 
   const koreaMileageRate = driver.tariff?.korea_mileage_discount_rate_pct ?? 0;
-  const rewardBonus = rewardEligible ? clamp(rewardDiscount, 0, 50) : 0;
-  const proposedDiscount = Math.min(clamp(candidateDiscountCap, 0, 100), koreaMileageRate + rewardBonus);
+  // Reward bonus scales with the integrated score: floor at the reward threshold,
+  // max at 100 — so a stronger driver earns a visibly larger discount. Mirrors the
+  // backend pricing_sandbox exactly. Care cases take the leakage-prevention
+  // reduction instead of a bonus.
+  const bonusMax = clamp(rewardDiscount, 0, 50);
+  const bonusFloor = clamp(rewardBonusFloor, 0, bonusMax);
+  const scoreSpan = Math.max(1, 100 - rewardThreshold);
+  const scoreFrac = clamp((score - rewardThreshold) / scoreSpan, 0, 1);
+  const rewardBonus = rewardEligible && !careReviewEligible ? bonusFloor + scoreFrac * (bonusMax - bonusFloor) : 0;
+  const careReduction = careReviewEligible ? clamp(careDiscountReduction, 0, 100) : 0;
+  const proposedDiscount = clamp(
+    Math.min(clamp(candidateDiscountCap, 0, 100), koreaMileageRate + rewardBonus - careReduction),
+    0,
+    100
+  );
   const basePremium = driver.tariff?.base_premium_krw;
   const holdReason = rewardState === "Hold"
     ? evaluation.length === 0

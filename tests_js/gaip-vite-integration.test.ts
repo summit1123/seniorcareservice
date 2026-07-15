@@ -73,7 +73,7 @@ test("live Vite boundary blocks host bypass and all raw data while serving an al
   assert.equal(api.headers["x-content-type-options"], "nosniff");
   const dto = JSON.parse(api.body);
   assert.equal(dto.metadata.synthetic_data, true);
-  assert.equal(dto.drivers.length, 60);
+  assert.equal(dto.drivers.length, 180);
   assert.equal(dto.metadata.source_artifacts, undefined);
   const serialized = api.body.toLowerCase();
   for (const forbidden of [

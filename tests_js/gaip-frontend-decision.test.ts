@@ -116,17 +116,38 @@ test("Care requires mobility and risky-behavior changes in the same eligible mon
   assert.ok(result.reason_codes.includes("SAME_MONTH_CARE_GATE_NOT_MET"));
 });
 
-test("Reward and Care can both be true and Reward bonus remains independent", () => {
+test("Reward and Care are independent axes, and Care routes pricing to the reduction", () => {
   const months = Array.from({ length: 12 }, (_, index) => month(index));
   months[6] = month(6, { mobility_change_index_pct: 40, risky_behavior_change_index_pct: 30 });
-  const result = decide(months);
+  const result = decide(months, { careDiscountReduction: 13 });
 
+  // Both axes fire independently.
   assert.equal(result.reward_state, "Reward");
   assert.equal(result.care_state, "Care Review");
   assert.equal(result.outcome, "Reward + Care Review");
-  assert.equal(result.proposed_discount_rate_pct, 43);
   assert.equal(result.reward_month_count, 12);
   assert.equal(result.care_review_month_count, 1);
+  // A Care case takes the leakage-prevention reduction instead of the safe-driver
+  // bonus: korea 40% − 13pp reduction, no bonus.
+  assert.equal(result.proposed_discount_rate_pct, 27);
+});
+
+test("Reward bonus scales with the integrated safety score", () => {
+  const highScore = decide(
+    Array.from({ length: 12 }, (_, index) =>
+      month(index, { mileage_score: 100, in_zone_safe_score: 100, out_zone_safe_score: 100, pattern_stability_score: 100 })
+    )
+  );
+  const lowScore = decide(
+    Array.from({ length: 12 }, (_, index) =>
+      month(index, { mileage_score: 76, in_zone_safe_score: 76, out_zone_safe_score: 76, pattern_stability_score: 76 })
+    )
+  );
+
+  assert.equal(highScore.reward_state, "Reward");
+  assert.equal(lowScore.reward_state, "Reward");
+  // A stronger safety score earns a strictly larger proposed discount.
+  assert.ok(highScore.proposed_discount_rate_pct > lowScore.proposed_discount_rate_pct);
 });
 
 test("missing out-zone evidence is N/A and observed weights are renormalized", () => {
@@ -254,7 +275,7 @@ test("monthly normalization preserves missing safety evidence as null", () => {
   assert.equal(normalized.out_zone_trip_count, 0);
 });
 
-test("default UI calculation matches the generated backend decision for all 60 drivers", () => {
+test("default UI calculation matches the generated backend decision for all 180 driver cases", () => {
   const raw = JSON.parse(readFileSync("data/fixtures/gaip_simulation_bundle.json", "utf8")) as {
     drivers: Array<Record<string, unknown>>;
   };
@@ -271,7 +292,7 @@ test("default UI calculation matches the generated backend decision for all 60 d
     hold: "Hold"
   };
 
-  assert.equal(bundle.drivers.length, 60);
+  assert.equal(bundle.drivers.length, 180);
   for (const driverItem of bundle.drivers) {
     const source = sourceById.get(driverItem.id);
     assert.ok(source, driverItem.id);

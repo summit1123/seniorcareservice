@@ -15,10 +15,13 @@ from src.gaip_simulation import (
 )
 from src.gaip_simulation.clustering import dbscan_distinct_days, haversine_m
 from src.gaip_simulation.engine import (
-    KOREAN_SENIOR_NAME_POOL,
-    PERSONA_HUB_LABELS,
+    APPROVED_HUB_LABELS_KO,
+    HOME_ZONE_LABEL_KO,
+    NEW_HUB_LABELS_KO,
     _annual_state,
+    _new_hub_label_ko,
     _safety_score,
+    _secondary_zone_label_ko,
 )
 from src.product.mileage_discount_table import PERSONAL_PASSENGER_GENERAL
 
@@ -46,25 +49,37 @@ class TestGaipSimulation(unittest.TestCase):
         self.assertEqual(artifact["sha256"], hashlib.sha256(RAW_VISIT_EVENTS_PATH.read_bytes()).hexdigest())
         self.assertNotIn("visit_events", regenerated)
 
-    def test_cohort_has_sixty_drivers_six_personas_and_balanced_environments(self) -> None:
+    def test_cohort_has_sixty_persons_six_designed_types_across_three_environments(self) -> None:
         drivers = self.bundle["drivers"]
-        self.assertEqual(len(drivers), 60)
-        self.assertEqual(set(Counter(driver["persona_type"] for driver in drivers).values()), {10})
+        # 60 unique synthetic people, each simulated in 3 mobility environments.
+        self.assertEqual(len(drivers), 180)
+        self.assertEqual(len({driver["person_id"] for driver in drivers}), 60)
+        self.assertEqual(self.bundle["cohort"]["driver_count"], 180)
+        self.assertEqual(self.bundle["cohort"]["persona_count"], 6)
+        # 6 region-neutral behaviour archetypes, 30 cases each (10 people x 3 env).
+        self.assertEqual(set(Counter(driver["designed_type"] for driver in drivers).values()), {30})
         self.assertEqual(
             Counter(driver["environment_id"] for driver in drivers),
             Counter({
-                "dense_urban": 20,
-                "suburban_mid_density": 20,
-                "wide_low_density": 20,
+                "dense_urban": 60,
+                "suburban_mid_density": 60,
+                "wide_low_density": 60,
             }),
         )
-        for persona_type in self.bundle["cohort"]["persona_counts"]:
+        # Each behaviour archetype is balanced across the three environments.
+        for designed_type in self.bundle["cohort"]["designed_type_counts"]:
             distribution = Counter(
                 driver["environment_id"]
                 for driver in drivers
-                if driver["persona_type"] == persona_type
+                if driver["designed_type"] == designed_type
             )
-            self.assertEqual(sorted(distribution.values()), [3, 3, 4], persona_type)
+            self.assertEqual(sorted(distribution.values()), [10, 10, 10], designed_type)
+        # Every person appears in each environment exactly once.
+        per_person = defaultdict(list)
+        for driver in drivers:
+            per_person[driver["person_id"]].append(driver["environment_id"])
+        for person_id, environments in per_person.items():
+            self.assertEqual(sorted(environments), sorted(ENVIRONMENTS), person_id)
 
     def test_each_driver_has_two_baseline_and_twelve_evaluation_months(self) -> None:
         for driver in self.bundle["drivers"]:
@@ -78,17 +93,22 @@ class TestGaipSimulation(unittest.TestCase):
         drivers = self.bundle["drivers"]
         self.assertEqual(
             Counter(driver["dataset_partition"] for driver in drivers),
-            Counter({"development": 30, "validation": 18, "holdout": 12}),
+            Counter({"development": 108, "validation": 36, "holdout": 36}),
         )
-        for partition, per_persona, per_environment in (
-            ("development", 5, 10),
-            ("validation", 3, 6),
-            ("holdout", 2, 4),
+        for partition, per_designed_type, per_environment in (
+            ("development", 18, 36),
+            ("validation", 6, 12),
+            ("holdout", 6, 12),
         ):
             subset = [driver for driver in drivers if driver["dataset_partition"] == partition]
-            self.assertEqual(set(Counter(driver["persona_type"] for driver in subset).values()), {per_persona})
+            self.assertEqual(set(Counter(driver["designed_type"] for driver in subset).values()), {per_designed_type})
             self.assertEqual(set(Counter(driver["environment_id"] for driver in subset).values()), {per_environment})
             self.assertEqual(self.bundle["portfolio_results"]["partition_summaries"][partition]["driver_count"], len(subset))
+        # A person and all three of their environment cases share one partition.
+        person_partitions = defaultdict(set)
+        for driver in drivers:
+            person_partitions[driver["person_id"]].add(driver["dataset_partition"])
+        self.assertTrue(all(len(partitions) == 1 for partitions in person_partitions.values()))
 
     def test_one_visit_event_per_trip_and_repeated_visits_are_preserved_across_dates(self) -> None:
         events = self.visit_events
@@ -115,21 +135,16 @@ class TestGaipSimulation(unittest.TestCase):
             "병원", "약국", "자녀", "자택", "마트", "경로당", "복지관", "시장",
         ):
             self.assertNotIn(forbidden, raw_csv)
-        # Policy change (2026-07): the summary bundle may carry synthetic
-        # semantic hub labels, but only values from the approved
-        # PERSONA_HUB_LABELS union; English place-code tokens stay forbidden.
+        # Policy: the summary bundle may carry synthetic semantic hub labels, but
+        # only values from the approved APPROVED_HUB_LABELS_KO union; English
+        # place-code tokens stay forbidden.
         serialized = json.dumps(self.bundle, ensure_ascii=False).lower()
         for forbidden in ("hospital", "clinic", "pharmacy", "child_house", "family_home"):
             self.assertNotIn(forbidden, serialized)
-        approved_labels = {
-            label
-            for labels in PERSONA_HUB_LABELS.values()
-            for label in labels.values()
-        }
         for driver in self.bundle["drivers"]:
             for hub in driver["mobility"]["routine_hubs"]:
-                self.assertIn(hub["display_label_ko"], approved_labels, driver["driver_id"])
-            self.assertIn(driver["mobility"]["new_hub_label_ko"], approved_labels, driver["driver_id"])
+                self.assertIn(hub["display_label_ko"], APPROVED_HUB_LABELS_KO, driver["driver_id"])
+            self.assertIn(driver["mobility"]["new_hub_label_ko"], APPROVED_HUB_LABELS_KO, driver["driver_id"])
 
     def test_synthetic_naming_fields_are_deterministic_and_clearly_synthetic(self) -> None:
         self.assertEqual(
@@ -137,23 +152,32 @@ class TestGaipSimulation(unittest.TestCase):
             "이름·나이·장소 라벨은 전원 합성(실존 인물·장소 아님)",
         )
         drivers = self.bundle["drivers"]
-        names = [driver["driver_name_ko"] for driver in drivers]
-        self.assertEqual(len(names), len(set(names)), "driver names must be unique")
-        self.assertTrue(set(names).issubset(set(KOREAN_SENIOR_NAME_POOL)))
+        # A name belongs to a person; that person's three environment cases share
+        # it, so names are unique across the 60 people, not the 180 cases.
+        names_by_person = {driver["person_id"]: driver["driver_name_ko"] for driver in drivers}
+        self.assertEqual(len(names_by_person), 60)
+        self.assertEqual(len(set(names_by_person.values())), 60, "person names must be unique")
         for driver in drivers:
+            self.assertEqual(driver["driver_name_ko"], names_by_person[driver["person_id"]])
+            self.assertTrue(driver["driver_name_ko"].strip())
             self.assertIsInstance(driver["age"], int)
             self.assertGreaterEqual(driver["age"], 66)
             self.assertLessEqual(driver["age"], 84)
-            persona_labels = PERSONA_HUB_LABELS[driver["persona_type"]]
             for hub in driver["mobility"]["routine_hubs"]:
-                self.assertEqual(
-                    hub["display_label_ko"],
-                    persona_labels[hub["display_label"]],
-                    driver["driver_id"],
+                expected = (
+                    HOME_ZONE_LABEL_KO
+                    if hub["display_label"] == "Routine Hub A"
+                    else _secondary_zone_label_ko(driver)
                 )
+                self.assertEqual(hub["display_label_ko"], expected, driver["driver_id"])
             self.assertEqual(
                 driver["mobility"]["new_hub_label_ko"],
-                persona_labels["New Hub"],
+                _new_hub_label_ko(driver),
+                driver["driver_id"],
+            )
+            self.assertEqual(
+                driver["mobility"]["new_hub_label_ko"],
+                NEW_HUB_LABELS_KO[driver["designed_type"]],
                 driver["driver_id"],
             )
 
@@ -286,14 +310,13 @@ class TestGaipSimulation(unittest.TestCase):
                 self.assertLessEqual(row["risky_behavior_change_index"], 1.0)
 
     def test_mobility_only_change_does_not_reduce_pattern_stability_or_reward_score(self) -> None:
-        typical_drivers = [
+        mobility_drivers = [
             driver
             for driver in self.bundle["drivers"]
-            if driver["persona_type"] == "mobility_change_only"
-            and driver["scenario_variant"] == "typical"
+            if driver["designed_type"] == "mobility_change_safe"
         ]
-        self.assertTrue(typical_drivers)
-        for driver in typical_drivers:
+        self.assertTrue(mobility_drivers)
+        for driver in mobility_drivers:
             changed = [
                 row
                 for row in driver["monthly_results"]
@@ -306,7 +329,7 @@ class TestGaipSimulation(unittest.TestCase):
 
     def test_mobility_only_change_does_not_trigger_care(self) -> None:
         mobility_drivers = [
-            driver for driver in self.bundle["drivers"] if driver["persona_type"] == "mobility_change_only"
+            driver for driver in self.bundle["drivers"] if driver["designed_type"] == "mobility_change_safe"
         ]
         self.assertTrue(mobility_drivers)
         for driver in mobility_drivers:
@@ -320,7 +343,7 @@ class TestGaipSimulation(unittest.TestCase):
 
     def test_mobility_and_risky_behavior_cochange_can_trigger_care_review(self) -> None:
         cochange_drivers = [
-            driver for driver in self.bundle["drivers"] if driver["persona_type"] == "mobility_risk_cochange"
+            driver for driver in self.bundle["drivers"] if driver["designed_type"] == "mobility_risk_cochange"
         ]
         self.assertTrue(cochange_drivers)
         for driver in cochange_drivers:
@@ -331,47 +354,51 @@ class TestGaipSimulation(unittest.TestCase):
             )
 
     def test_persona_behavior_contract_is_visible_in_annual_states(self) -> None:
-        by_persona: dict[str, list[dict[str, object]]] = defaultdict(list)
+        # Behaviour archetypes drive a *tendency* in the emergent annual states —
+        # never a hand-set outcome. Reward/Care are computed from the simulated
+        # evidence, so the contract is expressed as majority tendencies (and the
+        # two hard structural gates: negative control and co-change care).
+        by_type: dict[str, list[dict[str, object]]] = defaultdict(list)
         for driver in self.bundle["drivers"]:
-            if driver["scenario_variant"] == "typical":
-                by_persona[driver["persona_type"]].append(driver)
-        self.assertTrue(all(driver["annual_reward_state"] == "reward" for driver in by_persona["stable_local_safe"]))
-        self.assertTrue(all(driver["annual_reward_state"] == "neutral" for driver in by_persona["low_mileage_risky"]))
-        self.assertTrue(all(driver["annual_care_state"] == "none" for driver in by_persona["mobility_change_only"]))
+            by_type[driver["designed_type"]].append(driver)
+
+        def reward_share(designed_type: str) -> float:
+            group = by_type[designed_type]
+            return sum(driver["annual_reward_state"] == "reward" for driver in group) / len(group)
+
+        # Stable low-mileage safe drivers tend to earn the reward tier.
+        self.assertGreater(reward_share("stable_reward"), 0.5)
+        # In-zone risky behaviour tends to fall out of the reward tier.
+        self.assertLess(reward_share("in_zone_risky"), 0.5)
+        # Hard gate — mobility-only change is a Care negative control (never Care).
         self.assertTrue(
-            all(driver["annual_care_state"] == "care_review" for driver in by_persona["mobility_risk_cochange"])
+            all(driver["annual_care_state"] == "none" for driver in by_type["mobility_change_safe"])
+        )
+        # Hard gate — same-month mobility AND risky-behaviour co-change reaches Care.
+        self.assertTrue(
+            all(driver["annual_care_state"] == "care_review" for driver in by_type["mobility_risk_cochange"])
         )
 
-    def test_explicit_no_zone_and_low_coverage_variants_reach_hold_end_to_end(self) -> None:
-        variants = Counter(driver["scenario_variant"] for driver in self.bundle["drivers"])
-        self.assertEqual(
-            variants,
-            Counter({"typical": 58, "no_zone_evidence_gap": 1, "low_data_coverage": 1}),
-        )
-        no_zone = next(
-            driver
-            for driver in self.bundle["drivers"]
-            if driver["scenario_variant"] == "no_zone_evidence_gap"
-        )
-        low_coverage = next(
-            driver
-            for driver in self.bundle["drivers"]
-            if driver["scenario_variant"] == "low_data_coverage"
-        )
-        self.assertEqual(no_zone["mobility"]["zone_status"], "insufficient")
-        self.assertEqual(no_zone["mobility"]["repeated_hub_count"], 0)
-        self.assertEqual(no_zone["annual_reward_state"], "hold")
-        self.assertEqual(no_zone["annual_care_state"], "hold")
-        self.assertTrue(no_zone["scenario_label"])
-        self.assertLess(low_coverage["data_coverage_pct"], self.bundle["product_rules"]["min_data_coverage_pct"])
-        self.assertEqual(low_coverage["annual_reward_state"], "hold")
-        self.assertEqual(low_coverage["annual_care_state"], "hold")
-        self.assertTrue(low_coverage["scenario_label"])
-        for driver in (no_zone, low_coverage):
+    def test_sparse_evidence_individuals_reach_hold_end_to_end_without_penalty(self) -> None:
+        # A few sparse-data people (too little coverage to judge) surface Hold
+        # naturally — never manufactured, never penalised for driving location.
+        sparse_drivers = [driver for driver in self.bundle["drivers"] if driver["data_quality"] == "sparse"]
+        self.assertTrue(sparse_drivers)
+        minimum_coverage = self.bundle["product_rules"]["min_data_coverage_pct"]
+        for driver in sparse_drivers:
+            self.assertEqual(driver["annual_reward_state"], "hold", driver["driver_id"])
+            self.assertEqual(driver["annual_care_state"], "hold", driver["driver_id"])
             evaluation = [row for row in driver["monthly_results"] if row["period_role"] == "evaluation"]
+            self.assertTrue(all(row["data_coverage_pct"] < minimum_coverage for row in evaluation))
             self.assertTrue(all(row["reward_state"] == "hold" for row in evaluation))
             self.assertTrue(all(row["care_state"] == "hold" for row in evaluation))
             self.assertTrue(all(row["location_penalty"] == 0.0 for row in evaluation))
+        # Hold is confined to the sparse individuals; nothing else is held.
+        held = [driver for driver in self.bundle["drivers"] if driver["annual_reward_state"] == "hold"]
+        self.assertEqual(
+            {driver["driver_id"] for driver in held},
+            {driver["driver_id"] for driver in sparse_drivers},
+        )
 
     def test_annual_reward_required_months_is_declared_and_applied(self) -> None:
         required_months = self.bundle["product_rules"]["reward_required_months"]
@@ -446,8 +473,10 @@ class TestGaipSimulation(unittest.TestCase):
         allowed = set(contract["allowed_inputs"])
         excluded = set(contract["generation_only_fields_excluded"])
         self.assertTrue(allowed.isdisjoint(excluded))
-        self.assertIn("scenario_variant", excluded)
-        self.assertIn("scenario_label", excluded)
+        # The generation-truth labels (the archetype and its designed type) must
+        # never be scoring inputs — they are validation-only tags.
+        self.assertIn("designed_type", excluded)
+        self.assertIn("archetype_id", excluded)
         self.assertIn("not_fit_to_any_partition", self.bundle["product_rules"]["rule_origin"])
         reason_codes = {
             reason
@@ -455,7 +484,9 @@ class TestGaipSimulation(unittest.TestCase):
             for month in driver["monthly_results"]
             for reason in month["reason_codes"]
         }
-        self.assertFalse(any(token in reason for reason in reason_codes for token in ("PERSONA", "EXPECTED", "SCENARIO_TRUTH")))
+        self.assertFalse(
+            any(token in reason for reason in reason_codes for token in ("PERSONA", "DESIGNED", "ARCHETYPE", "EXPECTED"))
+        )
         leakage_check = next(
             check
             for check in self.bundle["validation_results"]["checks"]

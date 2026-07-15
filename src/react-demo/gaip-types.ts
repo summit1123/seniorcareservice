@@ -163,6 +163,8 @@ export interface ProductRules {
   care_mobility_change_threshold: number;
   care_risky_behavior_threshold: number;
   reward_discount_rate_pct?: number;
+  reward_bonus_floor_pct?: number;
+  care_discount_reduction_pct?: number;
   candidate_discount_cap_pct?: number;
 }
 

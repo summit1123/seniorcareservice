@@ -7,6 +7,7 @@
  * 이 화면에서 바뀌지 않습니다. 모든 수치는 합성(Simulated)입니다.
  */
 import { useEffect, useMemo, useState } from "react";
+import { t, tf } from "./i18n";
 
 type LabAggregateRow = {
   param_1: number;
@@ -65,7 +66,7 @@ function fmt(value: number | null | undefined, suffix = "%") {
 }
 
 function LabMap({ detail }: { detail: LabComboDetail | null }) {
-  if (!detail) return <p className="lab-map-empty">이 조합의 대표 사례 스냅샷이 없습니다.</p>;
+  if (!detail) return <p className="lab-map-empty">{t("이 조합의 대표 사례 스냅샷이 없습니다.")}</p>;
   const geo = detail.geometry;
   const xs = geo.points.map((p) => p.x_m).concat(geo.clusters.map((c) => c.x_m));
   const ys = geo.points.map((p) => p.y_m).concat(geo.clusters.map((c) => c.y_m));
@@ -81,7 +82,7 @@ function LabMap({ detail }: { detail: LabComboDetail | null }) {
   const scale = size / span;
 
   return (
-    <svg viewBox={`0 0 ${size} ${size}`} className="lab-map" role="img" aria-label="선택한 설정의 생활권 스냅샷(도식)">
+    <svg viewBox={`0 0 ${size} ${size}`} className="lab-map" role="img" aria-label={t("선택한 설정의 생활권 스냅샷(도식)")}>
       {geo.clusters.map((c, i) => (
         <g key={`c${i}`}>
           <circle cx={sx(c.x_m)} cy={sy(c.y_m)} r={Math.max(6, c.buffer_m * scale)} className="lab-buffer" />
@@ -92,7 +93,7 @@ function LabMap({ detail }: { detail: LabComboDetail | null }) {
         <circle key={`p${i}`} cx={sx(p.x_m)} cy={sy(p.y_m)} r={2.6} className="lab-visit" />
       ))}
       <text x={8} y={size - 8} className="lab-map-note">
-        도식(축척 유지) · 기준선 2개월 방문점 {geo.points.length}개 · 거점 {geo.clusters.length}개
+        {tf("도식(축척 유지) · 기준선 2개월 방문점 {points}개 · 거점 {clusters}개", { points: geo.points.length, clusters: geo.clusters.length })}
       </text>
     </svg>
   );
@@ -137,39 +138,40 @@ export function AlgorithmLabPanel({ preferredDriverId }: { preferredDriverId?: s
   const inSafeBand = algo === "dbscan" && eps >= 150 && eps <= 500;
 
   if (error) {
-    return <p className="lab-map-empty">실험실 데이터를 불러오지 못했습니다: {error}</p>;
+    return <p className="lab-map-empty">{tf("실험실 데이터를 불러오지 못했습니다: {error}", { error })}</p>;
   }
   if (!lab) {
-    return <p className="lab-map-empty">사전계산 실험 결과를 불러오는 중입니다…</p>;
+    return <p className="lab-map-empty">{t("사전계산 실험 결과를 불러오는 중입니다…")}</p>;
   }
 
   return (
-    <div className="algorithm-lab" aria-label="알고리즘 실험실">
+    <div className="algorithm-lab" aria-label={t("알고리즘 실험실")}>
       <div className="lab-intro">
-        <strong>기준 거리(eps)·최소 방문일수를 사람이 정해야 한다는 것이 이 상품의 핵심 결정 문제입니다.</strong>
+        <strong>{t("지역 어댑터 — 밀도가 다른 시장에는 기준 거리(eps) 하나만 다시 맞추면 됩니다. 모델을 새로 만들 필요가 없습니다.")}</strong>
         <p>
-          아래 값은 실시간 계산이 아니라 <b>사전에 실측해 둔 스냅샷</b>입니다. 값을 바꿔 보면 같은 60명의
-          생활권이 어떻게 달라지는지, 어디부터 서로 다른 목적지가 잘못 합쳐지는지(과병합) 확인할 수 있습니다.
-          운영 기준은 환경별 DBSCAN(도심 180m · 교외 420m · 광역 950m)으로 고정돼 있으며, HDBSCAN은 고정
-          eps의 한계를 검증하는 <b>비교 후보의 실측 결과</b>입니다.
+          {t("같은 60명을 도심·교외·광역에 그대로 두고, 각 밀도에 맞춘 DBSCAN(도심 180m · 교외 420m · 광역 950m)으로 다시 군집화한 ")}
+          <b>{t("사전 실측 스냅샷")}</b>
+          {t("입니다. eps를 바꿔 보면 어디서부터 서로 다른 목적지가 잘못 합쳐지는지 (과병합)가 드러납니다 — 이것이 ")}
+          <b>{t("다른 국가·시장에도 파라미터만 조정해 이식할 수 있다")}</b>
+          {t("는 근거입니다. HDBSCAN은 고정 eps의 한계를 검증하는 비교 후보의 실측 결과입니다.")}
         </p>
       </div>
 
-      <div className="lab-controls" role="group" aria-label="실험 설정">
+      <div className="lab-controls" role="group" aria-label={t("실험 설정")}>
         <div className="lab-algo-toggle">
           <button type="button" className={algo === "dbscan" ? "active" : ""} onClick={() => setAlgo("dbscan")}>
-            DBSCAN · 운영 기준 계열
+            {t("DBSCAN · 운영 기준 계열")}
           </button>
           <button type="button" className={algo === "hdbscan" ? "active" : ""} onClick={() => setAlgo("hdbscan")}>
-            HDBSCAN · 비교 후보 실측
+            {t("HDBSCAN · 비교 후보 실측")}
           </button>
         </div>
         {algo === "dbscan" ? (
           <>
             <label className="lab-slider">
               <span>
-                기준 거리 eps <strong>{Math.round(eps).toLocaleString("ko-KR")}m</strong>
-                {inSafeBand ? <em className="lab-band-chip ok">실측 안전 구간</em> : <em className="lab-band-chip warn">구간 밖 — 지표 확인</em>}
+                {t("기준 거리 eps ")}<strong>{Math.round(eps).toLocaleString("ko-KR")}m</strong>
+                {inSafeBand ? <em className="lab-band-chip ok">{t("실측 안전 구간")}</em> : <em className="lab-band-chip warn">{t("구간 밖 — 지표 확인")}</em>}
               </span>
               <input
                 type="range"
@@ -186,11 +188,11 @@ export function AlgorithmLabPanel({ preferredDriverId }: { preferredDriverId?: s
               </div>
             </label>
             <label className="lab-mindays">
-              <span>최소 방문일수(서로 다른 날)</span>
+              <span>{t("최소 방문일수(서로 다른 날)")}</span>
               <div className="lab-chip-row">
                 {(lab.grids.dbscan.min_distinct_days ?? [2, 3, 5]).map((value) => (
                   <button key={value} type="button" className={value === minDays ? "active" : ""} onClick={() => setMinDays(value)}>
-                    {value}일
+                    {value}{t("일")}
                   </button>
                 ))}
               </div>
@@ -198,7 +200,7 @@ export function AlgorithmLabPanel({ preferredDriverId }: { preferredDriverId?: s
           </>
         ) : (
           <label className="lab-mindays">
-            <span>HDBSCAN 설정 (최소 무리 크기 · 이웃 수)</span>
+            <span>{t("HDBSCAN 설정 (최소 무리 크기 · 이웃 수)")}</span>
             <div className="lab-chip-row">
               {hdbCombos.map((combo, index) => (
                 <button key={`${combo.min_cluster_size}-${combo.min_samples}`} type="button" className={index === hdbIndex ? "active" : ""} onClick={() => setHdbIndex(index)}>
@@ -212,29 +214,29 @@ export function AlgorithmLabPanel({ preferredDriverId }: { preferredDriverId?: s
 
       <div className="lab-body">
         <div className="lab-map-card">
-          <span className="lab-card-title">대표 사례 생활권 스냅샷 {showcaseId ? `· ${showcaseId}` : ""}</span>
+          <span className="lab-card-title">{t("대표 사례 생활권 스냅샷 ")}{showcaseId ? `· ${showcaseId}` : ""}</span>
           <LabMap detail={detail} />
           {detail ? (
             <div className="lab-map-kpis">
-              <span>거점 {detail.n_hubs}개</span>
-              <span>소음 {fmt(detail.noise_pct)}</span>
-              <span>커버리지 {fmt(detail.coverage_pct)}</span>
-              {detail.merged_pairs > 0 ? <span className="warn">과병합 {detail.merged_pairs}쌍</span> : <span>과병합 없음</span>}
+              <span>{tf("거점 {n}개", { n: detail.n_hubs })}</span>
+              <span>{tf("소음 {value}", { value: fmt(detail.noise_pct) })}</span>
+              <span>{tf("커버리지 {value}", { value: fmt(detail.coverage_pct) })}</span>
+              {detail.merged_pairs > 0 ? <span className="warn">{tf("과병합 {pairs}쌍", { pairs: detail.merged_pairs })}</span> : <span>{t("과병합 없음")}</span>}
             </div>
           ) : null}
         </div>
 
         <div className="lab-table-card">
-          <span className="lab-card-title">환경별 60명 집계 — 같은 설정을 세 환경에 적용한 결과</span>
+          <span className="lab-card-title">{t("환경별 60명 집계 — 같은 설정을 세 환경에 적용한 결과")}</span>
           <table className="lab-table">
             <thead>
               <tr>
-                <th>이동환경</th>
-                <th>커버리지</th>
-                <th>소음</th>
-                <th>과병합</th>
-                <th>정기거점 누락</th>
-                <th>평균 거점 수</th>
+                <th>{t("이동환경")}</th>
+                <th>{t("커버리지")}</th>
+                <th>{t("소음")}</th>
+                <th>{t("과병합")}</th>
+                <th>{t("정기거점 누락")}</th>
+                <th>{t("평균 거점 수")}</th>
               </tr>
             </thead>
             <tbody>
@@ -243,23 +245,21 @@ export function AlgorithmLabPanel({ preferredDriverId }: { preferredDriverId?: s
                 return (
                   <tr key={row.environment_id} className={operating ? "operating" : ""}>
                     <td>
-                      {ENV_LABELS[row.environment_id] ?? row.environment_id}
-                      {operating ? <em> · 운영값</em> : null}
+                      {t(ENV_LABELS[row.environment_id] ?? row.environment_id)}
+                      {operating ? <em>{t(" · 운영값")}</em> : null}
                     </td>
                     <td>{fmt(row.mean_coverage_pct)}</td>
                     <td>{fmt(row.mean_noise_pct)}</td>
                     <td>{fmt(row.overmerge_pct)}</td>
                     <td>{fmt(row.repeat_hub_miss_pct)}</td>
-                    <td>{fmt(row.mean_hub_count, "개")}</td>
+                    <td>{fmt(row.mean_hub_count, t("개"))}</td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
           <p className="lab-footnote">
-            {lab.prior_experiment_reference.safe_band_note} (선행 실험 {lab.prior_experiment_reference.run_ids.join(" · ")}).
-            과병합·누락의 정답 기준은 합성 생성 라벨이며, 모든 수치는 Simulated입니다. 알고리즘 채택·교체는 이 화면이
-            아니라 사람 검토(모델 리스크·상품)로 결정합니다.
+            {t(lab.prior_experiment_reference.safe_band_note)}{t(" (선행 실험 ")}{lab.prior_experiment_reference.run_ids.join(" · ")}{t("). 과병합·누락의 정답 기준은 합성 생성 라벨이며, 모든 수치는 Simulated입니다. 알고리즘 채택·교체는 이 화면이 아니라 사람 검토(모델 리스크·상품)로 결정합니다.")}
           </p>
         </div>
       </div>

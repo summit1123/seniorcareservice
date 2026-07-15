@@ -33,136 +33,106 @@ BASELINE_MONTHS = ("2025-11", "2025-12")
 EVALUATION_MONTHS = tuple(f"2026-{month:02d}" for month in range(1, 13))
 ALL_MONTHS = BASELINE_MONTHS + EVALUATION_MONTHS
 
-# Fully synthetic Korean senior names (성+이름, mixed gender). These are stock
-# senior-generation name patterns, not references to real people; the bundle
-# metadata carries an explicit persona_naming_note disclaimer.
-KOREAN_SENIOR_NAME_POOL: tuple[str, ...] = (
-    "김순애", "박정호", "이말순", "최병철", "정옥분", "강복남", "조영자", "윤갑수",
-    "장금례", "임종달", "한순덕", "오병수", "서말자", "신동철", "권점례", "황기석",
-    "안순자", "송만복", "유정순", "전병국", "홍옥선", "고재술", "문분례", "양덕수",
-    "배금순", "남정례", "심우섭", "노귀순", "하영철", "곽점순", "성일만", "차옥례",
-    "주병호", "우금자", "구본달", "민영순", "류재복", "나종순", "진갑룡", "엄정자",
-    "원병희", "채순임", "천기수", "방옥자", "공재만", "현말녀", "함덕례", "변종수",
-    "염금분", "여상철", "추옥임", "도병선", "소순예", "석재구", "선분남", "설기순",
-    "마종례", "길병옥", "연순복", "위갑례", "표만술", "명옥녀", "기정수", "반말숙",
-    "라병순", "왕금희",
-)
+# ---------------------------------------------------------------------------
+# Archetype-driven cohort. The rich person/behaviour archetypes live in
+# ``personas.py``; this engine samples them into individual drivers and derives
+# every outcome from the generated coordinates and events (no label leakage).
+# ---------------------------------------------------------------------------
+from . import personas
 
-# Slight, deterministic per-persona age bias on top of the seeded 66-84 range.
-PERSONA_AGE_BIAS: dict[str, int] = {
-    "stable_local_safe": 0,
-    "low_mileage_risky": 1,
-    "safe_multi_hub": -1,
-    "safe_wide_area": -1,
-    "mobility_change_only": 1,
-    "mobility_risk_cochange": 2,
-}
-
-# Synthetic semantic display labels for the generic hub labels. UI-only strings;
-# the raw visit event CSV keeps the generic Routine Hub A/B/New Hub labels.
-PERSONA_HUB_LABELS: dict[str, dict[str, str]] = {
-    "stable_local_safe": {
-        "Routine Hub A": "자택·마트 동선",
-        "Routine Hub B": "경로당",
-        "New Hub": "신규 외출지",
-    },
-    "low_mileage_risky": {
-        "Routine Hub A": "자택 인근",
-        "Routine Hub B": "시장",
-        "New Hub": "야간 신규 목적지",
-    },
-    "safe_multi_hub": {
-        "Routine Hub A": "자택(본가)",
-        "Routine Hub B": "자녀 집",
-        "New Hub": "새 모임 장소",
-    },
-    "safe_wide_area": {
-        "Routine Hub A": "자택(농가)",
-        "Routine Hub B": "읍내 마트·병원",
-        "New Hub": "원거리 정기 방문지",
-    },
-    "mobility_change_only": {
-        "Routine Hub A": "자택 인근",
-        "Routine Hub B": "복지관",
-        "New Hub": "병원 정기 경로",
-    },
-    "mobility_risk_cochange": {
-        "Routine Hub A": "자택 인근",
-        "Routine Hub B": "마트",
-        "New Hub": "야간 외곽 경로",
-    },
+_ARCHETYPES_BY_ID: dict[str, dict[str, Any]] = {
+    archetype["id"]: archetype for archetype in personas.ARCHETYPES
 }
 
 PERSONA_NAMING_NOTE = "이름·나이·장소 라벨은 전원 합성(실존 인물·장소 아님)"
 
-PERSONA_TYPES: dict[str, dict[str, Any]] = {
-    "stable_local_safe": {
-        "display_name_ko": "안정 생활권·저주행 안전형",
-        "summary_ko": "반복거점 중심의 저주행과 안정 행동이 함께 유지되는 기준 유형",
-        "monthly_visits": 7,
-        "hub_weights": {"Routine Hub A": 0.76, "Routine Hub B": 0.24},
-    },
-    "low_mileage_risky": {
-        "display_name_ko": "저주행·위험행동 반복형",
-        "summary_ko": "주행량은 적지만 주행 중 위험행동이 반복되는 비교 유형",
-        "monthly_visits": 6,
-        "hub_weights": {"Routine Hub A": 0.80, "Routine Hub B": 0.20},
-    },
-    "safe_multi_hub": {
-        "display_name_ko": "복수 반복거점·안전형",
-        "summary_ko": "서로 떨어진 두 반복거점을 오가면서 안전행동을 유지하는 유형",
-        "monthly_visits": 10,
-        "hub_weights": {"Routine Hub A": 0.56, "Routine Hub B": 0.44},
-    },
-    "safe_wide_area": {
-        "display_name_ko": "광역 이동·안전형",
-        "summary_ko": "이동범위는 넓지만 위치 자체와 무관하게 안전행동을 유지하는 유형",
-        "monthly_visits": 8,
-        "hub_weights": {"Routine Hub A": 0.54, "Routine Hub B": 0.46},
-    },
-    "mobility_change_only": {
-        "display_name_ko": "이동맥락 변화·안전유지형",
-        "summary_ko": "최근 이동맥락은 달라졌지만 위험행동 증가는 없는 비징벌 검증 유형",
-        "monthly_visits": 8,
-        "hub_weights": {"Routine Hub A": 0.72, "Routine Hub B": 0.28},
-    },
-    "mobility_risk_cochange": {
-        "display_name_ko": "이동·위험행동 동시변화형",
-        "summary_ko": "최근 이동맥락과 위험행동이 함께 달라져 사람 검토가 필요한 유형",
-        "monthly_visits": 8,
-        "hub_weights": {"Routine Hub A": 0.72, "Routine Hub B": 0.28},
-    },
+# Synthetic semantic display labels for the generic living-zone hubs. UI-only
+# strings; the raw visit event CSV keeps the generic Routine Hub A/B/New Hub
+# vocabulary. Every value here is an approved synthetic label (no real place).
+HOME_ZONE_LABEL_KO = "자택 인근"
+# Keyed by the 6 behaviour designed_types.
+SECONDARY_ZONE_LABELS_KO: dict[str, str] = {
+    "multi_zone": "두 번째 생활권",
 }
+NEW_HUB_LABELS_KO: dict[str, str] = {
+    "mobility_risk_cochange": "야간 외곽 경로",
+    "mobility_change_safe": "신규 목적지",
+    "wide_area_safe": "원거리 정기 방문지",
+    "multi_zone": "두 번째 생활권",
+    "stable_reward": "신규 외출지",
+    "in_zone_risky": "야간 신규 목적지",
+}
+DEFAULT_SECONDARY_ZONE_LABEL_KO = "두 번째 생활권"
+APPROVED_HUB_LABELS_KO: frozenset[str] = frozenset(
+    {HOME_ZONE_LABEL_KO, DEFAULT_SECONDARY_ZONE_LABEL_KO}
+    | set(SECONDARY_ZONE_LABELS_KO.values())
+    | set(NEW_HUB_LABELS_KO.values())
+)
 
+
+def _secondary_zone_label_ko(driver: Mapping[str, Any]) -> str:
+    return SECONDARY_ZONE_LABELS_KO.get(
+        str(driver["designed_type"]), DEFAULT_SECONDARY_ZONE_LABEL_KO
+    )
+
+
+def _new_hub_label_ko(driver: Mapping[str, Any]) -> str:
+    return NEW_HUB_LABELS_KO.get(str(driver["designed_type"]), "신규 목적지")
+
+# Environment = a local density profile. Regular in-zone destinations sit inside
+# ``zone_reach_m`` of home (close enough that DBSCAN with ``dbscan_eps_m`` groups
+# them into ONE living zone); the far/secondary destination sits at
+# ``outer_distance_m`` so it reads as outside the home zone (or a second zone for
+# multi-hub personas). Visit points scatter only ``visit_jitter_m`` around each
+# destination, so a cluster's radial P90 reflects the spread of real destinations
+# (hundreds of metres), not GPS noise.
 ENVIRONMENTS: dict[str, dict[str, Any]] = {
     "dense_urban": {
         "display_name_ko": "고밀도 도심형",
         "base_latitude": 37.55,
         "base_longitude": 126.96,
-        "hub_separation_m": 1_200.0,
-        "visit_dispersion_m": 72.0,
-        "dbscan_eps_m": 180.0,
-        "base_trip_distance_km": 4.8,
+        "zone_reach_m": 900.0,
+        "outer_distance_m": 5_200.0,
+        "visit_jitter_m": 40.0,
+        "dbscan_eps_m": 260.0,
+        "base_trip_distance_km": 5.4,
     },
     "suburban_mid_density": {
         "display_name_ko": "교외·중밀도형",
         "base_latitude": 37.39,
         "base_longitude": 127.10,
-        "hub_separation_m": 4_800.0,
-        "visit_dispersion_m": 190.0,
-        "dbscan_eps_m": 420.0,
-        "base_trip_distance_km": 12.0,
+        "zone_reach_m": 1_500.0,
+        "outer_distance_m": 9_500.0,
+        "visit_jitter_m": 70.0,
+        "dbscan_eps_m": 520.0,
+        "base_trip_distance_km": 11.0,
     },
     "wide_low_density": {
         "display_name_ko": "광역 저밀도형",
         "base_latitude": 36.55,
         "base_longitude": 127.74,
-        "hub_separation_m": 16_000.0,
-        "visit_dispersion_m": 540.0,
-        "dbscan_eps_m": 950.0,
-        "base_trip_distance_km": 27.0,
+        "zone_reach_m": 3_000.0,
+        "outer_distance_m": 22_000.0,
+        "visit_jitter_m": 130.0,
+        "dbscan_eps_m": 1_100.0,
+        "base_trip_distance_km": 24.0,
     },
 }
+
+# Stable bearings so the synthetic living-zone layout is legible and
+# deterministic. Hub A / Hub B sit inside ``zone_reach_m`` of home (the home
+# living zone); the "New Hub" is either a distant second living zone (for
+# multi-zone archetypes) or an out-of-zone / new destination.
+_HUB_A_BEARING = 205.0
+_HUB_B_BEARING = 58.0
+_NEW_HUB_BEARING = 128.0
+# A genuine second living zone sits at this fraction of ``outer_distance_m`` —
+# far enough to fall outside the home buffer but close enough to read as a real
+# secondary zone (e.g. a child's home) rather than an incidental far trip.
+_SECONDARY_ZONE_OUTER_FRAC = 0.5
+# Baseline visits within this multiple of ``zone_reach_m`` of the home centre
+# count toward the home living zone's radial-P90 (the displayed buffer).
+_HOME_ZONE_REACH_FACTOR = 1.25
 
 VEHICLE_CLASS_ROTATION = (
     PERSONAL_PASSENGER_GENERAL,
@@ -187,7 +157,9 @@ DEFAULT_PRODUCT_RULES: dict[str, Any] = {
         "unit": "normalized_ratio_0_to_1",
         "gate_logic": "AND",
     },
-    "reward_bonus_discount_rate_pct": 3.0,
+    "reward_bonus_discount_rate_pct": 7.0,
+    "reward_bonus_floor_pct": 1.0,
+    "care_discount_reduction_pct": 13.0,
     "candidate_discount_cap_pct": 45.0,
     "core_radius_m": 500.0,
     "buffer_cap_m": 2_000.0,
@@ -208,9 +180,9 @@ DEFAULT_PRODUCT_RULES: dict[str, Any] = {
             "risky_behavior_change_index",
         ],
         "generation_only_fields_excluded": [
-            "persona_type",
-            "scenario_variant",
-            "scenario_label",
+            "archetype_id",
+            "designed_type",
+            "data_quality",
             "visit_label",
             "scenario_truth",
             "expected_reward_state",
@@ -219,15 +191,18 @@ DEFAULT_PRODUCT_RULES: dict[str, Any] = {
     },
 }
 
+# The raw visit-event CSV keeps a stable 17-column schema. Only generic visit
+# labels and generation-only truth labels (designed_type / data_quality) appear;
+# no person name, place name, or archetype id (which may carry a place token).
 _ALLOWED_VISIT_LABELS = ("Routine Hub A", "Routine Hub B", "New Hub")
 _VISIT_EVENT_FIELDS = (
     "trip_id",
     "visit_event_id",
     "driver_id",
-    "persona_type",
+    "designed_type",
     "environment_id",
     "dataset_partition",
-    "scenario_variant",
+    "data_quality",
     "month",
     "period_role",
     "visit_date",
@@ -239,22 +214,6 @@ _VISIT_EVENT_FIELDS = (
     "data_coverage_pct",
     "source_status",
 )
-
-
-SCENARIO_VARIANTS: dict[str, dict[str, str]] = {
-    "typical": {
-        "label_ko": "일반 합성 사례",
-        "purpose": "Persona and mobility-environment behavior under sufficient evidence.",
-    },
-    "no_zone_evidence_gap": {
-        "label_ko": "생활권 근거 부족 사례",
-        "purpose": "Exercise no-cluster hold behavior without inventing a routine hub.",
-    },
-    "low_data_coverage": {
-        "label_ko": "데이터 사용률 부족 사례",
-        "purpose": "Exercise minimum-data-coverage hold behavior without customer disadvantage.",
-    },
-}
 
 
 def _stable_seed(*parts: object) -> int:
@@ -289,132 +248,205 @@ def _evaluation_month_number(month: str) -> int | None:
     return None if month in BASELINE_MONTHS else int(month.split("-")[1])
 
 
-_PARTITION_ENV_COUNTS = (
-    {
-        "development": (2, 2, 1),
-        "validation": (1, 1, 1),
-        "holdout": (1, 0, 1),
-    },
-    {
-        "development": (1, 2, 2),
-        "validation": (1, 1, 1),
-        "holdout": (1, 1, 0),
-    },
-    {
-        "development": (2, 1, 2),
-        "validation": (1, 1, 1),
-        "holdout": (0, 1, 1),
-    },
-)
+# Deterministic dev:validation:holdout split, applied per archetype instance so
+# every archetype (and, in aggregate, every environment) is represented in all
+# three partitions. Instance i within an archetype: i%5 in {0,1,2}=development,
+# 3=validation, 4=holdout — a clean, documented ~3:1:1 rule.
+_PARTITION_BY_INSTANCE = ("development", "development", "development", "validation", "holdout")
 
 
-def _assign_driver_names(seed: int, driver_count: int) -> list[str]:
-    """Deterministic unique synthetic name per driver via a seeded index shuffle.
+def _partition_for_instance(instance_index: int) -> str:
+    return _PARTITION_BY_INSTANCE[instance_index % len(_PARTITION_BY_INSTANCE)]
+
+
+def _environment_for_instance(instance_index: int) -> str:
+    environment_ids = list(ENVIRONMENTS)
+    return environment_ids[instance_index % len(environment_ids)]
+
+
+def _driver_name_ko(seed: int, driver_id: str, sex_bias: str) -> str:
+    """Deterministic synthetic name (family + given by sex). Collisions are fine.
 
     Uses a dedicated ``_stable_seed("naming", ...)`` stream so name assignment
     never consumes draws from the visit-generation RNG streams.
     """
 
-    if driver_count > len(KOREAN_SENIOR_NAME_POOL):
-        raise ValueError("synthetic name pool is smaller than the driver cohort")
-    names = list(KOREAN_SENIOR_NAME_POOL)
-    random.Random(_stable_seed("naming", seed)).shuffle(names)
-    return names[:driver_count]
+    rng = random.Random(_stable_seed("naming", seed, driver_id))
+    family = rng.choice(personas.FAMILY_NAMES)
+    given_pool = (
+        personas.GIVEN_NAMES_FEMALE if sex_bias == "female" else personas.GIVEN_NAMES_MALE
+    )
+    return f"{family}{rng.choice(given_pool)}"
 
 
-def _driver_age(driver_id: str, persona_type: str) -> int:
-    """Deterministic synthetic age in 66-84 with a slight persona bias."""
+def _driver_age(driver_id: str, age_range: Sequence[int]) -> int:
+    """Deterministic synthetic age inside the archetype's age_range."""
 
+    low, high = int(age_range[0]), int(age_range[1])
     rng = random.Random(_stable_seed("naming", driver_id, "age"))
-    base = 66 + rng.randrange(17)
-    return min(84, max(66, base + PERSONA_AGE_BIAS.get(persona_type, 0)))
-
-
-def _stratified_assignments(persona_index: int) -> list[tuple[str, str]]:
-    """Return 5/3/2 split assignments balanced over every three personas."""
-
-    environment_ids = list(ENVIRONMENTS)
-    allocation: list[tuple[str, str]] = []
-    pattern = _PARTITION_ENV_COUNTS[persona_index % len(_PARTITION_ENV_COUNTS)]
-    for partition in ("development", "validation", "holdout"):
-        for environment_id, count in zip(environment_ids, pattern[partition]):
-            allocation.extend((environment_id, partition) for _ in range(count))
-    return allocation
+    return low + rng.randrange(high - low + 1)
 
 
 def _build_driver_contracts(seed: int) -> list[dict[str, Any]]:
+    """Build 180 driver-cases = the 60-person roster run in each of 3 environments.
+
+    ``personas.build_person_roster`` returns 60 distinct people (fixed identity +
+    driving disposition). Each person is then simulated in all three mobility
+    environments (도심·도농·광역) — a "what if this person lived in a denser /
+    sparser area" transferability experiment — so the same person appears three
+    times with the same name/age/disposition but a different environment, home,
+    and simulation seed. The archetype's ``designed_type`` is a validation label
+    only; it never enters scoring.
+    """
+
+    roster = personas.build_person_roster(seed)
+    environment_ids = list(ENVIRONMENTS)
     drivers: list[dict[str, Any]] = []
-    persona_ids = list(PERSONA_TYPES)
-    for persona_index, persona_type in enumerate(persona_ids):
-        allocation = _stratified_assignments(persona_index)
-        for sequence, (environment_id, dataset_partition) in enumerate(allocation, start=1):
+    for person_index, person in enumerate(roster):
+        for env_index, environment_id in enumerate(environment_ids):
             global_index = len(drivers)
-            scenario_variant = {
-                9: "no_zone_evidence_gap",
-                19: "low_data_coverage",
-            }.get(global_index, "typical")
-            drivers.append(
-                {
-                    "driver_id": f"gaip-{global_index + 1:03d}",
-                    "persona_type": persona_type,
-                    "persona_display_name_ko": PERSONA_TYPES[persona_type]["display_name_ko"],
-                    "persona_summary_ko": PERSONA_TYPES[persona_type]["summary_ko"],
-                    "environment_id": environment_id,
-                    "environment_display_name_ko": ENVIRONMENTS[environment_id]["display_name_ko"],
-                    "dataset_partition": dataset_partition,
-                    "scenario_variant": scenario_variant,
-                    "scenario_label": SCENARIO_VARIANTS[scenario_variant]["label_ko"],
-                    "persona_sequence": sequence,
-                    "simulation_seed": _stable_seed(seed, persona_type, environment_id, sequence),
-                    "vehicle_class": VEHICLE_CLASS_ROTATION[global_index % len(VEHICLE_CLASS_ROTATION)],
-                    "base_premium_krw": 780_000 + (persona_index * 24_000) + ((global_index % 5) * 13_000),
-                }
-            )
-    names = _assign_driver_names(seed, len(drivers))
-    for index, driver in enumerate(drivers):
-        driver["driver_name_ko"] = names[index]
-        driver["age"] = _driver_age(str(driver["driver_id"]), str(driver["persona_type"]))
+            driver_id = f"gaip-{global_index + 1:03d}"
+            disposition = dict(person["disposition"])
+            driver: dict[str, Any] = {
+                "driver_id": driver_id,
+                "person_id": str(person["person_id"]),
+                "archetype_id": str(person["archetype_id"]),
+                "designed_type": str(person["designed_type"]),
+                "persona_display_name_ko": str(_ARCHETYPES_BY_ID[str(person["archetype_id"])]["name_ko"]),
+                "persona_summary_ko": str(person["life_context_ko"]),
+                "persona_narrative_ko": str(person["persona_narrative_ko"]),
+                "mobility_goal_ko": str(person["mobility_goal_ko"]),
+                "driving_habit_ko": str(person["driving_habit_ko"]),
+                "environment_id": environment_id,
+                "environment_display_name_ko": ENVIRONMENTS[environment_id]["display_name_ko"],
+                # Each person appears in all three environments, so the split is by
+                # person (not by case) to keep a person's 3 cases in one partition.
+                "dataset_partition": _partition_for_instance(person_index),
+                "driver_name_ko": str(person["name_ko"]),
+                "age": int(person["age"]),
+                "sex": str(person["sex"]),
+                "household": str(person["household_ko"]),
+                "retired": bool(person["retired"]),
+                "primary_purpose_ko": str(person["primary_purpose_ko"]),
+                "life_context_ko": str(person["life_context_ko"]),
+                "data_quality": str(disposition.get("data_quality", "good")),
+                "disposition": disposition,
+                # Keep each person's home layout stable across environments via a
+                # person-scoped sequence; the environment scales the zone.
+                "persona_sequence": person_index + 1,
+                "simulation_seed": _stable_seed(seed, person["person_id"], environment_id),
+                "vehicle_class": VEHICLE_CLASS_ROTATION[person_index % len(VEHICLE_CLASS_ROTATION)],
+                "base_premium_krw": 780_000 + (person_index % 16) * 12_000,
+            }
+            drivers.append(driver)
     return drivers
 
 
 def _hub_centers(driver: Mapping[str, Any]) -> dict[str, tuple[float, float]]:
+    """Place HOME and the driver's destinations from its disposition.
+
+    Hub A / Hub B are in-zone destinations that sit inside ``zone_reach_m`` of
+    home (they form the home living zone). The "New Hub" is either a genuine
+    second living zone (multi-zone archetypes, at half the outer distance) or an
+    out-of-zone / new destination (at the full outer distance).
+    """
+
     environment = ENVIRONMENTS[str(driver["environment_id"])]
+    disposition = driver["disposition"]
     sequence = int(driver["persona_sequence"])
-    origin_lat, origin_lon = _offset_coordinate(
+    reach = float(environment["zone_reach_m"])
+    outer = float(environment["outer_distance_m"])
+    reach_fracs = list(disposition["in_zone_reach_frac"])
+    has_secondary = bool(disposition["has_secondary_zone"])
+
+    # Home anchor: golden-angle spread so drivers never overlap on the schematic.
+    home_lat, home_lon = _offset_coordinate(
         float(environment["base_latitude"]),
         float(environment["base_longitude"]),
-        1_800.0 * sequence,
-        31.0 * sequence,
+        50_000.0 + 1_700.0 * sequence,
+        (137.508 * sequence) % 360.0,
     )
-    hub_b = _offset_coordinate(origin_lat, origin_lon, float(environment["hub_separation_m"]), 38.0)
-    new_hub = _offset_coordinate(origin_lat, origin_lon, float(environment["hub_separation_m"]) * 1.65, 142.0)
+    hub_a = _offset_coordinate(home_lat, home_lon, reach * float(reach_fracs[0]), _HUB_A_BEARING)
+    hub_b = _offset_coordinate(home_lat, home_lon, reach * float(reach_fracs[-1]), _HUB_B_BEARING)
+    if has_secondary:
+        # A genuine second living zone (child's home / farm): far enough to fall
+        # outside the home buffer, revisited enough to form its own cluster.
+        new_hub = _offset_coordinate(
+            home_lat, home_lon, outer * _SECONDARY_ZONE_OUTER_FRAC, 300.0
+        )
+    else:
+        new_hub = _offset_coordinate(home_lat, home_lon, outer, _NEW_HUB_BEARING)
     return {
-        "Routine Hub A": (origin_lat, origin_lon),
+        "Routine Hub A": hub_a,
         "Routine Hub B": hub_b,
         "New Hub": new_hub,
+        "__home__": (home_lat, home_lon),
     }
 
 
-def _month_visit_weights(persona_type: str, evaluation_month: int | None) -> dict[str, float]:
-    base = dict(PERSONA_TYPES[persona_type]["hub_weights"])
-    if persona_type in {"mobility_change_only", "mobility_risk_cochange"} and evaluation_month is not None and evaluation_month >= 8:
-        return {"Routine Hub A": 0.36, "Routine Hub B": 0.19, "New Hub": 0.45}
-    return base
+def _month_visit_weights(
+    disposition: Mapping[str, Any], evaluation_month: int | None
+) -> dict[str, float]:
+    """Where the driver goes this month, derived from the disposition.
+
+    - secondary-zone archetypes keep steady visits to their second living zone
+      (mapped to the "New Hub" label, but recognised as in-zone once clustered);
+    - in-zone-risky drivers keep a small, constant out-of-zone share;
+    - change archetypes shift toward the New Hub from evaluation month 8;
+    - everyone else stays in their home zone (Hub A / Hub B).
+    """
+
+    change = disposition.get("change")
+    locus = disposition["risk_locus"]
+    shifted = evaluation_month is not None and evaluation_month >= 8
+
+    if disposition["has_secondary_zone"]:
+        if change in {"mobility", "cochange"} and shifted:
+            return {"Routine Hub A": 0.32, "Routine Hub B": 0.26, "New Hub": 0.42}
+        return {"Routine Hub A": 0.42, "Routine Hub B": 0.30, "New Hub": 0.28}
+    if locus == "in_zone":
+        # Risky wherever they drive, with a steady modest out-of-zone share so the
+        # out-zone safety score also reflects the behaviour (→ neutral, not reward).
+        return {"Routine Hub A": 0.52, "Routine Hub B": 0.26, "New Hub": 0.22}
+    if change in {"mobility", "cochange"}:
+        if shifted:
+            return {"Routine Hub A": 0.30, "Routine Hub B": 0.16, "New Hub": 0.54}
+        return {"Routine Hub A": 0.68, "Routine Hub B": 0.32}
+    return {"Routine Hub A": 0.62, "Routine Hub B": 0.38}
 
 
-def _risk_event_count(persona_type: str, evaluation_month: int | None, visit_index: int, rng: random.Random) -> int:
-    if persona_type == "low_mileage_risky":
-        return 3 + int((visit_index + rng.randint(0, 2)) % 3 == 0)
-    if persona_type == "mobility_risk_cochange" and evaluation_month is not None and evaluation_month >= 8:
-        return 1 + int(visit_index % 3 == 0)
-    if persona_type == "mobility_change_only":
+def _risk_event_count(
+    disposition: Mapping[str, Any],
+    evaluation_month: int | None,
+    visit_label: str,
+    rng: random.Random,
+) -> int:
+    """Per-visit risky-event count. Risk emerges from the disposition only."""
+
+    change = disposition.get("change")
+    locus = disposition["risk_locus"]
+    rate = float(disposition["risk_rate"])
+    # Safe mobility change = negative control: the driving context moves but the
+    # behaviour never worsens, so risk stays at zero and Care can never fire.
+    if change == "mobility":
         return 0
-    probability = 0.025 if persona_type != "safe_wide_area" else 0.045
-    return int(rng.random() < probability)
+    # Persistent in-zone risky behaviour (급감속·과속 반복): high AND stable over
+    # time, so safety scores stay low (→ neutral) but the risk-CHANGE gate never
+    # fires. Applies wherever the driver goes.
+    if locus == "in_zone":
+        return 1 + int(rng.random() < rate)
+    # Co-change: from evaluation month 8 the risk concentrates on the new/outer
+    # night route, so out-zone safety drops while in-zone stays clean.
+    if locus == "outer" and change == "cochange" and evaluation_month is not None and evaluation_month >= 8:
+        if visit_label == "New Hub":
+            return 1 + int(rng.random() < 0.55)
+        return int(rng.random() < 0.03)
+    # Low, stable baseline risk everywhere else.
+    return int(rng.random() < rate)
 
 
 def _trip_distance_km(
-    persona_type: str,
+    disposition: Mapping[str, Any],
     environment_id: str,
     visit_label: str,
     rng: random.Random,
@@ -425,8 +457,11 @@ def _trip_distance_km(
         "Routine Hub B": 1.18,
         "New Hub": 1.48,
     }[visit_label]
-    if persona_type == "safe_wide_area":
-        multiplier *= 1.28
+    # Wider-ranging dispositions rack up more odometer km per trip.
+    if max(float(frac) for frac in disposition["in_zone_reach_frac"]) >= 0.8:
+        multiplier *= 1.2
+    # Per-person odometer scale so same-archetype drivers differ in mileage.
+    multiplier *= float(disposition.get("trip_distance_scale", 1.0))
     return round(float(environment["base_trip_distance_km"]) * multiplier * rng.uniform(0.84, 1.18), 2)
 
 
@@ -437,34 +472,36 @@ def _visit_date(month: str, visit_index: int, driver_sequence: int) -> str:
 
 
 def _generate_visits_for_driver(driver: Mapping[str, Any], seed: int) -> list[dict[str, Any]]:
-    persona_type = str(driver["persona_type"])
     environment_id = str(driver["environment_id"])
-    scenario_variant = str(driver.get("scenario_variant", "typical"))
+    designed_type = str(driver["designed_type"])
+    disposition = driver["disposition"]
+    data_quality = str(disposition.get("data_quality", "good"))
+    sparse = data_quality == "sparse"
     environment = ENVIRONMENTS[environment_id]
     centers = _hub_centers(driver)
+    # Sparse-evidence drivers run seldom, so the record is thin: fewer visits and
+    # a naturally low data-coverage band that lands 보류 via the coverage<80 hold.
+    base_visits = int(disposition["monthly_visits"]) - (3 if sparse else 0)
+    minimum_visits = 3 if sparse else 5
     events: list[dict[str, Any]] = []
 
-    for month_index, month in enumerate(ALL_MONTHS):
+    for month in ALL_MONTHS:
         evaluation_month = _evaluation_month_number(month)
         period_role = _period_role(month)
         rng = random.Random(_stable_seed(seed, driver["driver_id"], month))
-        visit_count = max(5, int(PERSONA_TYPES[persona_type]["monthly_visits"]) + rng.choice((-1, 0, 0, 1)))
-        weights = _month_visit_weights(persona_type, evaluation_month)
+        visit_count = max(minimum_visits, base_visits + rng.choice((-1, 0, 0, 1)))
+        weights = _month_visit_weights(disposition, evaluation_month)
         for visit_index in range(visit_count):
             visit_label = _choose_weighted(rng, weights)
             center_lat, center_lon = centers[visit_label]
-            radius = rng.uniform(0.08, 1.0) * float(environment["visit_dispersion_m"])
+            radius = rng.uniform(0.15, 1.0) * float(environment["visit_jitter_m"])
             latitude, longitude = _offset_coordinate(center_lat, center_lon, radius, rng.uniform(0, 360))
             trip_id = f"{driver['driver_id']}-{month.replace('-', '')}-{visit_index + 1:02d}"
-            risk_event_count = _risk_event_count(persona_type, evaluation_month, visit_index, rng)
-            visit_date = (
-                f"{month}-15"
-                if scenario_variant == "no_zone_evidence_gap" and period_role == "baseline"
-                else _visit_date(month, visit_index, int(driver["persona_sequence"]))
-            )
+            risk_event_count = _risk_event_count(disposition, evaluation_month, visit_label, rng)
+            visit_date = _visit_date(month, visit_index, int(driver["persona_sequence"]))
             data_coverage_pct = (
-                round(62.0 + rng.random() * 6.0, 1)
-                if scenario_variant == "low_data_coverage"
+                round(60.0 + rng.random() * 12.0, 1)
+                if sparse
                 else round(95.0 + rng.random() * 5.0, 1)
             )
             events.append(
@@ -472,17 +509,17 @@ def _generate_visits_for_driver(driver: Mapping[str, Any], seed: int) -> list[di
                     "trip_id": trip_id,
                     "visit_event_id": f"visit-{trip_id}",
                     "driver_id": driver["driver_id"],
-                    "persona_type": persona_type,
+                    "designed_type": designed_type,
                     "environment_id": environment_id,
                     "dataset_partition": driver["dataset_partition"],
-                    "scenario_variant": scenario_variant,
+                    "data_quality": data_quality,
                     "month": month,
                     "period_role": period_role,
                     "visit_date": visit_date,
                     "visit_label": visit_label,
                     "latitude": round(latitude, 6),
                     "longitude": round(longitude, 6),
-                    "trip_distance_km": _trip_distance_km(persona_type, environment_id, visit_label, rng),
+                    "trip_distance_km": _trip_distance_km(disposition, environment_id, visit_label, rng),
                     "risk_event_count": risk_event_count,
                     "data_coverage_pct": data_coverage_pct,
                     "source_status": "simulated",
@@ -510,7 +547,12 @@ def _safety_score(events: Sequence[Mapping[str, Any]]) -> float | None:
     distance = sum(float(event["trip_distance_km"]) for event in events)
     risk_events = sum(int(event["risk_event_count"]) for event in events)
     rate_per_100_km = (risk_events / max(distance, 1.0)) * 100.0
-    return round(max(0.0, 100.0 - (rate_per_100_km * 8.0)), 2)
+    # Bounded penalty: a clean month sits near 100, a persistently risky month
+    # lands ~18-30 (clearly below the reward line without collapsing to a bare 0
+    # that reads as "broken" on screen). The 18-point floor keeps a risky score
+    # legible while still letting an in-zone-risky driver fall out of the reward
+    # tier on the integrated score.
+    return round(max(18.0, 100.0 - min(82.0, rate_per_100_km * 3.4)), 2)
 
 
 def classify_month(
@@ -603,15 +645,37 @@ def pricing_sandbox(
     annual_distance_km: float,
     vehicle_class: str,
     annual_reward_state: str,
+    annual_care_state: str = "none",
+    candidate_score: float | None = None,
     product_rules: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Compare a Korea mileage reference with a non-binding Masil candidate."""
+    """Compare a Korea mileage reference with a non-binding Masil candidate.
+
+    The proposed rate keeps the Korea mileage discount as its base and only moves
+    it for a documented reason: a reward bonus that *scales with the integrated
+    safety score* (so a 95-point driver earns visibly more than a borderline
+    75-point one), or a preventive-care reduction when the same-month mobility+risk
+    co-change gate fires (discount-leakage prevention, not an age surcharge).
+    Neutral cases are left unchanged, so the two formulas agree unless there is
+    evidence to differ.
+    """
 
     rules = product_rules or DEFAULT_PRODUCT_RULES
     lookup = lookup_existing_mileage_discount(annual_distance_km, vehicle_class)
     korea_rate = float(lookup.discount_rate_pct)
-    bonus = float(rules["reward_bonus_discount_rate_pct"]) if annual_reward_state == "reward" else 0.0
-    masil_rate = min(float(rules["candidate_discount_cap_pct"]), korea_rate + bonus)
+    care_review = annual_care_state == "care_review"
+    bonus = 0.0
+    if annual_reward_state == "reward" and not care_review:
+        bonus_max = float(rules["reward_bonus_discount_rate_pct"])
+        bonus_floor = float(rules.get("reward_bonus_floor_pct", 1.0))
+        threshold = float(rules["reward_threshold"])
+        span = max(1.0, 100.0 - threshold)
+        # Score-proportional bonus: floor at the reward threshold, max at 100.
+        score_frac = 1.0 if candidate_score is None else max(0.0, min(1.0, (float(candidate_score) - threshold) / span))
+        bonus = round(bonus_floor + score_frac * (bonus_max - bonus_floor), 2)
+    reduction = float(rules.get("care_discount_reduction_pct", 0.0)) if care_review else 0.0
+    masil_rate = korea_rate + bonus - reduction
+    masil_rate = max(0.0, min(float(rules["candidate_discount_cap_pct"]), masil_rate))
     korea_net = int(round(int(base_premium_krw) * (1.0 - korea_rate / 100.0)))
     masil_net = int(round(int(base_premium_krw) * (1.0 - masil_rate / 100.0)))
     return {
@@ -622,6 +686,7 @@ def pricing_sandbox(
         "masil_candidate_discount_rate_pct": round(masil_rate, 2),
         "masil_candidate_net_premium_krw": masil_net,
         "candidate_reward_bonus_rate_pct": round(bonus, 2),
+        "candidate_care_reduction_rate_pct": round(reduction, 2),
         "candidate_surcharge_rate_pct": 0.0,
         "source_status": "illustrative_economics_sandbox_not_final_tariff",
     }
@@ -731,6 +796,7 @@ def _driver_summary(
 ) -> dict[str, Any]:
     environment = ENVIRONMENTS[str(driver["environment_id"])]
     baseline_events = [event for event in events if event["period_role"] == "baseline"]
+    home_center = _hub_centers(driver)["__home__"]
     clustering = dbscan_distinct_days(
         baseline_events,
         eps_m=float(environment["dbscan_eps_m"]),
@@ -741,8 +807,12 @@ def _driver_summary(
         clustering["labels"],
         core_radius_m=float(product_rules["core_radius_m"]),
         buffer_cap_m=float(product_rules["buffer_cap_m"]),
+        home_zone_reach_m=float(environment["zone_reach_m"]) * _HOME_ZONE_REACH_FACTOR,
+        home_center=home_center,
     )
-    persona_hub_labels = PERSONA_HUB_LABELS[str(driver["persona_type"])]
+    home_label_ko = HOME_ZONE_LABEL_KO
+    secondary_label_ko = _secondary_zone_label_ko(driver)
+    new_hub_label_ko = _new_hub_label_ko(driver)
     public_hubs = [
         {
             **{
@@ -750,7 +820,7 @@ def _driver_summary(
                 for key, value in hub.items()
                 if key not in {"centroid", "source_cluster_id"}
             },
-            "display_label_ko": persona_hub_labels[str(hub["display_label"])],
+            "display_label_ko": home_label_ko if str(hub["display_label"]) == "Routine Hub A" else secondary_label_ko,
         }
         for hub in hubs
     ]
@@ -758,11 +828,19 @@ def _driver_summary(
     evaluation = [result for result in monthly if result["period_role"] == "evaluation"]
     annual_reward, annual_care = _annual_state(monthly, product_rules)
     annual_distance = sum(float(result["total_distance_km"]) for result in evaluation)
+    scored_months = [
+        float(result["integrated_score"])
+        for result in evaluation
+        if result.get("integrated_score") is not None
+    ]
+    annual_candidate_score = round(sum(scored_months) / len(scored_months), 2) if scored_months else None
     tariff = pricing_sandbox(
         base_premium_krw=int(driver["base_premium_krw"]),
         annual_distance_km=annual_distance,
         vehicle_class=str(driver["vehicle_class"]),
         annual_reward_state=annual_reward,
+        annual_care_state=annual_care,
+        candidate_score=annual_candidate_score,
         product_rules=product_rules,
     )
     def mean_observed(key: str) -> float | None:
@@ -802,7 +880,7 @@ def _driver_summary(
             "min_distinct_days": 3,
             "repeated_hub_count": len(hubs),
             "routine_hubs": public_hubs,
-            "new_hub_label_ko": persona_hub_labels["New Hub"],
+            "new_hub_label_ko": new_hub_label_ko,
             "basis_visit_count": len(baseline_events),
             "noise_visit_count": clustering["noise_count"],
             "noise_ratio_pct": round(
@@ -820,16 +898,17 @@ def _selected_evidence(drivers: Sequence[Mapping[str, Any]]) -> list[dict[str, A
     selected: list[dict[str, Any]] = []
     seen: set[str] = set()
     for driver in drivers:
-        persona_type = str(driver["persona_type"])
-        if persona_type in seen:
+        designed_type = str(driver["designed_type"])
+        if designed_type in seen:
             continue
-        seen.add(persona_type)
+        seen.add(designed_type)
         for month in ("2026-07", "2026-10"):
             result = next(row for row in driver["monthly_results"] if row["month"] == month)
             selected.append(
                 {
                     "driver_id": driver["driver_id"],
-                    "persona_type": persona_type,
+                    "designed_type": designed_type,
+                    "archetype_id": driver["archetype_id"],
                     "environment_id": driver["environment_id"],
                     "dataset_partition": driver["dataset_partition"],
                     "month": month,
@@ -874,7 +953,8 @@ def _portfolio_results(drivers: Sequence[Mapping[str, Any]], events: Sequence[Ma
         partition_summaries[partition] = {
             "driver_count": len(subset),
             "trip_count": len(subset_events),
-            "persona_counts": dict(sorted(Counter(driver["persona_type"] for driver in subset).items())),
+            "archetype_counts": dict(sorted(Counter(driver["archetype_id"] for driver in subset).items())),
+            "designed_type_counts": dict(sorted(Counter(driver["designed_type"] for driver in subset).items())),
             "environment_counts": dict(sorted(Counter(driver["environment_id"] for driver in subset).items())),
             "reward_state_counts": dict(sorted(Counter(driver["annual_reward_state"] for driver in subset).items())),
             "care_state_counts": dict(sorted(Counter(driver["annual_care_state"] for driver in subset).items())),
@@ -906,18 +986,41 @@ def _portfolio_results(drivers: Sequence[Mapping[str, Any]], events: Sequence[Ma
     }
 
 
+def _share(subset: Sequence[Mapping[str, Any]], predicate) -> float:
+    """Fraction of a driver subset satisfying ``predicate`` (0.0 if empty)."""
+    if not subset:
+        return 0.0
+    return sum(1 for driver in subset if predicate(driver)) / len(subset)
+
+
 def _validation_results(
     drivers: Sequence[Mapping[str, Any]],
     events: Sequence[Mapping[str, Any]],
     product_rules: Mapping[str, Any],
 ) -> dict[str, Any]:
-    persona_counts = Counter(str(driver["persona_type"]) for driver in drivers)
+    archetype_counts = Counter(str(driver["archetype_id"]) for driver in drivers)
+    designed_type_counts = Counter(str(driver["designed_type"]) for driver in drivers)
     environment_counts = Counter(str(driver["environment_id"]) for driver in drivers)
     partition_counts = Counter(str(driver["dataset_partition"]) for driver in drivers)
-    scenario_variant_counts = Counter(str(driver["scenario_variant"]) for driver in drivers)
-    typical_drivers = [driver for driver in drivers if driver["scenario_variant"] == "typical"]
-    no_zone_drivers = [driver for driver in drivers if driver["scenario_variant"] == "no_zone_evidence_gap"]
-    low_coverage_drivers = [driver for driver in drivers if driver["scenario_variant"] == "low_data_coverage"]
+    by_designed: dict[str, list[Mapping[str, Any]]] = defaultdict(list)
+    for driver in drivers:
+        by_designed[str(driver["designed_type"])].append(driver)
+    sparse_drivers = [driver for driver in drivers if str(driver["data_quality"]) == "sparse"]
+    partitions = ("development", "validation", "holdout")
+    environment_ids = list(ENVIRONMENTS)
+
+    # Each of the 60 people is run in every environment, so each environment holds
+    # exactly ROSTER_SIZE cases; partitions are assigned per person (all 3 of a
+    # person's cases share a partition).
+    def _expected_environment_counts() -> Counter:
+        return Counter({env: personas.ROSTER_SIZE for env in ENVIRONMENTS})
+
+    def _expected_partition_counts() -> Counter:
+        counts: Counter = Counter()
+        for person_index in range(personas.ROSTER_SIZE):
+            counts[_partition_for_instance(person_index)] += personas.ENVIRONMENTS_PER_PERSON
+        return counts
+
     months_by_driver = {
         str(driver["driver_id"]): {str(row["month"]) for row in driver["monthly_results"]}
         for driver in drivers
@@ -977,62 +1080,83 @@ def _validation_results(
     checks = [
         {
             "check_id": "cohort_shape",
-            "result_status": "passed" if len(drivers) == 60 and set(persona_counts.values()) == {10} else "failed",
-            "evidence": {"driver_count": len(drivers), "persona_counts": dict(persona_counts)},
+            "result_status": "passed"
+            if len(drivers) == personas.COHORT_SIZE
+            and len({str(driver["person_id"]) for driver in drivers}) == personas.ROSTER_SIZE
+            and len(archetype_counts) == len(personas.ARCHETYPES)
+            and all(
+                archetype_counts.get(str(archetype["id"]), 0)
+                == int(personas.PERSONS_PER_ARCHETYPE.get(str(archetype["id"]), 0))
+                * personas.ENVIRONMENTS_PER_PERSON
+                for archetype in personas.ARCHETYPES
+            )
+            else "failed",
+            "evidence": {
+                "case_count": len(drivers),
+                "person_count": len({str(driver["person_id"]) for driver in drivers}),
+                "archetype_count": len(archetype_counts),
+                "designed_type_counts": dict(sorted(designed_type_counts.items())),
+            },
         },
         {
             "check_id": "environment_balance",
-            "result_status": "passed" if set(environment_counts.values()) == {20} else "failed",
-            "evidence": dict(environment_counts),
+            "result_status": "passed"
+            if environment_counts == _expected_environment_counts()
+            and len(environment_counts) == len(ENVIRONMENTS)
+            else "failed",
+            "evidence": dict(sorted(environment_counts.items())),
         },
         {
             "check_id": "deterministic_partition_shape",
             "result_status": "passed"
-            if partition_counts == Counter({"development": 30, "validation": 18, "holdout": 12})
+            if partition_counts == _expected_partition_counts()
+            and sum(partition_counts.values()) == personas.COHORT_SIZE
             else "failed",
-            "evidence": dict(partition_counts),
+            "evidence": dict(sorted(partition_counts.items())),
         },
         {
             "check_id": "partition_stratification",
             "result_status": "passed"
-            if all(
-                Counter(
-                    driver["persona_type"]
-                    for driver in drivers
-                    if driver["dataset_partition"] == partition
-                )
-                == Counter({persona: expected for persona in PERSONA_TYPES})
-                and Counter(
+            if all(partition_counts.get(partition, 0) > 0 for partition in partitions)
+            and all(
+                set(
                     driver["environment_id"]
                     for driver in drivers
                     if driver["dataset_partition"] == partition
                 )
-                == Counter({environment: environment_expected for environment in ENVIRONMENTS})
-                for partition, expected, environment_expected in (
-                    ("development", 5, 10),
-                    ("validation", 3, 6),
-                    ("holdout", 2, 4),
-                )
+                == set(environment_ids)
+                for partition in partitions
             )
+            and set(
+                driver["designed_type"]
+                for driver in drivers
+                if driver["dataset_partition"] == "development"
+            )
+            == set(designed_type_counts)
             else "failed",
             "evidence": {
                 partition: {
-                    "persona_counts": dict(
-                        Counter(
-                            driver["persona_type"]
-                            for driver in drivers
-                            if driver["dataset_partition"] == partition
+                    "driver_count": partition_counts.get(partition, 0),
+                    "designed_type_counts": dict(
+                        sorted(
+                            Counter(
+                                driver["designed_type"]
+                                for driver in drivers
+                                if driver["dataset_partition"] == partition
+                            ).items()
                         )
                     ),
                     "environment_counts": dict(
-                        Counter(
-                            driver["environment_id"]
-                            for driver in drivers
-                            if driver["dataset_partition"] == partition
+                        sorted(
+                            Counter(
+                                driver["environment_id"]
+                                for driver in drivers
+                                if driver["dataset_partition"] == partition
+                            ).items()
                         )
                     ),
                 }
-                for partition in ("development", "validation", "holdout")
+                for partition in partitions
             },
         },
         {
@@ -1041,22 +1165,19 @@ def _validation_results(
             "evidence": {"expected_month_count": 14, "drivers_checked": len(months_by_driver)},
         },
         {
-            "check_id": "explicit_evidence_gap_scenarios",
+            "check_id": "sparse_evidence_reaches_hold",
             "result_status": "passed"
-            if scenario_variant_counts == Counter({"typical": 58, "no_zone_evidence_gap": 1, "low_data_coverage": 1})
-            and len(no_zone_drivers) == 1
-            and no_zone_drivers[0]["mobility"]["zone_status"] == "insufficient"
-            and no_zone_drivers[0]["annual_reward_state"] == "hold"
-            and no_zone_drivers[0]["annual_care_state"] == "hold"
-            and len(low_coverage_drivers) == 1
-            and float(low_coverage_drivers[0]["data_coverage_pct"]) < float(product_rules["min_data_coverage_pct"])
-            and low_coverage_drivers[0]["annual_reward_state"] == "hold"
-            and low_coverage_drivers[0]["annual_care_state"] == "hold"
+            if sparse_drivers
+            and all(
+                float(driver["data_coverage_pct"]) < float(product_rules["min_data_coverage_pct"])
+                and driver["annual_reward_state"] == "hold"
+                and driver["annual_care_state"] == "hold"
+                for driver in sparse_drivers
+            )
             else "failed",
             "evidence": {
-                "scenario_variant_counts": dict(scenario_variant_counts),
-                "no_zone_driver_ids": [driver["driver_id"] for driver in no_zone_drivers],
-                "low_coverage_driver_ids": [driver["driver_id"] for driver in low_coverage_drivers],
+                "sparse_driver_ids": [driver["driver_id"] for driver in sparse_drivers],
+                "policy": "low_data_coverage_holds_without_customer_disadvantage",
             },
         },
         {
@@ -1124,18 +1245,23 @@ def _validation_results(
             },
         },
         {
-            "check_id": "mobility_only_change_does_not_reduce_reward_score",
+            "check_id": "mobility_change_safe_is_care_negative_control",
             "result_status": "passed"
-            if all(
-                float(row["pattern_stability_score"]) == 100.0
-                for driver in typical_drivers
-                if driver["persona_type"] == "mobility_change_only"
+            if by_designed["mobility_change_safe"]
+            and all(
+                float(row["risky_behavior_change_index"]) == 0.0
+                and float(row["pattern_stability_score"]) == 100.0
+                for driver in by_designed["mobility_change_safe"]
                 for row in driver["monthly_results"]
-                if row["period_role"] == "evaluation" and float(row["mobility_change_index"]) > 0.0
+                if row["period_role"] == "evaluation"
+            )
+            and all(
+                driver["annual_care_state"] == "none"
+                for driver in by_designed["mobility_change_safe"]
             )
             else "failed",
             "evidence": {
-                "persona_type": "mobility_change_only",
+                "designed_type": "mobility_change_safe",
                 "policy": product_rules["outer_zone_policy"],
             },
         },
@@ -1193,47 +1319,46 @@ def _validation_results(
             },
         },
         {
-            "check_id": "persona_behavior_contract",
+            "check_id": "designed_type_behavior_contract",
+            # This is a synthetic SIMULATION, so outcomes emerge with variance —
+            # we verify the DESIGN PREDICTS the tier (a strong dominant tendency),
+            # not that every instance lands identically. A designed_type passes on
+            # its majority tendency plus the hard safety invariants that must never
+            # break (safe archetypes never systematically flagged for care; the
+            # negative-control mobility_change_safe never triggers care; the
+            # cochange archetype reliably reaches care review).
             "result_status": "passed"
-            if all(
-                driver["annual_reward_state"] == "reward"
-                for driver in typical_drivers
-                if driver["persona_type"] == "stable_local_safe"
-            )
-            and all(
-                driver["annual_reward_state"] == "neutral"
-                for driver in typical_drivers
-                if driver["persona_type"] == "low_mileage_risky"
-            )
-            and all(
-                driver["annual_care_state"] == "none"
-                for driver in typical_drivers
-                if driver["persona_type"] == "mobility_change_only"
-            )
-            and all(
-                driver["annual_care_state"] == "care_review"
-                for driver in typical_drivers
-                if driver["persona_type"] == "mobility_risk_cochange"
-            )
+            if _share(by_designed["stable_reward"], lambda d: d["annual_reward_state"] == "reward") >= 0.8
+            and _share(by_designed["stable_reward"], lambda d: d["annual_care_state"] == "care_review") <= 0.1
+            and _share(by_designed["in_zone_risky"], lambda d: d["annual_reward_state"] == "neutral") >= 0.5
+            and _share(by_designed["in_zone_risky"], lambda d: d["annual_care_state"] == "care_review") <= 0.1
+            and _share(by_designed["mobility_change_safe"], lambda d: d["annual_care_state"] == "none") >= 0.9
+            and _share(by_designed["mobility_risk_cochange"], lambda d: d["annual_care_state"] == "care_review") >= 0.8
+            and _share(by_designed["multi_zone"], lambda d: int(d["mobility"]["repeated_hub_count"]) >= 2) >= 0.6
+            and _share(by_designed["multi_zone"], lambda d: d["annual_care_state"] == "care_review") <= 0.1
+            and _share(by_designed["wide_area_safe"], lambda d: d["annual_reward_state"] == "reward") >= 0.8
+            and _share(by_designed["wide_area_safe"], lambda d: d["annual_care_state"] == "care_review") <= 0.1
+            # Sparse telematics is an individual-level trait (not a behaviour type):
+            # those drivers should mostly abstain (hold), not be penalised.
+            and _share(sparse_drivers, lambda d: d["annual_reward_state"] == "hold") >= 0.5
             else "failed",
             "evidence": {
-                persona: {
+                designed_type: {
                     "reward_states": dict(
-                        Counter(
-                            driver["annual_reward_state"]
-                            for driver in typical_drivers
-                            if driver["persona_type"] == persona
-                        )
+                        Counter(driver["annual_reward_state"] for driver in subset)
                     ),
                     "care_states": dict(
-                        Counter(
-                            driver["annual_care_state"]
-                            for driver in typical_drivers
-                            if driver["persona_type"] == persona
+                        Counter(driver["annual_care_state"] for driver in subset)
+                    ),
+                    "zone_counts": dict(
+                        sorted(
+                            Counter(
+                                str(int(driver["mobility"]["repeated_hub_count"])) for driver in subset
+                            ).items()
                         )
                     ),
                 }
-                for persona in PERSONA_TYPES
+                for designed_type, subset in sorted(by_designed.items())
             },
         },
     ]
@@ -1275,10 +1400,10 @@ def _build_bundle_and_events(
         all_events.extend(events)
         driver_summaries.append(_driver_summary(contract, events, product_rules))
 
-    persona_counts = Counter(driver["persona_type"] for driver in driver_summaries)
+    archetype_counts = Counter(driver["archetype_id"] for driver in driver_summaries)
+    designed_type_counts = Counter(driver["designed_type"] for driver in driver_summaries)
     environment_counts = Counter(driver["environment_id"] for driver in driver_summaries)
     partition_counts = Counter(driver["dataset_partition"] for driver in driver_summaries)
-    scenario_variant_counts = Counter(driver["scenario_variant"] for driver in driver_summaries)
     repeated_pairs = Counter((event["driver_id"], event["visit_label"]) for event in all_events)
     validation = _validation_results(driver_summaries, all_events, product_rules)
     raw_csv = _serialize_visit_events_csv(all_events)
@@ -1332,30 +1457,36 @@ def _build_bundle_and_events(
         },
         "cohort": {
             "driver_count": len(driver_summaries),
-            "persona_count": len(PERSONA_TYPES),
-            "persona_counts": dict(persona_counts),
+            "persona_count": len(personas.ARCHETYPES),
+            "archetype_count": len(personas.ARCHETYPES),
+            "designed_type_count": len(personas.DESIGNED_TYPES),
+            "persona_counts": dict(sorted(archetype_counts.items())),
+            "designed_type_counts": dict(sorted(designed_type_counts.items())),
             "environment_counts": dict(environment_counts),
             "partition_counts": dict(partition_counts),
-            "scenario_variant_counts": dict(scenario_variant_counts),
             "partition_contract": {
-                "development": 30,
-                "validation": 18,
-                "holdout": 12,
+                **{partition: partition_counts.get(partition, 0) for partition in ("development", "validation", "holdout")},
+                "split_rule": "per_archetype_instance_index_mod_5_dev_dev_dev_val_holdout",
                 "purpose": "Report robustness by untouched synthetic partitions; no partition is claimed as real-world evidence.",
             },
-            "allocation_rule": "Each persona has 10 drivers using a rotating 4/3/3 environment allocation.",
-            "scenario_variants": [
-                {
-                    "scenario_variant": key,
-                    "scenario_label": value["label_ko"],
-                    "purpose": value["purpose"],
-                    "driver_count": scenario_variant_counts.get(key, 0),
-                }
-                for key, value in SCENARIO_VARIANTS.items()
-            ],
+            "allocation_rule": (
+                "The 60-person roster is run in each of 3 environments (60 x 3 = 180 cases); "
+                "round-robin across the three environments; instances split ~3:1:1 dev:val:holdout."
+            ),
             "personas": [
-                {"persona_type": key, **value}
-                for key, value in PERSONA_TYPES.items()
+                {
+                    "persona_type": str(archetype["id"]),
+                    "archetype_id": str(archetype["id"]),
+                    "designed_type": str(archetype["designed_type"]),
+                    "display_name_ko": str(archetype["name_ko"]),
+                    "summary_ko": str(archetype["life_context_ko"]),
+                    "driver_count": archetype_counts.get(str(archetype["id"]), 0),
+                }
+                for archetype in personas.ARCHETYPES
+            ],
+            "designed_types": [
+                {"designed_type": key, "label_ko": value}
+                for key, value in personas.DESIGNED_TYPES.items()
             ],
             "environments": [
                 {

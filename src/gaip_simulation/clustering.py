@@ -126,20 +126,13 @@ def percentile_nearest_rank(values: Iterable[float], percentile: float) -> float
     return ordered[min(len(ordered), rank) - 1]
 
 
-def summarize_clusters(
-    events: Sequence[Mapping[str, Any]],
-    labels: Sequence[int],
-    *,
-    core_radius_m: float,
-    buffer_cap_m: float,
+def _cluster_records(
+    events: Sequence[Mapping[str, Any]], labels: Sequence[int]
 ) -> list[dict[str, Any]]:
-    """Build per-hub radial-P90 product zones from DBSCAN output."""
+    """Group labelled events into clusters with centroid and intra-cluster P90."""
 
-    if len(events) != len(labels):
-        raise ValueError("events and labels must have equal length")
-    cluster_ids = sorted({label for label in labels if label >= 0})
-    raw: list[dict[str, Any]] = []
-    for cluster_id in cluster_ids:
+    records: list[dict[str, Any]] = []
+    for cluster_id in sorted({label for label in labels if label >= 0}):
         members = [event for event, label in zip(events, labels) if label == cluster_id]
         latitude = sum(float(event["latitude"]) for event in members) / len(members)
         longitude = sum(float(event["longitude"]) for event in members) / len(members)
@@ -147,38 +140,125 @@ def summarize_clusters(
             haversine_m(latitude, longitude, float(event["latitude"]), float(event["longitude"]))
             for event in members
         ]
-        radial_p90_m = percentile_nearest_rank(radii, 0.90)
-        raw.append(
+        records.append(
             {
                 "source_cluster_id": cluster_id,
+                "members": members,
                 "visit_count": len(members),
                 "distinct_day_count": len({_event_date(event) for event in members}),
-                "centroid": {
-                    "latitude": round(latitude, 6),
-                    "longitude": round(longitude, 6),
-                },
-                "radial_p90_m": round(radial_p90_m, 1),
-                "core_radius_m": round(float(core_radius_m), 1),
-                "buffer_radius_m": round(
-                    max(float(core_radius_m), min(radial_p90_m, float(buffer_cap_m))),
-                    1,
-                ),
+                "latitude": latitude,
+                "longitude": longitude,
+                "intra_radial_p90_m": percentile_nearest_rank(radii, 0.90),
             }
         )
-
-    raw.sort(
+    records.sort(
         key=lambda cluster: (
             -int(cluster["distinct_day_count"]),
             -int(cluster["visit_count"]),
-            float(cluster["centroid"]["latitude"]),
-            float(cluster["centroid"]["longitude"]),
+            float(cluster["latitude"]),
+            float(cluster["longitude"]),
         )
     )
-    for index, cluster in enumerate(raw):
-        cluster["hub_id"] = f"hub-{index + 1}"
-        cluster["display_label"] = "Routine Hub A" if index == 0 else "Routine Hub B"
-        cluster["zone_source_status"] = "simulated_from_baseline_visits"
-    return raw[:2]
+    return records
+
+
+def summarize_clusters(
+    events: Sequence[Mapping[str, Any]],
+    labels: Sequence[int],
+    *,
+    core_radius_m: float,
+    buffer_cap_m: float,
+    home_zone_reach_m: float,
+    home_center: tuple[float, float] | None = None,
+) -> list[dict[str, Any]]:
+    """Build the HOME-centred living zone (and any genuine secondary zone).
+
+    The displayed radial P90 is the 90th-percentile distance from the HOME
+    centre to every baseline visit that belongs to the home zone — i.e. visits
+    within ``home_zone_reach_m`` of home. The home centre is the driver's
+    residence anchor when provided (``home_center``); otherwise it falls back to
+    the most-recurrent cluster's centroid. Anchoring on the residence — rather
+    than the single busiest cluster — makes the radial P90 span the real living
+    zone (the residence and the destinations around it, hundreds of metres to a
+    kilometre or two) instead of the GPS jitter inside one tight cluster.
+
+    Core radius and radial P90 are product-zone values kept strictly separate
+    from the DBSCAN ``eps_m`` used to find the clusters in the first place.
+    """
+
+    if len(events) != len(labels):
+        raise ValueError("events and labels must have equal length")
+    clusters = _cluster_records(events, labels)
+    if not clusters:
+        return []
+
+    core = float(core_radius_m)
+    cap = float(buffer_cap_m)
+    primary = clusters[0]
+    if home_center is not None:
+        home_lat = float(home_center[0])
+        home_lon = float(home_center[1])
+    else:
+        home_lat = float(primary["latitude"])
+        home_lon = float(primary["longitude"])
+    home_visits = [
+        event
+        for event in events
+        if haversine_m(home_lat, home_lon, float(event["latitude"]), float(event["longitude"]))
+        <= float(home_zone_reach_m)
+    ]
+    home_radii = [
+        haversine_m(home_lat, home_lon, float(event["latitude"]), float(event["longitude"]))
+        for event in home_visits
+    ]
+    radial_p90_m = percentile_nearest_rank(home_radii, 0.90)
+    buffer_radius_m = max(core, min(radial_p90_m, cap))
+
+    hubs: list[dict[str, Any]] = [
+        {
+            "source_cluster_id": primary["source_cluster_id"],
+            "hub_id": "hub-1",
+            "display_label": "Routine Hub A",
+            "visit_count": len(home_visits),
+            "distinct_day_count": len({_event_date(event) for event in home_visits}),
+            "centroid": {"latitude": round(home_lat, 6), "longitude": round(home_lon, 6)},
+            "radial_p90_m": round(radial_p90_m, 1),
+            "core_radius_m": round(core, 1),
+            "buffer_radius_m": round(buffer_radius_m, 1),
+            "zone_source_status": "simulated_from_baseline_visits",
+        }
+    ]
+
+    # A genuine second living zone: a distinct cluster beyond the home buffer with
+    # its own recurrent support (>= 3 distinct days).
+    secondaries = [
+        cluster
+        for cluster in clusters[1:]
+        if int(cluster["distinct_day_count"]) >= 3
+        and haversine_m(home_lat, home_lon, float(cluster["latitude"]), float(cluster["longitude"]))
+        > buffer_radius_m
+    ]
+    if secondaries:
+        secondary = secondaries[0]
+        secondary_p90 = float(secondary["intra_radial_p90_m"])
+        hubs.append(
+            {
+                "source_cluster_id": secondary["source_cluster_id"],
+                "hub_id": "hub-2",
+                "display_label": "Routine Hub B",
+                "visit_count": int(secondary["visit_count"]),
+                "distinct_day_count": int(secondary["distinct_day_count"]),
+                "centroid": {
+                    "latitude": round(float(secondary["latitude"]), 6),
+                    "longitude": round(float(secondary["longitude"]), 6),
+                },
+                "radial_p90_m": round(secondary_p90, 1),
+                "core_radius_m": round(core, 1),
+                "buffer_radius_m": round(max(core, min(secondary_p90, cap)), 1),
+                "zone_source_status": "simulated_from_baseline_visits",
+            }
+        )
+    return hubs
 
 
 def locate_product_zone(event: Mapping[str, Any], hubs: Sequence[Mapping[str, Any]]) -> dict[str, Any]:

@@ -36,12 +36,12 @@ const DEFAULT_ENVIRONMENTS: MobilityEnvironment[] = [
 ];
 
 const DEFAULT_PERSONAS: PersonaType[] = [
-  { id: "stable_local_safe", label: "안정적 근거리 안전형", count: 10 },
-  { id: "low_mileage_risky", label: "저주행 위험행동형", count: 10 },
-  { id: "safe_multi_hub", label: "복수 거점 안전형", count: 10 },
-  { id: "safe_wide_area", label: "광역 이동 안전형", count: 10 },
-  { id: "mobility_change_only", label: "이동 변화 단독형", count: 10 },
-  { id: "mobility_risk_cochange", label: "이동·위험행동 동시변화형", count: 10 }
+  { id: "stable_reward", label: "안정 저주행형", count: 10 },
+  { id: "in_zone_risky", label: "생활권 내 위험행동형", count: 10 },
+  { id: "mobility_change_safe", label: "이동변화·안전유지형", count: 10 },
+  { id: "mobility_risk_cochange", label: "이동·위험행동 동시변화형", count: 10 },
+  { id: "multi_zone", label: "복수 생활권형", count: 10 },
+  { id: "wide_area_safe", label: "광역 이동·안전형", count: 10 }
 ];
 
 const DEFAULT_RULES: ProductRules = {
@@ -56,7 +56,9 @@ const DEFAULT_RULES: ProductRules = {
   reward_required_months: 9,
   care_mobility_change_threshold: 25,
   care_risky_behavior_threshold: 20,
-  reward_discount_rate_pct: 3,
+  reward_discount_rate_pct: 7,
+  reward_bonus_floor_pct: 1,
+  care_discount_reduction_pct: 13,
   candidate_discount_cap_pct: 45
 };
 
@@ -280,7 +282,17 @@ function normalizeDrivers(root: JsonRecord, personas: PersonaType[], environment
     .filter(isRecord);
 
   return source.map((item, index) => {
-    const personaId = text(first(item, ["persona_id", "persona_type"]), personas[index % Math.max(personas.length, 1)]?.id ?? "unknown");
+    // The safe DTO strips the generation-only designed_type, but keeps the
+    // synthetic archetype label. Recover the persona grouping id from that label
+    // so the profile view names the behaviour type correctly; the positional
+    // fallback is only a last resort for a malformed payload.
+    const personaDisplayName = text(first(item, ["persona_display_name_ko", "persona_label"]));
+    const personaId = text(
+      first(item, ["persona_id", "persona_type"]),
+      personas.find((persona) => persona.label === personaDisplayName)?.id
+        ?? personas[index % Math.max(personas.length, 1)]?.id
+        ?? "unknown"
+    );
     const environmentId = text(first(item, ["environment_id", "mobility_environment", "environment"]), environments[index % Math.max(environments.length, 1)]?.id ?? "unknown");
     const mobility = record(first(item, ["mobility", "mobility_evidence", "living_zone"]));
     const tariff = record(first(item, ["tariff", "tariff_comparison", "pricing"]));
@@ -373,6 +385,8 @@ function normalizeRules(root: JsonRecord): ProductRules {
       number(first(product, ["care_risky_behavior_threshold", "risky_behavior_threshold"]), DEFAULT_RULES.care_risky_behavior_threshold)
     ),
     reward_discount_rate_pct: number(first(product, ["reward_discount_rate_pct", "reward_bonus_discount_rate_pct"]), DEFAULT_RULES.reward_discount_rate_pct),
+    reward_bonus_floor_pct: number(first(product, ["reward_bonus_floor_pct"]), DEFAULT_RULES.reward_bonus_floor_pct ?? 1),
+    care_discount_reduction_pct: number(first(product, ["care_discount_reduction_pct"]), DEFAULT_RULES.care_discount_reduction_pct ?? 0),
     candidate_discount_cap_pct: number(first(product, ["candidate_discount_cap_pct", "discount_cap_pct"]), DEFAULT_RULES.candidate_discount_cap_pct)
   };
 }

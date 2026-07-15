@@ -5,10 +5,10 @@ It provides a synthetic, reproducible international-extension sandbox without
 changing the domestic source-of-truth artifacts.
 """
 
+from . import personas
 from .engine import (
     DEFAULT_SEED,
     ENVIRONMENTS,
-    PERSONA_TYPES,
     build_gaip_simulation_bundle,
     classify_month,
     pricing_sandbox,
@@ -18,9 +18,9 @@ from .engine import (
 __all__ = [
     "DEFAULT_SEED",
     "ENVIRONMENTS",
-    "PERSONA_TYPES",
     "build_gaip_simulation_bundle",
     "classify_month",
+    "personas",
     "pricing_sandbox",
     "write_gaip_simulation_bundle",
 ]
