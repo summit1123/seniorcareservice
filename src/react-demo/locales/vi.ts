@@ -550,7 +550,22 @@ const dict: Record<string, string> = {
   " · 운영값": " · giá trị vận hành",
   "개": "cái",
   " (선행 실험 ": " (thí nghiệm trước ",
-  "). 과병합·누락의 정답 기준은 합성 생성 라벨이며, 모든 수치는 Simulated입니다. 알고리즘 채택·교체는 이 화면이 아니라 사람 검토(모델 리스크·상품)로 결정합니다.": "). Chuẩn đáp án của gộp thừa · thiếu sót là nhãn tạo tổng hợp, và mọi con số đều là Simulated. Việc lựa chọn · thay thế thuật toán được quyết định bằng xét duyệt bởi con người (rủi ro mô hình · sản phẩm), không phải ở màn hình này."
+  "). 과병합·누락의 정답 기준은 합성 생성 라벨이며, 모든 수치는 Simulated입니다. 알고리즘 채택·교체는 이 화면이 아니라 사람 검토(모델 리스크·상품)로 결정합니다.": "). Chuẩn đáp án của gộp thừa · thiếu sót là nhãn tạo tổng hợp, và mọi con số đều là Simulated. Việc lựa chọn · thay thế thuật toán được quyết định bằng xét duyệt bởi con người (rủi ro mô hình · sản phẩm), không phải ở màn hình này.",
+  "AI 에이전트가 추론한 생활 동선": "Tuyến di chuyển sinh hoạt do tác nhân AI suy luận",
+  "오프라인 생성 · 캐시 · 결정론 엔진이 유형 모른 채 분석": "Tạo ngoại tuyến · lưu cache · engine tất định phân tích mà không biết loại",
+  "하반기 신규 목적지": "Điểm đến mới nửa cuối năm",
+  "생활권 안 거점": "Điểm đến trong vùng sinh hoạt",
+  "이 동선은 AI가 페르소나 맥락으로 생성한 합성 데이터이며, 실제 위치·인물이 아닙니다. 좌표는 결정론 엔진 내부에서만 쓰이고 화면에 노출되지 않습니다.": "Tuyến di chuyển này là dữ liệu tổng hợp mà AI tạo ra từ bối cảnh persona — không phải vị trí hay nhân vật thực. Tọa độ chỉ được dùng bên trong engine tất định và không bao giờ hiển thị trên màn hình.",
+  "데이터 실험 구조": "Cấu trúc thí nghiệm dữ liệu",
+  "AI 에이전트가 각 시니어의 삶으로 주행 데이터를 만들고, 결정론 엔진이 유형을 모른 채 분석합니다": "Tác nhân AI tạo dữ liệu lái xe của mỗi người cao tuổi từ chính cuộc sống của họ, và engine tất định phân tích mà không biết loại",
+  "1 · 추론 — AI 에이전트": "1 · Suy luận — tác nhân AI",
+  "페르소나의 생활 맥락(가구·취미·목표·운전 습관)에서 14개월간 어디를·어떤 리듬으로·언제부터 다르게 다니는지를 추론해, 이름 있는 생활권과 변화 시점을 만듭니다.": "Từ bối cảnh cuộc sống của persona (hộ gia đình · sở thích · mục tiêu · thói quen lái xe), nó suy luận trong 14 tháng họ đi đâu · theo nhịp điệu nào · từ khi nào bắt đầu thay đổi, qua đó tạo ra các vùng sinh hoạt có tên và một thời điểm thay đổi.",
+  "2 · 분석 — 결정론 엔진": "2 · Phân tích — engine tất định",
+  "생성된 방문 데이터를 유형 라벨 없이 그대로 받아 실제 DBSCAN 군집·생활권 반경·통합 점수·같은 달 AND 게이트로 판정합니다. 결과는 엔진에서 창발하며 목표값을 심지 않습니다.": "Nhận nguyên trạng dữ liệu ghé thăm được tạo ra mà không có nhãn loại, rồi phán định qua phân cụm DBSCAN thực tế · bán kính vùng sinh hoạt · điểm tích hợp · cổng AND cùng tháng. Kết quả nảy sinh từ engine; không cài đặt giá trị mục tiêu nào.",
+  "3 · 검증 — 재현 가능": "3 · Kiểm chứng — có thể tái lập",
+  "에이전트 생성물은 오프라인에서 한 번 만들어 캐시·고정하므로 데모는 완전히 결정론적이고 재현 가능합니다. 60명 전원이 아키타입 경향과 검증 게이트를 통과하는지 확인합니다.": "Sản phẩm do tác nhân tạo ra được tạo một lần ở chế độ ngoại tuyến và lưu cache · cố định, nên bản demo hoàn toàn tất định và có thể tái lập. Chúng tôi kiểm tra xem cả 60 người có vượt qua xu hướng archetype và các cổng kiểm chứng hay không.",
+  "추론(무엇을)과 분석(어떻게 판정)을 분리한 구조입니다. 아키타입 경향은 실험의 통제변수이고, 위험 크기는 엔진이 관리하므로 라벨 유출 없이 결과가 창발합니다.": "Đây là cấu trúc tách biệt giữa suy luận (cái gì) và phân tích (phán định như thế nào). Xu hướng archetype là biến kiểm soát của thí nghiệm, còn độ lớn rủi ro do engine quản lý, nên kết quả nảy sinh mà không rò rỉ nhãn.",
+  "변화 계기 · 평가 {month}개월차": "Yếu tố kích hoạt thay đổi · đánh giá tháng thứ {month}",
 };
 
 export default dict;

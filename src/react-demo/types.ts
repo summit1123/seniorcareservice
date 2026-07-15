@@ -1,4 +1,4 @@
-import type { AlgorithmCandidate, ProductRules } from "./gaip-types";
+import type { AlgorithmCandidate, MobilityProfile, ProductRules } from "./gaip-types";
 
 export type DecisionSignal = "우대" | "기본" | "예방 케어" | string;
 
@@ -191,6 +191,7 @@ export interface DriverAnnualSummary {
   zone_status?: string;
   evidence_status?: string;
   model_version?: string;
+  mobility_profile?: MobilityProfile | null;
 }
 
 export interface MonthlySnapshotResponse {

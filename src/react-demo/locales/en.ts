@@ -551,6 +551,21 @@ const dict: Record<string, string> = {
   "원거리 정기 방문지": "Distant regular visit",
   "데이터 커버리지": "Data coverage",
   "합성 시뮬레이션 결과입니다. 실제 요율·인수·케어 결정은 계리·상품·심사 권한자의 검토 없이 확정하지 않습니다.": "Synthetic simulation output. No tariff, underwriting, or care decision is finalised without review by the accountable actuarial, product, and underwriting authorities.",
+  "AI 에이전트가 추론한 생활 동선": "Living route inferred by the AI agent",
+  "오프라인 생성 · 캐시 · 결정론 엔진이 유형 모른 채 분석": "Generated offline · cached · analysed type-blind by the deterministic engine",
+  "하반기 신규 목적지": "New second-half destination",
+  "생활권 안 거점": "In-zone destination",
+  "이 동선은 AI가 페르소나 맥락으로 생성한 합성 데이터이며, 실제 위치·인물이 아닙니다. 좌표는 결정론 엔진 내부에서만 쓰이고 화면에 노출되지 않습니다.": "This route is synthetic data the AI generated from the persona context — not a real location or person. Coordinates are used only inside the deterministic engine and are never shown on screen.",
+  "데이터 실험 구조": "Data experiment structure",
+  "AI 에이전트가 각 시니어의 삶으로 주행 데이터를 만들고, 결정론 엔진이 유형을 모른 채 분석합니다": "An AI agent builds each senior's driving data from their life, and the deterministic engine analyses it type-blind",
+  "1 · 추론 — AI 에이전트": "1 · Reasoning — AI agent",
+  "페르소나의 생활 맥락(가구·취미·목표·운전 습관)에서 14개월간 어디를·어떤 리듬으로·언제부터 다르게 다니는지를 추론해, 이름 있는 생활권과 변화 시점을 만듭니다.": "From the persona's life context — household, hobbies, goals, driving habits — it reasons out where they go, in what rhythm, and from when it changes across 14 months, producing named living zones and a change point.",
+  "2 · 분석 — 결정론 엔진": "2 · Analysis — deterministic engine",
+  "생성된 방문 데이터를 유형 라벨 없이 그대로 받아 실제 DBSCAN 군집·생활권 반경·통합 점수·같은 달 AND 게이트로 판정합니다. 결과는 엔진에서 창발하며 목표값을 심지 않습니다.": "It takes the generated visit data with no type label and decides via real DBSCAN clustering, the living-zone radius, the integrated score, and the same-month AND gate. Outcomes emerge from the engine; no target value is planted.",
+  "3 · 검증 — 재현 가능": "3 · Validation — reproducible",
+  "에이전트 생성물은 오프라인에서 한 번 만들어 캐시·고정하므로 데모는 완전히 결정론적이고 재현 가능합니다. 60명 전원이 아키타입 경향과 검증 게이트를 통과하는지 확인합니다.": "The agent output is generated once offline and cached, so the demo is fully deterministic and reproducible. We verify that all 60 people pass the archetype tendencies and the validation gates.",
+  "추론(무엇을)과 분석(어떻게 판정)을 분리한 구조입니다. 아키타입 경향은 실험의 통제변수이고, 위험 크기는 엔진이 관리하므로 라벨 유출 없이 결과가 창발합니다.": "Reasoning (what) is separated from analysis (how it is judged). The archetype tendency is the experiment's control variable and risk magnitude is managed by the engine, so outcomes emerge with no label leakage.",
+  "변화 계기 · 평가 {month}개월차": "Change trigger · evaluation month {month}",
 };
 
 export default dict;

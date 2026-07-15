@@ -135,11 +135,42 @@ function projectMonthlyResult(value: unknown): JsonRecord {
   ]);
 }
 
+function projectMobilityProfile(value: unknown): JsonRecord | null {
+  if (value === null || value === undefined) return null;
+  const profile = record(value);
+  return {
+    ...fields(profile, [
+      "reasoning_ko",
+      "reasoning_en",
+      "home_label_ko",
+      "home_label_en",
+      "change_month",
+      "change_trigger_ko",
+      "change_trigger_en",
+      "generator"
+    ]),
+    zones: list(profile.zones).map((zone) =>
+      fields(zone, [
+        "label_ko",
+        "label_en",
+        "kind",
+        "role",
+        "bearing_deg",
+        "distance_band",
+        "visit_share",
+        "active_from_month",
+        "active_to_month"
+      ])
+    )
+  };
+}
+
 function projectDriver(value: unknown): JsonRecord {
   const driver = record(value);
   const mobility = record(driver.mobility);
   const tariff = record(driver.tariff);
   return {
+    mobility_profile: projectMobilityProfile(driver.mobility_profile),
     ...fields(driver, [
       "driver_id",
       "driver_name_ko",

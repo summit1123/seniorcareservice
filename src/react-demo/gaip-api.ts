@@ -4,6 +4,7 @@ import type {
   EvidenceStatus,
   GaipStudioBundle,
   MobilityEnvironment,
+  MobilityProfile,
   PersonaType,
   ProductRules,
   RoutineHub,
@@ -275,6 +276,40 @@ function normalizeHubs(mobility: JsonRecord): RoutineHub[] {
   }));
 }
 
+function normalizeMobilityProfile(item: JsonRecord): MobilityProfile | null {
+  const raw = first(item, ["mobility_profile"]);
+  if (!raw || typeof raw !== "object") return null;
+  const profile = record(raw);
+  const zones = array(first(profile, ["zones"]))
+    .map((entry) => {
+      const zone = record(entry);
+      return {
+        label_ko: text(first(zone, ["label_ko"])) || undefined,
+        label_en: text(first(zone, ["label_en"])) || undefined,
+        kind: text(first(zone, ["kind"])) || undefined,
+        role: text(first(zone, ["role"])) || undefined,
+        bearing_deg: number(first(zone, ["bearing_deg"]), 0),
+        distance_band: text(first(zone, ["distance_band"])) || undefined,
+        visit_share: number(first(zone, ["visit_share"]), 0),
+        active_from_month: number(first(zone, ["active_from_month"]), 1),
+        active_to_month: number(first(zone, ["active_to_month"]), 14)
+      };
+    });
+  if (!zones.length) return null;
+  const changeMonth = first(profile, ["change_month"]);
+  return {
+    reasoning_ko: text(first(profile, ["reasoning_ko"])) || undefined,
+    reasoning_en: text(first(profile, ["reasoning_en"])) || undefined,
+    home_label_ko: text(first(profile, ["home_label_ko"])) || undefined,
+    home_label_en: text(first(profile, ["home_label_en"])) || undefined,
+    change_month: changeMonth === null || changeMonth === undefined ? null : number(changeMonth, 0),
+    change_trigger_ko: text(first(profile, ["change_trigger_ko"])) || null,
+    change_trigger_en: text(first(profile, ["change_trigger_en"])) || null,
+    zones,
+    generator: text(first(profile, ["generator"])) || undefined
+  };
+}
+
 function normalizeDrivers(root: JsonRecord, personas: PersonaType[], environments: MobilityEnvironment[]): StudioDriver[] {
   const cohort = record(root.cohort);
   const source = array(first(root, ["drivers", "driver_summaries", "customers"]))
@@ -347,6 +382,7 @@ function normalizeDrivers(root: JsonRecord, personas: PersonaType[], environment
         noise_ratio_pct: noiseRatio === undefined ? undefined : number(noiseRatio, 0),
         note: text(first(mobility, ["note", "explanation"])) || undefined
       },
+      mobility_profile: normalizeMobilityProfile(item),
       monthly_results: monthlyResults,
       tariff: Object.keys(tariff).length
         ? {

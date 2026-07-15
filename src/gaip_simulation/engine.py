@@ -7,6 +7,7 @@ import csv
 import io
 import json
 import math
+import os
 import random
 from collections import Counter, defaultdict
 from datetime import date
@@ -472,6 +473,12 @@ def _visit_date(month: str, visit_index: int, driver_sequence: int) -> str:
 
 
 def _generate_visits_for_driver(driver: Mapping[str, Any], seed: int) -> list[dict[str, Any]]:
+    # Option C: when an agent mobility profile exists for this person, expand it
+    # (named zones, per-person change month) into visit events; otherwise fall
+    # back to the parametric generator so the engine still runs without a cache.
+    profile = _profile_for_driver(driver)
+    if profile is not None and profile.get("zones"):
+        return _generate_visits_from_profile(driver, profile, seed)
     environment_id = str(driver["environment_id"])
     designed_type = str(driver["designed_type"])
     disposition = driver["disposition"]
@@ -526,6 +533,296 @@ def _generate_visits_for_driver(driver: Mapping[str, Any], seed: int) -> list[di
                 }
             )
     return events
+
+
+# ---------------------------------------------------------------------------
+# Option C — agent mobility profiles (offline, cached). An LLM agent reasons out
+# each senior's named living zones + per-person change month; this engine expands
+# that profile into seeded visit events and then scores them BLIND, exactly like
+# the parametric path. Risk *magnitude* stays keyed to the archetype disposition
+# (the experimental control); the profile owns the spatial/temporal/naming layer.
+# ---------------------------------------------------------------------------
+_MOBILITY_PROFILES_CACHE: dict[str, dict[str, Any]] | None = None
+# Post-change weight for a change destination — strong enough that the out-of-zone
+# share reliably crosses the mobility-change threshold (mirrors the parametric
+# generator's shift), so the archetype's change contract holds regardless of the
+# agent's per-zone share. Kept in one place for auditability.
+_PROFILE_CHANGE_DEST_WEIGHT = 0.52
+_PROFILE_SECONDARY_MIN_WEIGHT = 0.30  # ensure a genuine 2nd living zone clusters
+
+
+def _mobility_profiles() -> dict[str, dict[str, Any]]:
+    """Load (once) the committed agent mobility-profile cache, keyed by person_id."""
+
+    global _MOBILITY_PROFILES_CACHE
+    if _MOBILITY_PROFILES_CACHE is not None:
+        return _MOBILITY_PROFILES_CACHE
+    if os.environ.get("MOBILITY_PROFILES_DISABLED"):
+        _MOBILITY_PROFILES_CACHE = {}
+        return _MOBILITY_PROFILES_CACHE
+    override = os.environ.get("MOBILITY_PROFILES_PATH")
+    path = Path(override) if override else Path(__file__).resolve().parents[2] / "data" / "fixtures" / "mobility_profiles.json"
+    profiles: dict[str, dict[str, Any]] = {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        for row in payload.get("profiles", []):
+            profiles[str(row["person_id"])] = row
+    except (OSError, json.JSONDecodeError, KeyError, TypeError):
+        profiles = {}
+    _MOBILITY_PROFILES_CACHE = profiles
+    return profiles
+
+
+def _profile_for_driver(driver: Mapping[str, Any]) -> dict[str, Any] | None:
+    return _mobility_profiles().get(str(driver.get("person_id", "")))
+
+
+def _profile_home_anchor(driver: Mapping[str, Any]) -> tuple[float, float]:
+    """Same golden-angle residence anchor as ``_hub_centers`` (kept consistent so
+    the summary's home_center matches the profile-placed visits)."""
+
+    environment = ENVIRONMENTS[str(driver["environment_id"])]
+    sequence = int(driver["persona_sequence"])
+    return _offset_coordinate(
+        float(environment["base_latitude"]),
+        float(environment["base_longitude"]),
+        50_000.0 + 1_700.0 * sequence,
+        (137.508 * sequence) % 360.0,
+    )
+
+
+def _profile_band_center(
+    home_lat: float, home_lon: float, environment: Mapping[str, Any], band: str, bearing_deg: float
+) -> tuple[float, float]:
+    reach = float(environment["zone_reach_m"])
+    outer = float(environment["outer_distance_m"])
+    distance_m = {
+        "near": reach * 0.32,
+        # kept <= the parametric in-zone reach (0.62) so an in-zone destination
+        # stays inside the home buffer (radial P90) and does NOT inflate the
+        # baseline out-of-zone share, which would suppress mobility-change.
+        "mid_in": reach * 0.60,
+        "secondary": outer * 0.5,  # beyond home buffer → its own cluster
+        "outer": outer,            # genuinely out of zone
+    }.get(band, reach * 0.5)
+    return _offset_coordinate(home_lat, home_lon, distance_m, bearing_deg)
+
+
+def _profile_destinations(driver: Mapping[str, Any], profile: Mapping[str, Any]) -> list[dict[str, Any]]:
+    environment = ENVIRONMENTS[str(driver["environment_id"])]
+    home_lat, home_lon = _profile_home_anchor(driver)
+    dests: list[dict[str, Any]] = []
+    in_zone_seen = 0
+    for index, zone in enumerate(profile["zones"]):
+        role = str(zone["role"])
+        # Distance band is contract-critical geometry, so it is derived from the
+        # role (not left to the agent): a change destination must sit out of zone
+        # so mobility-change fires, a secondary must sit far enough to form its own
+        # cluster, and an in-zone destination stays inside the home living zone.
+        agent_band = str(zone["distance_band"])
+        if role == "change_destination":
+            band = "outer"
+        elif role == "secondary":
+            band = "secondary"
+        else:
+            band = agent_band if agent_band in ("near", "mid_in") else "near"
+        center = _profile_band_center(home_lat, home_lon, environment, band, float(zone["bearing_deg"]))
+        # Keep the raw event's visit_label in the generic vocabulary so the event
+        # schema is unchanged; role drives risk/distance, the agent label is shown
+        # from the profile at display time.
+        if role == "change_destination" or role == "secondary":
+            visit_label = "New Hub"
+        else:
+            visit_label = "Routine Hub A" if in_zone_seen == 0 else "Routine Hub B"
+            in_zone_seen += 1
+        dests.append(
+            {
+                "key": f"z{index}",
+                "center": center,
+                "role": role,
+                "band": band,
+                "visit_label": visit_label,
+                "visit_share": float(zone["visit_share"]),
+                "active_from": int(zone["active_from_month"]),
+                "active_to": int(zone["active_to_month"]),
+            }
+        )
+    return dests
+
+
+def _profile_month_weights(active: Sequence[Mapping[str, Any]]) -> dict[str, float]:
+    """Weights over the month's active destinations.
+
+    A change destination that is active (i.e. we are at/after change_month) takes
+    a strong fixed share so mobility-change fires reliably; secondary zones are
+    floored so they cluster into a real second living zone; the rest of the mass
+    follows the agent's per-zone shares.
+    """
+
+    def _fixed_share_split(anchors: Sequence[Mapping[str, Any]], anchor_total: float) -> dict[str, float]:
+        # Give the contract-critical anchors (change destination / secondary zone)
+        # a GUARANTEED combined share so they reliably form their own cluster, then
+        # distribute the remaining mass over the other destinations by agent share.
+        weights: dict[str, float] = {}
+        per = anchor_total / len(anchors)
+        for dest in anchors:
+            weights[dest["key"]] = per
+        others = [d for d in active if d["key"] not in weights]
+        remaining = max(0.0, 1.0 - anchor_total)
+        share_sum = sum(max(0.05, float(d["visit_share"])) for d in others) or 1.0
+        for dest in others:
+            weights[dest["key"]] = remaining * max(0.05, float(dest["visit_share"])) / share_sum
+        return weights
+
+    change_dests = [d for d in active if d["role"] == "change_destination"]
+    if change_dests:
+        return _fixed_share_split(change_dests, _PROFILE_CHANGE_DEST_WEIGHT)
+    secondaries = [d for d in active if d["role"] == "secondary"]
+    if secondaries:
+        # 0.32 per secondary (capped) — enough baseline visits to cross the
+        # 3-distinct-day cluster support, matching the parametric secondary share.
+        return _fixed_share_split(secondaries, min(0.58, _PROFILE_SECONDARY_MIN_WEIGHT * len(secondaries)))
+    weights: dict[str, float] = {dest["key"]: max(0.05, float(dest["visit_share"])) for dest in active}
+    total = sum(weights.values()) or 1.0
+    return {key: value / total for key, value in weights.items()}
+
+
+def _profile_risk_event_count(
+    disposition: Mapping[str, Any],
+    dest: Mapping[str, Any],
+    all_month_num: int,
+    change_month: int | None,
+    rng: random.Random,
+) -> int:
+    """Per-visit risky-event count — same archetype logic as the parametric path,
+    but keyed to the destination role and the person's own change month."""
+
+    change = disposition.get("change")
+    locus = disposition["risk_locus"]
+    rate = float(disposition["risk_rate"])
+    if change == "mobility":
+        return 0  # safe mobility change = negative control (risk never rises)
+    if locus == "in_zone":
+        return 1 + int(rng.random() < rate)  # persistent in-zone risky behaviour
+    if (
+        locus == "outer"
+        and change == "cochange"
+        and change_month is not None
+        and all_month_num >= change_month
+    ):
+        if dest["role"] == "change_destination":
+            return 1 + int(rng.random() < 0.55)  # risk concentrates on the new route
+        return int(rng.random() < 0.03)
+    return int(rng.random() < rate)  # low, stable baseline everywhere else
+
+
+def _profile_trip_distance_km(
+    disposition: Mapping[str, Any], environment_id: str, dest: Mapping[str, Any], rng: random.Random
+) -> float:
+    environment = ENVIRONMENTS[environment_id]
+    multiplier = {"near": 0.72, "mid_in": 1.05, "secondary": 1.35, "outer": 1.5}.get(str(dest["band"]), 1.0)
+    if max(float(frac) for frac in disposition["in_zone_reach_frac"]) >= 0.8:
+        multiplier *= 1.2
+    multiplier *= float(disposition.get("trip_distance_scale", 1.0))
+    return round(float(environment["base_trip_distance_km"]) * multiplier * rng.uniform(0.84, 1.18), 2)
+
+
+def _generate_visits_from_profile(
+    driver: Mapping[str, Any], profile: Mapping[str, Any], seed: int
+) -> list[dict[str, Any]]:
+    environment_id = str(driver["environment_id"])
+    designed_type = str(driver["designed_type"])
+    disposition = driver["disposition"]
+    data_quality = str(disposition.get("data_quality", "good"))
+    sparse = data_quality == "sparse"
+    environment = ENVIRONMENTS[environment_id]
+    dests = _profile_destinations(driver, profile)
+    change_month = profile.get("change_month")
+    change_month = int(change_month) if isinstance(change_month, (int, float)) else None
+    base_visits = int(disposition["monthly_visits"]) - (3 if sparse else 0)
+    minimum_visits = 3 if sparse else 5
+    events: list[dict[str, Any]] = []
+
+    for month_index, month in enumerate(ALL_MONTHS):
+        all_month_num = month_index + 1  # 1-2 baseline, 3-14 evaluation
+        period_role = _period_role(month)
+        rng = random.Random(_stable_seed(seed, driver["driver_id"], month))
+        visit_count = max(minimum_visits, base_visits + rng.choice((-1, 0, 0, 1)))
+        active = [d for d in dests if d["active_from"] <= all_month_num <= d["active_to"]]
+        if not active:
+            active = [d for d in dests if d["role"] != "change_destination"] or list(dests)
+        weights = _profile_month_weights(active)
+        by_key = {d["key"]: d for d in active}
+        for visit_index in range(visit_count):
+            dest = by_key[_choose_weighted(rng, weights)]
+            center_lat, center_lon = dest["center"]
+            radius = rng.uniform(0.15, 1.0) * float(environment["visit_jitter_m"])
+            latitude, longitude = _offset_coordinate(center_lat, center_lon, radius, rng.uniform(0, 360))
+            trip_id = f"{driver['driver_id']}-{month.replace('-', '')}-{visit_index + 1:02d}"
+            risk_event_count = _profile_risk_event_count(disposition, dest, all_month_num, change_month, rng)
+            visit_date = _visit_date(month, visit_index, int(driver["persona_sequence"]))
+            data_coverage_pct = (
+                round(60.0 + rng.random() * 12.0, 1)
+                if sparse
+                else round(95.0 + rng.random() * 5.0, 1)
+            )
+            events.append(
+                {
+                    "trip_id": trip_id,
+                    "visit_event_id": f"visit-{trip_id}",
+                    "driver_id": driver["driver_id"],
+                    "designed_type": designed_type,
+                    "environment_id": environment_id,
+                    "dataset_partition": driver["dataset_partition"],
+                    "data_quality": data_quality,
+                    "month": month,
+                    "period_role": period_role,
+                    "visit_date": visit_date,
+                    "visit_label": dest["visit_label"],
+                    "latitude": round(latitude, 6),
+                    "longitude": round(longitude, 6),
+                    "trip_distance_km": _profile_trip_distance_km(disposition, environment_id, dest, rng),
+                    "risk_event_count": risk_event_count,
+                    "data_coverage_pct": data_coverage_pct,
+                    "source_status": "simulated",
+                }
+            )
+    return events
+
+
+def _public_mobility_profile(profile: Mapping[str, Any] | None) -> dict[str, Any] | None:
+    """UI-safe view of the agent mobility profile: reasoning + named zones (no
+    coordinates — only bearing/role/band descriptors — so no residence location
+    can be reconstructed)."""
+
+    if not profile:
+        return None
+    zones = [
+        {
+            "label_ko": zone.get("label_ko"),
+            "label_en": zone.get("label_en", zone.get("label_ko")),
+            "kind": zone.get("kind"),
+            "role": zone.get("role"),
+            "bearing_deg": zone.get("bearing_deg"),
+            "distance_band": zone.get("distance_band"),
+            "visit_share": zone.get("visit_share"),
+            "active_from_month": zone.get("active_from_month"),
+            "active_to_month": zone.get("active_to_month"),
+        }
+        for zone in profile.get("zones", [])
+    ]
+    reasoning_ko = str(profile.get("reasoning_ko", ""))
+    return {
+        "reasoning_ko": reasoning_ko,
+        "reasoning_en": str(profile.get("reasoning_en", "") or reasoning_ko),
+        "home_label_ko": profile.get("home_label_ko"),
+        "home_label_en": profile.get("home_label_en"),
+        "change_month": profile.get("change_month"),
+        "change_trigger_ko": profile.get("change_trigger_ko"),
+        "change_trigger_en": profile.get("change_trigger_en"),
+        "zones": zones,
+        "generator": "openai_agent_offline_cached",
+    }
 
 
 def _mileage_score(monthly_distance_km: float) -> float:
@@ -872,6 +1169,7 @@ def _driver_summary(
         "annual_care_state": annual_care,
         "reward_month_count": sum(result["reward_state"] == "reward" for result in evaluation),
         "care_review_month_count": sum(result["care_state"] == "care_review" for result in evaluation),
+        "mobility_profile": _public_mobility_profile(_profile_for_driver(driver)),
         "mobility": {
             "zone_status": "available" if hubs else "insufficient",
             "algorithm": "DBSCAN",

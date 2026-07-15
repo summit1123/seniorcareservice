@@ -110,6 +110,33 @@ export interface DriverMobilityEvidence {
   note?: string;
 }
 
+export interface MobilityProfileZone {
+  label_ko?: string;
+  label_en?: string;
+  kind?: string;
+  role?: string;
+  bearing_deg?: number;
+  distance_band?: string;
+  visit_share?: number;
+  active_from_month?: number;
+  active_to_month?: number;
+}
+
+/** Agent-generated mobility profile (Option C): the LLM's reasoning + named living
+ * zones. Descriptors only (no coordinates); the deterministic engine expands and
+ * scores it blind. */
+export interface MobilityProfile {
+  reasoning_ko?: string;
+  reasoning_en?: string;
+  home_label_ko?: string;
+  home_label_en?: string;
+  change_month?: number | null;
+  change_trigger_ko?: string | null;
+  change_trigger_en?: string | null;
+  zones: MobilityProfileZone[];
+  generator?: string;
+}
+
 export interface TariffComparison {
   base_premium_krw?: number;
   korea_mileage_discount_rate_pct?: number;
@@ -139,6 +166,7 @@ export interface StudioDriver {
   care_review_month_count?: number;
   metrics: StudioMetrics;
   mobility: DriverMobilityEvidence;
+  mobility_profile?: MobilityProfile | null;
   monthly_results: StudioMonthlyResult[];
   tariff?: TariffComparison;
   reason_codes?: string[];

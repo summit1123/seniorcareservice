@@ -1,4 +1,5 @@
 from __future__ import annotations
+import copy
 
 import csv
 import hashlib
@@ -135,10 +136,15 @@ class TestGaipSimulation(unittest.TestCase):
             "병원", "약국", "자녀", "자택", "마트", "경로당", "복지관", "시장",
         ):
             self.assertNotIn(forbidden, raw_csv)
-        # Policy: the summary bundle may carry synthetic semantic hub labels, but
-        # only values from the approved APPROVED_HUB_LABELS_KO union; English
-        # place-code tokens stay forbidden.
-        serialized = json.dumps(self.bundle, ensure_ascii=False).lower()
+        # Policy: the ENGINE-MEASURED data (raw events, hubs, monthly results) must
+        # never carry place semantics, so English place-code tokens stay forbidden
+        # there. The agent ``mobility_profile`` is a clearly-labelled SYNTHETIC input
+        # narrative whose whole purpose is illustrative destination types, so it is
+        # excluded from this check (its zones/reasoning legitimately name types).
+        measured = copy.deepcopy(self.bundle)
+        for driver in measured.get("drivers", []):
+            driver.pop("mobility_profile", None)
+        serialized = json.dumps(measured, ensure_ascii=False).lower()
         for forbidden in ("hospital", "clinic", "pharmacy", "child_house", "family_home"):
             self.assertNotIn(forbidden, serialized)
         for driver in self.bundle["drivers"]:

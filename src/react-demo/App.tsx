@@ -15,7 +15,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { demoApi } from "./api";
 import { AlgorithmLabPanel } from "./AlgorithmLab";
-import { LOCALE_META, LOCALE_ORDER, setLocale, t, tf, type Locale } from "./i18n";
+import { getLocale, LOCALE_META, LOCALE_ORDER, setLocale, t, tf, type Locale } from "./i18n";
 import { normalizeProductWeights } from "./gaip-decision";
 import type { ProductRules } from "./gaip-types";
 import type {
@@ -110,6 +110,20 @@ const decisionStateKo: Record<string, string> = {
 function stateLabelKo(value: string | null | undefined) {
   if (!value) return "—";
   return t(decisionStateKo[value] ?? value);
+}
+
+// Agent mobility-profile text is bilingual (ko + en); Korean locale shows ko,
+// every other locale shows en (proper-noun destination names / rationale).
+function localeText(ko?: string | null, en?: string | null): string {
+  const korean = (ko ?? "").trim();
+  const english = (en ?? "").trim();
+  return getLocale() === "ko" ? korean || english : english || korean;
+}
+
+function zoneRoleLabel(role?: string): string {
+  if (role === "secondary") return t("두 번째 생활권");
+  if (role === "change_destination") return t("하반기 신규 목적지");
+  return t("생활권 안 거점");
 }
 
 function tierLabelKo(reward?: string | null, care?: string | null) {
@@ -732,6 +746,26 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
         <p className="hypothesis-note">{t("이 가설의 계산 가능성과 예외 처리를 합성 데이터로 검증하며, 실제 사고·손해율 상관은 별도 실증이 필요합니다.")}</p>
       </div>
 
+      <div className="experiment-structure">
+        <span className="eyebrow">{t("데이터 실험 구조")}</span>
+        <strong>{t("AI 에이전트가 각 시니어의 삶으로 주행 데이터를 만들고, 결정론 엔진이 유형을 모른 채 분석합니다")}</strong>
+        <div className="experiment-structure-grid">
+          <div className="es-step">
+            <b>{t("1 · 추론 — AI 에이전트")}</b>
+            <p>{t("페르소나의 생활 맥락(가구·취미·목표·운전 습관)에서 14개월간 어디를·어떤 리듬으로·언제부터 다르게 다니는지를 추론해, 이름 있는 생활권과 변화 시점을 만듭니다.")}</p>
+          </div>
+          <div className="es-step">
+            <b>{t("2 · 분석 — 결정론 엔진")}</b>
+            <p>{t("생성된 방문 데이터를 유형 라벨 없이 그대로 받아 실제 DBSCAN 군집·생활권 반경·통합 점수·같은 달 AND 게이트로 판정합니다. 결과는 엔진에서 창발하며 목표값을 심지 않습니다.")}</p>
+          </div>
+          <div className="es-step">
+            <b>{t("3 · 검증 — 재현 가능")}</b>
+            <p>{t("에이전트 생성물은 오프라인에서 한 번 만들어 캐시·고정하므로 데모는 완전히 결정론적이고 재현 가능합니다. 60명 전원이 아키타입 경향과 검증 게이트를 통과하는지 확인합니다.")}</p>
+          </div>
+        </div>
+        <p className="experiment-structure-note">{t("추론(무엇을)과 분석(어떻게 판정)을 분리한 구조입니다. 아키타입 경향은 실험의 통제변수이고, 위험 크기는 엔진이 관리하므로 라벨 유출 없이 결과가 창발합니다.")}</p>
+      </div>
+
       <div className="buyer-trust">
         <span className="eyebrow">{t("구매자 행동 · 신뢰")}</span>
         <strong>{t("감시가 아니라, 계속 안전하게 운전할 자유를 지키는 설계입니다")}</strong>
@@ -1131,6 +1165,34 @@ function LivingZoneDecisionMap({
           <GeoLivingZoneCanvas driver={driver} snapshot={zoneMap.snapshot} profile={profile} />
         )}
       </div>
+
+      {driver.mobility_profile && driver.mobility_profile.zones.length ? (
+        <div className="agent-mobility">
+          <div className="agent-mobility-head">
+            <span className="eyebrow">{t("AI 에이전트가 추론한 생활 동선")}</span>
+            <span className="agent-badge">{t("오프라인 생성 · 캐시 · 결정론 엔진이 유형 모른 채 분석")}</span>
+          </div>
+          {localeText(driver.mobility_profile.reasoning_ko, driver.mobility_profile.reasoning_en) ? (
+            <p className="agent-reasoning">{localeText(driver.mobility_profile.reasoning_ko, driver.mobility_profile.reasoning_en)}</p>
+          ) : null}
+          <ul className="agent-zones">
+            {driver.mobility_profile.zones.map((zone, index) => (
+              <li key={index} className={`agent-zone role-${zone.role ?? "in_zone"}`}>
+                <strong>{localeText(zone.label_ko, zone.label_en)}</strong>
+                <span className="agent-zone-role">{zoneRoleLabel(zone.role)}</span>
+              </li>
+            ))}
+          </ul>
+          {driver.mobility_profile.change_month && localeText(driver.mobility_profile.change_trigger_ko, driver.mobility_profile.change_trigger_en) ? (
+            <p className="agent-change">
+              {tf("변화 계기 · 평가 {month}개월차", { month: driver.mobility_profile.change_month })}
+              {" — "}
+              {localeText(driver.mobility_profile.change_trigger_ko, driver.mobility_profile.change_trigger_en)}
+            </p>
+          ) : null}
+          <p className="agent-mobility-note">{t("이 동선은 AI가 페르소나 맥락으로 생성한 합성 데이터이며, 실제 위치·인물이 아닙니다. 좌표는 결정론 엔진 내부에서만 쓰이고 화면에 노출되지 않습니다.")}</p>
+        </div>
+      ) : null}
 
       <div className="map-legend-row">
         <span><i className="legend-home" />{t("반복 거점")}</span>

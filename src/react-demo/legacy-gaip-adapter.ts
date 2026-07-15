@@ -367,7 +367,8 @@ export function adaptAnnualSummary(
     care_state: result.care_state,
     zone_status: driver.mobility.zone_status,
     evidence_status: status,
-    model_version: bundle.metadata.bundle_version ?? "masil-gaip-simulation/v1"
+    model_version: bundle.metadata.bundle_version ?? "masil-gaip-simulation/v1",
+    mobility_profile: driver.mobility_profile ?? null
   };
 }
 
