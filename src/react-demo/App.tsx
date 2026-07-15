@@ -1940,6 +1940,23 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
     .filter((item): item is { group: TripGroup; destination: Destination } => Boolean(item.destination) && item.group.key !== "home");
   const visibleDestinations = destinations.slice(0, 6);
 
+  // Agent-named living zones (Option C): put the LLM's life-grounded names onto
+  // the map's own legend, matched by role — an out-of-zone node takes a change
+  // destination name, an in-zone node takes an in-zone name — with a generic
+  // fallback so a mismatch never leaves a node unlabelled.
+  const profileZones = driver.mobility_profile?.zones ?? [];
+  const inZoneQueue = profileZones.filter((zone) => zone.role === "in_zone").map((zone) => localeText(zone.label_ko, zone.label_en));
+  const secondaryQueue = profileZones.filter((zone) => zone.role === "secondary").map((zone) => localeText(zone.label_ko, zone.label_en));
+  const changeQueue = profileZones.filter((zone) => zone.role === "change_destination").map((zone) => localeText(zone.label_ko, zone.label_en));
+  let inCursor = 0;
+  let changeCursor = 0;
+  const agentDestLabels = visibleDestinations.map((item) => {
+    const outer = item.destination.living_zone_role === "outer";
+    if (outer && changeCursor < changeQueue.length) return changeQueue[changeCursor++];
+    if (!outer && inCursor < inZoneQueue.length) return inZoneQueue[inCursor++];
+    return null;
+  });
+
   // Home-centred radial schematic (not a real map — coordinates are never
   // exposed). The residence sits at the centre with its Core (500m) and Buffer
   // (personal P90) rings; destinations fan out around it: in-zone stops inside
@@ -2014,7 +2031,7 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
           <g key={cluster.cluster_id} className="geo-cluster">
             <circle cx={cx} cy={cy} r={secBuffer} />
             <circle cx={cx} cy={cy} r={Math.min(coreRadius - 6, secBuffer - 12)} />
-            <text x={cx} y={cy - secBuffer - 9} textAnchor="middle">{cluster.label_ko ? t(cluster.label_ko) : tf("반복 거점 {letter}", { letter: String.fromCharCode(66 + index) })}</text>
+            <text x={cx} y={cy - secBuffer - 9} textAnchor="middle">{secondaryQueue[index] ?? (cluster.label_ko ? t(cluster.label_ko) : tf("반복 거점 {letter}", { letter: String.fromCharCode(66 + index) }))}</text>
           </g>
         );
       })}
@@ -2064,7 +2081,7 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
           return (
             <div key={`geo-detail-${group.key}`} className={`geo-detail-row ${meta.className}`}>
               <b>{index + 1}</b>
-              <strong>{group.label ?? destinationTypeLabel(group.key)}</strong>
+              <strong>{agentDestLabels[index] ?? group.label ?? destinationTypeLabel(group.key)}</strong>
               <small>{meta.label} · {tf("{count}회 방문", { count: group.count })}</small>
               <em>{tf("{km}km · 위험행동 {n}건", { km: group.distanceKm.toFixed(0), n: group.riskEvents })}</em>
             </div>

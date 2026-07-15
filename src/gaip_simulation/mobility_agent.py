@@ -199,6 +199,7 @@ def build_input_payload(person: Mapping[str, Any]) -> list[dict[str, Any]]:
 - change_month: 이동 변화형이면 {EVAL_MONTH_MIN}~{EVAL_MONTH_MAX} 사이 정수(사람마다 다르게), 아니면 null.
 - change_destination이 있으면 그 zone의 active_from_month = change_month 로 맞추세요.
 - bearing_deg는 사람마다 다양하게(한쪽에 몰리지 않게). visit_share 합은 대략 1.0.
+- 목적지 이름(label_ko/label_en)은 반드시 일반 명사로만 지으세요. 실존 지명·산·강·행정구역·실제 기관명 같은 고유명사를 절대 쓰지 마세요. 예: '북한산 등산로'(X)→'근교 등산로'(O), '강서구 건강센터'(X)→'우리동네 건강센터'(O), '한강 낚시터'(X)→'강변 낚시터'(O). (인물의 합성 이름을 딴 '금자텃밭'류는 허용.)
 - 모든 텍스트 필드는 한국어(*_ko)와 자연스러운 영어(*_en)를 함께 채우세요(GAIP 영어 심사용).{sparse_note}
 
 [출력 JSON 스키마]
