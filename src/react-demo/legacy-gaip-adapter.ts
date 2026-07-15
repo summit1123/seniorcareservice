@@ -155,13 +155,13 @@ function dominantInterpretation(month: StudioMonthlyResult, rules: ProductRules)
   return "existing_living_zone";
 }
 
-function monthlyRewardState(month: StudioMonthlyResult, evidenceReady: boolean): string {
+function monthlyRewardState(month: StudioMonthlyResult, rules: ProductRules, evidenceReady: boolean): string {
   if (month.period_role === "baseline") return "Observation";
   if (!evidenceReady) return "Hold";
-  const value = (month.reward_state ?? "").toLowerCase();
-  if (value === "reward") return "Reward";
-  if (value === "hold") return "Hold";
-  return "Neutral";
+  // Recompute against the ACTIVE sandbox rules (weights + reward threshold) so the
+  // monthly badge stays consistent with the annual tier and the donut when the
+  // product manager moves the sliders — mirrors monthlyCareState, which recomputes.
+  return monthlyWeightedScore(month, rules) >= rules.reward_score_threshold ? "Reward" : "Neutral";
 }
 
 function monthlyCareState(month: StudioMonthlyResult, rules: ProductRules, evidenceReady: boolean): string {
@@ -205,7 +205,7 @@ function monthlyEvidence(driver: StudioDriver, rules: ProductRules): MonthlyEvid
       mobility_change_index_pct: round(month.mobility_change_index_pct),
       risky_behavior_change_index_pct: round(month.risky_behavior_change_index_pct),
       pattern_stability_score: round(month.pattern_stability_score),
-      reward_state: monthlyRewardState(month, evidenceReady),
+      reward_state: monthlyRewardState(month, rules, evidenceReady),
       care_state: monthlyCareState(month, rules, evidenceReady)
     };
   });
