@@ -435,7 +435,9 @@ def _risk_event_count(
     # time, so safety scores stay low (→ neutral) but the risk-CHANGE gate never
     # fires. Applies wherever the driver goes.
     if locus == "in_zone":
-        return 1 + int(rng.random() < rate)
+        # Probabilistic (see _profile_risk_event_count): keeps risk high AND stable
+        # but lets per-person risk_rate produce varied, realistic event counts.
+        return int(rng.random() < rate) + int(rng.random() < rate * 0.35)
     # Co-change: from evaluation month 8 the risk concentrates on the new/outer
     # night route, so out-zone safety drops while in-zone stays clean.
     if locus == "outer" and change == "cochange" and evaluation_month is not None and evaluation_month >= 8:
@@ -731,7 +733,11 @@ def _profile_risk_event_count(
     if change == "mobility":
         return 0  # safe mobility change = negative control (risk never rises)
     if locus == "in_zone":
-        return 1 + int(rng.random() < rate)  # persistent in-zone risky behaviour
+        # Persistent in-zone risky behaviour, but PROBABILISTIC per visit so the
+        # per-person risk_rate variation produces varied monthly event counts and
+        # safety scores (instead of a guaranteed >=1 that pins every case to the
+        # 18-point floor). Rate stays high enough to keep these drivers neutral.
+        return int(rng.random() < rate) + int(rng.random() < rate * 0.35)
     if (
         locus == "outer"
         and change == "cochange"

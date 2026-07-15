@@ -59,7 +59,7 @@ ARCHETYPES: list[dict[str, Any]] = [
         "age_range": (68, 84),
         "life_context_ko": "익숙한 반복 경로를 규칙적으로 오가는 저주행 안전 운전자",
         "disposition": {
-            "monthly_visits": 7, "in_zone_reach_frac": [0.30, 0.55, 0.80],
+            "monthly_visits": 24, "in_zone_reach_frac": [0.30, 0.55, 0.80],
             "has_secondary_zone": False, "risk_rate": 0.03, "risk_locus": "none",
             "night_pref": 0.06, "change": None,
         },
@@ -71,7 +71,7 @@ ARCHETYPES: list[dict[str, Any]] = [
         "age_range": (67, 84),
         "life_context_ko": "멀리 가진 않지만 생활권 안에서 급제동·과속이 반복되는 운전자",
         "disposition": {
-            "monthly_visits": 7, "in_zone_reach_frac": [0.30, 0.55],
+            "monthly_visits": 13, "in_zone_reach_frac": [0.30, 0.55],
             "has_secondary_zone": False, "risk_rate": 0.72, "risk_locus": "in_zone",
             "night_pref": 0.13, "change": None,
         },
@@ -83,7 +83,7 @@ ARCHETYPES: list[dict[str, Any]] = [
         "age_range": (66, 81),
         "life_context_ko": "하반기에 이동 범위가 넓어졌지만 위험행동 증가는 없는 운전자",
         "disposition": {
-            "monthly_visits": 8, "in_zone_reach_frac": [0.35, 0.62],
+            "monthly_visits": 32, "in_zone_reach_frac": [0.35, 0.62],
             "has_secondary_zone": False, "risk_rate": 0.03, "risk_locus": "none",
             "night_pref": 0.13, "change": "mobility",
         },
@@ -95,7 +95,7 @@ ARCHETYPES: list[dict[str, Any]] = [
         "age_range": (68, 83),
         "life_context_ko": "하반기에 외곽·야간 이동이 늘고 그 경로에서 위험행동이 함께 증가한 운전자",
         "disposition": {
-            "monthly_visits": 8, "in_zone_reach_frac": [0.35, 0.60],
+            "monthly_visits": 32, "in_zone_reach_frac": [0.35, 0.60],
             "has_secondary_zone": False, "risk_rate": 0.03, "risk_locus": "outer",
             "night_pref": 0.18, "change": "cochange",
         },
@@ -107,7 +107,7 @@ ARCHETYPES: list[dict[str, Any]] = [
         "age_range": (66, 78),
         "life_context_ko": "집과 멀리 떨어진 두 번째 거점을 규칙적으로 오가며 안전 운전을 유지하는 운전자",
         "disposition": {
-            "monthly_visits": 10, "in_zone_reach_frac": [0.35, 0.60],
+            "monthly_visits": 42, "in_zone_reach_frac": [0.35, 0.60],
             "has_secondary_zone": True, "risk_rate": 0.03, "risk_locus": "none",
             "night_pref": 0.10, "change": None,
         },
@@ -119,7 +119,7 @@ ARCHETYPES: list[dict[str, Any]] = [
         "age_range": (66, 83),
         "life_context_ko": "생활권 반경이 넓어 먼 거리를 자주 다니지만 위치와 무관하게 안전 운전을 유지하는 운전자",
         "disposition": {
-            "monthly_visits": 8, "in_zone_reach_frac": [0.60, 0.95],
+            "monthly_visits": 40, "in_zone_reach_frac": [0.60, 0.95],
             "has_secondary_zone": False, "risk_rate": 0.045, "risk_locus": "none",
             "night_pref": 0.11, "change": None,
         },
