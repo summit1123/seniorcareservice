@@ -6701,3 +6701,49 @@ h1, h2, h3 { letter-spacing: -0.014em; }
 .geo-guide-ring { fill: none; stroke: var(--line); stroke-width: 1.1; stroke-dasharray: 3 9; opacity: 0.55; }
 .geo-node-halo { fill: color-mix(in srgb, var(--amber) 22%, transparent); }
 .geo-node.risk .geo-node-halo { fill: color-mix(in srgb, var(--danger) 20%, transparent); }
+
+/* ---- Buyer behaviour · trust block (GAIP theme alignment) ---- */
+.buyer-trust {
+  margin: 2px 0;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--panel);
+}
+.buyer-trust .eyebrow {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+.buyer-trust > strong {
+  display: block;
+  margin: 7px 0 14px;
+  font-size: 17px;
+  line-height: 1.35;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.buyer-trust-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.buyer-trust-grid > div {
+  padding: 14px 15px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--panel-soft);
+}
+.buyer-trust-grid b {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13.5px;
+  color: var(--primary-strong);
+}
+.buyer-trust-grid p { color: var(--muted); font-size: 13px; line-height: 1.6; }
+.buyer-trust-note { margin-top: 12px; font-size: 12.5px; color: var(--faint); line-height: 1.6; }
+@media (max-width: 900px) { .buyer-trust-grid { grid-template-columns: 1fr; } }

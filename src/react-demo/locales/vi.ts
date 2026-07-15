@@ -1,6 +1,15 @@
 // Tiếng Việt translations for the MASIL dashboard. Keys are the Korean source
 // strings. Missing keys fall back to Korean.
 const dict: Record<string, string> = {
+  "구매자 행동 · 신뢰": "Hành vi người mua · niềm tin",
+  "감시가 아니라, 계속 안전하게 운전할 자유를 지키는 설계입니다": "Được thiết kế để bảo vệ quyền tiếp tục lái xe an toàn — không phải để giám sát",
+  "운전할 자유": "Quyền tiếp tục lái xe",
+  "나이로 벌점을 매기지 않고, 익숙한 생활권 안 안전운전을 혜택으로 돌려줍니다. 시니어가 가장 두려워하는 운전 상실을 처벌이 아니라 인정으로 바꿉니다.": "Không trừ điểm vì tuổi tác, mà trả lại việc lái xe an toàn trong vùng sinh hoạt quen thuộc dưới dạng ưu đãi, biến nỗi sợ lớn nhất của người cao tuổi — mất khả năng lái xe — thành sự ghi nhận thay vì hình phạt.",
+  "감시가 아닌 존중": "Tôn trọng, không giám sát",
+  "어디를 가든 위치만으로는 감점하지 않고, 원본 좌표를 저장하거나 노출하지 않습니다. 텔레매틱스를 지켜봐 주는 장치로 느끼게 하는 프라이버시·설명가능 설계입니다.": "Dù lái xe ở đâu, chỉ riêng vị trí không bao giờ bị trừ điểm, và tọa độ gốc không được lưu hay hiển thị — thiết kế bảo vệ quyền riêng tư và giải thích được, khiến telematics giống như đang dõi theo bạn.",
+  "가족의 안심": "Sự an tâm cho gia đình",
+  "이동과 위험행동이 같은 달에 함께 나빠질 때만, 처벌이 아니라 조기 개입 신호를 사람에게 전합니다. 부모의 운전을 걱정하는 가족이 믿고 맡길 수 있는 근거입니다.": "Chỉ khi di chuyển và hành vi rủi ro cùng xấu đi trong một tháng, một tín hiệu can thiệp sớm không mang tính trừng phạt mới đến với con người — căn cứ để gia đình lo lắng về việc lái xe của cha mẹ có thể tin tưởng.",
+  "빠르게 늘어나는 고령 운전자는 저평가·과소보장되기 쉬운 세그먼트입니다. 행동 기반의 공정한 가격으로 이들을 다시 보험 안으로 초대하는 것이 이 설계의 목표입니다.": "Người cao tuổi lái xe là phân khúc đang tăng nhanh, dễ bị định giá thấp và thiếu bảo hiểm. Mời họ trở lại bảo hiểm bằng mức giá công bằng dựa trên hành vi chính là mục tiêu của thiết kế này.",
   "자택": "Nhà",
   "지표별 영향 분해 · {month}": "Phân tích tác động theo chỉ số · {month}",
   "설명가능 AI(XAI) + 직원용 리포트": "AI giải thích được (XAI) + báo cáo cho nhân viên",

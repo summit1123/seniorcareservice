@@ -121,7 +121,6 @@ function tierLabelKo(reward?: string | null, care?: string | null) {
 
 const dynamicTextTranslations: Record<string, string> = {
   Standard: "Neutral",
-  Favorable: "Reward",
   "Preventive Care": "Care Review"
 };
 
@@ -731,6 +730,26 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
         <strong>{t("익숙한 생활권은 안전 신호, 반경 급확대와 행동 변화는 위험 신호입니다")}</strong>
         <p>{t("노인 운전자는 익숙한 반복 경로·시간대에서 사고 빈도가 낮습니다. 반대로 생활권 반경이 갑자기 넓어지면서 급감속·과속이 함께 늘어나는 것은 인지·신체 기능 저하가 드러나는 알려진 전조입니다. 그래서 얼마나 탔는지가 아니라, 어디를 어떻게, 어떻게 달라지며 타는지를 봅니다.")}</p>
         <p className="hypothesis-note">{t("이 가설의 계산 가능성과 예외 처리를 합성 데이터로 검증하며, 실제 사고·손해율 상관은 별도 실증이 필요합니다.")}</p>
+      </div>
+
+      <div className="buyer-trust">
+        <span className="eyebrow">{t("구매자 행동 · 신뢰")}</span>
+        <strong>{t("감시가 아니라, 계속 안전하게 운전할 자유를 지키는 설계입니다")}</strong>
+        <div className="buyer-trust-grid">
+          <div>
+            <b>{t("운전할 자유")}</b>
+            <p>{t("나이로 벌점을 매기지 않고, 익숙한 생활권 안 안전운전을 혜택으로 돌려줍니다. 시니어가 가장 두려워하는 운전 상실을 처벌이 아니라 인정으로 바꿉니다.")}</p>
+          </div>
+          <div>
+            <b>{t("감시가 아닌 존중")}</b>
+            <p>{t("어디를 가든 위치만으로는 감점하지 않고, 원본 좌표를 저장하거나 노출하지 않습니다. 텔레매틱스를 지켜봐 주는 장치로 느끼게 하는 프라이버시·설명가능 설계입니다.")}</p>
+          </div>
+          <div>
+            <b>{t("가족의 안심")}</b>
+            <p>{t("이동과 위험행동이 같은 달에 함께 나빠질 때만, 처벌이 아니라 조기 개입 신호를 사람에게 전합니다. 부모의 운전을 걱정하는 가족이 믿고 맡길 수 있는 근거입니다.")}</p>
+          </div>
+        </div>
+        <p className="buyer-trust-note">{t("빠르게 늘어나는 고령 운전자는 저평가·과소보장되기 쉬운 세그먼트입니다. 행동 기반의 공정한 가격으로 이들을 다시 보험 안으로 초대하는 것이 이 설계의 목표입니다.")}</p>
       </div>
 
       <div className="comparison-ledger" aria-label={t("기존 마일리지와 제안 산식 비교표")}>
