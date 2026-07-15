@@ -1798,6 +1798,15 @@ p {
   background: var(--orange);
 }
 
+.map-legend-row .legend-risk-ring {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--green);
+  border: 2.5px solid var(--danger);
+  box-sizing: border-box;
+}
+
 .map-legend-row b {
   margin-left: auto;
   color: var(--ink);
@@ -2740,7 +2749,14 @@ p {
 }
 
 .geo-node.risk circle {
-  fill: var(--orange);
+  fill: var(--care);
+}
+/* A risky-behaviour EVENT is not a zone: keep the node's zone colour and mark it
+   with a distinct red ring + halo, so an in-zone risky stop never reads as an
+   out-of-zone (amber) marker. */
+.geo-node.has-risk circle {
+  stroke: var(--danger);
+  stroke-width: 4;
 }
 
 .geo-badge rect {
@@ -6700,7 +6716,7 @@ h1, h2, h3 { letter-spacing: -0.014em; }
 /* ---- Living-zone map: radial guides + risk-destination halo ---- */
 .geo-guide-ring { fill: none; stroke: var(--line); stroke-width: 1.1; stroke-dasharray: 3 9; opacity: 0.55; }
 .geo-node-halo { fill: color-mix(in srgb, var(--amber) 22%, transparent); }
-.geo-node.risk .geo-node-halo { fill: color-mix(in srgb, var(--danger) 20%, transparent); }
+.geo-node.has-risk .geo-node-halo { fill: color-mix(in srgb, var(--danger) 22%, transparent); }
 
 /* ---- Buyer behaviour · trust block (GAIP theme alignment) ---- */
 .buyer-trust {

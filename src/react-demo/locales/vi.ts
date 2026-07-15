@@ -240,6 +240,7 @@ const dict: Record<string, string> = {
   "중심권 500m": "Vùng lõi 500m",
   "완충권 · 개인 P90 반영": "Vùng đệm · phản ánh P90 cá nhân",
   "생활권 밖 · 위치만으로 감점 없음": "Ngoài vùng sinh hoạt · không trừ điểm chỉ vì vị trí",
+  "위험행동 발생(빨간 테두리)": "Có hành vi lái xe rủi ro (viền đỏ)",
   "선택 근거": "Căn cứ lựa chọn",
   "경로선 색 안내": "Chú thích màu đường tuyến",
   "경로선(도식) = 자택→목적지 연결이며 색은 선택 월의 해석입니다:": "Đường tuyến (sơ đồ) = kết nối nhà → điểm đến, màu sắc là diễn giải của tháng đã chọn:",

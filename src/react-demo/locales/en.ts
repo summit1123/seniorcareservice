@@ -226,6 +226,7 @@ const dict: Record<string, string> = {
   "중심권 500m": "Core zone 500m",
   "완충권 · 개인 P90 반영": "Buffer zone · reflects personal P90",
   "생활권 밖 · 위치만으로 감점 없음": "Out-of-zone · no penalty for location alone",
+  "위험행동 발생(빨간 테두리)": "Risky behaviour (red ring)",
   "선택 근거": "Selection rationale",
   "경로선 색 안내": "Route-line colour guide",
   "경로선(도식) = 자택→목적지 연결이며 색은 선택 월의 해석입니다:": "Route lines (schematic) = home→destination links; the colour reflects the interpretation of the selected month:",

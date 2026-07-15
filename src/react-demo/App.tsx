@@ -1199,6 +1199,7 @@ function LivingZoneDecisionMap({
         <span><i className="legend-normal" />{t("중심권 500m")}</span>
         <span><i className="legend-out" />{t("완충권 · 개인 P90 반영")}</span>
         <span><i className="legend-risk" />{t("생활권 밖 · 위치만으로 감점 없음")}</span>
+        <span><i className="legend-risk-ring" />{t("위험행동 발생(빨간 테두리)")}</span>
         <b>{zoneMap?.snapshot.service_month ?? tf("{n}월", { n: selectedMonth })} {t("선택 근거")}</b>
       </div>
       <div className="map-route-legend" aria-label={t("경로선 색 안내")}>
@@ -2091,7 +2092,7 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
         const meta = interpretationClass(group.dominant);
         const risk = group.riskEvents > 0;
         return (
-          <g key={`node-${group.key}`} className={`geo-node ${meta.className}${risk ? " risk" : ""}`}>
+          <g key={`node-${group.key}`} className={`geo-node ${meta.className}${risk ? " has-risk" : ""}`}>
             {risk ? <circle className="geo-node-halo" cx={point.x} cy={point.y} r="24" /> : null}
             <circle cx={point.x} cy={point.y} r={risk ? 15 : 12} />
             <text className="geo-node-index" x={point.x} y={point.y + 4}>{index + 1}</text>
