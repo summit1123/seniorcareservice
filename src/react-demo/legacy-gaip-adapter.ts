@@ -704,14 +704,14 @@ export function buildEvidenceReport(
     selected.mobility_change_index_pct >= activeRules.care_mobility_change_threshold &&
     selected.risky_behavior_change_index_pct >= activeRules.care_risky_behavior_threshold;
   const outScore = selected.out_zone_safe_score === null ? "N/A (해당 월 관찰 없음)" : `${round(selected.out_zone_safe_score)}점`;
-  const rewardLabel = monthlyRewardState(selected, evidenceReady);
+  const rewardLabel = monthlyRewardState(selected, activeRules, evidenceReady);
   const careLabel = monthlyCareState(selected, activeRules, evidenceReady);
 
   return [
     `# ${selected.month} 근거 검토 초안`,
     "",
     `> ${driver.display_label} · ${driver.persona_label} · ${driver.environment_label}`,
-    "> 합성 시뮬레이션 기반 설명 초안이며, 실제 요율·인수·Care 결정이 아닙니다.",
+    "> 합성 시뮬레이션 기반 설명 초안이며, 실제 요율·인수·케어 결정이 아닙니다.",
     "",
     "## 1. 관찰된 합성 근거",
     `- 기간 역할: ${selected.period_role === "baseline" ? "개인 기준선 관찰" : "평가기간"}`,
@@ -725,10 +725,10 @@ export function buildEvidenceReport(
     "",
     "## 2. 상품 후보 해석",
     `- 가용 항목 재정규화 점수: ${score}점`,
-    `- 선택 월 Reward 상태: ${rewardLabel}`,
-    `- 선택 월 Care 상태: ${careLabel}`,
-    `- 연간 후보 상태(참고): Reward ${result.reward_state} · Care ${result.care_state}`,
-    `- 같은 달 AND Gate: ${careGate ? "충족 — 사람 검토 제안" : "미충족"}`,
+    `- 선택 월 우대 상태: ${rewardLabel}`,
+    `- 선택 월 케어 상태: ${careLabel}`,
+    `- 연간 후보 상태(참고): 우대 ${result.reward_state} · 케어 ${result.care_state}`,
+    `- 같은 달 동시 게이트: ${careGate ? "충족 — 사람 검토 제안" : "미충족"}`,
     `- Reason Code: ${unique(selected.reason_codes).join(", ") || "등록 없음"}`,
     "",
     "## 3. 사람 검토 범위",

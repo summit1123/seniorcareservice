@@ -26,6 +26,7 @@ import type {
   Interpretation,
   MonthlyEvidence,
   PersonaDirectoryResponse,
+  PersonaSummary,
   ZoneMapResponse,
   ZoneSnapshot,
   ZoneTripInterpretation
