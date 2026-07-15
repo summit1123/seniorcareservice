@@ -106,7 +106,7 @@ function projectHub(value: unknown): JsonRecord {
 }
 
 function projectMonthlyResult(value: unknown): JsonRecord {
-  return fields(value, [
+  const base = fields(value, [
     "month",
     "period_role",
     "trip_count",
@@ -133,6 +133,12 @@ function projectMonthlyResult(value: unknown): JsonRecord {
     "component_availability",
     "source_status"
   ]);
+  // Per-destination aggregates: allowlist only the summary fields (no coordinates).
+  const raw = record(value).destination_breakdown;
+  const destination_breakdown = Array.isArray(raw)
+    ? raw.map((entry) => fields(entry, ["visit_label", "trip_count", "distance_km", "risk_event_count", "is_outer"]))
+    : [];
+  return { ...base, destination_breakdown };
 }
 
 function projectMobilityProfile(value: unknown): JsonRecord | null {

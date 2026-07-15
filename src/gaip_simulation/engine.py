@@ -1054,6 +1054,32 @@ def _monthly_results(
         total_distance = sum(float(row["trip_distance_km"]) for row in rows)
         total_risk_events = sum(int(row["risk_event_count"]) for row in rows)
         risky_trip_count = sum(int(row["risk_event_count"]) > 0 for row in rows)
+        # Per-destination (visit_label) aggregates from the REAL events, so the UI can
+        # show where the km and risky events actually occurred instead of splitting the
+        # monthly totals evenly across destinations. This keeps risk on the destination
+        # that produced it (e.g. a co-change person's night outer route), not smeared
+        # onto in-zone hubs.
+        breakdown: dict[str, dict[str, Any]] = {}
+        for row in rows:
+            label = str(row["visit_label"])
+            zone = located[str(row["visit_event_id"])]["zone"]
+            entry = breakdown.setdefault(
+                label,
+                {"visit_label": label, "trip_count": 0, "distance_km": 0.0,
+                 "risk_event_count": 0, "in_zone_count": 0, "out_zone_count": 0},
+            )
+            entry["trip_count"] += 1
+            entry["distance_km"] += float(row["trip_distance_km"])
+            entry["risk_event_count"] += int(row["risk_event_count"])
+            if zone in {"core", "buffer"}:
+                entry["in_zone_count"] += 1
+            else:
+                entry["out_zone_count"] += 1
+        destination_breakdown = []
+        for entry in sorted(breakdown.values(), key=lambda item: (-item["trip_count"], item["visit_label"])):
+            entry["distance_km"] = round(entry["distance_km"], 2)
+            entry["is_outer"] = entry["out_zone_count"] > entry["in_zone_count"]
+            destination_breakdown.append(entry)
         return {
             "month": month,
             "period_role": _period_role(month),
@@ -1070,6 +1096,7 @@ def _monthly_results(
             "in_zone_safe_score": _safety_score(in_zone),
             "out_zone_safe_score": _safety_score(out_zone),
             "zone_available": bool(hubs),
+            "destination_breakdown": destination_breakdown,
         }
 
     raw = {month: raw_month_metrics(month) for month in ALL_MONTHS}

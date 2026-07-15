@@ -538,6 +538,54 @@ function schematicTrips(
   month: StudioMonthlyResult,
   rules: ProductRules
 ): ZoneTripInterpretation[] {
+  const careGate =
+    month.mobility_change_index_pct >= rules.care_mobility_change_threshold &&
+    month.risky_behavior_change_index_pct >= rules.care_risky_behavior_threshold;
+
+  const buildTrip = (
+    destIndex: number,
+    tripIndex: number,
+    isOuter: boolean,
+    hubIndex: number,
+    distanceKm: number,
+    riskEvents: number
+  ): ZoneTripInterpretation => ({
+    trip_id: `${driver.id}-${month.month}-d${destIndex}-${String(tripIndex + 1).padStart(2, "0")}`,
+    destination_type: isOuter ? "outer_context" : `routine_hub_${String.fromCharCode(97 + hubIndex)}`,
+    destination_label_ko: isOuter ? newHubDisplayLabel(driver) : hubDisplayLabel(driver, hubIndex),
+    zone_label_from_dbscan_p90: isOuter ? "Outer · 위치 자체 중립" : "Routine Hub · Core/P90 근거",
+    interpretation: isOuter
+      ? careGate ? "out_zone_pattern_change_risk" : "out_zone_safe_driving"
+      : "existing_living_zone",
+    distance_km: round(distanceKm),
+    risk_event_count: riskEvents,
+    // The safe bundle has no night/new-destination detail, so these stay neutral.
+    night_drive_flag: 0,
+    route_repeat_flag: isOuter ? 0 : 1,
+    new_destination_flag: 0
+  });
+
+  // Preferred path: per-destination aggregates from the REAL events, so risky events
+  // and km land on the destination that produced them (a co-change person's outer
+  // night route shows the risk; the in-zone market does not).
+  const breakdown = month.destination_breakdown ?? [];
+  if (breakdown.length) {
+    const trips: ZoneTripInterpretation[] = [];
+    breakdown.forEach((dest, destIndex) => {
+      const count = Math.max(0, Math.round(dest.trip_count));
+      if (!count) return;
+      const hubIndex = dest.visit_label === "Routine Hub B" ? 1 : 0;
+      const distancePer = dest.distance_km / count;
+      const risk = Math.max(0, Math.round(dest.risk_event_count));
+      for (let i = 0; i < count; i += 1) {
+        const riskEvents = Math.floor(risk / count) + (i < risk % count ? 1 : 0);
+        trips.push(buildTrip(destIndex, i, dest.is_outer, hubIndex, distancePer, riskEvents));
+      }
+    });
+    return trips;
+  }
+
+  // Fallback: even-split from monthly aggregates (bundles without per-destination data).
   const tripCount = Math.max(0, Math.round(month.trip_count));
   if (!tripCount) return [];
   const hubs = driver.mobility.routine_hubs;
@@ -546,36 +594,12 @@ function schematicTrips(
   const inCount = tripCount - outCount;
   const totalRiskEvents = Math.max(0, Math.round(month.risky_events_per_100_km * month.total_distance_km / 100));
   const distancePerTrip = month.total_distance_km / tripCount;
-  const careGate =
-    month.mobility_change_index_pct >= rules.care_mobility_change_threshold &&
-    month.risky_behavior_change_index_pct >= rules.care_risky_behavior_threshold;
   const trips: ZoneTripInterpretation[] = [];
-
   for (let index = 0; index < tripCount; index += 1) {
     const isOuter = index >= inCount || hubs.length === 0;
     const hubIndex = hubs.length ? index % hubs.length : 0;
-    const destinationType = isOuter
-      ? "outer_context"
-      : `routine_hub_${String.fromCharCode(97 + hubIndex)}`;
-    const destinationLabel = isOuter
-      ? newHubDisplayLabel(driver)
-      : hubDisplayLabel(driver, hubIndex);
     const riskEvents = Math.floor(totalRiskEvents / tripCount) + (index < totalRiskEvents % tripCount ? 1 : 0);
-    trips.push({
-      trip_id: `${driver.id}-${month.month}-schematic-${String(index + 1).padStart(2, "0")}`,
-      destination_type: destinationType,
-      destination_label_ko: destinationLabel,
-      zone_label_from_dbscan_p90: isOuter ? "Outer · 위치 자체 중립" : "Routine Hub · Core/P90 근거",
-      interpretation: isOuter
-        ? careGate ? "out_zone_pattern_change_risk" : "out_zone_safe_driving"
-        : "existing_living_zone",
-      distance_km: round(distancePerTrip),
-      risk_event_count: riskEvents,
-      // The safe bundle has no night/new-destination detail, so these fields remain neutral rather than fabricated.
-      night_drive_flag: 0,
-      route_repeat_flag: isOuter ? 0 : 1,
-      new_destination_flag: 0
-    });
+    trips.push(buildTrip(index, index, isOuter, hubIndex, distancePerTrip, riskEvents));
   }
   return trips;
 }

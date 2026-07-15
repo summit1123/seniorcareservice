@@ -55,6 +55,14 @@ export interface StudioMetrics {
   total_trips: number;
 }
 
+export interface DestinationBreakdown {
+  visit_label: string;
+  trip_count: number;
+  distance_km: number;
+  risk_event_count: number;
+  is_outer: boolean;
+}
+
 export interface StudioMonthlyResult {
   month: string;
   period_role: "baseline" | "evaluation" | string;
@@ -70,6 +78,8 @@ export interface StudioMonthlyResult {
   out_zone_safe_score: number | null;
   in_zone_trip_count?: number;
   out_zone_trip_count?: number;
+  /** Per-destination (visit_label) aggregates from the real events, so risk/km land on the destination that produced them. */
+  destination_breakdown?: DestinationBreakdown[];
   observed_score_weight_pct?: number;
   pattern_stability_score: number;
   mobility_change_index_pct: number;

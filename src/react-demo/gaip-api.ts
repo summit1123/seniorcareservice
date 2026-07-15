@@ -242,6 +242,15 @@ function normalizeMonthlyResults(item: JsonRecord): StudioMonthlyResult[] {
       out_zone_safe_score: nullableNumber(first(month, ["out_zone_safe_score", "out_zone_safe_driving_score"])),
       in_zone_trip_count: number(first(month, ["in_zone_trip_count"]), 0),
       out_zone_trip_count: number(first(month, ["out_zone_trip_count"]), 0),
+      destination_breakdown: array(first(month, ["destination_breakdown"]))
+        .filter(isRecord)
+        .map((dest) => ({
+          visit_label: text(first(dest, ["visit_label"]), "Routine Hub A"),
+          trip_count: number(first(dest, ["trip_count"]), 0),
+          distance_km: number(first(dest, ["distance_km"]), 0),
+          risk_event_count: number(first(dest, ["risk_event_count"]), 0),
+          is_outer: boolean(first(dest, ["is_outer"]), false)
+        })),
       observed_score_weight_pct: number(first(month, ["observed_score_weight_pct"]), 0),
       pattern_stability_score: number(first(month, ["pattern_stability_score", "mobility_stability_score"]), 0),
       mobility_change_index_pct: number(first(month, ["mobility_change_index"]), 0) * 100,
