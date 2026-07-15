@@ -6079,9 +6079,14 @@ body,
 
 .sandbox-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(360px, 0.9fr);
-  gap: 18px;
+  grid-template-columns: 1fr;
+  gap: 6px;
   margin-top: 18px;
+}
+
+.sandbox-layout .sandbox-weight-grid,
+.sandbox-layout .sandbox-threshold-grid {
+  margin-bottom: 8px;
 }
 
 .sandbox-weight-grid,
