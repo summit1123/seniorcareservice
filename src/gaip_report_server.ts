@@ -42,14 +42,20 @@ export function envValue(name: string, repoRoot?: string): string {
   return envCache[name] ?? "";
 }
 
-export function buildReportFeatures(bundle: JsonRecord, driverId: string, monthNumber: number): JsonRecord {
+export function buildReportFeatures(bundle: JsonRecord, driverId: string, monthKey: string): JsonRecord {
   const drivers = toArray(toRecord(bundle).drivers).map(toRecord);
   const driver = drivers.find((d) => d.id === driverId || d.driver_id === driverId);
   if (!driver) throw new Error(`unknown driver: ${driverId}`);
 
-  const monthKey = `2026-${String(monthNumber).padStart(2, "0")}`;
+  // monthKey is the calendar label (YYYY-MM), matching monthly_results[].month —
+  // baseline months (2025-11/12) included. A missing month is a hard 404 so the
+  // client falls back to the (index-correct) local report instead of silently
+  // reporting on December.
   const monthly = toArray(driver.monthly_results).map(toRecord);
-  const month = monthly.find((m) => m.month === monthKey) ?? monthly[monthly.length - 1] ?? {};
+  const month = monthly.find((m) => m.month === monthKey);
+  if (!month) {
+    throw Object.assign(new Error(`unknown month for ${driverId}: ${monthKey}`), { statusCode: 404 });
+  }
   const mobility = toRecord(driver.mobility);
   const tariff = toRecord(driver.tariff);
   const hubs = toArray(mobility.routine_hubs).map(toRecord).map((hub) => ({
@@ -179,7 +185,7 @@ export async function streamGaipReport(
   res: ServerResponse,
   bundle: JsonRecord,
   driverId: string,
-  monthNumber: number,
+  monthKey: string,
   repoRoot?: string
 ): Promise<void> {
   const apiKey = envValue("OPENAI_API_KEY", repoRoot);
@@ -188,7 +194,7 @@ export async function streamGaipReport(
       statusCode: 503
     });
   }
-  const features = buildReportFeatures(bundle, driverId, monthNumber);
+  const features = buildReportFeatures(bundle, driverId, monthKey);
   const model = envValue("OPENAI_REPORT_MODEL", repoRoot) || envValue("OPENAI_MODEL", repoRoot) || "gpt-4o-mini";
   const { systemPrompt, userPrompt } = buildReportPrompt(features);
 

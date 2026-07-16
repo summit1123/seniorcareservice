@@ -129,12 +129,14 @@ function configureGaipServer(server: ViteDevServer | PreviewServer): void {
       try {
         const bundle = sanitizeGaipBundleForUi(await readJson(gaipStudioPath)) as Record<string, unknown>;
         const driverId = requestUrl.searchParams.get("driver") ?? "";
-        const monthNumber = Number(requestUrl.searchParams.get("month") ?? "0");
-        if (!driverId || !Number.isFinite(monthNumber) || monthNumber < 1 || monthNumber > 12) {
-          sendJson(res, 400, { message: "driver and month(1-12) query parameters are required." });
+        // Month is the calendar LABEL (YYYY-MM) — includes the two baseline months
+        // (2025-11/2025-12), so an index-based 1-12 validation would be wrong.
+        const monthKey = requestUrl.searchParams.get("month") ?? "";
+        if (!driverId || !/^\d{4}-(0[1-9]|1[0-2])$/.test(monthKey)) {
+          sendJson(res, 400, { message: "driver and month(YYYY-MM) query parameters are required." });
           return;
         }
-        await streamGaipReport(res, bundle, driverId, monthNumber, repoRoot);
+        await streamGaipReport(res, bundle, driverId, monthKey, repoRoot);
       } catch (error) {
         const statusCode =
           typeof (error as { statusCode?: unknown })?.statusCode === "number"

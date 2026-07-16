@@ -53,9 +53,11 @@ const decisionMeta: Record<string, { label: string; className: string }> = {
 
 const interpretationMeta: Record<string, { label: string; className: string; short: string }> = {
   existing_living_zone: { label: "기준 생활권 안", className: "stable", short: "생활권 안" },
-  candidate_living_zone: { label: "반복 외부 후보", className: "candidate", short: "후보 생활권" },
   out_zone_safe_driving: { label: "생활권 밖 안정", className: "safeout", short: "외부 안정" },
-  out_zone_pattern_change_risk: { label: "동시변화 검토", className: "risk", short: "케어 검토" }
+  out_zone_pattern_change_risk: { label: "동시변화 검토", className: "risk", short: "케어 검토" },
+  // Months with zone unavailable / coverage below minimum — must not fall through to
+  // the raw key with a green "stable" tone (84 such months exist in the bundle).
+  evidence_hold: { label: "근거 부족 · 판단 보류", className: "hold", short: "보류" }
 };
 
 const reasonLabels: Record<string, string> = {
@@ -476,9 +478,12 @@ function DesignOverviewPage({
 }) {
   return (
     <main className="overview-page" aria-label={t("상품 설계구조 화면")}>
+      {/* Narrative order: problem/result → the formula and WHY (blueprint) → THEN the
+          sandbox that lets a judge perturb that formula → persona overview. Knobs after
+          the machine they tune. */}
       <OverviewComparisonPanel directory={directory} />
-      {rules ? <ScenarioControlPanel rules={rules} onChange={onRulesChange} directory={directory} /> : null}
       <ProductBlueprintPanel directory={directory} />
+      {rules ? <ScenarioControlPanel rules={rules} onChange={onRulesChange} directory={directory} /> : null}
       <PersonaMatrix summaries={directory.persona_summaries} />
     </main>
   );
@@ -1051,7 +1056,7 @@ function DecisionSummaryCard({
       </div>
 
       <div className="summary-verdict">
-        <span>{t("선택 월 근거")}</span>
+        <span>{tf("선택 월 {month} 근거", { month: selectedRow?.service_month ?? tf("{n}월", { n: selectedMonth }) })}</span>
         <strong>{reviewHeadline ?? decisionReasons[0]}</strong>
         <p>{decisionReasons.slice(1, 3).filter(Boolean).join(" · ")}</p>
       </div>
@@ -1064,7 +1069,7 @@ function DecisionSummaryCard({
         </div>
 
         <div className={`premium-delta-block ${care.className}`}>
-          <span>{t("선택 월 케어 축")}</span>
+          <span>{tf("선택 월 {month} 케어 축", { month: selectedRow?.service_month ?? tf("{n}월", { n: selectedMonth }) })}</span>
           <strong>{stateLabelKo(selectedCare === "None" ? "미충족" : selectedCare)}</strong>
           <small>{t("같은 달 이동 변화와 위험행동 변화가 함께 있을 때만")}</small>
         </div>
@@ -1099,7 +1104,7 @@ function DecisionProcessFrame({
   const comparison = driver.ab_comparison;
   const selectedRow = rows.find((row) => row.month === selectedMonth);
   const profile = zoneMap ? deriveEvidenceProfile(driver, zoneMap.snapshot) : null;
-  const mobilityChange = selectedRow?.mobility_change_index_pct ?? selectedRow?.out_zone_pattern_change_risk ?? 0;
+  const mobilityChange = selectedRow?.mobility_change_index_pct ?? 0;
   const riskyBehaviorChange = selectedRow?.risky_behavior_change_index_pct ?? 0;
   const careGate = selectedRow?.care_state === "Care Review";
   const zoneBasis = !zoneIsReady(driver.zone_status) || !zoneMap?.snapshot.living_zone.clusters.length
@@ -1309,16 +1314,10 @@ function AnalysisTabs({
 
         {activeTab === "Risk Signals" && driver && selectedRow ? (
           <div className="risk-signal-grid">
-            <ScoreMeter label={t("주행거리 점수")} value={selectedRow.mileage_score} helper={t("월별 주행거리를 연환산해 저주행일수록 높게 계산")} />
-            <ScoreMeter label={t("생활권 안 안전점수")} value={selectedRow.in_zone_safe_driving_score} helper={t("생활권 안 급감속·과속·야간 비율이 낮을수록 높음")} />
-            <ScoreMeter label={t("생활권 밖 안전점수")} value={selectedRow.out_zone_safe_driving_score} helper={t("생활권 밖 위험행동과 야간 비율이 낮을수록 높음")} />
-            <ScoreMeter label={t("패턴 안정성")} value={selectedRow.pattern_stability_score ?? Math.max(0, 100 - selectedRow.out_zone_pattern_change_risk)} helper={t("개인 기준선 대비 이동 맥락의 안정성")} />
+            {/* The four score meters + care-gate card render permanently in the
+                monthly-evidence lane above — this tab keeps only its UNIQUE content:
+                the score×weight formula substitution and the reason-code chips. */}
             <FormulaSubstitution driver={driver} selectedRow={selectedRow} rules={rules} />
-            <div className={`care-gate-card ${selectedRow.care_state === "Care Review" ? "active" : ""}`}>
-              <span>{t("케어 동시조건")}</span>
-              <strong>{tf("이동 {mob} + 위험행동 {risk}", { mob: numberFormatter.format(selectedRow.mobility_change_index_pct ?? 0), risk: numberFormatter.format(selectedRow.risky_behavior_change_index_pct ?? 0) })}</strong>
-              <small>{selectedRow.care_state === "Care Review" ? t("사람 검토 제안") : t("케어 자동 제안 없음")}</small>
-            </div>
             <div className="reason-chip-row">
               {[...driver.annual_score.annual_reason_codes, ...selectedRow.reason_codes].slice(0, 8).map((code) => (
                 <span key={`${code}-${selectedMonth}`}>{t(reasonLabels[code] ?? code)}</span>
@@ -1511,7 +1510,10 @@ function DecisionPanel({
     setProgress(t("월별 주행 근거를 리포트 API로 전송 중"));
     try {
       let next = "";
-      await demoApi.streamMonthlyReport(driver.customer_id, selectedMonth, (chunk) => {
+      // Send the month LABEL (e.g. "2026-07"), not the 1..14 row index — the server
+      // treats the value as a calendar month, so an index would be off by the two
+      // baseline months and rows 13-14 would be rejected outright.
+      await demoApi.streamMonthlyReport(driver.customer_id, selectedRow?.service_month ?? selectedMonth, (chunk) => {
         next += chunk;
         setProgress(tf("생성 중: {section}", { section: latestReportSection(next) }));
         setMarkdown(next);
@@ -1984,8 +1986,8 @@ function MonthlyEvidenceLane({
           </div>
           <div className="score-meter-grid">
             <ScoreMeter label={t("주행거리 점수")} value={selectedRow.mileage_score} helper={t("월별 주행거리가 낮을수록 높음")} />
-            <ScoreMeter label={t("생활권 안 안전점수")} value={selectedRow.in_zone_safe_driving_score} helper={t("생활권 안 위험행동이 낮을수록 높음")} />
-            <ScoreMeter label={t("생활권 밖 안전점수")} value={selectedRow.out_zone_safe_driving_score} helper={t("생활권 밖 주행이 안정적일수록 높음")} />
+            <ScoreMeter label={t("생활권 안 안전점수")} value={selectedRow.in_zone_safe_driving_score} helper={t("생활권 안 급감속·과속·야간 비율이 낮을수록 높음")} />
+            <ScoreMeter label={t("생활권 밖 안전점수")} value={selectedRow.out_zone_safe_driving_score} helper={t("생활권 밖 위험행동과 야간 비율이 낮을수록 높음")} />
             <ScoreMeter label={t("패턴 안정성")} value={selectedRow.pattern_stability_score ?? Math.max(0, 100 - selectedRow.out_zone_pattern_change_risk)} helper={t("개인 기준선 대비 이동 맥락 안정성")} />
           </div>
           <p className="score-legend-copy">
@@ -2005,6 +2007,7 @@ function MonthlyEvidenceLane({
         </div>
       ) : null}
 
+      <p className="month-board-hint">{t("케어 검토가 발생한 달이 자동 선택됩니다 — 다른 달을 누르면 위 요약·지도·근거가 그 달 기준으로 바뀝니다.")}</p>
       <div className="month-board">
         {rows.map((row) => {
           const meta = interpretationClass(row.dominant_interpretation);
@@ -2019,6 +2022,7 @@ function MonthlyEvidenceLane({
               <strong>{numberFormatter.format(row.monthly_total_distance_km)}km</strong>
               <small>{basisLabel(row.basis_status)}</small>
               <em>{row.care_state === "Care Review" ? t("케어 검토") : stateLabelKo(row.reward_state ?? "Observation")}</em>
+              {row.period_role === "baseline" ? <u className="baseline-tag">{t("평가 제외")}</u> : null}
               <i style={{ width: `${Math.min(100, row.mobility_change_index_pct ?? row.out_zone_pattern_change_risk)}%` }} />
             </button>
           );

@@ -606,6 +606,10 @@ const dict: Record<string, string> = {
   "설계형 {type}": "Kiểu thiết kế {type}",
   "제안 − 기존 할인율 차이": "Chênh lệch tỷ lệ giảm giá đề xuất − hiện có",
   "이동 맥락 변화 (높을수록 변화 큼)": "Thay đổi bối cảnh di chuyển (càng cao càng nhiều thay đổi)",
+  "선택 월 {month} 근거": "Tháng đã chọn {month} · căn cứ",
+  "선택 월 {month} 케어 축": "Tháng đã chọn {month} · trục chăm sóc",
+  "케어 검토가 발생한 달이 자동 선택됩니다 — 다른 달을 누르면 위 요약·지도·근거가 그 달 기준으로 바뀝니다.": "Tháng có xét chăm sóc được chọn tự động — nhấp tháng khác để phần tóm tắt, bản đồ và căn cứ phía trên chuyển theo.",
+  "평가 제외": "Không tính điểm",
 };
 
 export default dict;

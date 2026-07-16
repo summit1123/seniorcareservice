@@ -41,7 +41,7 @@ export const demoApi = {
   },
   async streamMonthlyReport(
     driverId: string,
-    month: number,
+    month: number | string,
     onChunk: (chunk: string) => void,
     rules?: ProductRules
   ): Promise<string> {

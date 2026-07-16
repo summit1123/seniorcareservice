@@ -1072,6 +1072,11 @@ p {
   color: var(--ink);
 }
 
+.search-box:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 25%, transparent);
+}
+
 .filter-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1162,20 +1167,20 @@ p {
 
 .risk-pill.low,
 .risk-pill.good {
-  background: #eaf7ef;
-  color: var(--primary-strong);
+  background: var(--pill-good-bg);
+  color: var(--pill-good-fg);
 }
 
 .risk-pill.medium,
 .risk-pill.base {
-  background: #edf2f8;
-  color: var(--muted);
+  background: var(--pill-base-bg);
+  color: var(--pill-base-fg);
 }
 
 .risk-pill.high,
 .risk-pill.care {
-  background: var(--amber-soft);
-  color: #b54819;
+  background: var(--pill-care-bg);
+  color: var(--pill-care-fg);
 }
 
 .decision,
@@ -2163,11 +2168,11 @@ p {
 
 .xai-inspector i {
   overflow: hidden;
-  background: #e8edf5;
+  background: var(--panel-soft);
 }
 
 .xai-inspector b {
-  background: #111318;
+  background: var(--ink);
 }
 
 /* The mobility-change bar is a CHANGE index (higher = more change, feeds Care),
@@ -2781,7 +2786,7 @@ p {
 }
 
 .geo-badge rect {
-  fill: #fff;
+  fill: var(--panel);
   stroke: var(--line);
 }
 
@@ -2792,7 +2797,7 @@ p {
 }
 
 .geo-badge.risk rect {
-  fill: #fff5ec;
+  fill: var(--amber-soft);
   stroke: rgba(162, 92, 32, 0.26);
 }
 
@@ -3301,6 +3306,13 @@ p {
   background: var(--line-strong);
 }
 
+.month-board-hint {
+  margin: 12px 2px 6px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .month-board {
   display: grid;
   grid-template-columns: repeat(7, minmax(88px, 1fr));
@@ -3363,6 +3375,22 @@ p {
 
 .month-card.candidate i {
   background: var(--care);
+}
+
+/* evidence_hold months — neutral gray, matching the hold pill palette */
+.month-card.hold i {
+  background: var(--line-strong);
+}
+
+.month-bar.hold i b {
+  background: var(--line-strong);
+}
+
+.tag.hold,
+.legend .hold {
+  border-color: rgba(90, 105, 100, 0.28);
+  color: var(--hold, #596966);
+  background: var(--hold-soft, #eef1f0);
 }
 
 .score-table {
@@ -3898,7 +3926,7 @@ p {
 }
 
 .geo-title {
-  fill: #111318;
+  fill: var(--ink);
   font-size: 22px;
 }
 
@@ -6064,8 +6092,8 @@ body,
 .risk-pill.hold,
 .decision.hold,
 .decision-donut-legend-row.hold i {
-  color: #596966;
-  background: var(--hold-soft);
+  color: var(--pill-hold-fg);
+  background: var(--pill-hold-bg);
 }
 
 .scenario-control-panel {
@@ -6271,11 +6299,14 @@ body,
   opacity: 0.86;
 }
 
-.month-card.baseline::after {
-  content: "평가 제외";
+/* Rendered as a real (translatable) element instead of CSS content, so the
+   locale switch reaches it. */
+.month-card .baseline-tag {
+  display: block;
   color: var(--faint);
   font-size: 9px;
   font-weight: 800;
+  text-decoration: none;
 }
 
 .review-state-box {
@@ -6373,7 +6404,7 @@ body,
 
 .geo-cluster text,
 .geo-core-ring text {
-  fill: #116466;
+  fill: var(--primary-strong);
   font-size: 11px;
   font-weight: 800;
 }
@@ -6530,6 +6561,16 @@ body,
   --danger-soft: #f6e1de;
   --hold: #6b7b76;
   --hold-soft: #e8eeec;
+  /* case-rail state pills — scoped tokens so dark mode can retune contrast
+     without touching the light values */
+  --pill-good-bg: #eaf7ef;
+  --pill-good-fg: var(--primary-strong);
+  --pill-base-bg: #edf2f8;
+  --pill-base-fg: var(--muted);
+  --pill-care-bg: var(--amber-soft);
+  --pill-care-fg: #b54819;
+  --pill-hold-bg: var(--hold-soft);
+  --pill-hold-fg: #596966;
   /* elevation */
   --shadow: 0 14px 34px rgba(20, 35, 31, 0.07);
   --hover-shadow: 0 22px 50px rgba(20, 35, 31, 0.12);
@@ -6578,6 +6619,11 @@ body,
   --danger-soft: #33201d;
   --hold: #93a29c;
   --hold-soft: #232e29;
+  --pill-good-bg: var(--blue-soft);
+  --pill-base-bg: var(--hold-soft);
+  --pill-base-fg: var(--muted);
+  --pill-care-fg: var(--amber);
+  --pill-hold-fg: var(--hold);
   --shadow: 0 16px 40px rgba(0, 0, 0, 0.42);
   --hover-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);
   --hover-blue-shadow: 0 16px 34px rgba(47, 184, 156, 0.22);
@@ -6617,6 +6663,11 @@ body,
     --danger-soft: #33201d;
     --hold: #93a29c;
     --hold-soft: #232e29;
+    --pill-good-bg: var(--blue-soft);
+    --pill-base-bg: var(--hold-soft);
+    --pill-base-fg: var(--muted);
+    --pill-care-fg: var(--amber);
+    --pill-hold-fg: var(--hold);
     --shadow: 0 16px 40px rgba(0, 0, 0, 0.42);
     --hover-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);
     --hover-blue-shadow: 0 16px 34px rgba(47, 184, 156, 0.22);

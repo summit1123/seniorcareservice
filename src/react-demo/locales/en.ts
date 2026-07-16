@@ -606,6 +606,10 @@ const dict: Record<string, string> = {
   "설계형 {type}": "Designed: {type}",
   "제안 − 기존 할인율 차이": "Proposed − existing discount-rate difference",
   "이동 맥락 변화 (높을수록 변화 큼)": "Mobility-context change (higher = more change)",
+  "선택 월 {month} 근거": "Selected month {month} · evidence",
+  "선택 월 {month} 케어 축": "Selected month {month} · Care axis",
+  "케어 검토가 발생한 달이 자동 선택됩니다 — 다른 달을 누르면 위 요약·지도·근거가 그 달 기준으로 바뀝니다.": "The month with a Care review is auto-selected — click another month and the summary, map, and evidence above switch to it.",
+  "평가 제외": "Not scored",
 };
 
 export default dict;
