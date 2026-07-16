@@ -756,6 +756,9 @@ const dict: Record<string, string> = {
   "신청 접수 시 케어 매니저가 일정을 조율합니다": "On application, a care manager coordinates the schedule",
   "케어 매니저에게 문의": "Contact the care manager",
   "메모와 결정은 저장되지 않는 데모이며 자동 판단이 없습니다. 전체 7섹션 AI 심사 리포트는 '리포트' 탭에서 확인할 수 있습니다.": "Memos and decisions are demo-only (not saved) and nothing is decided automatically. The full 7-section AI assessment report is available in the Report tab.",
+  "연간 기본": "Annual Standard",
+  "연간 보류": "Annual Hold",
+  "케어 검토 월": "Care-review month(s)",
 };
 
 export default dict;

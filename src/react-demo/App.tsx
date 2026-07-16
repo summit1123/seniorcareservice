@@ -1002,10 +1002,15 @@ function CaseRail({
                   {t(option.environment_display_name_ko ?? "이동환경")} · {changeTag}
                 </small>
               </span>
+              {/* 두 축은 등급이 아니라 서로 다른 질문: 첫 필 = 연간 우대 축(보험료),
+                  둘째 필 = 케어 검토가 발생한 월이 있는지(월 신호·비징벌). 그래서
+                  '연간 우대 + 케어 검토 월'이 동시에 붙을 수 있다. */}
               <span className="case-state-pills">
-                <em className={`risk-pill ${decisionClass(option.reward_state ?? "Neutral").className}`}>{stateLabelKo(option.reward_state ?? "Neutral")}</em>
-                {option.care_state === "Care Review" ? <em className="risk-pill care">{t("케어")}</em> : null}
-                {option.reward_state === "Hold" || option.care_state === "Hold" ? <em className="risk-pill hold">{t("보류")}</em> : null}
+                <em className={`risk-pill ${decisionClass(option.reward_state ?? "Neutral").className}`}>
+                  {option.reward_state === "Reward" ? t("연간 우대") : option.reward_state === "Hold" ? t("연간 보류") : t("연간 기본")}
+                </em>
+                {option.care_state === "Care Review" ? <em className="risk-pill care">{t("케어 검토 월")}</em> : null}
+                {option.reward_state !== "Hold" && option.care_state === "Hold" ? <em className="risk-pill hold">{t("보류")}</em> : null}
               </span>
             </button>
           );

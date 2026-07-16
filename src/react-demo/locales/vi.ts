@@ -756,6 +756,9 @@ const dict: Record<string, string> = {
   "신청 접수 시 케어 매니저가 일정을 조율합니다": "Khi tiếp nhận đăng ký, quản lý chăm sóc sẽ sắp xếp lịch",
   "케어 매니저에게 문의": "Liên hệ quản lý chăm sóc",
   "메모와 결정은 저장되지 않는 데모이며 자동 판단이 없습니다. 전체 7섹션 AI 심사 리포트는 '리포트' 탭에서 확인할 수 있습니다.": "Ghi chú và quyết định chỉ là bản demo (không lưu) và không có phán định tự động. Báo cáo thẩm định AI đầy đủ 7 phần xem tại thẻ Báo cáo.",
+  "연간 기본": "Cơ bản (năm)",
+  "연간 보류": "Tạm hoãn (năm)",
+  "케어 검토 월": "Có tháng rà soát chăm sóc",
 };
 
 export default dict;
