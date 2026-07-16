@@ -483,6 +483,7 @@ export function adaptDirectory(bundle: GaipStudioBundle, rules?: ProductRules): 
       customer_id: driver.id,
       driver_id: driver.id,
       label: driver.display_label,
+      label_en: driver.display_label_en,
       persona_type: driver.persona_id,
       annual_decision_signal: decisionSignal(result),
       existing_matched_tier_label: koreaReferenceLabel(driver),

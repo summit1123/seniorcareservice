@@ -145,6 +145,48 @@ GIVEN_NAMES_FEMALE = (
     "순덕", "금자", "명숙", "춘자", "덕례", "말녀", "귀순", "옥임", "분례", "금순",
     "순임", "정례", "옥녀", "말숙", "금분", "순예", "덕순", "영순", "정자", "화자",
 )
+# ---------------------------------------------------------------------------
+# Deterministic romanization (Revised-Romanization style, hyphenated given names)
+# so the dataset carries an English name for every synthetic person. The AI
+# mobility profiles' reasoning_en already uses this style ("Yun Soon-ye"), so the
+# romanized names line up with the cached narratives without regeneration.
+# ---------------------------------------------------------------------------
+ROMAN_FAMILY: dict[str, str] = {
+    "김": "Kim", "이": "Lee", "박": "Park", "최": "Choi", "정": "Jung",
+    "강": "Kang", "조": "Cho", "윤": "Yun", "장": "Jang", "임": "Lim",
+    "한": "Han", "오": "Oh", "서": "Seo", "신": "Shin", "권": "Kwon",
+    "황": "Hwang", "안": "Ahn", "송": "Song", "류": "Ryu", "홍": "Hong",
+    "전": "Jeon", "고": "Ko", "문": "Moon", "손": "Son", "배": "Bae",
+    "백": "Baek", "허": "Heo", "유": "Yoo", "남": "Nam", "심": "Shim",
+}
+ROMAN_GIVEN: dict[str, str] = {
+    "순애": "Soon-ae", "말순": "Mal-soon", "옥분": "Ok-bun", "영자": "Young-ja", "금례": "Geum-rye",
+    "정순": "Jung-soon", "말자": "Mal-ja", "점례": "Jeom-rye", "복순": "Bok-soon", "옥자": "Ok-ja",
+    "순덕": "Soon-deok", "금자": "Geum-ja", "명숙": "Myung-sook", "춘자": "Choon-ja", "덕례": "Deok-rye",
+    "말녀": "Mal-nyeo", "귀순": "Gwi-soon", "옥임": "Ok-im", "분례": "Bun-rye", "금순": "Geum-soon",
+    "순임": "Soon-im", "정례": "Jung-rye", "옥녀": "Ok-nyeo", "말숙": "Mal-sook", "금분": "Geum-bun",
+    "순예": "Soon-ye", "덕순": "Deok-soon", "영순": "Young-soon", "정자": "Jung-ja", "화자": "Hwa-ja",
+    "병호": "Byung-ho", "정호": "Jung-ho", "재술": "Jae-sool", "갑수": "Gap-soo", "종달": "Jong-dal",
+    "병국": "Byung-guk", "동철": "Dong-chul", "기석": "Ki-seok", "만복": "Man-bok", "병수": "Byung-soo",
+    "재복": "Jae-bok", "갑룡": "Gap-ryong", "병희": "Byung-hee", "종수": "Jong-soo", "재만": "Jae-man",
+    "덕수": "Deok-soo", "우섭": "Woo-seop", "병철": "Byung-chul", "일만": "Il-man", "기수": "Ki-soo",
+    "종국": "Jong-guk", "상철": "Sang-chul", "병일": "Byung-il", "재훈": "Jae-hoon", "만수": "Man-soo",
+    "석준": "Seok-joon", "영도": "Young-do", "기철": "Ki-chul", "종호": "Jong-ho", "태식": "Tae-sik",
+}
+ROMAN_SUFFIX: dict[str, str] = {"자": "ja", "순": "soon", "덕": "deok"}
+
+
+def romanize_name(name_ko: str) -> str:
+    """김순애 → "Kim Soon-ae"; collision names with a 3rd syllable get "-ja" 등."""
+    family = ROMAN_FAMILY.get(name_ko[0], name_ko[0])
+    given = name_ko[1:]
+    suffix = ""
+    if len(given) == 3 and given[:2] in ROMAN_GIVEN and given[2] in ROMAN_SUFFIX:
+        suffix = "-" + ROMAN_SUFFIX[given[2]]
+        given = given[:2]
+    return f"{family} {ROMAN_GIVEN.get(given, given)}{suffix}"
+
+
 GIVEN_NAMES_MALE = (
     "병호", "정호", "재술", "갑수", "종달", "병국", "동철", "기석", "만복", "병수",
     "재복", "갑룡", "병희", "종수", "재만", "덕수", "우섭", "병철", "일만", "기수",
@@ -346,6 +388,7 @@ def build_person_roster(seed: int) -> list[dict[str, Any]]:
                     "designed_type": dtype,
                     "designed_type_ko": DESIGNED_TYPES[dtype],
                     "name_ko": name,
+                    "name_en": romanize_name(name),
                     "age": age,
                     "sex": sex,
                     "household": household,

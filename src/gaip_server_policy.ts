@@ -180,6 +180,7 @@ function projectDriver(value: unknown): JsonRecord {
     ...fields(driver, [
       "driver_id",
       "driver_name_ko",
+      "driver_name_en",
       "age",
       "persona_type",
       "persona_display_name_ko",

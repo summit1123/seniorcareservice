@@ -324,6 +324,7 @@ def _build_driver_contracts(seed: int) -> list[dict[str, Any]]:
                 # person (not by case) to keep a person's 3 cases in one partition.
                 "dataset_partition": _partition_for_instance(person_index),
                 "driver_name_ko": str(person["name_ko"]),
+                "driver_name_en": str(person.get("name_en", "")),
                 "age": int(person["age"]),
                 "sex": str(person["sex"]),
                 "household": str(person["household_ko"]),

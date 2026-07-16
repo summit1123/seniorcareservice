@@ -159,8 +159,11 @@ export interface TariffComparison {
 export interface StudioDriver {
   id: string;
   display_label: string;
+  /** Romanized display label ("Yun Soon-ye (68)") for non-Korean locales. */
+  display_label_en?: string;
   /** Synthetic Korean person name (실존 인물 아님). */
   driver_name_ko?: string;
+  driver_name_en?: string;
   /** Synthetic age (66-84). */
   age?: number;
   persona_id: string;

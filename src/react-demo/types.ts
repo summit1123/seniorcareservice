@@ -61,6 +61,8 @@ export interface DriverOption {
   customer_id: string;
   driver_id: string;
   label: string;
+  /** Romanized label for non-Korean locales. */
+  label_en?: string;
   persona_type: string;
   annual_decision_signal: DecisionSignal;
   existing_matched_tier_label: string;

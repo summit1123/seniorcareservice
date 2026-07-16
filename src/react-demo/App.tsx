@@ -2383,16 +2383,19 @@ function zoneIsReady(status: string | undefined) {
   return status === "available" || status === "ready";
 }
 
-const personaNameRegistry = new Map<string, string>();
+const personaNameRegistry = new Map<string, { ko: string; en?: string }>();
 
-export function registerPersonaNames(options: Array<{ customer_id: string; label: string }>) {
+export function registerPersonaNames(options: Array<{ customer_id: string; label: string; label_en?: string }>) {
   options.forEach((option) => {
-    if (option.label) personaNameRegistry.set(option.customer_id, option.label);
+    if (option.label) personaNameRegistry.set(option.customer_id, { ko: option.label, en: option.label_en });
   });
 }
 
 function personaName(customerId: string) {
-  return personaNameRegistry.get(customerId) ?? `합성 시니어 ${String(personaIndex(customerId) + 1).padStart(2, "0")}`;
+  const entry = personaNameRegistry.get(customerId);
+  if (!entry) return tf("합성 시니어 {n}", { n: String(personaIndex(customerId) + 1).padStart(2, "0") });
+  // Korean locale shows the Hangul name; every other locale the romanized one.
+  return getLocale() === "ko" ? entry.ko : entry.en ?? entry.ko;
 }
 
 function personaIndex(customerId: string) {
