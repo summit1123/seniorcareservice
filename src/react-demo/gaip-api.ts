@@ -249,7 +249,10 @@ function normalizeMonthlyResults(item: JsonRecord): StudioMonthlyResult[] {
           trip_count: number(first(dest, ["trip_count"]), 0),
           distance_km: number(first(dest, ["distance_km"]), 0),
           risk_event_count: number(first(dest, ["risk_event_count"]), 0),
-          is_outer: boolean(first(dest, ["is_outer"]), false)
+          is_outer: boolean(first(dest, ["is_outer"]), false),
+          visit_points: array(first(dest, ["visit_points"]))
+            .filter((pt): pt is unknown[] => Array.isArray(pt))
+            .map((pt) => pt.map((v) => number(v, 0)))
         })),
       observed_score_weight_pct: number(first(month, ["observed_score_weight_pct"]), 0),
       pattern_stability_score: number(first(month, ["pattern_stability_score", "mobility_stability_score"]), 0),

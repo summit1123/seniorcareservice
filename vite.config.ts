@@ -159,7 +159,9 @@ function configureGaipServer(server: ViteDevServer | PreviewServer): void {
           sendJson(res, 400, { message: "driver and month(YYYY-MM) query parameters are required." });
           return;
         }
-        await streamGaipReport(res, bundle, driverId, monthKey, repoRoot);
+        const langRaw = requestUrl.searchParams.get("lang") ?? "ko";
+        const lang = ["ko", "en", "zh", "ja", "vi"].includes(langRaw) ? langRaw : "ko";
+        await streamGaipReport(res, bundle, driverId, monthKey, repoRoot, lang);
       } catch (error) {
         const statusCode =
           typeof (error as { statusCode?: unknown })?.statusCode === "number"

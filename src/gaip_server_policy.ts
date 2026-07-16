@@ -136,7 +136,7 @@ function projectMonthlyResult(value: unknown): JsonRecord {
   // Per-destination aggregates: allowlist only the summary fields (no coordinates).
   const raw = record(value).destination_breakdown;
   const destination_breakdown = Array.isArray(raw)
-    ? raw.map((entry) => fields(entry, ["visit_label", "trip_count", "distance_km", "risk_event_count", "is_outer"]))
+    ? raw.map((entry) => fields(entry, ["visit_label", "trip_count", "distance_km", "risk_event_count", "is_outer", "visit_points"]))
     : [];
   return { ...base, destination_breakdown };
 }

@@ -493,6 +493,7 @@ def _generate_visits_for_driver(driver: Mapping[str, Any], seed: int) -> list[di
     # a naturally low data-coverage band that lands 보류 via the coverage<80 hold.
     base_visits = int(disposition["monthly_visits"]) - (3 if sparse else 0)
     minimum_visits = 3 if sparse else 5
+    home_lat, home_lon = centers["__home__"]
     events: list[dict[str, Any]] = []
 
     for month in ALL_MONTHS:
@@ -529,6 +530,8 @@ def _generate_visits_for_driver(driver: Mapping[str, Any], seed: int) -> list[di
                     "visit_label": visit_label,
                     "latitude": round(latitude, 6),
                     "longitude": round(longitude, 6),
+                    "home_dx_m": int(round((longitude - home_lon) * 111_320.0 * math.cos(math.radians(home_lat)) / 10.0) * 10),
+                    "home_dy_m": int(round((latitude - home_lat) * 111_320.0 / 10.0) * 10),
                     "trip_distance_km": _trip_distance_km(disposition, environment_id, visit_label, rng),
                     "risk_event_count": risk_event_count,
                     "data_coverage_pct": data_coverage_pct,
@@ -788,6 +791,7 @@ def _generate_visits_from_profile(
     change_month = int(change_month) if isinstance(change_month, (int, float)) else None
     base_visits = int(disposition["monthly_visits"]) - (3 if sparse else 0)
     minimum_visits = 3 if sparse else 5
+    home_lat, home_lon = _profile_home_anchor(driver)
     events: list[dict[str, Any]] = []
 
     for month_index, month in enumerate(ALL_MONTHS):
@@ -828,6 +832,8 @@ def _generate_visits_from_profile(
                     "visit_label": dest["visit_label"],
                     "latitude": round(latitude, 6),
                     "longitude": round(longitude, 6),
+                    "home_dx_m": int(round((longitude - home_lon) * 111_320.0 * math.cos(math.radians(home_lat)) / 10.0) * 10),
+                    "home_dy_m": int(round((latitude - home_lat) * 111_320.0 / 10.0) * 10),
                     "trip_distance_km": _profile_trip_distance_km(disposition, environment_id, dest, rng),
                     "risk_event_count": risk_event_count,
                     "data_coverage_pct": data_coverage_pct,
@@ -1067,9 +1073,14 @@ def _monthly_results(
             entry = breakdown.setdefault(
                 label,
                 {"visit_label": label, "trip_count": 0, "distance_km": 0.0,
-                 "risk_event_count": 0, "in_zone_count": 0, "out_zone_count": 0},
+                 "risk_event_count": 0, "in_zone_count": 0, "out_zone_count": 0,
+                 "visit_points": []},
             )
             entry["trip_count"] += 1
+            if len(entry["visit_points"]) < 24 and "home_dx_m" in row:
+                entry["visit_points"].append(
+                    [int(row["home_dx_m"]), int(row["home_dy_m"]), 1 if int(row["risk_event_count"]) > 0 else 0]
+                )
             entry["distance_km"] += float(row["trip_distance_km"])
             entry["risk_event_count"] += int(row["risk_event_count"])
             if zone in {"core", "buffer"}:

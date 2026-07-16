@@ -7740,3 +7740,14 @@ h1, h2, h3 { letter-spacing: -0.014em; }
     animation: none;
   }
 }
+
+/* 요율 비교 — 연 단위 명시 + 이득/부담 판정 */
+.premium-basis { margin-bottom: 8px; color: var(--muted); font-size: 11px; font-weight: 800; }
+.premium-verdict { margin-top: 10px; padding: 9px 12px; border-radius: 10px; font-size: 12px; font-weight: 800; line-height: 1.5; }
+.premium-verdict.gain { background: color-mix(in srgb, var(--green) 10%, var(--panel)); color: var(--primary-strong); }
+.premium-verdict.reduce { background: var(--amber-soft); color: var(--pill-care-fg, #b54819); }
+.premium-verdict.same { background: var(--panel-soft); color: var(--muted); }
+
+/* 실측 방문점 — 고스트(기준선)·위험 강조 */
+.geo-scatter .ghost { fill: var(--line-strong); opacity: 0.4; }
+.geo-scatter .risk { fill: var(--care); opacity: 0.85; }

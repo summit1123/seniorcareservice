@@ -273,6 +273,8 @@ export interface ZoneSnapshot {
     score_role: string;
   };
   trip_interpretations: ZoneTripInterpretation[];
+  /** 실측 방문점: selected=[dx,dy,risk,outer][], baseline=[dx,dy][] (자택 기준 m). */
+  visit_scatter?: { selected: number[][]; baseline: number[][] };
   source_event?: {
     event_label_ko: string;
     living_zone_interpretation_ko: string;

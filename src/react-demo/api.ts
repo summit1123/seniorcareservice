@@ -58,7 +58,7 @@ export const demoApi = {
     // 1순위: 서버 AI 리포트 스트림(OpenAI, 7섹션 Markdown). 실패 시 로컬 결정적 리포트로 대체.
     try {
       const response = await fetch(
-        `/api/gaip/report/stream?driver=${encodeURIComponent(driverId)}&month=${encodeURIComponent(String(month))}`
+        `/api/gaip/report/stream?driver=${encodeURIComponent(driverId)}&month=${encodeURIComponent(String(month))}&lang=${encodeURIComponent(getLocale())}`
       );
       if (response.ok && response.body && response.headers.get("X-Report-Mode") === "openai-responses-stream") {
         const reader = response.body.getReader();

@@ -61,6 +61,8 @@ export interface DestinationBreakdown {
   distance_km: number;
   risk_event_count: number;
   is_outer: boolean;
+  /** 자택 기준 상대변위 실측 방문점 [dx_east_m, dy_north_m, risk_flag] (10m 반올림, 월 24점 상한). */
+  visit_points?: number[][];
 }
 
 export interface StudioMonthlyResult {

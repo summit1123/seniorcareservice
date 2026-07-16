@@ -682,7 +682,19 @@ export function adaptZoneMap(
         monthly_integrated_evidence_score: monthlyWeightedScore(monthResult, activeRules),
         score_role: evidenceReady ? "상품 후보 근거 · 최종결정 아님" : "근거 부족 · 판단 보류"
       },
-      trip_interpretations: trips
+      trip_interpretations: trips,
+      // 실측 방문점(자택 기준 상대변위) — 선택 월 전체 + 기준선 2개월 고스트(솎음).
+      visit_scatter: {
+        selected: (monthResult.destination_breakdown ?? []).flatMap((d) =>
+          (d.visit_points ?? []).map((pt) => [pt[0], pt[1], pt[2], d.is_outer ? 1 : 0])
+        ),
+        baseline: driver.monthly_results
+          .filter((m) => m.period_role === "baseline")
+          .flatMap((m) => (m.destination_breakdown ?? []).flatMap((d) => d.visit_points ?? []))
+          .filter((_, i) => i % 2 === 0)
+          .slice(0, 30)
+          .map((pt) => [pt[0], pt[1]])
+      }
     }
   };
 }

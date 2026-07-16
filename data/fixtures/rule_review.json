@@ -1,6 +1,6 @@
 {
   "schema_version": "senior-critic-rule-review/v1",
-  "generated_at": "2026-05-10T17:35:54+00:00",
+  "generated_at": "2026-07-16T14:10:04+00:00",
   "source_artifacts": {
     "ab_results_input": "data/fixtures/ab_test_results.csv",
     "view_model_input": "data/fixtures/evaluation_view_model.json"

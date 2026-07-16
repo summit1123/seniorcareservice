@@ -186,7 +186,8 @@ export async function streamGaipReport(
   bundle: JsonRecord,
   driverId: string,
   monthKey: string,
-  repoRoot?: string
+  repoRoot?: string,
+  lang = "ko"
 ): Promise<void> {
   const apiKey = envValue("OPENAI_API_KEY", repoRoot);
   if (!apiKey) {
@@ -196,7 +197,10 @@ export async function streamGaipReport(
   }
   const features = buildReportFeatures(bundle, driverId, monthKey);
   const model = envValue("OPENAI_REPORT_MODEL", repoRoot) || envValue("OPENAI_MODEL", repoRoot) || "gpt-4o-mini";
-  const { systemPrompt, userPrompt } = buildReportPrompt(features);
+  const prompts = buildReportPrompt(features);
+  // 대시보드 언어 선택을 스트림 리포트에도 적용 — 섹션 구조는 유지하고 언어만 전환.
+  const systemPrompt = `${prompts.systemPrompt}\n\n리포트 전체를 반드시 ${CARE_LANGUAGE_NAMES[lang] ?? "한국어"}(으)로 작성하세요.`;
+  const userPrompt = prompts.userPrompt;
 
   const openAIResponse = await fetch(envValue("OPENAI_RESPONSES_URL", repoRoot) || OPENAI_RESPONSES_URL, {
     method: "POST",

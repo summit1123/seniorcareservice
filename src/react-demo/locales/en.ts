@@ -759,6 +759,14 @@ const dict: Record<string, string> = {
   "연간 기본": "Annual Standard",
   "연간 보류": "Annual Hold",
   "케어 검토 월": "Care-review month(s)",
+  "연간 할인율과 연 보험료 기준의 비교입니다": "Compared on annual discount rate and annual premium",
+  "적용 시 연 보험료 {amount}": "Annual premium if applied {amount}",
+  "고객 이득 — 기존 대비 연간 할인 {pct}%p 확대, 연 {amount} 절감": "Customer gain — annual discount widens by {pct}%p vs the existing tariff, saving {amount} per year",
+  "위험 정합 — 케어 검토 달의 보너스 정지로 연간 할인 {pct}%p 축소(연 {amount} 차이). 벌점이 아니라 그 달의 우대만 멈춥니다.": "Risk alignment — bonus paused in Care-review months narrows the annual discount by {pct}%p ({amount}/yr difference). Not a penalty; only that month's favorable bonus pauses.",
+  "기존 기준과 동일한 수준입니다": "Same level as the existing tariff",
+  "{n}개 사례": "{n} cases",
+  "합성 시니어 {n}": "Synthetic senior {n}",
+  "점 = 실제 방문(자택 기준 상대 위치) · 회색 = 기준선 2개월 · 완충권 밖은 축척 압축": "Dots = actual visits (home-relative position) · grey = 2-month baseline · outside buffer scale-compressed",
 };
 
 export default dict;

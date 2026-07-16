@@ -759,6 +759,14 @@ const dict: Record<string, string> = {
   "연간 기본": "Cơ bản (năm)",
   "연간 보류": "Tạm hoãn (năm)",
   "케어 검토 월": "Có tháng rà soát chăm sóc",
+  "연간 할인율과 연 보험료 기준의 비교입니다": "So sánh theo tỷ lệ giảm giá hằng năm và phí bảo hiểm năm",
+  "적용 시 연 보험료 {amount}": "Phí bảo hiểm năm nếu áp dụng {amount}",
+  "고객 이득 — 기존 대비 연간 할인 {pct}%p 확대, 연 {amount} 절감": "Khách hàng có lợi — giảm giá năm tăng {pct}%p so với hiện hành, tiết kiệm {amount}/năm",
+  "위험 정합 — 케어 검토 달의 보너스 정지로 연간 할인 {pct}%p 축소(연 {amount} 차이). 벌점이 아니라 그 달의 우대만 멈춥니다.": "Khớp rủi ro — tạm dừng thưởng trong tháng rà soát khiến giảm giá năm thu hẹp {pct}%p (chênh {amount}/năm). Không phải phạt điểm; chỉ tạm dừng ưu đãi tháng đó.",
+  "기존 기준과 동일한 수준입니다": "Cùng mức với biểu phí hiện hành",
+  "{n}개 사례": "{n} trường hợp",
+  "합성 시니어 {n}": "Người cao tuổi tổng hợp {n}",
+  "점 = 실제 방문(자택 기준 상대 위치) · 회색 = 기준선 2개월 · 완충권 밖은 축척 압축": "Chấm = lượt ghé thực tế (vị trí tương đối so với nhà) · xám = 2 tháng cơ sở · ngoài vùng đệm nén tỷ lệ",
 };
 
 export default dict;

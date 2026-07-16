@@ -1448,20 +1448,31 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
   const existingRate = comparison.existing_discount_rate_pct;
   const proposedRate = comparison.proposed_discount_rate_pct;
   const maxRate = Math.max(existingRate, proposedRate, 1);
+  // 이득/부담이 즉시 읽히도록 연 보험료 차액과 방향을 명시한다.
+  const rateDelta = proposedRate - existingRate;
+  const premiumDelta = (comparison.existing_net_premium_krw ?? 0) - (comparison.proposed_net_premium_krw ?? 0);
   return (
     <div className="premium-simulation">
+      <p className="premium-basis">{t("연간 할인율과 연 보험료 기준의 비교입니다")}</p>
       <div>
         <span>{t("기존 마일리지 기준 · 국내")}</span>
         <strong>{percent(existingRate)}</strong>
         <i><b style={{ width: `${(existingRate / maxRate) * 100}%` }} /></i>
-        <small>{tf("적용 시 {amount}", { amount: krwWithUsd(comparison.existing_net_premium_krw) })}</small>
+        <small>{tf("적용 시 연 보험료 {amount}", { amount: krwWithUsd(comparison.existing_net_premium_krw) })}</small>
       </div>
       <div>
         <span>{t("마실 제안 산식 · 후보")}</span>
         <strong>{percent(proposedRate)}</strong>
         <i><b style={{ width: `${(proposedRate / maxRate) * 100}%` }} /></i>
-        <small>{tf("적용 시 {amount}", { amount: krwWithUsd(comparison.proposed_net_premium_krw) })}</small>
+        <small>{tf("적용 시 연 보험료 {amount}", { amount: krwWithUsd(comparison.proposed_net_premium_krw) })}</small>
       </div>
+      <p className={`premium-verdict ${rateDelta > 0.05 ? "gain" : rateDelta < -0.05 ? "reduce" : "same"}`}>
+        {rateDelta > 0.05
+          ? tf("고객 이득 — 기존 대비 연간 할인 {pct}%p 확대, 연 {amount} 절감", { pct: Math.abs(rateDelta).toFixed(1), amount: krwWithUsd(Math.abs(premiumDelta)) })
+          : rateDelta < -0.05
+            ? tf("위험 정합 — 케어 검토 달의 보너스 정지로 연간 할인 {pct}%p 축소(연 {amount} 차이). 벌점이 아니라 그 달의 우대만 멈춥니다.", { pct: Math.abs(rateDelta).toFixed(1), amount: krwWithUsd(Math.abs(premiumDelta)) })
+            : t("기존 기준과 동일한 수준입니다")}
+      </p>
       <p>
         {tf("기준 보험료 {base} 가정의 합성 비교입니다. 달러 표기는 해외 심사위원의 규모 비교를 위한 예시 환율(1$≈₩{rate}) 환산이며, 실제 계약보험료·해외 요율을 의미하지 않습니다.", { base: krwWithUsd(comparison.base_premium_krw), rate: DEMO_USD_RATE.toLocaleString("ko-KR") })}
       </p>
@@ -1887,22 +1898,6 @@ function MonthlyEvidenceLane({
 // Deterministic synthetic visit scatter for the schematic map (NO real
 // coordinates — reconstructed from a seed so it renders as a plausible cloud of
 // month-long visits around each destination, not a single bare dot).
-function scatterDots(cx: number, cy: number, count: number, spread: number, seed: number) {
-  const n = Math.max(5, Math.min(34, Math.round(count)));
-  const out: { x: number; y: number; r: number }[] = [];
-  let s = ((seed * 9301 + 49297) % 233280 + 233280) % 233280;
-  const rand = () => {
-    s = (s * 9301 + 49297) % 233280;
-    return s / 233280;
-  };
-  for (let i = 0; i < n; i += 1) {
-    const angle = rand() * Math.PI * 2;
-    const radius = Math.sqrt(rand()) * spread;
-    out.push({ x: cx + Math.cos(angle) * radius, y: cy + Math.sin(angle) * radius, r: 1.5 + rand() * 1.7 });
-  }
-  return out;
-}
-
 function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnualSummary; snapshot: ZoneSnapshot; profile: DerivedProfile }) {
   if (!snapshot.living_zone.clusters.length) {
     return (
@@ -1997,6 +1992,27 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
   const coreRadius = 58;
   const bufferRadius = Math.max(coreRadius + 30, Math.min(150, 64 + productBufferM / 15));
 
+  // ---- 실측 방문점 투영 -----------------------------------------------------
+  // 모든 점은 엔진이 생성한 실제 방문 이벤트의 자택 기준 상대변위(m)다. 완충권
+  // 안은 선형 축척, 밖은 √압축(캔버스에 담기 위한 선언된 압축)으로 투영한다.
+  const selectedVisits = snapshot.visit_scatter?.selected ?? [];
+  const baselineGhost = snapshot.visit_scatter?.baseline ?? [];
+  const projectVisit = (dxEastM: number, dyNorthM: number, index = 0) => {
+    const dist = Math.hypot(dxEastM, dyNorthM);
+    const px = dist <= productBufferM
+      ? (dist / productBufferM) * bufferRadius
+      : bufferRadius + Math.min(190, Math.sqrt(dist - productBufferM) * 2.2);
+    const ux = dist > 0 ? dxEastM / dist : 0;
+    const uy = dist > 0 ? dyNorthM / dist : 0;
+    // 10m 반올림으로 겹치는 실측점을 골든앵글 나선으로 '표시만' 펼친다(위치값은 실측).
+    const spiralR = 3 + (index % 14) * 1.7;
+    const spiralA = index * 2.39996;
+    return {
+      x: Math.max(30, Math.min(mapWidth - 30, center.x + ux * px + Math.cos(spiralA) * spiralR)),
+      y: Math.max(56, Math.min(mapHeight - 56, center.y - uy * px + Math.sin(spiralA) * spiralR))
+    };
+  };
+
   const destCount = Math.max(1, visibleDestinations.length);
   const arcStart = -Math.PI * 0.82;
   const arcSpan = Math.PI * 1.42;
@@ -2057,17 +2073,25 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
         <circle key={`guide-${r}`} className="geo-guide-ring" cx={center.x} cy={center.y} r={r} />
       ))}
       <g className="geo-scatter" aria-hidden="true">
-        {scatterDots(center.x, center.y, 26, coreRadius * 0.85, 7).map((d, i) => (
-          <circle key={`sc-home-${i}`} cx={d.x} cy={d.y} r={d.r} />
-        ))}
-        {destinationViews.map(({ group, point, outer }, gi) =>
-          scatterDots(point.x, point.y, group.count, outer ? 27 : 19, gi * 53 + 11).map((d, i) => (
-            <circle key={`sc-${gi}-${i}`} className={outer ? "outer" : ""} cx={d.x} cy={d.y} r={d.r} />
-          ))
-        )}
+        {baselineGhost.map((pt, i) => {
+          const pos = projectVisit(pt[0], pt[1], i);
+          return <circle key={`sc-base-${i}`} className="ghost" cx={pos.x} cy={pos.y} r={2} />;
+        })}
+        {selectedVisits.map((pt, i) => {
+          const pos = projectVisit(pt[0], pt[1], i);
+          return (
+            <circle
+              key={`sc-real-${i}`}
+              className={`${pt[3] ? "outer" : ""}${pt[2] ? " risk" : ""}`}
+              cx={pos.x}
+              cy={pos.y}
+              r={pt[2] ? 3 : 2.3}
+            />
+          );
+        })}
       </g>
       <text className="geo-title" x="42" y="42">{t("생활권 판단 지도")}</text>
-      <text className="geo-subtitle" x="42" y="63">{t("개념도(축척 아님) · 중심권 500m · 완충권은 개인 P90 반영(최대 2km)")}</text>
+      <text className="geo-subtitle" x="42" y="63">{t("점 = 실제 방문(자택 기준 상대 위치) · 회색 = 기준선 2개월 · 완충권 밖은 축척 압축")}</text>
 
       <circle cx={center.x} cy={center.y} r={bufferRadius + 6} fill="url(#zoneGlow)" />
       <g className="geo-core-ring">
@@ -2087,11 +2111,6 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
         const secBuffer = Math.max(40, Math.min(78, cluster.p90_radius_m / 16));
         return (
           <g key={cluster.cluster_id} className="geo-cluster">
-            <g className="geo-scatter" aria-hidden="true">
-              {scatterDots(cx, cy, 16, secBuffer * 0.78, index * 71 + 29).map((d, i) => (
-                <circle key={`scs-${index}-${i}`} cx={d.x} cy={d.y} r={d.r} />
-              ))}
-            </g>
             <circle cx={cx} cy={cy} r={secBuffer} />
             <circle cx={cx} cy={cy} r={Math.min(coreRadius - 6, secBuffer - 12)} />
             <text x={cx} y={cy - secBuffer - 9} textAnchor="middle">{(secondaryZoneQueue[index] ? localeText(secondaryZoneQueue[index].label_ko, secondaryZoneQueue[index].label_en) : null) ?? (cluster.label_ko ? t(cluster.label_ko) : tf("반복 거점 {letter}", { letter: String.fromCharCode(66 + index) }))}</text>
