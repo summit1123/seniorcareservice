@@ -90,8 +90,8 @@ def _new_hub_label_ko(driver: Mapping[str, Any]) -> str:
 ENVIRONMENTS: dict[str, dict[str, Any]] = {
     "dense_urban": {
         "display_name_ko": "고밀도 도심형",
-        "base_latitude": 37.55,
-        "base_longitude": 126.96,
+        "base_latitude": 37.30,
+        "base_longitude": 127.45,
         "zone_reach_m": 900.0,
         "outer_distance_m": 5_200.0,
         "visit_jitter_m": 40.0,
@@ -100,8 +100,8 @@ ENVIRONMENTS: dict[str, dict[str, Any]] = {
     },
     "suburban_mid_density": {
         "display_name_ko": "교외·중밀도형",
-        "base_latitude": 37.39,
-        "base_longitude": 127.10,
+        "base_latitude": 36.95,
+        "base_longitude": 127.65,
         "zone_reach_m": 1_500.0,
         "outer_distance_m": 9_500.0,
         "visit_jitter_m": 70.0,
@@ -110,8 +110,8 @@ ENVIRONMENTS: dict[str, dict[str, Any]] = {
     },
     "wide_low_density": {
         "display_name_ko": "광역 저밀도형",
-        "base_latitude": 36.55,
-        "base_longitude": 127.74,
+        "base_latitude": 36.60,
+        "base_longitude": 128.00,
         "zone_reach_m": 3_000.0,
         "outer_distance_m": 22_000.0,
         "visit_jitter_m": 130.0,
@@ -364,7 +364,7 @@ def _hub_centers(driver: Mapping[str, Any]) -> dict[str, tuple[float, float]]:
     home_lat, home_lon = _offset_coordinate(
         float(environment["base_latitude"]),
         float(environment["base_longitude"]),
-        50_000.0 + 1_700.0 * sequence,
+        4_000.0 + 300.0 * sequence,
         (137.508 * sequence) % 360.0,
     )
     hub_a = _offset_coordinate(home_lat, home_lon, reach * float(reach_fracs[0]), _HUB_A_BEARING)
@@ -588,7 +588,7 @@ def _profile_home_anchor(driver: Mapping[str, Any]) -> tuple[float, float]:
     return _offset_coordinate(
         float(environment["base_latitude"]),
         float(environment["base_longitude"]),
-        50_000.0 + 1_700.0 * sequence,
+        4_000.0 + 300.0 * sequence,
         (137.508 * sequence) % 360.0,
     )
 
@@ -890,12 +890,12 @@ def _safety_score(events: Sequence[Mapping[str, Any]]) -> float | None:
     distance = sum(float(event["trip_distance_km"]) for event in events)
     risk_events = sum(int(event["risk_event_count"]) for event in events)
     rate_per_100_km = (risk_events / max(distance, 1.0)) * 100.0
-    # Bounded penalty: a clean month sits near 100, a persistently risky month
-    # lands ~18-30 (clearly below the reward line without collapsing to a bare 0
-    # that reads as "broken" on screen). The 18-point floor keeps a risky score
-    # legible while still letting an in-zone-risky driver fall out of the reward
-    # tier on the integrated score.
-    return round(max(18.0, 100.0 - min(82.0, rate_per_100_km * 3.4)), 2)
+    # Smooth saturating curve, injective in the event rate: a clean month scores
+    # ~100, a persistently risky month lands in the teens-to-30s without the hard
+    # 18.0 clamp wall that made 30 drivers tie exactly (an obvious scripted floor
+    # when the table is sorted). Divisor tuned so in-zone-risky drivers stay below
+    # the reward line on the integrated score (archetype contract).
+    return round(10.0 + 90.0 * math.exp(-rate_per_100_km / 12.0), 2)
 
 
 def classify_month(
