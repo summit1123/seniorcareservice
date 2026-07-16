@@ -646,6 +646,19 @@ const dict: Record<string, string> = {
   "안전 점수": "Điểm an toàn",
   "준비된 지원": "Hỗ trợ đã chuẩn bị",
   "신청하기": "Đăng ký",
+  "가족 앱 미리보기": "Xem trước ứng dụng gia đình",
+  "직원이 승인한 리포트가 가족(보호자)에게 소식으로 전달됩니다. 부모님의 운전을 걱정하는 자녀가 상태를 한눈에 보고, 지원을 대신 신청할 수 있습니다.": "Báo cáo đã duyệt được gửi tới gia đình (người giám hộ). Con cái lo lắng về việc lái xe của cha mẹ có thể nắm tình trạng ngay và đăng ký hỗ trợ thay.",
+  "가족 알림 동의를 받은 계약에만 전송됩니다 — 동의 없이는 어떤 정보도 공유되지 않습니다.": "Chỉ gửi cho hợp đồng đã có đồng ý thông báo gia đình — không chia sẻ gì nếu chưa đồng ý.",
+  "{name} 님의 이번 달 운전": "Lái xe tháng này của {name}",
+  "한 번 살펴봐 주세요": "Tháng này nên xem qua",
+  "데이터가 부족했어요": "Tháng này thiếu dữ liệu",
+  "안심하셔도 좋아요": "Có thể yên tâm",
+  "이번 달 이동": "Di chuyển tháng này",
+  "평소 약 {km}km": "Bình thường khoảng {km}km",
+  "새로운 길 비중": "Tỷ lệ đường mới",
+  "평소 생활권 대비": "so với vùng sinh hoạt thường",
+  "보험사가 준비한 지원": "Hỗ trợ do công ty bảo hiểm chuẩn bị",
+  "부모님 대신 신청하기": "Đăng ký thay cha mẹ",
 };
 
 export default dict;

@@ -259,13 +259,13 @@ const CARE_NARRATIVE_SCHEMA = {
       }
     },
     staff_rationale_ko: { type: "string" },
-    customer_title_ko: { type: "string", description: "고객 앱 제목 — 따뜻하고 비징벌적" },
-    customer_body_ko: { type: "string", description: "고객 본문 3-4문장 — 벌점/감액/경고 금지, 지원 중심" },
-    customer_closing_ko: { type: "string" }
+    family_title_ko: { type: "string", description: "가족(보호자) 앱 제목 — 따뜻하고 비징벌적, 자녀가 읽는 소식" },
+    family_body_ko: { type: "string", description: "가족 대상 본문 3-4문장 — 벌점/감액/경고 금지, 부모님 상황 설명과 지원 안내 중심" },
+    family_closing_ko: { type: "string" }
   },
   required: [
     "headline_ko", "summary_ko", "xai_notes", "aftercare_reasons",
-    "staff_rationale_ko", "customer_title_ko", "customer_body_ko", "customer_closing_ko"
+    "staff_rationale_ko", "family_title_ko", "family_body_ko", "family_closing_ko"
   ]
 } as const;
 
@@ -283,7 +283,7 @@ export async function generateCareNarrative(localReport: JsonRecord, repoRoot?: 
     "입력 JSON의 모든 숫자(점수·지수·거리·기여)는 결정론 엔진의 확정값입니다 — 재계산·수정·새 숫자 발명 금지, 인용만 하세요.",
     "aftercare 항목은 입력에 있는 id만 사용하세요. 새 지원 항목을 만들지 마세요.",
     "직원용(headline/summary/xai/staff)은 심사 전문가 톤으로 간결하게, 판단 근거가 10초 안에 읽히게.",
-    "고객용(customer_*)은 따뜻한 존댓말로 — 벌점·감액·경고·위험이라는 단어를 쓰지 말고, 감사와 지원 중심으로.",
+    "가족용(family_*)은 부모님의 운전을 걱정하는 자녀에게 보내는 소식입니다 — 따뜻한 존댓말로, 벌점·감액·경고·위험이라는 단어 없이 상황 설명과 지원 안내 중심으로.",
     "모든 데이터는 합성 시뮬레이션이며 실존 인물이 아닙니다.",
     "모든 필드는 한국어로 작성하세요."
   ].join("\n");

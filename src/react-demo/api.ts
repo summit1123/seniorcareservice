@@ -104,7 +104,7 @@ export async function enrichCareReport(local: import("./care-report").CareReport
       xai_notes?: Array<{ label_ko: string; note_ko: string }>;
       aftercare_reasons?: Array<{ id: string; reason_ko: string }>;
       staff_rationale_ko?: string;
-      customer_title_ko?: string; customer_body_ko?: string; customer_closing_ko?: string;
+      family_title_ko?: string; family_body_ko?: string; family_closing_ko?: string;
     };
     if (!narrative || typeof narrative !== "object") return null;
     const xaiByLabel = new Map((narrative.xai_notes ?? []).map((n) => [n.label_ko, n.note_ko]));
@@ -120,10 +120,10 @@ export async function enrichCareReport(local: import("./care-report").CareReport
       xai_reasons: local.xai_reasons.map((r) => ({ ...r, note_ko: xaiByLabel.get(r.label_ko) || r.note_ko })),
       aftercare: local.aftercare.map((a) => ({ ...a, reason_ko: reasonById.get(a.id) || a.reason_ko })),
       staff_review: { ...local.staff_review, rationale_ko: narrative.staff_rationale_ko || local.staff_review.rationale_ko },
-      customer_message: {
-        title_ko: narrative.customer_title_ko || local.customer_message.title_ko,
-        body_ko: narrative.customer_body_ko || local.customer_message.body_ko,
-        closing_ko: narrative.customer_closing_ko || local.customer_message.closing_ko
+      family_message: {
+        title_ko: narrative.family_title_ko || local.family_message.title_ko,
+        body_ko: narrative.family_body_ko || local.family_message.body_ko,
+        closing_ko: narrative.family_closing_ko || local.family_message.closing_ko
       }
     };
   } catch {

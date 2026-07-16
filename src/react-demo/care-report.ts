@@ -92,7 +92,7 @@ export type CareReport = {
     recommendation: "confirm" | "request_more" | "hold";
     rationale_ko: string;
   };
-  customer_message: {
+  family_message: {
     title_ko: string;
     body_ko: string;
     closing_ko: string;
@@ -212,12 +212,13 @@ export function buildLocalCareReport(
       : "confirm";
 
   const shortName = driverNameKo.replace(/\s*\(.*\)\s*$/, "");
-  const customerTitle = careGate
-    ? `${shortName}님, 이번 달 새로운 길을 많이 다니셨네요`
-    : `${shortName}님, 이번 달도 안전 운전 감사합니다`;
-  const customerBody = careGate
-    ? `${selected.service_month}에는 평소보다 먼 곳을 자주 다니셨고, 새 경로에서 급제동이 조금 늘었습니다. 벌점이나 보험료 불이익이 아니라, 안전하게 계속 운전하시도록 아래 지원을 준비했습니다.`
-    : `${selected.service_month}에는 익숙한 생활권 안에서 안정적으로 운전하셨습니다. 이 기록은 우대 혜택 산정에 그대로 반영됩니다.`;
+  // 가족(보호자) 대상 메시지 — 어르신 본인이 아니라 자녀가 읽는 소식.
+  const familyTitle = careGate
+    ? `${shortName} 님, 이번 달은 한 번 살펴봐 주세요`
+    : `${shortName} 님, 이번 달도 안심하셔도 좋아요`;
+  const familyBody = careGate
+    ? `${selected.service_month}에는 평소보다 먼 외출이 늘었고, 새 경로에서 급제동이 함께 늘었습니다. 벌점이나 보험료 불이익은 없습니다 — 안전하게 계속 운전하시도록 아래 지원을 준비했어요. 가족이 대신 신청해 드릴 수 있습니다.`
+    : `${selected.service_month}에는 익숙한 동네 안에서 안정적으로 운전하셨어요. 이 기록은 우대 혜택 산정에 그대로 반영됩니다.`;
 
   return {
     schema_version: "masil-care-report/v1",
@@ -273,10 +274,10 @@ export function buildLocalCareReport(
           ? "데이터 사용률이 최소 기준 미만 — 불이익 없이 보류하고 수집 점검을 권합니다."
           : "지표가 기준 범위 내 — 리포트 승인 후 고객 발송을 권합니다."
     },
-    customer_message: {
-      title_ko: customerTitle,
-      body_ko: customerBody,
-      closing_ko: "지원이 필요하시면 아래에서 신청해 주세요. 이 리포트는 안내용이며, 보험료·인수 결정을 확정하지 않습니다."
+    family_message: {
+      title_ko: familyTitle,
+      body_ko: familyBody,
+      closing_ko: "가족 알림 동의를 바탕으로 전달되는 소식입니다. 이 리포트는 안내용이며, 보험료·인수 결정을 확정하지 않습니다."
     },
     data_status: "합성 시뮬레이션 — 실제 고객 데이터가 아니며, 담당자 검수 후 고객에게 전달되는 흐름의 데모입니다."
   };

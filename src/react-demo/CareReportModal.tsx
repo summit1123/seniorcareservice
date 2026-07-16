@@ -118,6 +118,12 @@ export function CareReportModal({
   }, [local]);
 
   const selectedAftercare = report.aftercare.filter((a) => picked[a.id]);
+  const baselineRows = rows.filter((r) => r.period_role === "baseline");
+  const baselineAvgKm = baselineRows.length
+    ? baselineRows.reduce((sum, r) => sum + r.monthly_total_distance_km, 0) / baselineRows.length
+    : null;
+  const careStatus = report.verdict.care_axis === "Care Review" ? "watch" : (report.verdict.favorable_axis || "").toLowerCase() === "hold" ? "hold" : "ok";
+  const familyName = report.driver.name_ko.replace(/\s*\(.*\)\s*$/, "");
 
   return (
     <div className="care-overlay" role="dialog" aria-modal="true" aria-label={t("케어 리포트 검수")}>
@@ -208,42 +214,56 @@ export function CareReportModal({
             </footer>
           </section>
 
-          {/* ---------- 2단계: 고객 모바일 화면 ---------- */}
+          {/* ---------- 2단계: 가족 앱 화면 ---------- */}
           <section className="care-customer">
             <div className="care-customer-side">
-              <span className="eyebrow"><Smartphone size={13} /> {t("고객 앱 미리보기")}</span>
-              <p>{t("직원이 승인한 리포트가 고객 언어로 재해석되어 전달됩니다. 점수·경고가 아니라 감사와 지원 중심입니다.")}</p>
+              <span className="eyebrow"><Smartphone size={13} /> {t("가족 앱 미리보기")}</span>
+              <p>{t("직원이 승인한 리포트가 가족(보호자)에게 소식으로 전달됩니다. 부모님의 운전을 걱정하는 자녀가 상태를 한눈에 보고, 지원을 대신 신청할 수 있습니다.")}</p>
+              <p className="care-consent-note">{t("가족 알림 동의를 받은 계약에만 전송됩니다 — 동의 없이는 어떤 정보도 공유되지 않습니다.")}</p>
               <button type="button" className="care-back" onClick={() => setStage("staff")}>
                 <ArrowLeft size={14} /> {t("직원 화면으로")}
               </button>
             </div>
             <div className="phone-frame">
               <div className="phone-notch" />
-              <div className="phone-screen">
-                <div className="phone-app-head">
-                  <b>MASIL CARE</b>
-                  <span>{report.report_month}</span>
+              <div className="phone-screen family-app">
+                <div className="fam-head">
+                  <b>MASIL <span>Family</span></b>
+                  <em>{report.report_month}</em>
                 </div>
-                <h3>{report.customer_message.title_ko}</h3>
-                <p className="phone-body">{report.customer_message.body_ko}</p>
-                <div className="phone-stats">
-                  <div><b>{numberFmt.format(report.metrics.monthly_distance_km)}km</b><span>{t("이번 달 주행")}</span></div>
-                  <div><b>{report.verdict.integrated_score === null ? "—" : numberFmt.format(report.verdict.integrated_score)}</b><span>{t("안전 점수")}</span></div>
+                <div className={`fam-status ${careStatus}`}>
+                  <span>{tf("{name} 님의 이번 달 운전", { name: familyName })}</span>
+                  <strong>
+                    {careStatus === "watch" ? t("한 번 살펴봐 주세요") : careStatus === "hold" ? t("데이터가 부족했어요") : t("안심하셔도 좋아요")}
+                  </strong>
+                  <p>{report.family_message.body_ko}</p>
+                </div>
+                <div className="fam-stats">
+                  <div>
+                    <span>{t("이번 달 이동")}</span>
+                    <b>{numberFmt.format(report.metrics.monthly_distance_km)}<i>km</i></b>
+                    {baselineAvgKm !== null ? <small>{tf("평소 약 {km}km", { km: numberFmt.format(Math.round(baselineAvgKm)) })}</small> : null}
+                  </div>
+                  <div>
+                    <span>{t("새로운 길 비중")}</span>
+                    <b>{numberFmt.format(report.metrics.mobility_change_pct)}<i>%p</i></b>
+                    <small>{t("평소 생활권 대비")}</small>
+                  </div>
                 </div>
                 {selectedAftercare.length ? (
-                  <div className="phone-benefits">
-                    <span>{t("준비된 지원")}</span>
+                  <div className="fam-benefits">
+                    <span>{t("보험사가 준비한 지원")}</span>
                     {selectedAftercare.map((a) => (
-                      <div key={a.id} className="phone-benefit-card">
+                      <div key={a.id} className="fam-benefit-card">
                         <b>{a.title_ko}</b>
                         <p>{a.customer_benefit_ko}</p>
-                        <button type="button">{t("신청하기")}</button>
+                        <button type="button">{t("부모님 대신 신청하기")}</button>
                       </div>
                     ))}
                   </div>
                 ) : null}
-                <p className="phone-closing">{report.customer_message.closing_ko}</p>
-                <p className="phone-disclaimer">{report.data_status}</p>
+                <p className="fam-closing">{report.family_message.closing_ko}</p>
+                <p className="fam-disclaimer">{report.data_status}</p>
               </div>
             </div>
           </section>
