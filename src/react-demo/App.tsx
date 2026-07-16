@@ -1480,13 +1480,9 @@ function DecisionPanel({
   rules: ProductRules | null;
 }) {
   const [careReportOpen, setCareReportOpen] = useState(false);
-  const [reviewDecision, setReviewDecision] = useState<"pending" | "approved" | "held" | "requested">("pending");
-  const [reviewNote, setReviewNote] = useState("");
 
   useEffect(() => {
     setCareReportOpen(false);
-    setReviewDecision("pending");
-    setReviewNote("");
   }, [driver?.customer_id, selectedMonth]);
 
   if (!driver) return <aside className="decision-panel"><InspectorState title={t("사람 검토 패널")} detail={t("사례를 선택하면 근거와 검토 작업이 표시됩니다.")} /></aside>;
@@ -1550,40 +1546,8 @@ function DecisionPanel({
         ))}
       </div>
 
-      <div className="review-state-box" aria-label={t("현재 화면의 사람 검토 상태")}>
-        <div>
-          <span>{t("연간 우대")}</span>
-          <strong>{stateLabelKo(driver.reward_state ?? "Neutral")}</strong>
-        </div>
-        <div>
-          <span>{t("선택 월 케어")}</span>
-          <strong>{stateLabelKo(selectedCare)}</strong>
-        </div>
-        <div>
-          <span>{t("모델")}</span>
-          <strong title={driver.model_version ?? "masil-gaip-simulation/v1"}>{t("합성 시뮬레이션 엔진 v1")}</strong>
-        </div>
-      </div>
-
-      <label className="review-note-field">
-        <span>{t("담당자 메모")}</span>
-        <textarea value={reviewNote} onChange={(event) => setReviewNote(event.target.value)} placeholder={t("승인·보류 이유 또는 추가 확인사항")} />
-      </label>
-      <div className="review-actions">
-        <button type="button" className={reviewDecision === "approved" ? "active approve" : ""} onClick={() => setReviewDecision("approved")}>{t("근거 확인")}</button>
-        <button type="button" className={reviewDecision === "requested" ? "active request" : ""} onClick={() => setReviewDecision("requested")}>{t("추가근거 요청")}</button>
-        <button type="button" className={reviewDecision === "held" ? "active hold" : ""} onClick={() => setReviewDecision("held")}>{t("판단 보류")}</button>
-      </div>
-      <p className="review-audit-line">
-        {reviewDecision === "pending"
-          ? t("검토 전 · AI 제안은 실제 결정에 반영되지 않음 · 저장되지 않은 데모 상태")
-          : reviewDecision === "approved"
-            ? t("현재 화면에서 근거 확인 표시 · 저장되지 않음 · 실제 상품 결정은 별도 권한자 승인 필요")
-            : reviewDecision === "requested"
-              ? t("현재 화면에서 추가근거 요청 표시 · 저장되지 않음 · 자동 판단 없음")
-              : t("현재 화면에서 판단 보류 표시 · 저장되지 않음 · 고객 불이익 없음")}
-      </p>
-
+      {/* 담당자 메모·보류/추가근거 결정은 케어 리포트 모달의 06 검수·승인으로 통합
+          — 같은 판단 UI가 두 곳에 있던 중복을 제거한다. */}
       <button className="report-button" type="button" onClick={() => setCareReportOpen(true)} disabled={!selectedRow}>
         <FileText size={15} />
         {tf("{month} 케어 리포트 검수", { month: zoneMap?.snapshot.service_month ?? tf("{n}월", { n: selectedMonth }) })}

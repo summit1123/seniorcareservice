@@ -129,12 +129,12 @@ function PatternTimeline({ report }: { report: CareReport }) {
   );
 }
 
-/** 0단계 — AI 생성 연출. 응답(또는 폴백)이 확정될 때까지 리포트 본문을 대신한다. */
+/** 0단계 — AI 생성 진행. 절제된 타이포 + 얇은 진행선 하나만 움직인다. */
 function GeneratingState({ step, elapsed }: { step: number; elapsed: number }) {
   return (
     <div className="care-generating" role="status" aria-live="polite">
-      <div className="care-gen-orb" aria-hidden="true" />
       <strong>{t("AI 케어 리포트 생성 중")}</strong>
+      <div className="care-gen-line" aria-hidden="true" />
       <ul className="care-gen-steps">
         {GEN_STEPS.map((label, i) => (
           <li key={label} className={i < step ? "done" : i === step ? "active" : ""}>
@@ -142,9 +142,6 @@ function GeneratingState({ step, elapsed }: { step: number; elapsed: number }) {
           </li>
         ))}
       </ul>
-      <div className="care-gen-skeleton" aria-hidden="true">
-        <i /><i /><i />
-      </div>
       <small>
         {t("숫자는 엔진 확정값 — AI는 서사만 작성합니다")}
         {elapsed > 0 ? ` · ${tf("{s}초 경과", { s: elapsed })}` : ""}
@@ -180,6 +177,9 @@ export function CareReportModal({
   const [picked, setPicked] = useState<Record<string, boolean>>(
     () => Object.fromEntries(local.aftercare.map((a) => [a.id, true]))
   );
+  // 검수 보조 결정 — 저장되지 않는 데모 상태(자동 판단 없음).
+  const [staffMemo, setStaffMemo] = useState("");
+  const [staffFlag, setStaffFlag] = useState<"none" | "request" | "hold">("none");
 
   useEffect(() => {
     let alive = true;
@@ -287,7 +287,7 @@ export function CareReportModal({
                         {report.verdict.headline_ko}
                         {aiNarrative ? <em className="ai-chip"><Sparkles size={10} /> {t("AI 생성")}</em> : null}
                       </strong>
-                      <p className={aiNarrative ? "ai-text" : ""}>{report.verdict.summary_ko}</p>
+                      <p>{report.verdict.summary_ko}</p>
                     </div>
                   </div>
                 </div>
@@ -296,7 +296,7 @@ export function CareReportModal({
                   <SectionMark n="02" label={t("종합 소견")} ai={aiNarrative} />
                   <div className="care-card care-analyst">
                     {report.analyst_report_ko.split(/\n{2,}/).map((paragraph, idx) => (
-                      <p key={idx} className={aiNarrative ? "ai-text" : ""}>{paragraph}</p>
+                      <p key={idx}>{paragraph}</p>
                     ))}
                   </div>
                 </div>
@@ -373,12 +373,39 @@ export function CareReportModal({
                         {report.staff_review.recommendation === "confirm" ? t("승인 권고") : report.staff_review.recommendation === "hold" ? t("판단 보류 권고") : t("추가근거 권고")}
                         {aiNarrative ? <em className="ai-chip"><Sparkles size={10} /> {t("AI 생성")}</em> : null}
                       </strong>
-                      <p className={aiNarrative ? "ai-text" : ""}>{report.staff_review.rationale_ko}</p>
+                      <p>{report.staff_review.rationale_ko}</p>
                     </div>
                     <button type="button" className="care-approve" onClick={() => setStage("customer")}>
                       <CheckCircle2 size={15} /> {tf("승인하고 고객 화면 보기 ({n}개 지원 포함)", { n: selectedAftercare.length })}
                     </button>
                   </footer>
+                  <div className="care-decision-extra">
+                    <label className="care-memo">
+                      <span>{t("담당자 메모")}</span>
+                      <textarea
+                        value={staffMemo}
+                        onChange={(event) => setStaffMemo(event.target.value)}
+                        placeholder={t("승인·보류 이유 또는 추가 확인사항")}
+                      />
+                    </label>
+                    <div className="care-secondary-actions">
+                      <button
+                        type="button"
+                        className={staffFlag === "request" ? "active" : ""}
+                        onClick={() => setStaffFlag((prev) => (prev === "request" ? "none" : "request"))}
+                      >
+                        {t("추가근거 요청")}
+                      </button>
+                      <button
+                        type="button"
+                        className={staffFlag === "hold" ? "active" : ""}
+                        onClick={() => setStaffFlag((prev) => (prev === "hold" ? "none" : "hold"))}
+                      >
+                        {t("판단 보류")}
+                      </button>
+                    </div>
+                    <p className="care-audit-note">{t("메모와 결정은 저장되지 않는 데모이며 자동 판단이 없습니다. 전체 7섹션 AI 심사 리포트는 '리포트' 탭에서 확인할 수 있습니다.")}</p>
+                  </div>
                 </div>
               </section>
 
@@ -387,6 +414,43 @@ export function CareReportModal({
                 <div className="care-customer-side">
                   <span className="eyebrow"><Smartphone size={13} /> {t("가족 앱 미리보기")}</span>
                   <p>{t("직원이 승인한 리포트가 가족(보호자)에게 소식으로 전달됩니다. 부모님의 운전을 걱정하는 자녀가 상태를 한눈에 보고, 지원을 대신 신청할 수 있습니다.")}</p>
+                  <div className="care-send-summary">
+                    <div><span>{t("수신 대상")}</span><b>{t("가족(보호자) — 알림 동의 계약")}</b></div>
+                    <div><span>{t("채널")}</span><b>MASIL Family</b></div>
+                    <div><span>{t("포함 지원")}</span><b>{tf("{n}건", { n: selectedAftercare.length })}</b></div>
+                    <div><span>{t("발송 월")}</span><b>{report.report_month}</b></div>
+                  </div>
+                  <div className="care-flow">
+                    <span>{t("전달 프로세스")}</span>
+                    <div className="care-flow-step done">
+                      <i />
+                      <div>
+                        <b>{t("담당자 승인")}</b>
+                        <small>{t("방금 완료 — 아래 화면이 그대로 전송됩니다")}</small>
+                      </div>
+                    </div>
+                    <div className="care-flow-step">
+                      <i />
+                      <div>
+                        <b>{t("가족 알림 발송")}</b>
+                        <small>{t("알림 동의 계약에만 발송 · 심야 발송 제한")}</small>
+                      </div>
+                    </div>
+                    <div className="care-flow-step">
+                      <i />
+                      <div>
+                        <b>{t("열람·지원 신청")}</b>
+                        <small>{t("자녀가 부모님 대신 신청할 수 있습니다")}</small>
+                      </div>
+                    </div>
+                    <div className="care-flow-step">
+                      <i />
+                      <div>
+                        <b>{t("케어팀 연결")}</b>
+                        <small>{t("신청 접수 시 케어 매니저가 일정을 조율합니다")}</small>
+                      </div>
+                    </div>
+                  </div>
                   <p className="care-consent-note">{t("가족 알림 동의를 받은 계약에만 전송됩니다 — 동의 없이는 어떤 정보도 공유되지 않습니다.")}</p>
                   <button type="button" className="care-back" onClick={() => setStage("staff")}>
                     <ArrowLeft size={14} /> {t("직원 화면으로")}
@@ -446,6 +510,7 @@ export function CareReportModal({
                         ))}
                       </div>
                     ) : null}
+                    <button type="button" className="fam-contact">{t("케어 매니저에게 문의")}</button>
                     <p className="fam-closing">{report.family_message.closing_ko}</p>
                     <p className="fam-disclaimer">{report.data_status}</p>
                     <nav className="fam-nav" aria-label="app navigation">

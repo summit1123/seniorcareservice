@@ -1057,11 +1057,12 @@ p {
   align-items: center;
   gap: 8px;
   height: 38px;
-  padding: 0 10px;
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  background: var(--panel);
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--panel-soft);
   color: var(--muted);
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
 .search-box input {
@@ -1073,18 +1074,17 @@ p {
 }
 
 .search-box:focus-within {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 25%, transparent);
+  background: var(--panel);
+  border-color: color-mix(in srgb, var(--primary) 45%, transparent);
 }
 
 .filter-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4px;
+  gap: 3px;
   margin: 10px 0 12px;
-  padding: 4px;
-  border: 1px solid var(--line);
-  border-radius: 7px;
+  padding: 3px;
+  border-radius: 10px;
   background: var(--panel-soft);
 }
 
@@ -1099,8 +1099,9 @@ p {
 
 .filter-row button.active {
   background: var(--panel);
-  color: var(--blue);
-  box-shadow: inset 0 0 0 1px var(--line-strong);
+  color: var(--ink);
+  font-weight: 800;
+  box-shadow: 0 1px 3px rgba(15, 33, 29, 0.09);
 }
 
 .case-list {
@@ -7093,27 +7094,9 @@ h1, h2, h3 { letter-spacing: -0.014em; }
   overflow: hidden;
 }
 
-/* 모달 뒤에서 천천히 흐르는 오로라 — AI가 일하고 있다는 배경의 숨결 */
-.care-overlay::before {
-  content: "";
-  position: absolute;
-  inset: -18%;
-  pointer-events: none;
-  background:
-    radial-gradient(42% 34% at 28% 30%, color-mix(in srgb, var(--primary) 24%, transparent), transparent 72%),
-    radial-gradient(36% 30% at 72% 68%, color-mix(in srgb, var(--care) 16%, transparent), transparent 72%);
-  filter: blur(44px);
-  animation: careAuroraDrift 9s ease-in-out infinite alternate;
-}
-
-@keyframes careAuroraDrift {
-  from { transform: translate3d(-2%, -1.5%, 0) scale(1); }
-  to { transform: translate3d(2.5%, 2%, 0) scale(1.07); }
-}
-
 @keyframes careModalIn {
-  from { opacity: 0; transform: perspective(1400px) rotateX(5deg) translateY(28px) scale(0.975); }
-  to { opacity: 1; transform: perspective(1400px) rotateX(0deg) translateY(0) scale(1); }
+  from { opacity: 0; transform: translateY(12px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .care-modal {
@@ -7127,7 +7110,7 @@ h1, h2, h3 { letter-spacing: -0.014em; }
   background: var(--bg);
   box-shadow: var(--hover-shadow);
   overflow: hidden;
-  animation: careModalIn 0.55s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+  animation: careModalIn 0.4s cubic-bezier(0.25, 0.8, 0.3, 1) both;
 }
 
 .care-modal-head {
@@ -7257,9 +7240,75 @@ h1, h2, h3 { letter-spacing: -0.014em; }
 .care-approve { display: inline-flex; align-items: center; gap: 8px; flex: none; padding: 12px 18px; border: 0; border-radius: 12px; background: var(--primary); color: #fff; font-size: 13.5px; font-weight: 900; cursor: pointer; }
 .care-approve:hover { background: var(--primary-strong); }
 
-/* 고객 화면 사이드 */
+/* 고객 화면 사이드 — 발송 요약 + 전달 프로세스로 여백을 서사로 채운다 */
 .care-customer-side .eyebrow { display: inline-flex; align-items: center; gap: 6px; }
-.care-customer-side p { margin-top: 8px; color: var(--muted); font-size: 13px; line-height: 1.6; max-width: 380px; }
+.care-customer-side > p { margin-top: 8px; color: var(--muted); font-size: 13px; line-height: 1.6; max-width: 420px; }
+
+.care-send-summary {
+  margin-top: 16px;
+  max-width: 420px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+  overflow: hidden;
+}
+.care-send-summary > div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 10px 14px; }
+.care-send-summary > div + div { border-top: 1px solid var(--line); }
+.care-send-summary span { color: var(--muted); font-size: 11.5px; font-weight: 700; white-space: nowrap; }
+.care-send-summary b { color: var(--ink); font-size: 12.5px; text-align: right; }
+
+.care-flow { margin-top: 18px; max-width: 420px; }
+.care-flow > span { display: block; margin-bottom: 10px; color: var(--muted); font-size: 10.5px; font-weight: 900; }
+.care-flow-step { position: relative; display: flex; gap: 12px; padding-bottom: 14px; }
+.care-flow-step:last-child { padding-bottom: 0; }
+.care-flow-step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 3.5px;
+  top: 13px;
+  bottom: 1px;
+  width: 1px;
+  background: var(--line);
+}
+.care-flow-step i { flex: none; width: 8px; height: 8px; margin-top: 4px; border-radius: 50%; background: var(--line-strong); }
+.care-flow-step.done i { background: var(--primary); }
+.care-flow-step b { display: block; color: var(--ink); font-size: 12.5px; }
+.care-flow-step small { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+
+/* 검수·승인 — 담당자 메모 + 보조 결정 */
+.care-decision-extra { margin-top: 10px; padding: 13px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+.care-memo > span { display: block; margin-bottom: 6px; color: var(--muted); font-size: 10.5px; font-weight: 900; }
+.care-memo textarea {
+  width: 100%;
+  min-height: 58px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--panel-soft);
+  color: var(--ink);
+  font: inherit;
+  font-size: 12.5px;
+  line-height: 1.5;
+  resize: vertical;
+}
+.care-memo textarea:focus { outline: 0; border-color: color-mix(in srgb, var(--primary) 45%, transparent); background: var(--panel); }
+.care-secondary-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.care-secondary-actions button {
+  padding: 8px 13px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.care-secondary-actions button.active {
+  border-color: color-mix(in srgb, var(--care) 45%, var(--line));
+  background: color-mix(in srgb, var(--care) 6%, var(--panel));
+  color: var(--pill-care-fg, #b54819);
+}
+.care-audit-note { margin-top: 10px; color: var(--faint); font-size: 10.5px; line-height: 1.55; }
 .care-back { display: inline-flex; align-items: center; gap: 7px; margin-top: 14px; padding: 9px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--ink); font-size: 12.5px; font-weight: 800; cursor: pointer; }
 
 /* 폰 프레임 */
@@ -7425,6 +7474,20 @@ h1, h2, h3 { letter-spacing: -0.014em; }
 }
 .fam-benefit-card button:hover { filter: brightness(0.94); }
 
+.fam-contact {
+  margin-top: 10px;
+  width: 100%;
+  padding: 11px 0;
+  border: 1px solid var(--app-line);
+  border-radius: 999px;
+  background: var(--app-card);
+  color: var(--app-ink);
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.fam-contact:hover { border-color: var(--app-accent); color: var(--app-accent); }
+
 .fam-closing { margin-top: 16px; color: var(--app-sub); font-size: 11.5px; line-height: 1.6; }
 .fam-disclaimer { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--app-line); color: #a39d94; font-size: 9.5px; line-height: 1.5; }
 
@@ -7473,7 +7536,7 @@ h1, h2, h3 { letter-spacing: -0.014em; }
    숫자·구조는 엔진 확정값이고, 모션은 표현일 뿐이다.
    ============================================================ */
 @keyframes careRise {
-  from { opacity: 0; transform: translateY(14px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
 }
 
@@ -7492,30 +7555,26 @@ h1, h2, h3 { letter-spacing: -0.014em; }
   to { opacity: 1; transform: perspective(1200px) rotateY(0deg) translateX(0); }
 }
 
-@keyframes careShimmer {
-  from { background-position: -320px 0; }
-  to { background-position: 320px 0; }
-}
 
 /* 리포트 전체가 응답 확정 순간 한꺼번에 스태거로 떠오른다 (--i = 섹션 순번) */
 .care-staff > * {
-  animation: careRise 0.55s cubic-bezier(0.22, 0.9, 0.3, 1) both;
-  animation-delay: calc(0.05s + var(--i, 0) * 0.12s);
+  animation: careRise 0.4s cubic-bezier(0.25, 0.8, 0.3, 1) both;
+  animation-delay: calc(0.03s + var(--i, 0) * 0.07s);
 }
 
 /* 섹션 안 목록 아이템도 잇따라 떠오른다 (--j = 아이템 순번) */
 .care-xai li,
 .care-aftercare li,
 .care-donut-legend li {
-  animation: careRise 0.45s cubic-bezier(0.22, 0.9, 0.3, 1) both;
-  animation-delay: calc(0.35s + var(--j, 0) * 0.09s);
+  animation: careRise 0.35s ease-out both;
+  animation-delay: calc(0.2s + var(--j, 0) * 0.05s);
 }
 
 /* 타임라인 막대가 왼쪽부터 물결처럼 자라남 */
 .care-timeline-col i b {
   transform-origin: bottom;
-  animation: careBarGrow 0.6s cubic-bezier(0.3, 1.2, 0.4, 1) both;
-  animation-delay: calc(0.35s + var(--i, 0) * 0.06s);
+  animation: careBarGrow 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(0.2s + var(--i, 0) * 0.04s);
 }
 
 /* 도넛이 회전하며 그려짐 (기존 -90deg 회전 유지) */
@@ -7555,7 +7614,6 @@ h1, h2, h3 { letter-spacing: -0.014em; }
 /* 종합 소견 — 심사 리포트 프로즈 */
 .care-analyst { display: grid; gap: 11px; }
 .care-analyst p { color: var(--ink); font-size: 13px; line-height: 1.72; }
-.care-analyst p::first-letter { font-weight: 800; }
 
 /* AI가 쓴 문장 표시 — 배지 + 등장 시 잠깐 하이라이트 후 사라짐 */
 .ai-chip {
@@ -7574,98 +7632,87 @@ h1, h2, h3 { letter-spacing: -0.014em; }
   white-space: nowrap;
 }
 
-@keyframes aiHighlight {
-  0% { background-color: color-mix(in srgb, var(--primary) 15%, transparent); }
-  100% { background-color: transparent; }
-}
-.ai-text { animation: aiHighlight 2.4s ease-out 0.5s both; border-radius: 4px; }
 
-/* ---------- 0단계: AI 생성 연출 ---------- */
+/* ---------- 0단계: AI 생성 — 절제된 타이포 중심 진행 화면 ---------- */
 .care-generating {
   display: grid;
   justify-items: center;
-  gap: 16px;
-  padding: 54px 24px 60px;
-  text-align: center;
+  align-content: center;
+  gap: 0;
+  min-height: 380px;
+  padding: 56px 24px;
+  text-align: left;
 }
-.care-generating > strong { font-size: 16px; color: var(--ink); }
-.care-generating > small { color: var(--faint); font-size: 11px; }
-
-@keyframes careOrbSpin { to { transform: rotate(360deg); } }
-@keyframes careOrbPulse {
-  0%, 100% { transform: scale(1); opacity: 0.85; }
-  50% { transform: scale(1.1); opacity: 1; }
+.care-generating > strong {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.care-generating > small {
+  margin-top: 22px;
+  color: var(--faint);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
 }
 
-.care-gen-orb { position: relative; width: 88px; height: 88px; }
-.care-gen-orb::before {
+/* 얇은 진행선 하나 — 유일하게 움직이는 요소 */
+@keyframes careGenSweep {
+  from { transform: translateX(-105%); }
+  to { transform: translateX(320px); }
+}
+.care-gen-line {
+  position: relative;
+  width: min(320px, 72vw);
+  height: 2px;
+  margin: 14px 0 26px;
+  border-radius: 2px;
+  background: var(--line);
+  overflow: hidden;
+}
+.care-gen-line::after {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: conic-gradient(from 0deg, transparent 10%, var(--primary) 55%, transparent 62%);
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
-  animation: careOrbSpin 1.15s linear infinite;
-}
-.care-gen-orb::after {
-  content: "";
-  position: absolute;
-  inset: 20px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 34% 30%, color-mix(in srgb, var(--primary) 45%, #fff), var(--primary-strong));
-  box-shadow: 0 12px 34px color-mix(in srgb, var(--primary) 42%, transparent);
-  animation: careOrbPulse 1.9s ease-in-out infinite;
+  inset: 0 auto 0 0;
+  width: 40%;
+  border-radius: 2px;
+  background: var(--primary);
+  animation: careGenSweep 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-.care-gen-steps { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+.care-gen-steps {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 .care-gen-steps li {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: var(--muted);
+  gap: 10px;
+  color: var(--faint);
   font-size: 12.5px;
-  font-weight: 700;
-  opacity: 0.32;
-  transition: opacity 0.4s ease;
+  transition: color 0.5s ease;
 }
 .care-gen-steps li::before {
   content: "";
-  width: 7px;
-  height: 7px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: var(--line-strong);
   flex: none;
+  transition: background 0.5s ease;
 }
-.care-gen-steps li.active { opacity: 1; color: var(--ink); }
-.care-gen-steps li.active::before { background: var(--primary); animation: careOrbPulse 1s ease-in-out infinite; }
-.care-gen-steps li.done { opacity: 0.72; }
-.care-gen-steps li.done::before { background: var(--green); }
-
-.care-gen-skeleton { display: grid; gap: 8px; width: min(460px, 88%); }
-.care-gen-skeleton i {
-  height: 11px;
-  border-radius: 6px;
-  background-image: linear-gradient(100deg, var(--panel-soft) 30%, color-mix(in srgb, var(--primary) 12%, var(--panel-soft)) 50%, var(--panel-soft) 70%);
-  background-size: 320px 100%;
-  animation: careShimmer 1.4s linear infinite;
-}
-.care-gen-skeleton i:nth-child(2) { width: 82%; animation-delay: 0.15s; }
-.care-gen-skeleton i:nth-child(3) { width: 64%; animation-delay: 0.3s; }
+.care-gen-steps li.active { color: var(--ink); font-weight: 700; }
+.care-gen-steps li.active::before { background: var(--primary); }
+.care-gen-steps li.done { color: var(--muted); }
+.care-gen-steps li.done::before { background: var(--primary); opacity: 0.45; }
 
 /* 폰이 3D로 회전하며 진입 — 승인 → 고객 전달의 장면 전환 */
 .care-stage-track.stage-customer .phone-frame { animation: phoneIn 0.7s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
 .care-stage-track.stage-customer .care-customer-side { animation: careRise 0.5s ease both; }
 
-/* AI 서사 생성 중 — 헤드라인·요약 위로 광택이 흐르는 셔머 */
-.care-modal.is-enriching .care-verdict strong,
-.care-modal.is-enriching .care-verdict p {
-  background-image: linear-gradient(100deg, transparent 30%, color-mix(in srgb, var(--primary) 14%, transparent) 50%, transparent 70%);
-  background-size: 320px 100%;
-  background-repeat: no-repeat;
-  animation: careShimmer 1.4s linear infinite;
-  border-radius: 6px;
-}
 
 .care-baseline-callout {
   margin: 8px 0 2px;
@@ -7688,13 +7735,7 @@ h1, h2, h3 { letter-spacing: -0.014em; }
   .care-donut-seg,
   .care-stage-track.stage-customer .phone-frame,
   .care-stage-track.stage-customer .care-customer-side,
-  .care-modal.is-enriching .care-verdict strong,
-  .care-modal.is-enriching .care-verdict p,
-  .ai-text,
-  .care-gen-orb::before,
-  .care-gen-orb::after,
-  .care-gen-steps li.active::before,
-  .care-gen-skeleton i,
+  .care-gen-line::after,
   .phone-screen.family-app > * {
     animation: none;
   }

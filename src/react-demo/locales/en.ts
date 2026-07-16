@@ -739,6 +739,23 @@ const dict: Record<string, string> = {
   "케어 축에서는 위험행동 변화가 {risk}%p로 게이트 기준({th}%p) 미만 — 예방 개입이 필요한 신호는 없습니다.": "On the Care axis, risky-behaviour change is {risk}%p, below the gate threshold ({th}%p) — no signal requiring preventive intervention.",
   "다음 달에도 같은 기준선 대비 이동·행동 변화를 계속 관찰합니다. 이번 리포트에는 예방 지원 {n}건이 제안되었고, 담당자 확정 후 가족 앱으로 전달됩니다.": "Next month, mobility and behaviour changes continue to be observed against the same baseline. This report proposes {n} preventive supports, delivered to the family app after staff confirmation.",
   "다음 달에도 같은 기준선 대비 이동·행동 변화를 계속 관찰합니다. 이번 달 발동된 지원 신호는 없어 리포트만 발송됩니다.": "Next month, mobility and behaviour changes continue to be observed against the same baseline. No support signals fired this month, so only the report is sent.",
+  "수신 대상": "Recipient",
+  "가족(보호자) — 알림 동의 계약": "Family (guardian) — consented contracts",
+  "채널": "Channel",
+  "포함 지원": "Supports included",
+  "{n}건": "{n}",
+  "발송 월": "Send month",
+  "전달 프로세스": "Delivery process",
+  "담당자 승인": "Staff approval",
+  "방금 완료 — 아래 화면이 그대로 전송됩니다": "Just completed — the screen below is sent as-is",
+  "가족 알림 발송": "Family notification sent",
+  "알림 동의 계약에만 발송 · 심야 발송 제한": "Only to consented contracts · no late-night delivery",
+  "열람·지원 신청": "View & apply for supports",
+  "자녀가 부모님 대신 신청할 수 있습니다": "A child can apply on their parent's behalf",
+  "케어팀 연결": "Care-team connection",
+  "신청 접수 시 케어 매니저가 일정을 조율합니다": "On application, a care manager coordinates the schedule",
+  "케어 매니저에게 문의": "Contact the care manager",
+  "메모와 결정은 저장되지 않는 데모이며 자동 판단이 없습니다. 전체 7섹션 AI 심사 리포트는 '리포트' 탭에서 확인할 수 있습니다.": "Memos and decisions are demo-only (not saved) and nothing is decided automatically. The full 7-section AI assessment report is available in the Report tab.",
 };
 
 export default dict;
