@@ -610,6 +610,12 @@ const dict: Record<string, string> = {
   "선택 월 {month} 케어 축": "Tháng đã chọn {month} · trục chăm sóc",
   "케어 검토가 발생한 달이 자동 선택됩니다 — 다른 달을 누르면 위 요약·지도·근거가 그 달 기준으로 바뀝니다.": "Tháng có xét chăm sóc được chọn tự động — nhấp tháng khác để phần tóm tắt, bản đồ và căn cứ phía trên chuyển theo.",
   "평가 제외": "Không tính điểm",
+  "케어 검토 중 우대 보너스 지급 유예": "Tạm hoãn thưởng ưu đãi trong khi xét chăm sóc",
+  "케어 검토 중에는 우대 보너스 지급이 유예되고 예방 관점의 임시 감액(−13%p 후보)이 적용됩니다. 최종 적용은 사람 검토가 결정합니다.": "Trong khi xét chăm sóc, thưởng ưu đãi được tạm hoãn và áp dụng mức giảm tạm thời mang tính phòng ngừa (ứng viên −13%p). Việc áp dụng cuối cùng do con người quyết định.",
+  "판정(우대·케어)은 독립 계산합니다. 요율 후보 결합 시 케어 검토 중에는 우대 지급이 유예됩니다. 케어는 같은 달 이동 변화와 위험행동 변화가 모두 있을 때만 검토를 제안합니다.": "Các phán định (ưu đãi · chăm sóc) được tính độc lập. Khi kết hợp vào ứng viên tỷ lệ, việc chi trả ưu đãi được tạm hoãn trong khi xét chăm sóc. Chăm sóc chỉ được đề xuất khi thay đổi di chuyển và thay đổi hành vi rủi ro cùng xuất hiện trong một tháng.",
+  "케어 결합 규칙 (선언값)": "Quy tắc kết hợp chăm sóc (khai báo)",
+  "우대 보너스 지급 유예 + 임시 감액 −{n}%p": "Hoãn thưởng ưu đãi + giảm tạm thời −{n}%p",
+  "숨은 상수가 아니라 선언된 규칙 — 최종 적용은 사람 검토가 결정": "Quy tắc được khai báo, không phải hằng số ẩn — áp dụng cuối cùng do con người quyết định",
 };
 
 export default dict;

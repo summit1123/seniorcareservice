@@ -68,6 +68,7 @@ const reasonLabels: Record<string, string> = {
   REWARD_REQUIRED_MONTHS_MET: "우대 충족월 기준 통과",
   REWARD_REQUIRED_MONTHS_NOT_MET: "우대 충족월 기준 미달",
   SAME_MONTH_CARE_GATE_MET: "같은 달 이동·위험행동 동시변화",
+  REWARD_BONUS_SUSPENDED_PENDING_CARE_REVIEW: "케어 검토 중 우대 보너스 지급 유예",
   SAME_MONTH_CARE_GATE_NOT_MET: "동시변화 게이트 미충족",
   CANDIDATE_LIVING_ZONE: "후보 생활권 관찰",
   HARSH_BRAKE_INCREASE: "급감속 증가",
@@ -671,6 +672,11 @@ function ScenarioControlPanel({
         <div className="sandbox-threshold-grid">
           <RuleNumber label={t("이동 변화 임계")} helper={t("기준선 대비 생활권 밖 비중 상승폭이 이 값을 넘어야 케어 후보")} value={rules.care_mobility_change_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_mobility_change_threshold", value)} />
           <RuleNumber label={t("위험행동 변화 임계")} helper={t("기준선 대비 위험행동 상승폭 — 이동 변화와 함께 넘어야 케어")} value={rules.care_risky_behavior_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_risky_behavior_threshold", value)} />
+          <div className="rule-static" title={t("케어 검토 중 우대 보너스 지급 유예")}>
+            <span>{t("케어 결합 규칙 (선언값)")}</span>
+            <strong>{tf("우대 보너스 지급 유예 + 임시 감액 −{n}%p", { n: numberFormatter.format(rules.care_discount_reduction_pct ?? 13) })}</strong>
+            <small>{t("숨은 상수가 아니라 선언된 규칙 — 최종 적용은 사람 검토가 결정")}</small>
+          </div>
         </div>
       </div>
       <div className="sandbox-live" aria-live="polite">
@@ -1547,7 +1553,9 @@ function DecisionPanel({
         <div className="money-delta">
           <span>{t("제안 − 기존 할인율 차이")}</span>
           <strong>{signedPercentPoint(rateDelta)}</strong>
-          <small>{t("후보 민감도 · 확정 요율 아님")}</small>
+          <small>{driver.care_state === "Care Review"
+            ? t("케어 검토 중에는 우대 보너스 지급이 유예되고 예방 관점의 임시 감액(−13%p 후보)이 적용됩니다. 최종 적용은 사람 검토가 결정합니다.")
+            : t("후보 민감도 · 확정 요율 아님")}</small>
         </div>
       </div>
 
@@ -1827,7 +1835,7 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
         <div className="flow-step">
           <span>3</span>
           <strong>{t("12개월 평가와 사람 검토")}</strong>
-          <p>{t("우대와 케어를 독립 계산하고, 케어는 같은 달 이동 변화와 위험행동 변화가 모두 있을 때만 검토를 제안합니다.")}</p>
+          <p>{t("판정(우대·케어)은 독립 계산합니다. 요율 후보 결합 시 케어 검토 중에는 우대 지급이 유예됩니다. 케어는 같은 달 이동 변화와 위험행동 변화가 모두 있을 때만 검토를 제안합니다.")}</p>
         </div>
       </div>
 

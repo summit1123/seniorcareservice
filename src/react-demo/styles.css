@@ -6147,6 +6147,34 @@ body,
   color: color-mix(in srgb, var(--care) 65%, var(--ink));
 }
 
+.rule-static {
+  padding: 10px 12px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 10px;
+  background: var(--panel-soft);
+}
+
+.rule-static span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.rule-static strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.rule-static small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 10.5px;
+}
+
 .rule-number small {
   display: block;
   margin-top: 4px;

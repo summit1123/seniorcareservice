@@ -610,6 +610,12 @@ const dict: Record<string, string> = {
   "선택 월 {month} 케어 축": "Selected month {month} · Care axis",
   "케어 검토가 발생한 달이 자동 선택됩니다 — 다른 달을 누르면 위 요약·지도·근거가 그 달 기준으로 바뀝니다.": "The month with a Care review is auto-selected — click another month and the summary, map, and evidence above switch to it.",
   "평가 제외": "Not scored",
+  "케어 검토 중 우대 보너스 지급 유예": "Favorable bonus suspended pending Care review",
+  "케어 검토 중에는 우대 보너스 지급이 유예되고 예방 관점의 임시 감액(−13%p 후보)이 적용됩니다. 최종 적용은 사람 검토가 결정합니다.": "While a Care review is open, the Favorable bonus is suspended and a provisional preventive reduction (−13%p candidate) applies. Final application is decided by human review.",
+  "판정(우대·케어)은 독립 계산합니다. 요율 후보 결합 시 케어 검토 중에는 우대 지급이 유예됩니다. 케어는 같은 달 이동 변화와 위험행동 변화가 모두 있을 때만 검토를 제안합니다.": "The judgments (Favorable · Care) are computed independently. When combined into the rate candidate, the Favorable payout is suspended while a Care review is open. Care is proposed only when mobility change and risky-behaviour change occur in the same month.",
+  "케어 결합 규칙 (선언값)": "Care coupling rule (declared)",
+  "우대 보너스 지급 유예 + 임시 감액 −{n}%p": "Favorable bonus suspended + provisional −{n}%p",
+  "숨은 상수가 아니라 선언된 규칙 — 최종 적용은 사람 검토가 결정": "A declared rule, not a hidden constant — final application decided by human review",
 };
 
 export default dict;

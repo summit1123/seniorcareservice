@@ -173,6 +173,10 @@ export function calculateSandboxDecision(input: SandboxDecisionInput): SandboxRe
     reasonCodes.push(`PARTIAL_SCORE_COMPONENT_MONTHS_${partialComponentMonthCount}`);
   }
   if (careReviewEligible) reasonCodes.push("HUMAN_CARE_REVIEW_SUGGESTED");
+  // Pricing couples the axes on purpose: while a care review is open, the earned
+  // Favorable bonus is SUSPENDED (not lost) — disclose it as a reason code so the
+  // "-13%p" delta is a declared rule, not a silent constant.
+  if (rewardEligible && careReviewEligible) reasonCodes.push("REWARD_BONUS_SUSPENDED_PENDING_CARE_REVIEW");
 
   const koreaMileageRate = driver.tariff?.korea_mileage_discount_rate_pct ?? 0;
   // Reward bonus scales with the integrated score: floor at the reward threshold,
