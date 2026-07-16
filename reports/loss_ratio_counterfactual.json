@@ -1,0 +1,106 @@
+{
+  "inputs": {
+    "drivers": 180,
+    "pure_premium_ratio": 0.65,
+    "reduction_grid": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.3
+    ],
+    "severity_relativity": [
+      1.0,
+      1.2
+    ]
+  },
+  "portfolio": {
+    "korea_net_sum_krw": 117364920,
+    "masil_net_sum_krw": 115318410,
+    "revenue_delta_krw": -2046510,
+    "revenue_delta_pct_of_korea": -1.74
+  },
+  "care_segment": {
+    "n": 30,
+    "share_of_cohort_pct": 16.7,
+    "care_months_total": 181
+  },
+  "scenarios": [
+    {
+      "severity_relativity": 1.0,
+      "care_segment_expected_claims_krw": 16543800,
+      "giveaway_krw": 2046510,
+      "breakeven_claim_reduction_pct": 12.37,
+      "grid": [
+        {
+          "assumed_claim_reduction_pct": 5.0,
+          "claims_savings_krw": 827190,
+          "net_effect_krw": -1219320,
+          "net_effect_per_driver_krw": -6774
+        },
+        {
+          "assumed_claim_reduction_pct": 10.0,
+          "claims_savings_krw": 1654380,
+          "net_effect_krw": -392130,
+          "net_effect_per_driver_krw": -2178
+        },
+        {
+          "assumed_claim_reduction_pct": 15.0,
+          "claims_savings_krw": 2481570,
+          "net_effect_krw": 435060,
+          "net_effect_per_driver_krw": 2417
+        },
+        {
+          "assumed_claim_reduction_pct": 20.0,
+          "claims_savings_krw": 3308760,
+          "net_effect_krw": 1262250,
+          "net_effect_per_driver_krw": 7012
+        },
+        {
+          "assumed_claim_reduction_pct": 30.0,
+          "claims_savings_krw": 4963140,
+          "net_effect_krw": 2916630,
+          "net_effect_per_driver_krw": 16204
+        }
+      ]
+    },
+    {
+      "severity_relativity": 1.2,
+      "care_segment_expected_claims_krw": 19852560,
+      "giveaway_krw": 2046510,
+      "breakeven_claim_reduction_pct": 10.31,
+      "grid": [
+        {
+          "assumed_claim_reduction_pct": 5.0,
+          "claims_savings_krw": 992628,
+          "net_effect_krw": -1053882,
+          "net_effect_per_driver_krw": -5855
+        },
+        {
+          "assumed_claim_reduction_pct": 10.0,
+          "claims_savings_krw": 1985256,
+          "net_effect_krw": -61254,
+          "net_effect_per_driver_krw": -340
+        },
+        {
+          "assumed_claim_reduction_pct": 15.0,
+          "claims_savings_krw": 2977884,
+          "net_effect_krw": 931374,
+          "net_effect_per_driver_krw": 5174
+        },
+        {
+          "assumed_claim_reduction_pct": 20.0,
+          "claims_savings_krw": 3970512,
+          "net_effect_krw": 1924002,
+          "net_effect_per_driver_krw": 10689
+        },
+        {
+          "assumed_claim_reduction_pct": 30.0,
+          "claims_savings_krw": 5955768,
+          "net_effect_krw": 3909258,
+          "net_effect_per_driver_krw": 21718
+        }
+      ]
+    }
+  ]
+}
