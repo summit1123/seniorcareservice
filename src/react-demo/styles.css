@@ -7350,3 +7350,90 @@ h1, h2, h3 { letter-spacing: -0.014em; }
 .fam-disclaimer { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--app-line); color: #a39d94; font-size: 9.5px; line-height: 1.5; }
 
 .care-consent-note { margin-top: 8px !important; color: var(--faint) !important; font-size: 11.5px !important; }
+
+/* ============================================================
+   케어 리포트 — 생성형 모션 (AI가 만들어내는 듯한 연출)
+   숫자·구조는 엔진 확정값이고, 모션은 표현일 뿐이다.
+   ============================================================ */
+@keyframes careRise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes careBarGrow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes careDonutIn {
+  from { opacity: 0; transform: rotate(-90deg) scale(0.85); }
+  to { opacity: 1; transform: rotate(-90deg) scale(1); }
+}
+
+@keyframes phoneIn {
+  from { opacity: 0; transform: perspective(1200px) rotateY(-14deg) translateX(46px); }
+  to { opacity: 1; transform: perspective(1200px) rotateY(0deg) translateX(0); }
+}
+
+@keyframes careShimmer {
+  from { background-position: -320px 0; }
+  to { background-position: 320px 0; }
+}
+
+/* 카드가 순서대로 떠오르는 스트림 리빌 */
+.care-staff > * { animation: careRise 0.5s cubic-bezier(0.22, 0.9, 0.3, 1) both; }
+.care-staff > *:nth-child(1) { animation-delay: 0.04s; }
+.care-staff > *:nth-child(2) { animation-delay: 0.14s; }
+.care-staff > *:nth-child(3) { animation-delay: 0.26s; }
+.care-staff > *:nth-child(4) { animation-delay: 0.38s; }
+.care-staff > *:nth-child(5) { animation-delay: 0.5s; }
+
+/* 타임라인 막대가 왼쪽부터 물결처럼 자라남 */
+.care-timeline-col i b {
+  transform-origin: bottom;
+  animation: careBarGrow 0.55s cubic-bezier(0.3, 1.2, 0.4, 1) both;
+  animation-delay: calc(0.25s + var(--i, 0) * 0.05s);
+}
+
+/* 도넛이 회전하며 그려짐 (기존 -90deg 회전 유지) */
+.care-donut-seg { animation: careDonutIn 0.8s cubic-bezier(0.25, 0.9, 0.3, 1) both; }
+.care-donut-seg:nth-of-type(2) { animation-delay: 0.08s; }
+.care-donut-seg:nth-of-type(3) { animation-delay: 0.16s; }
+.care-donut-seg:nth-of-type(4) { animation-delay: 0.24s; }
+.care-donut-seg:nth-of-type(5) { animation-delay: 0.32s; }
+
+/* 폰이 3D로 회전하며 진입 — 승인 → 고객 전달의 장면 전환 */
+.care-stage-track.stage-customer .phone-frame { animation: phoneIn 0.7s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
+.care-stage-track.stage-customer .care-customer-side { animation: careRise 0.5s ease both; }
+
+/* AI 서사 생성 중 — 헤드라인·요약 위로 광택이 흐르는 셔머 */
+.care-modal.is-enriching .care-verdict strong,
+.care-modal.is-enriching .care-verdict p {
+  background-image: linear-gradient(100deg, transparent 30%, color-mix(in srgb, var(--primary) 14%, transparent) 50%, transparent 70%);
+  background-size: 320px 100%;
+  background-repeat: no-repeat;
+  animation: careShimmer 1.4s linear infinite;
+  border-radius: 6px;
+}
+
+.care-baseline-callout {
+  margin: 8px 0 2px;
+  padding: 7px 10px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--primary) 6%, var(--panel-soft));
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .care-staff > *,
+  .care-timeline-col i b,
+  .care-donut-seg,
+  .care-stage-track.stage-customer .phone-frame,
+  .care-stage-track.stage-customer .care-customer-side,
+  .care-modal.is-enriching .care-verdict strong,
+  .care-modal.is-enriching .care-verdict p {
+    animation: none;
+  }
+}

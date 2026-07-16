@@ -19,7 +19,26 @@ import type { ProductRules } from "./gaip-types";
 
 const numberFmt = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
 
+/** 통합점수 카운트업 — 값이 AI 스트림처럼 차오르는 연출(값 자체는 엔진 확정값). */
+function useCountUp(target: number | null, ms = 900): number | null {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    if (target === null) return;
+    let raf = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / ms);
+      setValue(target * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, ms]);
+  return target === null ? null : value;
+}
+
 function ContributionDonut({ report }: { report: CareReport }) {
+  const animated = useCountUp(report.verdict.integrated_score);
   const entries = report.weight_contributions.filter((c) => c.contribution !== null) as Array<{
     key: string; label_ko: string; contribution: number; weight_pct: number; score: number | null;
   }>;
@@ -49,7 +68,7 @@ function ContributionDonut({ report }: { report: CareReport }) {
           return el;
         })}
         <text x="70" y="66" textAnchor="middle" className="care-donut-score">
-          {report.verdict.integrated_score === null ? "—" : numberFmt.format(report.verdict.integrated_score)}
+          {animated === null ? "—" : numberFmt.format(animated)}
         </text>
         <text x="70" y="84" textAnchor="middle" className="care-donut-caption">{t("통합점수")}</text>
       </svg>
@@ -69,8 +88,8 @@ function ContributionDonut({ report }: { report: CareReport }) {
 function PatternTimeline({ report }: { report: CareReport }) {
   return (
     <div className="care-timeline" role="img" aria-label={t("14개월 이동 변화 타임라인")}>
-      {report.pattern_timeline.map((m) => (
-        <div key={m.month} className={`care-timeline-col ${m.baseline ? "baseline" : ""} ${m.care ? "care" : ""} ${m.selected ? "selected" : ""}`}>
+      {report.pattern_timeline.map((m, idx) => (
+        <div key={m.month} style={{ "--i": idx } as React.CSSProperties} className={`care-timeline-col ${m.baseline ? "baseline" : ""} ${m.care ? "care" : ""} ${m.selected ? "selected" : ""}`}>
           <i><b style={{ height: `${Math.max(6, Math.min(100, m.change_pct))}%` }} /></i>
           <span>{m.month.slice(2)}</span>
         </div>
@@ -127,7 +146,7 @@ export function CareReportModal({
 
   return (
     <div className="care-overlay" role="dialog" aria-modal="true" aria-label={t("케어 리포트 검수")}>
-      <div className="care-modal">
+      <div className={`care-modal ${enriching ? "is-enriching" : ""}`}>
         <header className="care-modal-head">
           <div>
             <span className="eyebrow">{t("직원 검수 리포트")} · {report.report_month}</span>
@@ -158,6 +177,14 @@ export function CareReportModal({
             <div className="care-grid">
               <div className="care-card">
                 <span>{t("14개월 이동 변화 타임라인")}</span>
+                <p className="care-baseline-callout">
+                  {tf("선택 월 {month} — 개인 기준선(첫 2개월, {b1}·{b2}) 대비 이동 변화 {pct}%p", {
+                    month: report.report_month,
+                    b1: report.pattern_timeline[0]?.month ?? "",
+                    b2: report.pattern_timeline[1]?.month ?? "",
+                    pct: numberFmt.format(report.metrics.mobility_change_pct)
+                  })}
+                </p>
                 <PatternTimeline report={report} />
                 <small>{t("점선 = 기준선 관찰 · 주황 = 케어 검토 월 · 테두리 = 선택 월")}</small>
               </div>

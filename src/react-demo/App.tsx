@@ -1956,17 +1956,22 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
   // destination name, an in-zone node takes an in-zone name — with a generic
   // fallback so a mismatch never leaves a node unlabelled.
   const profileZones = driver.mobility_profile?.zones ?? [];
-  const inZoneQueue = profileZones.filter((zone) => zone.role === "in_zone").map((zone) => localeText(zone.label_ko, zone.label_en));
-  const secondaryQueue = profileZones.filter((zone) => zone.role === "secondary").map((zone) => localeText(zone.label_ko, zone.label_en));
-  const changeQueue = profileZones.filter((zone) => zone.role === "change_destination").map((zone) => localeText(zone.label_ko, zone.label_en));
+  const inZoneQueue = profileZones.filter((zone) => zone.role === "in_zone");
+  const secondaryZoneQueue = profileZones.filter((zone) => zone.role === "secondary");
+  const changeZoneQueue = profileZones.filter((zone) => zone.role === "change_destination");
   let inCursor = 0;
   let changeCursor = 0;
-  const agentDestLabels = visibleDestinations.map((item) => {
+  // Assign each visible destination the matching AGENT zone (by role) — its
+  // life-grounded NAME and its GEOMETRY (bearing/distance band). This is what
+  // makes every driver's map genuinely different: the layout follows the AI
+  // profile the engine scored, not a fixed index arc.
+  const agentDestZones = visibleDestinations.map((item) => {
     const outer = item.destination.living_zone_role === "outer";
-    if (outer && changeCursor < changeQueue.length) return changeQueue[changeCursor++];
+    if (outer && changeCursor < changeZoneQueue.length) return changeZoneQueue[changeCursor++];
     if (!outer && inCursor < inZoneQueue.length) return inZoneQueue[inCursor++];
     return null;
   });
+  const agentDestLabels = agentDestZones.map((zone) => (zone ? localeText(zone.label_ko, zone.label_en) : null));
 
   // Home-centred radial schematic (not a real map — coordinates are never
   // exposed). The residence sits at the centre with its Core (500m) and Buffer
@@ -1984,6 +1989,18 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
   const destCount = Math.max(1, visibleDestinations.length);
   const arcStart = -Math.PI * 0.82;
   const arcSpan = Math.PI * 1.42;
+  // Per-driver deterministic jitter so even same-band zones never overlap the
+  // same pixel across drivers (seeded by customer id — stable across renders).
+  const driverSeed = Array.from(driver.customer_id).reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) % 9973, 7);
+  const bandRadius = (band: string | undefined, outer: boolean, index: number): number => {
+    switch (band) {
+      case "near": return bufferRadius * (0.42 + ((driverSeed + index * 37) % 13) / 100);
+      case "mid_in": return bufferRadius * (0.68 + ((driverSeed + index * 53) % 11) / 100);
+      case "secondary": return bufferRadius + 92 + ((driverSeed + index * 29) % 22);
+      case "outer": return bufferRadius + 74 + ((driverSeed + index * 41) % 34);
+      default: return outer ? bufferRadius + 78 + (index % 3) * 26 : bufferRadius * 0.58;
+    }
+  };
   const routePath = (point: { x: number; y: number }) => {
     const dx = point.x - center.x;
     const dy = point.y - center.y;
@@ -1993,8 +2010,14 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
   };
   const destinationViews = visibleDestinations.map((item, index) => {
     const outer = item.destination.living_zone_role === "outer";
-    const angle = destCount === 1 ? -Math.PI * 0.3 : arcStart + (index / (destCount - 1)) * arcSpan;
-    const dist = outer ? bufferRadius + 78 + (index % 3) * 26 : bufferRadius * 0.58;
+    const zone = agentDestZones[index];
+    // Geometry from the AI profile when available: bearing_deg (0°=north,
+    // clockwise) + distance band. Fallback: legacy index arc.
+    const fallbackAngle = destCount === 1 ? -Math.PI * 0.3 : arcStart + (index / (destCount - 1)) * arcSpan;
+    const angle = zone && Number.isFinite(zone.bearing_deg)
+      ? ((Number(zone.bearing_deg) - 90) * Math.PI) / 180
+      : fallbackAngle;
+    const dist = bandRadius(zone?.distance_band, outer, index);
     return {
       ...item,
       outer,
@@ -2043,10 +2066,13 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
       </g>
 
       {snapshot.living_zone.clusters.slice(1).map((cluster, index) => {
-        const secAngle = Math.PI * 0.3;
-        const secDist = bufferRadius + 140;
-        const cx = Math.min(mapWidth - 96, center.x + Math.cos(secAngle) * secDist);
-        const cy = Math.min(mapHeight - 78, center.y + Math.sin(secAngle) * secDist);
+        const secZone = secondaryZoneQueue[index];
+        const secAngle = secZone && Number.isFinite(secZone.bearing_deg)
+          ? ((Number(secZone.bearing_deg) - 90) * Math.PI) / 180
+          : Math.PI * 0.3;
+        const secDist = bufferRadius + 124 + ((driverSeed + index * 17) % 30);
+        const cx = Math.max(96, Math.min(mapWidth - 96, center.x + Math.cos(secAngle) * secDist));
+        const cy = Math.max(78, Math.min(mapHeight - 78, center.y + Math.sin(secAngle) * secDist));
         const secBuffer = Math.max(40, Math.min(78, cluster.p90_radius_m / 16));
         return (
           <g key={cluster.cluster_id} className="geo-cluster">
@@ -2057,7 +2083,7 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
             </g>
             <circle cx={cx} cy={cy} r={secBuffer} />
             <circle cx={cx} cy={cy} r={Math.min(coreRadius - 6, secBuffer - 12)} />
-            <text x={cx} y={cy - secBuffer - 9} textAnchor="middle">{secondaryQueue[index] ?? (cluster.label_ko ? t(cluster.label_ko) : tf("반복 거점 {letter}", { letter: String.fromCharCode(66 + index) }))}</text>
+            <text x={cx} y={cy - secBuffer - 9} textAnchor="middle">{(secondaryZoneQueue[index] ? localeText(secondaryZoneQueue[index].label_ko, secondaryZoneQueue[index].label_en) : null) ?? (cluster.label_ko ? t(cluster.label_ko) : tf("반복 거점 {letter}", { letter: String.fromCharCode(66 + index) }))}</text>
           </g>
         );
       })}

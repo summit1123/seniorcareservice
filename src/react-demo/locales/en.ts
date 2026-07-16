@@ -705,6 +705,7 @@ const dict: Record<string, string> = {
   "데이터 수집 점검 방문": "Data-collection check visit",
   "주행 데이터가 부족해 판단을 보류한 경우, 단말 상태를 점검하고 수집 동의 범위를 다시 안내합니다. 데이터 부족은 불이익 사유가 아닙니다.": "When judgment was held for lack of driving data, we check the device and re-explain the consent scope. Missing data is never grounds for disadvantage.",
   "기기 문제로 혜택 평가가 누락되지 않도록 무료로 점검해 드립니다.": "A free check so a device issue never costs them a benefit assessment.",
+  "선택 월 {month} — 개인 기준선(첫 2개월, {b1}·{b2}) 대비 이동 변화 {pct}%p": "Selected month {month} — mobility change of {pct}%p vs the personal baseline (first 2 months, {b1}·{b2})",
 };
 
 export default dict;
