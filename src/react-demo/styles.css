@@ -7090,9 +7090,34 @@ h1, h2, h3 { letter-spacing: -0.014em; }
   padding: 28px;
   background: color-mix(in srgb, var(--ink) 42%, transparent);
   backdrop-filter: blur(3px);
+  overflow: hidden;
+}
+
+/* 모달 뒤에서 천천히 흐르는 오로라 — AI가 일하고 있다는 배경의 숨결 */
+.care-overlay::before {
+  content: "";
+  position: absolute;
+  inset: -18%;
+  pointer-events: none;
+  background:
+    radial-gradient(42% 34% at 28% 30%, color-mix(in srgb, var(--primary) 24%, transparent), transparent 72%),
+    radial-gradient(36% 30% at 72% 68%, color-mix(in srgb, var(--care) 16%, transparent), transparent 72%);
+  filter: blur(44px);
+  animation: careAuroraDrift 9s ease-in-out infinite alternate;
+}
+
+@keyframes careAuroraDrift {
+  from { transform: translate3d(-2%, -1.5%, 0) scale(1); }
+  to { transform: translate3d(2.5%, 2%, 0) scale(1.07); }
+}
+
+@keyframes careModalIn {
+  from { opacity: 0; transform: perspective(1400px) rotateX(5deg) translateY(28px) scale(0.975); }
+  to { opacity: 1; transform: perspective(1400px) rotateX(0deg) translateY(0) scale(1); }
 }
 
 .care-modal {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: min(1120px, 100%);
@@ -7102,6 +7127,7 @@ h1, h2, h3 { letter-spacing: -0.014em; }
   background: var(--bg);
   box-shadow: var(--hover-shadow);
   overflow: hidden;
+  animation: careModalIn 0.55s cubic-bezier(0.22, 0.9, 0.3, 1) both;
 }
 
 .care-modal-head {
@@ -7252,10 +7278,35 @@ h1, h2, h3 { letter-spacing: -0.014em; }
   padding: 40px 18px 18px;
   border-radius: 30px;
   background: var(--bg);
+  /* 인앱 뷰어 감각: 스크롤바 없이 마우스 드래그로 내린다 */
+  scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
 }
+.phone-screen::-webkit-scrollbar { display: none; }
+.phone-screen:active { cursor: grabbing; }
+
+.phone-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: -8px 0 12px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--app-sub, var(--muted));
+}
+.phone-statusbar-icons { display: inline-flex; gap: 3px; align-items: flex-end; }
+.phone-statusbar-icons i { width: 3px; border-radius: 1px; background: currentColor; }
+.phone-statusbar-icons i:nth-child(1) { height: 5px; }
+.phone-statusbar-icons i:nth-child(2) { height: 8px; }
+.phone-statusbar-icons i:nth-child(3) { height: 11px; }
 
 @media (max-width: 1100px) {
   .care-grid { grid-template-columns: 1fr; }
+  .care-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .care-stage-track.stage-customer .care-customer { grid-template-columns: 1fr; justify-items: center; }
 }
 
@@ -7297,17 +7348,45 @@ h1, h2, h3 { letter-spacing: -0.014em; }
 .fam-head em { color: var(--app-sub); font-size: 11.5px; font-weight: 800; font-style: normal; }
 
 .fam-status {
+  position: relative;
+  overflow: hidden;
   padding: 18px 16px;
   border-radius: 22px;
   background: var(--app-ok-soft);
 }
+.fam-status::after {
+  content: "";
+  position: absolute;
+  top: -34px;
+  right: -30px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.65), transparent 70%);
+  pointer-events: none;
+}
 .fam-status.watch { background: var(--app-warn-soft); }
 .fam-status.hold { background: var(--app-hold-soft); }
-.fam-status > span { display: block; color: var(--app-sub); font-size: 12px; font-weight: 800; }
-.fam-status > strong { display: block; margin-top: 4px; font-size: 21px; font-weight: 950; line-height: 1.3; color: var(--app-ok); }
-.fam-status.watch > strong { color: var(--app-warn); }
-.fam-status.hold > strong { color: var(--app-hold); }
-.fam-status > p { margin-top: 8px; color: var(--app-ink); font-size: 13px; line-height: 1.65; }
+.fam-status-top { display: flex; align-items: center; gap: 11px; }
+.fam-avatar {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--app-card);
+  color: var(--app-accent);
+  font-size: 17px;
+  font-weight: 950;
+  box-shadow: 0 3px 10px rgba(25, 23, 20, 0.08);
+}
+.fam-status span { display: block; color: var(--app-sub); font-size: 12px; font-weight: 800; }
+.fam-status strong { display: block; margin-top: 2px; font-size: 19px; font-weight: 950; line-height: 1.3; color: var(--app-ok); }
+.fam-status.watch strong { color: var(--app-warn); }
+.fam-status.hold strong { color: var(--app-hold); }
+.fam-status > p { margin-top: 10px; color: var(--app-ink); font-size: 13px; line-height: 1.65; }
 
 .fam-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
 .fam-stats div {
@@ -7349,6 +7428,44 @@ h1, h2, h3 { letter-spacing: -0.014em; }
 .fam-closing { margin-top: 16px; color: var(--app-sub); font-size: 11.5px; line-height: 1.6; }
 .fam-disclaimer { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--app-line); color: #a39d94; font-size: 9.5px; line-height: 1.5; }
 
+/* 하단 탭바 — 진짜 앱 감각. 스크롤해도 바닥에 붙어 따라온다. */
+.fam-nav {
+  position: sticky;
+  bottom: -18px;
+  display: flex;
+  justify-content: space-around;
+  margin: 18px -18px -18px;
+  padding: 9px 10px 13px;
+  border-top: 1px solid var(--app-line);
+  background: color-mix(in srgb, var(--app-card) 86%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.fam-nav button {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  padding: 4px 10px;
+  border: 0;
+  background: none;
+  color: var(--app-sub);
+  font-size: 9.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.fam-nav button.active { color: var(--app-accent); }
+
+/* 가족 앱 콘텐츠도 위→아래 순서로 떠오른다 */
+.phone-screen.family-app > * { animation: careRise 0.45s cubic-bezier(0.22, 0.9, 0.3, 1) both; }
+.phone-screen.family-app > *:nth-child(1) { animation-delay: 0.05s; }
+.phone-screen.family-app > *:nth-child(2) { animation-delay: 0.12s; }
+.phone-screen.family-app > *:nth-child(3) { animation-delay: 0.2s; }
+.phone-screen.family-app > *:nth-child(4) { animation-delay: 0.28s; }
+.phone-screen.family-app > *:nth-child(5) { animation-delay: 0.36s; }
+.phone-screen.family-app > *:nth-child(6) { animation-delay: 0.44s; }
+.phone-screen.family-app > *:nth-child(7) { animation-delay: 0.52s; }
+.phone-screen.family-app > *:nth-child(8) { animation-delay: 0.6s; }
+
 .care-consent-note { margin-top: 8px !important; color: var(--faint) !important; font-size: 11.5px !important; }
 
 /* ============================================================
@@ -7380,27 +7497,156 @@ h1, h2, h3 { letter-spacing: -0.014em; }
   to { background-position: 320px 0; }
 }
 
-/* 카드가 순서대로 떠오르는 스트림 리빌 */
-.care-staff > * { animation: careRise 0.5s cubic-bezier(0.22, 0.9, 0.3, 1) both; }
-.care-staff > *:nth-child(1) { animation-delay: 0.04s; }
-.care-staff > *:nth-child(2) { animation-delay: 0.14s; }
-.care-staff > *:nth-child(3) { animation-delay: 0.26s; }
-.care-staff > *:nth-child(4) { animation-delay: 0.38s; }
-.care-staff > *:nth-child(5) { animation-delay: 0.5s; }
+/* 리포트 전체가 응답 확정 순간 한꺼번에 스태거로 떠오른다 (--i = 섹션 순번) */
+.care-staff > * {
+  animation: careRise 0.55s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+  animation-delay: calc(0.05s + var(--i, 0) * 0.12s);
+}
+
+/* 섹션 안 목록 아이템도 잇따라 떠오른다 (--j = 아이템 순번) */
+.care-xai li,
+.care-aftercare li,
+.care-donut-legend li {
+  animation: careRise 0.45s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+  animation-delay: calc(0.35s + var(--j, 0) * 0.09s);
+}
 
 /* 타임라인 막대가 왼쪽부터 물결처럼 자라남 */
 .care-timeline-col i b {
   transform-origin: bottom;
-  animation: careBarGrow 0.55s cubic-bezier(0.3, 1.2, 0.4, 1) both;
-  animation-delay: calc(0.25s + var(--i, 0) * 0.05s);
+  animation: careBarGrow 0.6s cubic-bezier(0.3, 1.2, 0.4, 1) both;
+  animation-delay: calc(0.35s + var(--i, 0) * 0.06s);
 }
 
 /* 도넛이 회전하며 그려짐 (기존 -90deg 회전 유지) */
-.care-donut-seg { animation: careDonutIn 0.8s cubic-bezier(0.25, 0.9, 0.3, 1) both; }
-.care-donut-seg:nth-of-type(2) { animation-delay: 0.08s; }
-.care-donut-seg:nth-of-type(3) { animation-delay: 0.16s; }
-.care-donut-seg:nth-of-type(4) { animation-delay: 0.24s; }
-.care-donut-seg:nth-of-type(5) { animation-delay: 0.32s; }
+.care-donut-seg { animation: careDonutIn 1s cubic-bezier(0.25, 0.9, 0.3, 1) both; }
+.care-donut-seg:nth-of-type(2) { animation-delay: 0.1s; }
+.care-donut-seg:nth-of-type(3) { animation-delay: 0.2s; }
+.care-donut-seg:nth-of-type(4) { animation-delay: 0.3s; }
+.care-donut-seg:nth-of-type(5) { animation-delay: 0.4s; }
+
+/* ---------- 리포트 마스트헤드 + 섹션 넘버링 ---------- */
+.care-meta {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(120deg, color-mix(in srgb, var(--primary) 4%, var(--panel)), var(--panel));
+}
+.care-meta span { display: block; color: var(--faint); font-size: 10px; font-weight: 900; letter-spacing: 0.03em; }
+.care-meta b { display: block; margin-top: 3px; color: var(--ink); font-size: 12.5px; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.care-sec { display: flex; align-items: center; gap: 8px; margin: 2px 2px 8px; }
+.care-sec i {
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: var(--primary-strong);
+  background: var(--primary-soft);
+  border-radius: 6px;
+  padding: 2px 7px;
+}
+.care-sec span { color: var(--muted); font-size: 11.5px; font-weight: 900; }
+.care-sec-block > .care-card > span { margin-bottom: 2px; }
+
+/* AI가 쓴 문장 표시 — 배지 + 등장 시 잠깐 하이라이트 후 사라짐 */
+.ai-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 7px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: linear-gradient(120deg, color-mix(in srgb, var(--primary) 16%, transparent), color-mix(in srgb, #4c63b6 16%, transparent));
+  color: var(--primary-strong);
+  font-size: 9px;
+  font-weight: 900;
+  font-style: normal;
+  vertical-align: 2px;
+  white-space: nowrap;
+}
+
+@keyframes aiHighlight {
+  0% { background-color: color-mix(in srgb, var(--primary) 15%, transparent); }
+  100% { background-color: transparent; }
+}
+.ai-text { animation: aiHighlight 2.4s ease-out 0.5s both; border-radius: 4px; }
+
+/* ---------- 0단계: AI 생성 연출 ---------- */
+.care-generating {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  padding: 54px 24px 60px;
+  text-align: center;
+}
+.care-generating > strong { font-size: 16px; color: var(--ink); }
+.care-generating > small { color: var(--faint); font-size: 11px; }
+
+@keyframes careOrbSpin { to { transform: rotate(360deg); } }
+@keyframes careOrbPulse {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+.care-gen-orb { position: relative; width: 88px; height: 88px; }
+.care-gen-orb::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 10%, var(--primary) 55%, transparent 62%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+  animation: careOrbSpin 1.15s linear infinite;
+}
+.care-gen-orb::after {
+  content: "";
+  position: absolute;
+  inset: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, color-mix(in srgb, var(--primary) 45%, #fff), var(--primary-strong));
+  box-shadow: 0 12px 34px color-mix(in srgb, var(--primary) 42%, transparent);
+  animation: careOrbPulse 1.9s ease-in-out infinite;
+}
+
+.care-gen-steps { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+.care-gen-steps li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 700;
+  opacity: 0.32;
+  transition: opacity 0.4s ease;
+}
+.care-gen-steps li::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--line-strong);
+  flex: none;
+}
+.care-gen-steps li.active { opacity: 1; color: var(--ink); }
+.care-gen-steps li.active::before { background: var(--primary); animation: careOrbPulse 1s ease-in-out infinite; }
+.care-gen-steps li.done { opacity: 0.72; }
+.care-gen-steps li.done::before { background: var(--green); }
+
+.care-gen-skeleton { display: grid; gap: 8px; width: min(460px, 88%); }
+.care-gen-skeleton i {
+  height: 11px;
+  border-radius: 6px;
+  background-image: linear-gradient(100deg, var(--panel-soft) 30%, color-mix(in srgb, var(--primary) 12%, var(--panel-soft)) 50%, var(--panel-soft) 70%);
+  background-size: 320px 100%;
+  animation: careShimmer 1.4s linear infinite;
+}
+.care-gen-skeleton i:nth-child(2) { width: 82%; animation-delay: 0.15s; }
+.care-gen-skeleton i:nth-child(3) { width: 64%; animation-delay: 0.3s; }
 
 /* 폰이 3D로 회전하며 진입 — 승인 → 고객 전달의 장면 전환 */
 .care-stage-track.stage-customer .phone-frame { animation: phoneIn 0.7s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
@@ -7427,13 +7673,24 @@ h1, h2, h3 { letter-spacing: -0.014em; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .care-overlay::before,
+  .care-modal,
   .care-staff > *,
+  .care-xai li,
+  .care-aftercare li,
+  .care-donut-legend li,
   .care-timeline-col i b,
   .care-donut-seg,
   .care-stage-track.stage-customer .phone-frame,
   .care-stage-track.stage-customer .care-customer-side,
   .care-modal.is-enriching .care-verdict strong,
-  .care-modal.is-enriching .care-verdict p {
+  .care-modal.is-enriching .care-verdict p,
+  .ai-text,
+  .care-gen-orb::before,
+  .care-gen-orb::after,
+  .care-gen-steps li.active::before,
+  .care-gen-skeleton i,
+  .phone-screen.family-app > * {
     animation: none;
   }
 }

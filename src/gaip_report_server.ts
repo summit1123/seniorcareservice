@@ -286,6 +286,15 @@ export async function generateCareNarrative(localReport: JsonRecord, repoRoot?: 
     envValue("OPENAI_CARE_MODEL", repoRoot) ||
     envValue("OPENAI_REPORT_MODEL", repoRoot) ||
     "gpt-5";
+  // 데모 응답속도 우선: 추론은 기본 최소(minimal). OPENAI_CARE_REASONING=low|medium|high로
+  // 올리거나 "off"로 파라미터 자체를 생략할 수 있다. 서사 품질은 스키마+엔진 확정값이 지탱한다.
+  const reasoningRaw = (envValue("OPENAI_CARE_REASONING", repoRoot) || "minimal").toLowerCase();
+  const reasoningCapable = /^(gpt-5|o\d)/i.test(model);
+  const supportsMinimal = /^gpt-5/i.test(model); // o-계열은 minimal 미지원 → low로 강등
+  const reasoning =
+    reasoningRaw === "off" || !reasoningCapable
+      ? undefined
+      : { effort: reasoningRaw === "minimal" && !supportsMinimal ? "low" : reasoningRaw };
   const systemPrompt = [
     "당신은 자동차보험 케어 리포트의 서사 작성 에이전트입니다.",
     "입력 JSON의 모든 숫자(점수·지수·거리·기여)는 결정론 엔진의 확정값입니다 — 재계산·수정·새 숫자 발명 금지, 인용만 하세요.",
@@ -300,6 +309,8 @@ export async function generateCareNarrative(localReport: JsonRecord, repoRoot?: 
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       model,
+      ...(reasoning ? { reasoning } : {}),
+      max_output_tokens: 4000,
       input: [
         { role: "system", content: systemPrompt },
         { role: "user", content: `deterministic_care_report=${JSON.stringify(localReport)}` }
