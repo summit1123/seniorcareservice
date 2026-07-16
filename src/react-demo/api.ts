@@ -17,7 +17,16 @@ import type {
 let studioPromise: Promise<GaipStudioBundle> | null = null;
 
 function studio(): Promise<GaipStudioBundle> {
-  studioPromise ??= gaipStudioApi.getStudio();
+  // Never cache a REJECTED promise: a single transient failure (server warming up,
+  // fixture regenerating) would otherwise brick every later call until a hard
+  // reload. Clear the cache on failure so the next call retries naturally.
+  if (!studioPromise) {
+    const attempt = gaipStudioApi.getStudio();
+    studioPromise = attempt;
+    attempt.catch(() => {
+      if (studioPromise === attempt) studioPromise = null;
+    });
+  }
   return studioPromise;
 }
 

@@ -53,10 +53,18 @@ const ENV_LABELS: Record<string, string> = {
 
 let labPromise: Promise<LabBundle> | null = null;
 function fetchLab(): Promise<LabBundle> {
-  labPromise ??= fetch("/api/gaip/lab").then(async (res) => {
-    if (!res.ok) throw new Error(`lab bundle ${res.status}`);
-    return (await res.json()) as LabBundle;
-  });
+  // Same rationale as api.ts studio(): don't cache a rejected promise — allow the
+  // tab-switch remount to retry after a transient failure.
+  if (!labPromise) {
+    const attempt = fetch("/api/gaip/lab").then(async (res) => {
+      if (!res.ok) throw new Error(`lab bundle ${res.status}`);
+      return (await res.json()) as LabBundle;
+    });
+    labPromise = attempt;
+    attempt.catch(() => {
+      if (labPromise === attempt) labPromise = null;
+    });
+  }
   return labPromise;
 }
 
