@@ -102,6 +102,7 @@ export async function enrichCareReport(local: import("./care-report").CareReport
     if (!response.ok) return null;
     const narrative = (await response.json()) as {
       headline_ko?: string; summary_ko?: string;
+      analyst_report_ko?: string;
       xai_notes?: Array<{ label_ko: string; note_ko: string }>;
       aftercare_reasons?: Array<{ id: string; reason_ko: string }>;
       staff_rationale_ko?: string;
@@ -118,6 +119,7 @@ export async function enrichCareReport(local: import("./care-report").CareReport
         headline_ko: narrative.headline_ko || local.verdict.headline_ko,
         summary_ko: narrative.summary_ko || local.verdict.summary_ko
       },
+      analyst_report_ko: narrative.analyst_report_ko || local.analyst_report_ko,
       xai_reasons: local.xai_reasons.map((r) => ({ ...r, note_ko: xaiByLabel.get(r.label_ko) || r.note_ko })),
       aftercare: local.aftercare.map((a) => ({ ...a, reason_ko: reasonById.get(a.id) || a.reason_ko })),
       staff_review: { ...local.staff_review, rationale_ko: narrative.staff_rationale_ko || local.staff_review.rationale_ko },

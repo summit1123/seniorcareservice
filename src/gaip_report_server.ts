@@ -240,6 +240,10 @@ const CARE_NARRATIVE_SCHEMA = {
   properties: {
     headline_ko: { type: "string", description: "직원용 한 줄 결론 (한국어, 40자 이내)" },
     summary_ko: { type: "string", description: "직원용 2-3문장 요약 — 입력 수치를 그대로 인용" },
+    analyst_report_ko: {
+      type: "string",
+      description: "종합 소견 — 심사역이 쓰는 서술형 리포트 4~6문단(문단 사이 빈 줄 \\n\\n). 흐름: ①관찰 개요(주행·커버리지·고정 기준선) ②이동 맥락과 생활권 안/밖 안전 해석 ③우대 축 판단(통합점수·임계·위치 비감점 원칙) ④케어 축 판단(동시변화 게이트·자동조치 배제) ⑤예방 지원과 다음 달 관찰 포인트. 헤더·불릿 없이 문장으로, 입력 수치를 그대로 인용."
+    },
     xai_notes: {
       type: "array",
       items: {
@@ -264,7 +268,7 @@ const CARE_NARRATIVE_SCHEMA = {
     family_closing_ko: { type: "string" }
   },
   required: [
-    "headline_ko", "summary_ko", "xai_notes", "aftercare_reasons",
+    "headline_ko", "summary_ko", "analyst_report_ko", "xai_notes", "aftercare_reasons",
     "staff_rationale_ko", "family_title_ko", "family_body_ko", "family_closing_ko"
   ]
 } as const;
@@ -300,6 +304,7 @@ export async function generateCareNarrative(localReport: JsonRecord, repoRoot?: 
     "입력 JSON의 모든 숫자(점수·지수·거리·기여)는 결정론 엔진의 확정값입니다 — 재계산·수정·새 숫자 발명 금지, 인용만 하세요.",
     "aftercare 항목은 입력에 있는 id만 사용하세요. 새 지원 항목을 만들지 마세요.",
     "직원용(headline/summary/xai/staff)은 심사 전문가 톤으로 간결하게, 판단 근거가 10초 안에 읽히게.",
+    "analyst_report_ko는 원본 심사 리포트처럼 깊이 있게 — 4~6문단 서술형으로 관찰 개요→이동 맥락→우대 축→케어 축→예방 지원·다음 달 관찰 포인트를 잇고, 각 문단은 빈 줄(\\n\\n)로 구분하세요.",
     "가족용(family_*)은 부모님의 운전을 걱정하는 자녀에게 보내는 소식입니다 — 따뜻한 존댓말로, 벌점·감액·경고·위험이라는 단어 없이 상황 설명과 지원 안내 중심으로.",
     "모든 데이터는 합성 시뮬레이션이며 실존 인물이 아닙니다.",
     `모든 서사 필드는 반드시 ${CARE_LANGUAGE_NAMES[String(localReport.target_language ?? "ko")] ?? "한국어"}(으)로 작성하세요 — 대시보드의 언어 선택을 그대로 따릅니다. 필드 키 이름(_ko 접미사 포함)은 스키마 고정이므로 바꾸지 마세요.`
@@ -310,7 +315,7 @@ export async function generateCareNarrative(localReport: JsonRecord, repoRoot?: 
     body: JSON.stringify({
       model,
       ...(reasoning ? { reasoning } : {}),
-      max_output_tokens: 4000,
+      max_output_tokens: 6000,
       input: [
         { role: "system", content: systemPrompt },
         { role: "user", content: `deterministic_care_report=${JSON.stringify(localReport)}` }

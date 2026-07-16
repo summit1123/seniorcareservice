@@ -57,11 +57,12 @@ function visibleTimeline(report: CareReport) {
   return selIdx >= 0 ? report.pattern_timeline.slice(0, selIdx + 1) : report.pattern_timeline;
 }
 
-function SectionMark({ n, label }: { n: string; label: string }) {
+function SectionMark({ n, label, ai }: { n: string; label: string; ai?: boolean }) {
   return (
     <div className="care-sec">
       <i>{n}</i>
       <span>{label}</span>
+      {ai ? <em className="ai-chip"><Sparkles size={10} /> {t("AI 생성")}</em> : null}
     </div>
   );
 }
@@ -292,7 +293,16 @@ export function CareReportModal({
                 </div>
 
                 <div className="care-sec-block" style={{ "--i": 2 } as React.CSSProperties}>
-                  <SectionMark n="02" label={t("근거 차트")} />
+                  <SectionMark n="02" label={t("종합 소견")} ai={aiNarrative} />
+                  <div className="care-card care-analyst">
+                    {report.analyst_report_ko.split(/\n{2,}/).map((paragraph, idx) => (
+                      <p key={idx} className={aiNarrative ? "ai-text" : ""}>{paragraph}</p>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="care-sec-block" style={{ "--i": 3 } as React.CSSProperties}>
+                  <SectionMark n="03" label={t("근거 차트")} />
                   <div className="care-grid">
                     <div className="care-card">
                       <span>{tf("이동 변화 타임라인 — 기준선 {b}개월 + 관찰 {n}개월", { b: baselineCount, n: Math.max(0, timeline.length - baselineCount) })}</span>
@@ -314,8 +324,8 @@ export function CareReportModal({
                   </div>
                 </div>
 
-                <div className="care-sec-block" style={{ "--i": 3 } as React.CSSProperties}>
-                  <SectionMark n="03" label={t("판단 사유 (XAI)")} />
+                <div className="care-sec-block" style={{ "--i": 4 } as React.CSSProperties}>
+                  <SectionMark n="04" label={t("판단 사유 (XAI)")} ai={aiNarrative} />
                   <div className="care-card">
                     <ul className="care-xai">
                       {report.xai_reasons.map((r, idx) => (
@@ -328,8 +338,8 @@ export function CareReportModal({
                   </div>
                 </div>
 
-                <div className="care-sec-block" style={{ "--i": 4 } as React.CSSProperties}>
-                  <SectionMark n="04" label={t("사후지원 제안")} />
+                <div className="care-sec-block" style={{ "--i": 5 } as React.CSSProperties}>
+                  <SectionMark n="05" label={t("사후지원 제안")} ai={aiNarrative} />
                   <div className="care-card">
                     <span>{t("발송 전 담당자가 확정합니다 — 체크 해제 시 발송되지 않습니다")}</span>
                     <ul className="care-aftercare">
@@ -354,8 +364,8 @@ export function CareReportModal({
                   </div>
                 </div>
 
-                <div className="care-sec-block" style={{ "--i": 5 } as React.CSSProperties}>
-                  <SectionMark n="05" label={t("검수·승인")} />
+                <div className="care-sec-block" style={{ "--i": 6 } as React.CSSProperties}>
+                  <SectionMark n="06" label={t("검수·승인")} />
                   <footer className="care-staff-actions">
                     <div className="care-staff-reco">
                       <span>{t("검수 권고")}</span>

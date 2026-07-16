@@ -729,6 +729,16 @@ const dict: Record<string, string> = {
   "홈": "Trang chủ",
   "혜택": "Ưu đãi",
   "설정": "Cài đặt",
+  "종합 소견": "Nhận định tổng hợp",
+  "{month} 한 달 동안 {km}km를 주행했고 데이터 커버리지는 {cov}%였습니다. 평가는 첫 2개월({b1}·{b2})을 개인 기준선으로 고정하고, 그 이후의 변화만 봅니다.": "Trong {month}, đã lái {km}km với độ phủ dữ liệu {cov}%. Đánh giá cố định hai tháng đầu ({b1}·{b2}) làm đường cơ sở cá nhân và chỉ xét các thay đổi sau đó.",
+  "이동 맥락에서는 생활권 밖 비중이 기준선 대비 {mob}%p 상승해 케어 임계({th}%p)를 초과했습니다. 생활권 안 안전점수 {inScore}점, 생활권 밖 {outScore}점 — 낯선 경로에서의 행동 변화가 주된 신호입니다.": "Về bối cảnh di chuyển, tỷ trọng ngoài vùng sống tăng {mob}%p so với cơ sở, vượt ngưỡng Chăm sóc ({th}%p). An toàn trong vùng {inScore} điểm, ngoài vùng {outScore} điểm — tín hiệu chính là thay đổi hành vi trên tuyến đường lạ.",
+  "이동 맥락에서는 생활권 밖 비중 변화가 {mob}%p로 임계({th}%p) 이내였습니다. 생활권 안 {inScore}점·밖 {outScore}점으로 행동 신호는 안정적입니다.": "Về bối cảnh di chuyển, tỷ trọng ngoài vùng thay đổi {mob}%p, trong ngưỡng ({th}%p). Trong vùng {inScore} điểm, ngoài vùng {outScore} điểm — tín hiệu hành vi ổn định.",
+  "우대 축 통합점수는 {score}점(임계 {th}점)입니다. 위치 자체로 감점하지 않으며, 주행거리·생활권 안/밖 안전·패턴 안정성 네 지표의 가중 합만 반영됩니다.": "Điểm tích hợp trục Ưu đãi là {score} (ngưỡng {th}). Vị trí tự nó không bị trừ điểm; chỉ tính tổng có trọng số của quãng đường, an toàn trong/ngoài vùng và độ ổn định mẫu hình.",
+  "우대 축 통합점수는 이번 달 산출되지 않았습니다(데이터 요건 미충족은 불이익 사유가 아닙니다).": "Tháng này chưa tính điểm tích hợp trục Ưu đãi (không đạt yêu cầu dữ liệu không bao giờ là lý do gây bất lợi).",
+  "케어 축에서는 위험행동 변화 {risk}%p가 이동 변화와 같은 달에 나타나 동시변화 게이트를 충족했습니다. 이 신호는 자동 감액이나 제재로 이어지지 않으며, 사람 검토와 예방 지원 연결만 발동합니다.": "Trên trục Chăm sóc, thay đổi hành vi rủi ro {risk}%p xuất hiện cùng tháng với thay đổi di chuyển, thỏa cổng đồng biến. Tín hiệu này không dẫn tới giảm tự động hay chế tài — chỉ kích hoạt rà soát bởi con người và kết nối hỗ trợ phòng ngừa.",
+  "케어 축에서는 위험행동 변화가 {risk}%p로 게이트 기준({th}%p) 미만 — 예방 개입이 필요한 신호는 없습니다.": "Trên trục Chăm sóc, thay đổi hành vi rủi ro là {risk}%p, dưới ngưỡng cổng ({th}%p) — không có tín hiệu cần can thiệp phòng ngừa.",
+  "다음 달에도 같은 기준선 대비 이동·행동 변화를 계속 관찰합니다. 이번 리포트에는 예방 지원 {n}건이 제안되었고, 담당자 확정 후 가족 앱으로 전달됩니다.": "Tháng tới vẫn tiếp tục quan sát thay đổi di chuyển·hành vi so với cùng đường cơ sở. Báo cáo này đề xuất {n} hỗ trợ phòng ngừa, gửi tới ứng dụng gia đình sau khi nhân viên xác nhận.",
+  "다음 달에도 같은 기준선 대비 이동·행동 변화를 계속 관찰합니다. 이번 달 발동된 지원 신호는 없어 리포트만 발송됩니다.": "Tháng tới vẫn tiếp tục quan sát thay đổi di chuyển·hành vi so với cùng đường cơ sở. Tháng này không có tín hiệu hỗ trợ nào được kích hoạt nên chỉ gửi báo cáo.",
 };
 
 export default dict;

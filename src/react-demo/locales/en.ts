@@ -729,6 +729,16 @@ const dict: Record<string, string> = {
   "홈": "Home",
   "혜택": "Benefits",
   "설정": "Settings",
+  "종합 소견": "Analyst assessment",
+  "{month} 한 달 동안 {km}km를 주행했고 데이터 커버리지는 {cov}%였습니다. 평가는 첫 2개월({b1}·{b2})을 개인 기준선으로 고정하고, 그 이후의 변화만 봅니다.": "In {month}, the driver covered {km}km with {cov}% data coverage. The assessment fixes the first two months ({b1}·{b2}) as the personal baseline and evaluates only changes since.",
+  "이동 맥락에서는 생활권 밖 비중이 기준선 대비 {mob}%p 상승해 케어 임계({th}%p)를 초과했습니다. 생활권 안 안전점수 {inScore}점, 생활권 밖 {outScore}점 — 낯선 경로에서의 행동 변화가 주된 신호입니다.": "On mobility context, the out-of-zone share rose {mob}%p above baseline, exceeding the Care threshold ({th}%p). In-zone safety is {inScore} and out-of-zone {outScore} — behaviour change on unfamiliar routes is the main signal.",
+  "이동 맥락에서는 생활권 밖 비중 변화가 {mob}%p로 임계({th}%p) 이내였습니다. 생활권 안 {inScore}점·밖 {outScore}점으로 행동 신호는 안정적입니다.": "On mobility context, the out-of-zone share changed {mob}%p, within the threshold ({th}%p). With in-zone {inScore} and out-of-zone {outScore}, behavioural signals are stable.",
+  "우대 축 통합점수는 {score}점(임계 {th}점)입니다. 위치 자체로 감점하지 않으며, 주행거리·생활권 안/밖 안전·패턴 안정성 네 지표의 가중 합만 반영됩니다.": "The Favorable-axis integrated score is {score} (threshold {th}). Location itself is never penalised; only the weighted sum of mileage, in/out-of-zone safety, and pattern stability counts.",
+  "우대 축 통합점수는 이번 달 산출되지 않았습니다(데이터 요건 미충족은 불이익 사유가 아닙니다).": "The Favorable-axis integrated score was not computed this month (unmet data requirements are never grounds for disadvantage).",
+  "케어 축에서는 위험행동 변화 {risk}%p가 이동 변화와 같은 달에 나타나 동시변화 게이트를 충족했습니다. 이 신호는 자동 감액이나 제재로 이어지지 않으며, 사람 검토와 예방 지원 연결만 발동합니다.": "On the Care axis, a {risk}%p risky-behaviour change appeared in the same month as the mobility change, satisfying the co-change gate. This never triggers automatic reductions or sanctions — only human review and preventive-support linkage.",
+  "케어 축에서는 위험행동 변화가 {risk}%p로 게이트 기준({th}%p) 미만 — 예방 개입이 필요한 신호는 없습니다.": "On the Care axis, risky-behaviour change is {risk}%p, below the gate threshold ({th}%p) — no signal requiring preventive intervention.",
+  "다음 달에도 같은 기준선 대비 이동·행동 변화를 계속 관찰합니다. 이번 리포트에는 예방 지원 {n}건이 제안되었고, 담당자 확정 후 가족 앱으로 전달됩니다.": "Next month, mobility and behaviour changes continue to be observed against the same baseline. This report proposes {n} preventive supports, delivered to the family app after staff confirmation.",
+  "다음 달에도 같은 기준선 대비 이동·행동 변화를 계속 관찰합니다. 이번 달 발동된 지원 신호는 없어 리포트만 발송됩니다.": "Next month, mobility and behaviour changes continue to be observed against the same baseline. No support signals fired this month, so only the report is sent.",
 };
 
 export default dict;
