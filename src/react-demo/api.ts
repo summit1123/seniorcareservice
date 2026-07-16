@@ -85,3 +85,48 @@ export const demoApi = {
     return report;
   }
 };
+
+/**
+ * 케어 리포트 서사 보강 — 서버(LLM)는 서사 필드만 생성하고, 숫자는 로컬 리포트의
+ * 값을 그대로 유지한다(병합 시 서사 키만 덮어씀 → 수치 무결성이 구조적으로 보장).
+ * 서버가 없거나 실패하면 null을 반환해 호출자가 로컬 서사를 그대로 쓴다.
+ */
+export async function enrichCareReport(local: import("./care-report").CareReport): Promise<import("./care-report").CareReport | null> {
+  try {
+    const response = await fetch("/api/gaip/report/care", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(local)
+    });
+    if (!response.ok) return null;
+    const narrative = (await response.json()) as {
+      headline_ko?: string; summary_ko?: string;
+      xai_notes?: Array<{ label_ko: string; note_ko: string }>;
+      aftercare_reasons?: Array<{ id: string; reason_ko: string }>;
+      staff_rationale_ko?: string;
+      customer_title_ko?: string; customer_body_ko?: string; customer_closing_ko?: string;
+    };
+    if (!narrative || typeof narrative !== "object") return null;
+    const xaiByLabel = new Map((narrative.xai_notes ?? []).map((n) => [n.label_ko, n.note_ko]));
+    const reasonById = new Map((narrative.aftercare_reasons ?? []).map((n) => [n.id, n.reason_ko]));
+    return {
+      ...local,
+      generated_by: "openai_structured",
+      verdict: {
+        ...local.verdict,
+        headline_ko: narrative.headline_ko || local.verdict.headline_ko,
+        summary_ko: narrative.summary_ko || local.verdict.summary_ko
+      },
+      xai_reasons: local.xai_reasons.map((r) => ({ ...r, note_ko: xaiByLabel.get(r.label_ko) || r.note_ko })),
+      aftercare: local.aftercare.map((a) => ({ ...a, reason_ko: reasonById.get(a.id) || a.reason_ko })),
+      staff_review: { ...local.staff_review, rationale_ko: narrative.staff_rationale_ko || local.staff_review.rationale_ko },
+      customer_message: {
+        title_ko: narrative.customer_title_ko || local.customer_message.title_ko,
+        body_ko: narrative.customer_body_ko || local.customer_message.body_ko,
+        closing_ko: narrative.customer_closing_ko || local.customer_message.closing_ko
+      }
+    };
+  } catch {
+    return null;
+  }
+}

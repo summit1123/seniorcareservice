@@ -227,3 +227,104 @@ export async function streamGaipReport(
   await pipeOpenAIEventStream(openAIResponse, res);
   res.end();
 }
+
+/**
+ * 케어 리포트 서사 생성 — Structured Outputs(json_schema)로 서사 필드만 받는다.
+ * 입력은 클라이언트가 만든 결정론 리포트(숫자 확정값). 모델은 숫자를 재계산하지
+ * 않고, 헤드라인/요약/XAI 해설/사후지원 사유/직원 권고/고객 메시지를 작성한다.
+ * 기본 모델은 추론 상위 계열(OPENAI_CARE_MODEL → OPENAI_REPORT_MODEL → gpt-5).
+ */
+const CARE_NARRATIVE_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    headline_ko: { type: "string", description: "직원용 한 줄 결론 (한국어, 40자 이내)" },
+    summary_ko: { type: "string", description: "직원용 2-3문장 요약 — 입력 수치를 그대로 인용" },
+    xai_notes: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        properties: { label_ko: { type: "string" }, note_ko: { type: "string" } },
+        required: ["label_ko", "note_ko"]
+      }
+    },
+    aftercare_reasons: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        properties: { id: { type: "string" }, reason_ko: { type: "string" } },
+        required: ["id", "reason_ko"]
+      }
+    },
+    staff_rationale_ko: { type: "string" },
+    customer_title_ko: { type: "string", description: "고객 앱 제목 — 따뜻하고 비징벌적" },
+    customer_body_ko: { type: "string", description: "고객 본문 3-4문장 — 벌점/감액/경고 금지, 지원 중심" },
+    customer_closing_ko: { type: "string" }
+  },
+  required: [
+    "headline_ko", "summary_ko", "xai_notes", "aftercare_reasons",
+    "staff_rationale_ko", "customer_title_ko", "customer_body_ko", "customer_closing_ko"
+  ]
+} as const;
+
+export async function generateCareNarrative(localReport: JsonRecord, repoRoot?: string): Promise<JsonRecord> {
+  const apiKey = envValue("OPENAI_API_KEY", repoRoot);
+  if (!apiKey) {
+    throw Object.assign(new Error("OPENAI_API_KEY 없음 — 로컬 서사로 대체"), { statusCode: 503 });
+  }
+  const model =
+    envValue("OPENAI_CARE_MODEL", repoRoot) ||
+    envValue("OPENAI_REPORT_MODEL", repoRoot) ||
+    "gpt-5";
+  const systemPrompt = [
+    "당신은 자동차보험 케어 리포트의 서사 작성 에이전트입니다.",
+    "입력 JSON의 모든 숫자(점수·지수·거리·기여)는 결정론 엔진의 확정값입니다 — 재계산·수정·새 숫자 발명 금지, 인용만 하세요.",
+    "aftercare 항목은 입력에 있는 id만 사용하세요. 새 지원 항목을 만들지 마세요.",
+    "직원용(headline/summary/xai/staff)은 심사 전문가 톤으로 간결하게, 판단 근거가 10초 안에 읽히게.",
+    "고객용(customer_*)은 따뜻한 존댓말로 — 벌점·감액·경고·위험이라는 단어를 쓰지 말고, 감사와 지원 중심으로.",
+    "모든 데이터는 합성 시뮬레이션이며 실존 인물이 아닙니다.",
+    "모든 필드는 한국어로 작성하세요."
+  ].join("\n");
+  const response = await fetch(envValue("OPENAI_RESPONSES_URL", repoRoot) || OPENAI_RESPONSES_URL, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model,
+      input: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: `deterministic_care_report=${JSON.stringify(localReport)}` }
+      ],
+      text: {
+        format: {
+          type: "json_schema",
+          name: "care_narrative",
+          strict: true,
+          schema: CARE_NARRATIVE_SCHEMA
+        }
+      },
+      metadata: { feature: "masil_care_report_v1" }
+    })
+  });
+  if (!response.ok) {
+    const detail = await response.text().catch(() => "");
+    throw Object.assign(new Error(`OpenAI ${response.status}: ${detail.slice(0, 200)}`), { statusCode: 502 });
+  }
+  const payload = (await response.json()) as JsonRecord;
+  // Responses API: output[].content[].text (output_text) 또는 output_text 헬퍼 필드
+  const direct = typeof payload.output_text === "string" ? payload.output_text : "";
+  let text = direct;
+  if (!text) {
+    for (const item of toArray(payload.output)) {
+      for (const part of toArray(toRecord(item).content)) {
+        const rec = toRecord(part);
+        if (typeof rec.text === "string") text += rec.text;
+      }
+    }
+  }
+  if (!text.trim()) {
+    throw Object.assign(new Error("empty structured output"), { statusCode: 502 });
+  }
+  return JSON.parse(text) as JsonRecord;
+}

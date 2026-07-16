@@ -1,0 +1,70 @@
+{
+  "schema_version": "masil-aftercare-catalog/v1",
+  "data_status": "synthetic_catalog_for_demo",
+  "note_ko": "사후지원 항목과 발동 신호는 선언된 규칙입니다. AI는 이 카탈로그에서 선택·사유 작성만 하며, 항목을 임의로 만들지 않습니다. 실제 제휴·비용은 시뮬레이션 가정입니다.",
+  "items": [
+    {
+      "id": "preventive_care_call",
+      "title_ko": "예방 케어 상담 (전화)",
+      "description_ko": "케어 담당자가 최근 이동·운전 변화의 배경을 여쭙고, 필요한 지원을 함께 찾는 15분 통화입니다. 보험료와 무관한 비징벌 상담입니다.",
+      "trigger_signals": ["care_gate"],
+      "partner_type": "internal_care_team",
+      "urgency": "high",
+      "customer_benefit_ko": "새 경로를 다니시게 된 이유를 듣고, 안전하게 계속 운전하시도록 돕습니다."
+    },
+    {
+      "id": "senior_driving_checkup",
+      "title_ko": "시니어 운전적합 건강검진 연계",
+      "description_ko": "시야·야간시력·반응속도 중심의 운전적합 검진을 제휴 검진기관에서 본인부담 없이 받도록 연계합니다. 결과는 고객 본인에게만 제공됩니다.",
+      "trigger_signals": ["risky_change_high", "care_gate"],
+      "partner_type": "health_partner",
+      "urgency": "high",
+      "customer_benefit_ko": "최근 급제동이 늘어난 원인이 시력·반응 변화인지 무료로 확인해 보실 수 있습니다."
+    },
+    {
+      "id": "refresher_course",
+      "title_ko": "안전운전 리프레셔 교육 쿠폰",
+      "description_ko": "익숙한 동네 운전에서 반복되는 급가감속 습관을 교정하는 2시간 실차 교육 쿠폰입니다. 이수 시 다음 평가에 참고 기록이 남습니다.",
+      "trigger_signals": ["in_zone_risky"],
+      "partner_type": "driving_school_partner",
+      "urgency": "medium",
+      "customer_benefit_ko": "동네 익숙한 길에서의 운전 습관을 전문 강사와 함께 점검합니다."
+    },
+    {
+      "id": "night_mobility_credit",
+      "title_ko": "야간 대안 모빌리티 크레딧",
+      "description_ko": "야간 외곽 이동이 늘어난 달에는 대리운전·콜택시 크레딧을 제공해 무리한 야간 운전을 줄일 수 있게 합니다.",
+      "trigger_signals": ["night_outer"],
+      "partner_type": "mobility_partner",
+      "urgency": "medium",
+      "customer_benefit_ko": "밤 늦은 이동이 필요할 때 무료 크레딧으로 대안을 선택하실 수 있습니다."
+    },
+    {
+      "id": "family_notify_consent",
+      "title_ko": "가족 알림 동의 연계",
+      "description_ko": "고객이 동의하면 이동·위험 동시변화가 다시 관찰될 때 지정 가족에게 알림을 보냅니다. 동의 없이는 어떤 정보도 공유되지 않습니다.",
+      "trigger_signals": ["care_gate"],
+      "partner_type": "internal_care_team",
+      "urgency": "medium",
+      "customer_benefit_ko": "부모님의 운전을 걱정하는 가족이 믿고 맡길 수 있는 안전망이 됩니다."
+    },
+    {
+      "id": "vehicle_inspection_coupon",
+      "title_ko": "차량 무상 점검 쿠폰",
+      "description_ko": "급제동 증가가 차량 상태(브레이크·타이어)에서 비롯됐는지 제휴 정비소에서 무상 점검을 받도록 연계합니다.",
+      "trigger_signals": ["risky_change_high", "in_zone_risky"],
+      "partner_type": "repair_partner",
+      "urgency": "low",
+      "customer_benefit_ko": "운전 습관이 아니라 차량 문제일 수도 있으니, 먼저 차부터 점검해 드립니다."
+    },
+    {
+      "id": "data_coverage_visit",
+      "title_ko": "데이터 수집 점검 방문",
+      "description_ko": "주행 데이터가 부족해 판단을 보류한 경우, 단말 상태를 점검하고 수집 동의 범위를 다시 안내합니다. 데이터 부족은 불이익 사유가 아닙니다.",
+      "trigger_signals": ["coverage_low"],
+      "partner_type": "internal_care_team",
+      "urgency": "low",
+      "customer_benefit_ko": "기기 문제로 혜택 평가가 누락되지 않도록 무료로 점검해 드립니다."
+    }
+  ]
+}

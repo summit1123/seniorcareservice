@@ -14,7 +14,7 @@ import {
   isViteFileSystemRequest,
   sanitizeGaipBundleForUi
 } from "./src/gaip_server_policy";
-import { streamGaipReport } from "./src/gaip_report_server";
+import { streamGaipReport, generateCareNarrative } from "./src/gaip_report_server";
 
 const repoRoot = dirname(fileURLToPath(import.meta.url));
 const gaipStudioPath = resolve(repoRoot, "data", "fixtures", "gaip_simulation_bundle.json");
@@ -79,6 +79,29 @@ function configureGaipServer(server: ViteDevServer | PreviewServer): void {
 
     if (!requestUrl.pathname.toLowerCase().startsWith("/api/")) {
       next();
+      return;
+    }
+
+    if (requestUrl.pathname === "/api/gaip/report/care" && req.method === "POST") {
+      try {
+        const chunks: Buffer[] = [];
+        for await (const chunk of req) chunks.push(chunk as Buffer);
+        const body = JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}") as Record<string, unknown>;
+        if (body?.schema_version !== "masil-care-report/v1") {
+          sendJson(res, 400, { message: "masil-care-report/v1 body required." });
+          return;
+        }
+        const narrative = await generateCareNarrative(body, repoRoot);
+        sendJson(res, 200, narrative);
+      } catch (error) {
+        const statusCode =
+          typeof (error as { statusCode?: unknown })?.statusCode === "number"
+            ? (error as { statusCode: number }).statusCode
+            : 500;
+        sendJson(res, statusCode, {
+          message: error instanceof Error ? error.message : "care narrative failed."
+        });
+      }
       return;
     }
 

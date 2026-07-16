@@ -6,7 +6,6 @@ import {
   FileText,
   MapPinned,
   Moon,
-  RefreshCcw,
   Route,
   Search,
   ShieldCheck,
@@ -15,6 +14,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { demoApi } from "./api";
 import { AlgorithmLabPanel } from "./AlgorithmLab";
+import { CareReportModal } from "./CareReportModal";
 import { getLocale, LOCALE_META, LOCALE_ORDER, setLocale, t, tf, type Locale } from "./i18n";
 import { normalizeProductWeights } from "./gaip-decision";
 import type { ProductRules } from "./gaip-types";
@@ -1477,18 +1477,12 @@ function DecisionPanel({
   loading: boolean;
   rules: ProductRules | null;
 }) {
-  const [state, setState] = useState<"idle" | "streaming" | "ready" | "error">("idle");
-  const [markdown, setMarkdown] = useState("");
-  const [error, setError] = useState("");
-  const [progress, setProgress] = useState("");
+  const [careReportOpen, setCareReportOpen] = useState(false);
   const [reviewDecision, setReviewDecision] = useState<"pending" | "approved" | "held" | "requested">("pending");
   const [reviewNote, setReviewNote] = useState("");
 
   useEffect(() => {
-    setState("idle");
-    setMarkdown("");
-    setError("");
-    setProgress("");
+    setCareReportOpen(false);
     setReviewDecision("pending");
     setReviewNote("");
   }, [driver?.customer_id, selectedMonth]);
@@ -1509,31 +1503,9 @@ function DecisionPanel({
         : profile?.headline;
   const xaiReasons = topXaiReasons(driver, zoneMap, selectedMonth);
   const rateDelta = comparison.proposed_discount_rate_pct - comparison.existing_discount_rate_pct;
-  const generate = async () => {
-    setState("streaming");
-    setMarkdown("");
-    setError("");
-    setProgress(t("월별 주행 근거를 리포트 API로 전송 중"));
-    try {
-      let next = "";
-      // Send the month LABEL (e.g. "2026-07"), not the 1..14 row index — the server
-      // treats the value as a calendar month, so an index would be off by the two
-      // baseline months and rows 13-14 would be rejected outright.
-      await demoApi.streamMonthlyReport(driver.customer_id, selectedRow?.service_month ?? selectedMonth, (chunk) => {
-        next += chunk;
-        setProgress(tf("생성 중: {section}", { section: latestReportSection(next) }));
-        setMarkdown(next);
-      }, rules ?? undefined);
-      setProgress(t("리포트 생성 완료"));
-      setState("ready");
-    } catch (reportError) {
-      setState("error");
-      setError(reportError instanceof Error ? reportError.message : t("리포트 생성에 실패했습니다"));
-    }
-  };
 
   return (
-    <aside className={`decision-panel ${loading ? "is-loading" : ""} ${markdown ? "has-report" : ""}`} aria-label={t("사람 검토 패널")}>
+    <aside className={`decision-panel ${loading ? "is-loading" : ""} ${careReportOpen ? "has-report" : ""}`} aria-label={t("사람 검토 패널")}>
       <div className="decision-panel-head">
         <p className="eyebrow">{t("사람 검토")}</p>
         <h2>{t("검토 제안")}</h2>
@@ -1610,125 +1582,26 @@ function DecisionPanel({
               : t("현재 화면에서 판단 보류 표시 · 저장되지 않음 · 고객 불이익 없음")}
       </p>
 
-      <button className="report-button" type="button" onClick={generate} disabled={state === "streaming"}>
-        {state === "streaming" ? <RefreshCcw size={15} /> : <FileText size={15} />}
-        {state === "streaming" ? t("근거 초안 생성 중") : tf("{month} 근거 초안", { month: zoneMap?.snapshot.service_month ?? tf("{n}월", { n: selectedMonth }) })}
+      <button className="report-button" type="button" onClick={() => setCareReportOpen(true)} disabled={!selectedRow}>
+        <FileText size={15} />
+        {tf("{month} 케어 리포트 검수", { month: zoneMap?.snapshot.service_month ?? tf("{n}월", { n: selectedMonth }) })}
       </button>
+      <p className="report-progress">{t("직원 검수 → 승인 → 고객 앱 전달의 연속 흐름을 확장 화면으로 엽니다.")}</p>
 
-      {state === "error" ? <p className="error-copy">{error}</p> : null}
-      {progress ? <p className="report-progress">{progress}</p> : null}
-      {markdown ? (
-        <div className="report-popout" role="status" aria-live="polite">
-          <div className="report-popout-head">
-            <div>
-              <span>{t("보험사 직원용 검토 초안")}</span>
-              <strong>{personaName(driver.customer_id)} · {zoneMap?.snapshot.service_month ?? tf("{n}월", { n: selectedMonth })} {t("근거 분석")}</strong>
-            </div>
-            <button
-              className="report-close-button"
-              type="button"
-              onClick={() => {
-                setMarkdown("");
-                setProgress("");
-                setState("idle");
-              }}
-              disabled={state === "streaming"}
-            >
-              {state === "streaming" ? t("생성 중") : t("완료")}
-            </button>
-          </div>
-          <MarkdownReport markdown={markdown} className="decision-report-stream" />
-        </div>
+      {careReportOpen && driver && selectedRow && rules ? (
+        <CareReportModal
+          driver={driver}
+          rows={rows}
+          selectedRow={selectedRow}
+          rules={rules}
+          driverNameKo={personaName(driver.customer_id)}
+          onClose={() => setCareReportOpen(false)}
+        />
       ) : null}
     </aside>
   );
 }
 
-function latestReportSection(markdown: string) {
-  const knownSections = [
-    "월별 결론 요약",
-    "연간 산식 반영",
-    "생활권 판단 근거",
-    "월별 주행 패턴",
-    "XAI 주요 원인",
-    "상담 및 케어 액션",
-    "검토 한계와 확인 필요사항"
-  ];
-  const known = knownSections.filter((section) => markdown.includes(section)).at(-1);
-  if (known) return known;
-  const matches = [...markdown.matchAll(/^##\s+\d+\.\s+(.+)$/gm)];
-  const latest = matches.at(-1)?.[1]?.trim();
-  return latest && latest.length > 6 ? latest : t("리포트 초안 수신 중");
-}
-
-function MarkdownReport({ markdown, className = "" }: { markdown: string; className?: string }) {
-  const lines = markdown.split(/\r?\n/);
-  const elements: JSX.Element[] = [];
-  let index = 0;
-
-  while (index < lines.length) {
-    const line = lines[index].trim();
-    if (!line) {
-      index += 1;
-      continue;
-    }
-
-    if (line.startsWith("### ")) {
-      elements.push(<h4 key={`h4-${index}`}>{renderInlineMarkdown(line.replace(/^###\s+/, ""))}</h4>);
-      index += 1;
-      continue;
-    }
-
-    if (line.startsWith("## ")) {
-      elements.push(<h3 key={`h3-${index}`}>{renderInlineMarkdown(line.replace(/^##\s+/, ""))}</h3>);
-      index += 1;
-      continue;
-    }
-
-    if (line.startsWith("# ")) {
-      elements.push(<h2 key={`h2-${index}`}>{renderInlineMarkdown(line.replace(/^#\s+/, ""))}</h2>);
-      index += 1;
-      continue;
-    }
-
-    if (/^[-*]\s+/.test(line)) {
-      const items: string[] = [];
-      while (index < lines.length && /^[-*]\s+/.test(lines[index].trim())) {
-        items.push(lines[index].trim().replace(/^[-*]\s+/, ""));
-        index += 1;
-      }
-      elements.push(
-        <ul key={`ul-${index}`}>
-          {items.map((item, itemIndex) => (
-            <li key={`${item}-${itemIndex}`}>{renderInlineMarkdown(item)}</li>
-          ))}
-        </ul>
-      );
-      continue;
-    }
-
-    if (/^\d+\.\s+/.test(line)) {
-      const items: string[] = [];
-      while (index < lines.length && /^\d+\.\s+/.test(lines[index].trim())) {
-        items.push(lines[index].trim().replace(/^\d+\.\s+/, ""));
-        index += 1;
-      }
-      elements.push(
-        <ol key={`ol-${index}`}>
-          {items.map((item, itemIndex) => (
-            <li key={`${item}-${itemIndex}`}>{renderInlineMarkdown(item)}</li>
-          ))}
-        </ol>
-      );
-      continue;
-    }
-
-    elements.push(<p key={`p-${index}`}>{renderInlineMarkdown(line)}</p>);
-    index += 1;
-  }
-
-  return <div className={`markdown-rendered ${className}`.trim()}>{elements}</div>;
-}
 
 function renderInlineMarkdown(text: string) {
   const normalized = translateText(text);
