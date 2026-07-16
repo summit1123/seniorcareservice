@@ -1359,7 +1359,9 @@ function MonthlyPatternChart({ rows, selectedMonth, onSelectMonth }: { rows: Mon
             className={`month-bar ${meta.className} ${row.month === selectedMonth ? "selected" : ""}`}
             onClick={() => onSelectMonth(row.month)}
           >
-            <span>{tf("{n}월", { n: row.month })}</span>
+            {/* Real service month (e.g. 25-11 / 26-01), not the 1..14 array index —
+                "13월/14월" does not exist as a calendar month. */}
+            <span>{row.service_month}</span>
             <i><b style={{ height: `${Math.max(12, Math.min(92, row.out_zone_pattern_change_risk))}%` }} /></i>
             <b>{numberFormatter.format(row.out_zone_pattern_change_risk)}</b>
           </button>
