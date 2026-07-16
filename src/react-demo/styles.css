@@ -1058,11 +1058,11 @@ p {
   gap: 8px;
   height: 38px;
   padding: 0 12px;
-  border: 1px solid transparent;
+  border: 1px solid var(--line);
   border-radius: 10px;
-  background: var(--panel-soft);
+  background: var(--panel);
   color: var(--muted);
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 .search-box input {
@@ -1074,8 +1074,7 @@ p {
 }
 
 .search-box:focus-within {
-  background: var(--panel);
-  border-color: color-mix(in srgb, var(--primary) 45%, transparent);
+  border-color: color-mix(in srgb, var(--primary) 55%, var(--line));
 }
 
 .filter-row {
@@ -1137,7 +1136,7 @@ p {
 .case-row.selected {
   border-color: var(--ink);
   background: var(--panel);
-  box-shadow: inset 4px 0 0 #111318, 0 8px 18px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
 }
 
 .case-row strong,
@@ -7753,3 +7752,30 @@ h1, h2, h3 { letter-spacing: -0.014em; }
 .geo-scatter .risk { fill: var(--care); opacity: 0.85; }
 
 .lab-hint { display: block; margin-top: 7px; max-width: 560px; color: var(--faint); font-size: 10.5px; line-height: 1.55; font-weight: 600; }
+
+/* 가족 앱 타이포 — 라운드 휴머니스트 계열, 여유 있는 행간 */
+.phone-screen.family-app {
+  font-family: "Apple SD Gothic Neo", "Pretendard", -apple-system, "Segoe UI", "Noto Sans KR", sans-serif;
+  letter-spacing: -0.012em;
+}
+.fam-status > strong { font-size: 20px; letter-spacing: -0.02em; }
+.fam-status > p { font-size: 13.5px; line-height: 1.72; }
+.fam-benefit-card p { line-height: 1.62; }
+.fam-stats b { letter-spacing: -0.02em; }
+
+/* 종합 소견 — 문단별 볼드 리드인(마크다운 **…**) */
+.care-analyst p strong { color: var(--primary-strong); font-weight: 900; margin-right: 2px; }
+
+/* 케어 모달 모바일 — 풀스크린 시트 */
+@media (max-width: 720px) {
+  .care-overlay { padding: 0; }
+  .care-modal { width: 100%; max-height: 100dvh; border-radius: 0; border: 0; }
+  .care-modal-head { flex-wrap: wrap; }
+  .care-meta { grid-template-columns: 1fr; }
+  .care-staff-actions { flex-direction: column; align-items: stretch; }
+  .care-approve { justify-content: center; }
+  .care-stage-track.stage-customer .care-customer { grid-template-columns: 1fr; }
+  .phone-frame { width: min(340px, 92vw); }
+  .care-timeline { overflow-x: auto; }
+  .lab-table-card { overflow-x: auto; }
+}

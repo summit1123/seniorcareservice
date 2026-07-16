@@ -772,6 +772,11 @@ const dict: Record<string, string> = {
   "무리 = 한 거점으로 인정하는 데 필요한 최소 반복 방문 수 · 이웃 = 거점의 씨앗이 되기 위해 주변에 필요한 방문 수. 값이 클수록 거점을 보수적으로 인정해 거점은 줄고 소음은 늘어납니다.": "Cluster = minimum repeated visits required to count as one hub · neighbors = nearby visits needed to seed a hub. Larger values are more conservative: fewer hubs, more noise.",
   "환경별 집계 — 같은 60명에게 알고리즘 설정만 바꿔 적용한 통제 비교(데이터 고정, 설정만 변수)": "Per-environment aggregate — a controlled comparison applying only different settings to the same 60 people (data fixed, settings are the only variable)",
   "{n}명 / 60": "{n} of 60",
+  "이번 달 운전": "This month's driving",
+  "우려 지점": "Points of concern",
+  "우대 축 판단": "Favorable-axis judgement",
+  "케어 축 판단": "Care-axis judgement",
+  "권고와 다음 달": "Recommendation & next month",
 };
 
 export default dict;

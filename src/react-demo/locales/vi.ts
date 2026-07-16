@@ -772,6 +772,11 @@ const dict: Record<string, string> = {
   "무리 = 한 거점으로 인정하는 데 필요한 최소 반복 방문 수 · 이웃 = 거점의 씨앗이 되기 위해 주변에 필요한 방문 수. 값이 클수록 거점을 보수적으로 인정해 거점은 줄고 소음은 늘어납니다.": "Cụm = số lượt ghé lặp tối thiểu để công nhận một điểm quen · lân cận = số lượt ghé xung quanh cần có để tạo hạt giống. Giá trị càng lớn càng bảo thủ: ít điểm quen hơn, nhiễu nhiều hơn.",
   "환경별 집계 — 같은 60명에게 알고리즘 설정만 바꿔 적용한 통제 비교(데이터 고정, 설정만 변수)": "Tổng hợp theo môi trường — so sánh đối chứng chỉ thay đổi cài đặt trên cùng 60 người (dữ liệu cố định, chỉ cài đặt là biến số)",
   "{n}명 / 60": "{n} / 60 người",
+  "이번 달 운전": "Lái xe tháng này",
+  "우려 지점": "Điểm đáng lưu ý",
+  "우대 축 판단": "Đánh giá trục ưu đãi",
+  "케어 축 판단": "Đánh giá trục chăm sóc",
+  "권고와 다음 달": "Khuyến nghị & tháng tới",
 };
 
 export default dict;

@@ -296,7 +296,13 @@ export function CareReportModal({
                   <SectionMark n="02" label={t("종합 소견")} ai={aiNarrative} />
                   <div className="care-card care-analyst">
                     {report.analyst_report_ko.split(/\n{2,}/).map((paragraph, idx) => (
-                      <p key={idx}>{paragraph}</p>
+                      <p key={idx}>
+                        {paragraph.split(/(\*\*[^*]+\*\*)/g).map((part, j) =>
+                          part.startsWith("**") && part.endsWith("**")
+                            ? <strong key={j}>{part.slice(2, -2)}</strong>
+                            : part
+                        )}
+                      </p>
                     ))}
                   </div>
                 </div>
@@ -475,15 +481,10 @@ export function CareReportModal({
                       <em>{report.report_month}</em>
                     </div>
                     <div className={`fam-status ${careStatus}`}>
-                      <div className="fam-status-top">
-                        <div className="fam-avatar">{familyName.charAt(0)}</div>
-                        <div>
-                          <span>{tf("{name} 님의 이번 달 운전", { name: familyName })}</span>
-                          <strong>
-                            {careStatus === "watch" ? t("한 번 살펴봐 주세요") : careStatus === "hold" ? t("데이터가 부족했어요") : t("안심하셔도 좋아요")}
-                          </strong>
-                        </div>
-                      </div>
+                      <span>{tf("{name} 님의 이번 달 운전", { name: familyName })}</span>
+                      <strong>
+                        {careStatus === "watch" ? t("한 번 살펴봐 주세요") : careStatus === "hold" ? t("데이터가 부족했어요") : t("안심하셔도 좋아요")}
+                      </strong>
                       <p>{report.family_message.body_ko}</p>
                     </div>
                     <div className="fam-stats">
