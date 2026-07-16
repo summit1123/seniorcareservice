@@ -1946,31 +1946,73 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
   }
   const groups = Object.values(groupTrips(snapshot.trip_interpretations)).sort((a, b) => b.count - a.count);
   const home = destinationForType(driver, "home");
-  const destinations = groups
-    .map((group) => ({ group, destination: destinationForType(driver, group.key) }))
-    .filter((item): item is { group: TripGroup; destination: Destination } => Boolean(item.destination) && item.group.key !== "home");
-  const visibleDestinations = destinations.slice(0, 6);
-
-  // Agent-named living zones (Option C): put the LLM's life-grounded names onto
-  // the map's own legend, matched by role — an out-of-zone node takes a change
-  // destination name, an in-zone node takes an in-zone name — with a generic
-  // fallback so a mismatch never leaves a node unlabelled.
   const profileZones = driver.mobility_profile?.zones ?? [];
-  const inZoneQueue = profileZones.filter((zone) => zone.role === "in_zone");
   const secondaryZoneQueue = profileZones.filter((zone) => zone.role === "secondary");
-  const changeZoneQueue = profileZones.filter((zone) => zone.role === "change_destination");
-  let inCursor = 0;
-  let changeCursor = 0;
-  // Assign each visible destination the matching AGENT zone (by role) — its
-  // life-grounded NAME and its GEOMETRY (bearing/distance band). This is what
-  // makes every driver's map genuinely different: the layout follows the AI
-  // profile the engine scored, not a fixed index arc.
-  const agentDestZones = visibleDestinations.map((item) => {
-    const outer = item.destination.living_zone_role === "outer";
-    if (outer && changeCursor < changeZoneQueue.length) return changeZoneQueue[changeCursor++];
-    if (!outer && inCursor < inZoneQueue.length) return inZoneQueue[inCursor++];
-    return null;
+
+  // ---- Zone-driven map (Option C) ----------------------------------------
+  // The engine generates visits to EVERY profile zone (each with its own AI
+  // bearing), but the raw event vocabulary has only 3 labels, so a person's 2nd
+  // and 3rd in-zone destinations collapse into one "Routine Hub B" group. To show
+  // driving in ALL its real directions, map nodes are the PROFILE ZONES active in
+  // the selected month; each label-group's stats are apportioned across its zones
+  // by the profile visit_share (the same weights that generated the events).
+  const monthIdx = (() => {
+    const [yy, mm] = snapshot.service_month.split("-").map(Number);
+    return Number.isFinite(yy) && Number.isFinite(mm) ? (yy - 2025) * 12 + (mm - 11) + 1 : 14;
+  })();
+  const activeZones = profileZones.filter((zone) => {
+    const from = zone.active_from_month ?? 1;
+    const to = zone.active_to_month ?? 14;
+    return from <= monthIdx && monthIdx <= to;
   });
+  const groupByKey = new Map(groups.map((group) => [group.key, group]));
+  const groupKeyForZone = (zone: (typeof profileZones)[number], inZoneIndex: number) =>
+    zone.role === "in_zone" ? (inZoneIndex === 0 ? "routine_hub_a" : "routine_hub_b") : "outer_context";
+
+  type MapDest = { group: TripGroup; destination: { living_zone_role: string }; zone: (typeof profileZones)[number] | null };
+  let mapDestinations: MapDest[] = [];
+  if (activeZones.length) {
+    // visit_share per group key, for apportioning that group's stats
+    let seenInZone = 0;
+    const zoneMetas = activeZones.map((zone) => {
+      const key = groupKeyForZone(zone, zone.role === "in_zone" ? seenInZone++ : 0);
+      return { zone, key, share: Math.max(0.05, zone.visit_share ?? 0.3) };
+    });
+    const shareTotals = new Map<string, number>();
+    zoneMetas.forEach((m) => shareTotals.set(m.key, (shareTotals.get(m.key) ?? 0) + m.share));
+    mapDestinations = zoneMetas
+      .filter((m) => groupByKey.has(m.key))
+      .map((m, order) => {
+        const parent = groupByKey.get(m.key)!;
+        const frac = m.share / (shareTotals.get(m.key) ?? 1);
+        return {
+          zone: m.zone,
+          destination: { living_zone_role: m.zone.role === "in_zone" ? "in" : "outer" },
+          group: {
+            ...parent,
+            key: `${m.key}-z${order}`,
+            label: localeText(m.zone.label_ko, m.zone.label_en) ?? parent.label,
+            count: Math.max(1, Math.round(parent.count * frac)),
+            distanceKm: parent.distanceKm * frac,
+            riskEvents: Math.round(parent.riskEvents * frac),
+            nightTrips: Math.round(parent.nightTrips * frac)
+          }
+        };
+      });
+  }
+  if (!mapDestinations.length) {
+    // Fallback (no profile): legacy label-group nodes.
+    mapDestinations = groups
+      .map((group) => ({ group, legacy: destinationForType(driver, group.key) }))
+      .filter((item) => Boolean(item.legacy) && item.group.key !== "home")
+      .map((item) => ({
+        group: item.group,
+        zone: null,
+        destination: { living_zone_role: item.legacy?.living_zone_role ?? "in" }
+      }));
+  }
+  const visibleDestinations = mapDestinations.slice(0, 6);
+  const agentDestZones = visibleDestinations.map((item) => item.zone);
   const agentDestLabels = agentDestZones.map((zone) => (zone ? localeText(zone.label_ko, zone.label_en) : null));
 
   // Home-centred radial schematic (not a real map — coordinates are never
