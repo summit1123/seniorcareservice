@@ -217,9 +217,11 @@ function App() {
   };
 
   const [lang, setLang] = useState<Locale>(() => {
-    if (typeof localStorage === "undefined") return "ko";
+    // Persisted choice (legacy key included) wins; otherwise the i18n default —
+    // ENGLISH first screen for the Singapore competition.
+    if (typeof localStorage === "undefined") return getLocale();
     const saved = localStorage.getItem("masil-lang");
-    return saved && LOCALE_ORDER.includes(saved as Locale) ? (saved as Locale) : "ko";
+    return saved && LOCALE_ORDER.includes(saved as Locale) ? (saved as Locale) : getLocale();
   });
   // Keep the i18n module locale in sync (source of truth for t()).
   if (typeof document !== "undefined") setLocale(lang);

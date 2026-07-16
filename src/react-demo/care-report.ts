@@ -10,6 +10,7 @@
  */
 import catalogJson from "./aftercare-catalog.json";
 import { normalizeProductWeights } from "./gaip-decision";
+import { t, tf } from "./i18n";
 import type { DriverAnnualSummary, MonthlyEvidence } from "./types";
 import type { ProductRules } from "./gaip-types";
 
@@ -153,55 +154,55 @@ export function buildLocalCareReport(
   const integrated = selected.monthly_integrated_evidence_score ?? null;
 
   const contributions = [
-    { key: "mileage", label_ko: "주행거리", score: selected.mileage_score as number | null, weight_pct: weights.mileage },
-    { key: "in_zone_safe", label_ko: "생활권 안 안전", score: selected.in_zone_safe_driving_score, weight_pct: weights.in_zone_safe },
-    { key: "out_zone_safe", label_ko: "생활권 밖 안전", score: selected.out_zone_safe_driving_score, weight_pct: weights.out_zone_safe },
-    { key: "pattern_stability", label_ko: "패턴 안정성", score: (selected.pattern_stability_score ?? null) as number | null, weight_pct: weights.pattern_stability }
+    { key: "mileage", label_ko: t("주행거리"), score: selected.mileage_score as number | null, weight_pct: weights.mileage },
+    { key: "in_zone_safe", label_ko: t("생활권 안 안전"), score: selected.in_zone_safe_driving_score, weight_pct: weights.in_zone_safe },
+    { key: "out_zone_safe", label_ko: t("생활권 밖 안전"), score: selected.out_zone_safe_driving_score, weight_pct: weights.out_zone_safe },
+    { key: "pattern_stability", label_ko: t("패턴 안정성"), score: (selected.pattern_stability_score ?? null) as number | null, weight_pct: weights.pattern_stability }
   ].map((entry) => ({
     ...entry,
     contribution: entry.score === null ? null : Math.round(entry.score * entry.weight_pct) / 100
   }));
 
   const headline = careGate
-    ? "이동 맥락과 위험행동의 동시변화 — 사람 검토 제안"
+    ? t("이동 맥락과 위험행동의 동시변화 — 사람 검토 제안")
     : selected.care_state === "Hold" || selected.reward_state === "Hold"
-      ? "근거 부족 — 판단 보류(불이익 없음)"
+      ? t("근거 부족 — 판단 보류(불이익 없음)")
       : (selected.reward_state ?? "").toLowerCase() === "reward"
-        ? "익숙한 생활권 안 안정 주행 — 우대 근거 충족"
-        : "기준 범위 내 주행 — 기본 유지";
+        ? t("익숙한 생활권 안 안정 주행 — 우대 근거 충족")
+        : t("기준 범위 내 주행 — 기본 유지");
 
   const summary = careGate
-    ? `${selected.service_month}에 이동 변화 ${mob.toFixed(1)}%p와 위험행동 변화 ${risk.toFixed(1)}%p가 같은 달에 함께 관찰됐습니다. 자동 조치 없이 담당자 검토와 예방 지원 연결을 제안합니다.`
-    : `${selected.service_month} 주행 ${selected.monthly_total_distance_km}km, 데이터 사용률 ${selected.data_coverage_pct ?? 0}% 기준으로 평가했습니다. 위치만으로 감점하지 않으며, 아래 지표가 판단의 전부입니다.`;
+    ? tf("{month}에 이동 변화 {mob}%p와 위험행동 변화 {risk}%p가 같은 달에 함께 관찰됐습니다. 자동 조치 없이 담당자 검토와 예방 지원 연결을 제안합니다.", { month: selected.service_month, mob: mob.toFixed(1), risk: risk.toFixed(1) })
+    : tf("{month} 주행 {km}km, 데이터 사용률 {cov}% 기준으로 평가했습니다. 위치만으로 감점하지 않으며, 아래 지표가 판단의 전부입니다.", { month: selected.service_month, km: selected.monthly_total_distance_km, cov: selected.data_coverage_pct ?? 0 });
 
   const xai: CareReport["xai_reasons"] = [
     {
-      label_ko: "이동 맥락 변화",
+      label_ko: t("이동 맥락 변화"),
       direction: mob >= rules.care_mobility_change_threshold ? "attention" : "neutral",
       note_ko: mob >= rules.care_mobility_change_threshold
-        ? `기준선 대비 생활권 밖 비중이 ${mob.toFixed(1)}%p 상승 — 케어 임계(${rules.care_mobility_change_threshold}%p) 초과`
-        : `기준선 대비 ${mob.toFixed(1)}%p — 임계 이내의 자연스러운 변동`
+        ? tf("기준선 대비 생활권 밖 비중이 {mob}%p 상승 — 케어 임계({th}%p) 초과", { mob: mob.toFixed(1), th: rules.care_mobility_change_threshold })
+        : tf("기준선 대비 {mob}%p — 임계 이내의 자연스러운 변동", { mob: mob.toFixed(1) })
     },
     {
-      label_ko: "생활권 안 안전",
+      label_ko: t("생활권 안 안전"),
       direction: (selected.in_zone_safe_driving_score ?? 100) >= 75 ? "positive" : "attention",
       note_ko: selected.in_zone_safe_driving_score === null
-        ? "해당 월 생활권 안 관측 없음(감점 아님)"
-        : `${selected.in_zone_safe_driving_score}점 — 익숙한 반경 안 급감속·과속 빈도 반영`
+        ? t("해당 월 생활권 안 관측 없음(감점 아님)")
+        : tf("{score}점 — 익숙한 반경 안 급감속·과속 빈도 반영", { score: selected.in_zone_safe_driving_score })
     },
     {
-      label_ko: "생활권 밖 안전",
+      label_ko: t("생활권 밖 안전"),
       direction: (selected.out_zone_safe_driving_score ?? 100) >= 75 ? "positive" : "attention",
       note_ko: selected.out_zone_safe_driving_score === null
-        ? "해당 월 외부 이동 없음(중립)"
-        : `${selected.out_zone_safe_driving_score}점 — 외부 이동 자체는 중립, 행동만 평가`
+        ? t("해당 월 외부 이동 없음(중립)")
+        : tf("{score}점 — 외부 이동 자체는 중립, 행동만 평가", { score: selected.out_zone_safe_driving_score })
     },
     {
-      label_ko: "위험행동 변화",
+      label_ko: t("위험행동 변화"),
       direction: risk >= rules.care_risky_behavior_threshold ? "attention" : "positive",
       note_ko: risk >= rules.care_risky_behavior_threshold
-        ? `기준선 대비 ${risk.toFixed(1)}%p 상승 — 이동 변화와 함께 나타나 케어 게이트 충족`
-        : `기준선 대비 ${risk.toFixed(1)}%p — 급증 신호 없음`
+        ? tf("기준선 대비 {risk}%p 상승 — 이동 변화와 함께 나타나 케어 게이트 충족", { risk: risk.toFixed(1) })
+        : tf("기준선 대비 {risk}%p — 급증 신호 없음", { risk: risk.toFixed(1) })
     }
   ];
 
@@ -214,11 +215,11 @@ export function buildLocalCareReport(
   const shortName = driverNameKo.replace(/\s*\(.*\)\s*$/, "");
   // 가족(보호자) 대상 메시지 — 어르신 본인이 아니라 자녀가 읽는 소식.
   const familyTitle = careGate
-    ? `${shortName} 님, 이번 달은 한 번 살펴봐 주세요`
-    : `${shortName} 님, 이번 달도 안심하셔도 좋아요`;
+    ? tf("{name} 님, 이번 달은 한 번 살펴봐 주세요", { name: shortName })
+    : tf("{name} 님, 이번 달도 안심하셔도 좋아요", { name: shortName });
   const familyBody = careGate
-    ? `${selected.service_month}에는 평소보다 먼 외출이 늘었고, 새 경로에서 급제동이 함께 늘었습니다. 벌점이나 보험료 불이익은 없습니다 — 안전하게 계속 운전하시도록 아래 지원을 준비했어요. 가족이 대신 신청해 드릴 수 있습니다.`
-    : `${selected.service_month}에는 익숙한 동네 안에서 안정적으로 운전하셨어요. 이 기록은 우대 혜택 산정에 그대로 반영됩니다.`;
+    ? tf("{month}에는 평소보다 먼 외출이 늘었고, 새 경로에서 급제동이 함께 늘었습니다. 벌점이나 보험료 불이익은 없습니다 — 안전하게 계속 운전하시도록 아래 지원을 준비했어요. 가족이 대신 신청해 드릴 수 있습니다.", { month: selected.service_month })
+    : tf("{month}에는 익숙한 동네 안에서 안정적으로 운전하셨어요. 이 기록은 우대 혜택 산정에 그대로 반영됩니다.", { month: selected.service_month });
 
   return {
     schema_version: "masil-care-report/v1",
@@ -258,27 +259,27 @@ export function buildLocalCareReport(
     xai_reasons: xai,
     aftercare: aftercareItems.map((item) => ({
       id: item.id,
-      title_ko: item.title_ko,
-      description_ko: item.description_ko,
-      customer_benefit_ko: item.customer_benefit_ko,
+      title_ko: t(item.title_ko),
+      description_ko: t(item.description_ko),
+      customer_benefit_ko: t(item.customer_benefit_ko),
       urgency: item.urgency,
       reason_ko: careGate
-        ? "같은 달 동시변화 신호에 대응하는 선언 규칙 매칭"
-        : "선택 월 신호에 대응하는 선언 규칙 매칭"
+        ? t("같은 달 동시변화 신호에 대응하는 선언 규칙 매칭")
+        : t("선택 월 신호에 대응하는 선언 규칙 매칭")
     })),
     staff_review: {
       recommendation,
       rationale_ko: careGate
-        ? "동시변화 게이트 충족 — 자동 감액이 아니라 예방 지원 연결이 목적이므로, 지원 항목 확정 후 고객 발송을 권합니다."
+        ? t("동시변화 게이트 충족 — 자동 감액이 아니라 예방 지원 연결이 목적이므로, 지원 항목 확정 후 고객 발송을 권합니다.")
         : recommendation === "hold"
-          ? "데이터 사용률이 최소 기준 미만 — 불이익 없이 보류하고 수집 점검을 권합니다."
-          : "지표가 기준 범위 내 — 리포트 승인 후 고객 발송을 권합니다."
+          ? t("데이터 사용률이 최소 기준 미만 — 불이익 없이 보류하고 수집 점검을 권합니다.")
+          : t("지표가 기준 범위 내 — 리포트 승인 후 고객 발송을 권합니다.")
     },
     family_message: {
       title_ko: familyTitle,
       body_ko: familyBody,
-      closing_ko: "가족 알림 동의를 바탕으로 전달되는 소식입니다. 이 리포트는 안내용이며, 보험료·인수 결정을 확정하지 않습니다."
+      closing_ko: t("가족 알림 동의를 바탕으로 전달되는 소식입니다. 이 리포트는 안내용이며, 보험료·인수 결정을 확정하지 않습니다.")
     },
-    data_status: "합성 시뮬레이션 — 실제 고객 데이터가 아니며, 담당자 검수 후 고객에게 전달되는 흐름의 데모입니다."
+    data_status: t("합성 시뮬레이션 — 실제 고객 데이터가 아니며, 담당자 검수 후 고객에게 전달되는 흐름의 데모입니다.")
   };
 }

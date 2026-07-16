@@ -269,6 +269,14 @@ const CARE_NARRATIVE_SCHEMA = {
   ]
 } as const;
 
+const CARE_LANGUAGE_NAMES: Record<string, string> = {
+  ko: "한국어",
+  en: "English",
+  zh: "简体中文 (Simplified Chinese)",
+  ja: "日本語",
+  vi: "Tiếng Việt"
+};
+
 export async function generateCareNarrative(localReport: JsonRecord, repoRoot?: string): Promise<JsonRecord> {
   const apiKey = envValue("OPENAI_API_KEY", repoRoot);
   if (!apiKey) {
@@ -285,7 +293,7 @@ export async function generateCareNarrative(localReport: JsonRecord, repoRoot?: 
     "직원용(headline/summary/xai/staff)은 심사 전문가 톤으로 간결하게, 판단 근거가 10초 안에 읽히게.",
     "가족용(family_*)은 부모님의 운전을 걱정하는 자녀에게 보내는 소식입니다 — 따뜻한 존댓말로, 벌점·감액·경고·위험이라는 단어 없이 상황 설명과 지원 안내 중심으로.",
     "모든 데이터는 합성 시뮬레이션이며 실존 인물이 아닙니다.",
-    "모든 필드는 한국어로 작성하세요."
+    `모든 서사 필드는 반드시 ${CARE_LANGUAGE_NAMES[String(localReport.target_language ?? "ko")] ?? "한국어"}(으)로 작성하세요 — 대시보드의 언어 선택을 그대로 따릅니다. 필드 키 이름(_ko 접미사 포함)은 스키마 고정이므로 바꾸지 마세요.`
   ].join("\n");
   const response = await fetch(envValue("OPENAI_RESPONSES_URL", repoRoot) || OPENAI_RESPONSES_URL, {
     method: "POST",

@@ -1,3 +1,4 @@
+import { getLocale } from "./i18n";
 import { gaipStudioApi } from "./gaip-api";
 import {
   adaptAnnualSummary,
@@ -96,7 +97,7 @@ export async function enrichCareReport(local: import("./care-report").CareReport
     const response = await fetch("/api/gaip/report/care", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(local)
+      body: JSON.stringify({ ...local, target_language: getLocale() })
     });
     if (!response.ok) return null;
     const narrative = (await response.json()) as {

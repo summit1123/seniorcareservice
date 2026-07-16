@@ -30,7 +30,24 @@ const DICTIONARIES: Record<Exclude<Locale, "ko">, Record<string, string>> = {
   vi
 };
 
-let currentLocale: Locale = "ko";
+const LOCALE_STORAGE_KEY = "masil.locale";
+
+function initialLocale(): Locale {
+  // Persisted choice wins; otherwise ENGLISH — GAIP is a Singapore competition,
+  // so the very first screen must open in English.
+  try {
+    const saved = typeof localStorage !== "undefined" ? localStorage.getItem(LOCALE_STORAGE_KEY) : null;
+    if (saved && (LOCALE_ORDER as string[]).includes(saved)) return saved as Locale;
+  } catch {
+    // storage unavailable (private mode 등) — fall through
+  }
+  return "en";
+}
+
+let currentLocale: Locale = initialLocale();
+if (typeof document !== "undefined") {
+  document.documentElement.lang = LOCALE_META[currentLocale].htmlLang;
+}
 
 export function getLocale(): Locale {
   return currentLocale;
@@ -38,6 +55,11 @@ export function getLocale(): Locale {
 
 export function setLocale(locale: Locale): void {
   currentLocale = locale;
+  try {
+    if (typeof localStorage !== "undefined") localStorage.setItem(LOCALE_STORAGE_KEY, locale);
+  } catch {
+    // storage unavailable — the in-memory locale still applies for this session
+  }
   if (typeof document !== "undefined") {
     document.documentElement.lang = LOCALE_META[locale].htmlLang;
   }
