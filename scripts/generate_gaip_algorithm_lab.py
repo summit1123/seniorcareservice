@@ -45,7 +45,14 @@ MIN_DAYS_GRID = [2, 3, 5]
 HDBSCAN_GRID = [(3, 2), (3, 3), (5, 2), (5, 3)]  # (min_cluster_size, min_samples)
 CORE_M = 500.0
 CAP_M = 2000.0
-MERGE_TRUTH_MIN_SEP_M = 800.0
+# A pair of truth hubs only counts as "over-merge eligible" when they are farther
+# apart than the environment's designed living-zone reach: the engine deliberately
+# places Routine Hub A/B inside zone_reach_m of home so the operating eps groups
+# them into ONE living zone (engine.py ENVIRONMENTS comment). Counting those
+# by-design merges as 과병합 falsely penalises the operating eps in low-density
+# environments. Pairs >= zone_reach_m are genuinely separate zones.
+MERGE_TRUTH_MIN_SEP_BY_ENV = {env: float(cfg["zone_reach_m"]) for env, cfg in ENVIRONMENTS.items()}
+MERGE_TRUTH_MIN_SEP_FALLBACK_M = 800.0
 SHOWCASE_PER_PERSONA = 1  # 페르소나별 대표 1명 + 기본 고객
 
 
@@ -133,6 +140,8 @@ def combo_metrics(fit_events, eval_events, labels):
 
     cents = truth_centroids(fit_events)
     assigned = {lab: assign_cluster(v["center"], clusters) for lab, v in cents.items()}
+    env_id = str(fit_events[0].get("environment_id", "")) if fit_events else ""
+    min_sep = MERGE_TRUTH_MIN_SEP_BY_ENV.get(env_id, MERGE_TRUTH_MIN_SEP_FALLBACK_M)
     merged = 0
     pairs = 0
     labs = list(cents)
@@ -140,7 +149,7 @@ def combo_metrics(fit_events, eval_events, labels):
         for j in range(i + 1, len(labs)):
             a, b = labs[i], labs[j]
             sep = haversine_m(*cents[a]["center"], *cents[b]["center"])
-            if sep < MERGE_TRUTH_MIN_SEP_M:
+            if sep < min_sep:
                 continue
             if assigned[a] is None or assigned[b] is None:
                 continue
@@ -285,8 +294,9 @@ def main():
         },
         "prior_experiment_reference": {
             "run_ids": ["RUN-20260713-P1", "RUN-20260713-P2"],
-            "safe_band_note": "방문이벤트 기반 실측에서 eps 150~500m가 안정 구간 — "
-                              "하한 절벽(과소·흔들림), 상한 절벽(800m~ 과병합) 확인",
+            "safe_band_note": "안정 구간은 환경 밀도에 비례해 이동합니다 — 표의 과병합 0% 구간으로 "
+                              "환경별 안정 상한을 확인하세요(과병합 판정은 설계상 한 생활권인 근접 거점 쌍을 "
+                              "제외한, 환경별 생활권 반경 이상 떨어진 거점 쌍 기준)",
         },
         "aggregates": {"dbscan": agg_rows("dbscan"), "hdbscan": agg_rows("hdbscan")},
         "showcase_drivers": {d: detail[d] for d in sorted(detail)},
