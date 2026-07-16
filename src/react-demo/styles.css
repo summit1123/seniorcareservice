@@ -7751,3 +7751,5 @@ h1, h2, h3 { letter-spacing: -0.014em; }
 /* 실측 방문점 — 고스트(기준선)·위험 강조 */
 .geo-scatter .ghost { fill: var(--line-strong); opacity: 0.4; }
 .geo-scatter .risk { fill: var(--care); opacity: 0.85; }
+
+.lab-hint { display: block; margin-top: 7px; max-width: 560px; color: var(--faint); font-size: 10.5px; line-height: 1.55; font-weight: 600; }

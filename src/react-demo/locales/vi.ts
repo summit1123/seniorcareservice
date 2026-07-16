@@ -767,6 +767,11 @@ const dict: Record<string, string> = {
   "{n}개 사례": "{n} trường hợp",
   "합성 시니어 {n}": "Người cao tuổi tổng hợp {n}",
   "점 = 실제 방문(자택 기준 상대 위치) · 회색 = 기준선 2개월 · 완충권 밖은 축척 압축": "Chấm = lượt ghé thực tế (vị trí tương đối so với nhà) · xám = 2 tháng cơ sở · ngoài vùng đệm nén tỷ lệ",
+  "HDBSCAN 설정": "Cài đặt HDBSCAN",
+  "무리 {a} · 이웃 {b}": "cụm {a} · lân cận {b}",
+  "무리 = 한 거점으로 인정하는 데 필요한 최소 반복 방문 수 · 이웃 = 거점의 씨앗이 되기 위해 주변에 필요한 방문 수. 값이 클수록 거점을 보수적으로 인정해 거점은 줄고 소음은 늘어납니다.": "Cụm = số lượt ghé lặp tối thiểu để công nhận một điểm quen · lân cận = số lượt ghé xung quanh cần có để tạo hạt giống. Giá trị càng lớn càng bảo thủ: ít điểm quen hơn, nhiễu nhiều hơn.",
+  "환경별 집계 — 같은 60명에게 알고리즘 설정만 바꿔 적용한 통제 비교(데이터 고정, 설정만 변수)": "Tổng hợp theo môi trường — so sánh đối chứng chỉ thay đổi cài đặt trên cùng 60 người (dữ liệu cố định, chỉ cài đặt là biến số)",
+  "{n}명 / 60": "{n} / 60 người",
 };
 
 export default dict;

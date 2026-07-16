@@ -218,14 +218,15 @@ export function AlgorithmLabPanel({ preferredDriverId }: { preferredDriverId?: s
           </>
         ) : (
           <label className="lab-mindays">
-            <span>{t("HDBSCAN 설정 (최소 무리 크기 · 이웃 수)")}</span>
+            <span>{t("HDBSCAN 설정")}</span>
             <div className="lab-chip-row">
               {hdbCombos.map((combo, index) => (
                 <button key={`${combo.min_cluster_size}-${combo.min_samples}`} type="button" className={index === hdbIndex ? "active" : ""} onClick={() => setHdbIndex(index)}>
-                  {combo.min_cluster_size} · {combo.min_samples}
+                  {tf("무리 {a} · 이웃 {b}", { a: combo.min_cluster_size, b: combo.min_samples })}
                 </button>
               ))}
             </div>
+            <small className="lab-hint">{t("무리 = 한 거점으로 인정하는 데 필요한 최소 반복 방문 수 · 이웃 = 거점의 씨앗이 되기 위해 주변에 필요한 방문 수. 값이 클수록 거점을 보수적으로 인정해 거점은 줄고 소음은 늘어납니다.")}</small>
           </label>
         )}
       </div>
@@ -245,7 +246,7 @@ export function AlgorithmLabPanel({ preferredDriverId }: { preferredDriverId?: s
         </div>
 
         <div className="lab-table-card">
-          <span className="lab-card-title">{t("환경별 60명 집계 — 같은 설정을 세 환경에 적용한 결과")}</span>
+          <span className="lab-card-title">{t("환경별 집계 — 같은 60명에게 알고리즘 설정만 바꿔 적용한 통제 비교(데이터 고정, 설정만 변수)")}</span>
           <table className="lab-table">
             <thead>
               <tr>
@@ -268,8 +269,8 @@ export function AlgorithmLabPanel({ preferredDriverId }: { preferredDriverId?: s
                     </td>
                     <td>{fmt(row.mean_coverage_pct)}</td>
                     <td>{fmt(row.mean_noise_pct)}</td>
-                    <td>{fmt(row.overmerge_pct)}</td>
-                    <td>{fmt(row.repeat_hub_miss_pct)}</td>
+                    <td>{row.overmerge_pct === null ? "—" : tf("{n}명 / 60", { n: Math.round((row.overmerge_pct / 100) * 60) })}</td>
+                    <td>{row.repeat_hub_miss_pct === null ? "—" : tf("{n}명 / 60", { n: Math.round((row.repeat_hub_miss_pct / 100) * 60) })}</td>
                     <td>{fmt(row.mean_hub_count, t("개"))}</td>
                   </tr>
                 );
