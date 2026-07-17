@@ -780,6 +780,7 @@ const dict: Record<string, string> = {
   "생활권의 기준은 자택이 아니라 반복 방문이 만든 군집(거점)입니다. 중심권·완충권은 그 거점 중심에 적용되는 상품 인정 반경 — 완충권 = max(500m, min(개인 P90, 2km)). 자택은 지도의 원점(상대 위치 기준)일 뿐 판정 기준이 아닙니다.": "Vùng sinh hoạt lấy chuẩn từ cụm do các lượt ghé lặp tạo thành (điểm quen), không phải từ nhà. Bán kính lõi/đệm áp dụng quanh tâm cụm — đệm = max(500m, min(P90 cá nhân, 2km)). Nhà chỉ là gốc tọa độ của bản đồ, không phải chuẩn phán định.",
   "연간 판정": "Phán định năm",
   "생활권과 최근 변화 목적지": "Vùng sinh hoạt và điểm đến thay đổi gần đây",
+  "기준 생활권": "Vùng sinh hoạt cơ sở",
 };
 
 export default dict;

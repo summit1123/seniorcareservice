@@ -2123,7 +2123,7 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
       <g className="geo-core-ring">
         <circle cx={center.x} cy={center.y} r={bufferRadius} />
         <circle cx={center.x} cy={center.y} r={coreRadius} />
-        <text x={center.x - bufferRadius * 0.62} y={center.y - bufferRadius * 0.86} textAnchor="middle">{t(snapshot.living_zone.clusters[0]?.label_ko ?? "반복 거점 A")}</text>
+        <text x={center.x - bufferRadius * 0.62} y={center.y - bufferRadius * 0.86} textAnchor="middle">{t("기준 생활권")}</text>
       </g>
 
       {snapshot.living_zone.clusters.slice(1).map((cluster, index) => {
