@@ -1070,6 +1070,7 @@ p {
   min-width: 0;
   border: 0;
   outline: 0;
+  background: transparent;
   color: var(--ink);
 }
 
@@ -7795,7 +7796,17 @@ h1, h2, h3 { letter-spacing: -0.014em; }
 }
 
 /* 사례 리스트 스크롤바 — 기본 흰 트랙이 검색창 옆 흰 줄 착시를 만들던 것 정리 */
-.case-list { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
-.case-list::-webkit-scrollbar { width: 6px; }
-.case-list::-webkit-scrollbar-track { background: transparent; }
-.case-list::-webkit-scrollbar-thumb { border-radius: 999px; background: var(--line-strong); }
+.case-list,
+.case-rail {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--line-strong) 70%, transparent) transparent;
+}
+.case-list::-webkit-scrollbar,
+.case-rail::-webkit-scrollbar { width: 5px; }
+.case-list::-webkit-scrollbar-track,
+.case-rail::-webkit-scrollbar-track { background: transparent; }
+.case-list::-webkit-scrollbar-thumb,
+.case-rail::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--line-strong) 70%, transparent);
+}
