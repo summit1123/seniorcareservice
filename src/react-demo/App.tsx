@@ -1986,11 +1986,11 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
   // zone instead of a projected "tadpole".
   const mapWidth = 900;
   const mapHeight = 520;
-  const center = { x: mapWidth * 0.45, y: mapHeight * 0.48 };
+  const center = { x: mapWidth * 0.3, y: mapHeight * 0.52 };
   const radialP90M = snapshot.living_zone.clusters[0]?.p90_radius_m ?? snapshot.living_zone.buffer.departure_p90_threshold_m;
   const productBufferM = Math.max(500, Math.min(2000, radialP90M));
   const coreRadius = 58;
-  const bufferRadius = Math.max(coreRadius + 30, Math.min(150, 64 + productBufferM / 15));
+  const bufferRadius = Math.max(coreRadius + 44, Math.min(195, 88 + productBufferM / 11));
 
   // ---- 실측 방문점 투영 -----------------------------------------------------
   // 모든 점은 엔진이 생성한 실제 방문 이벤트의 자택 기준 상대변위(m)다. 완충권
@@ -2021,21 +2021,24 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
   const driverSeed = Array.from(driver.customer_id).reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) % 9973, 7);
   const bandRadius = (band: string | undefined, outer: boolean, index: number): number => {
     switch (band) {
-      case "near": return bufferRadius * (0.42 + ((driverSeed + index * 37) % 13) / 100);
-      case "mid_in": return bufferRadius * (0.68 + ((driverSeed + index * 53) % 11) / 100);
-      case "secondary": return bufferRadius + 92 + ((driverSeed + index * 29) % 22);
-      case "outer": return bufferRadius + 74 + ((driverSeed + index * 41) % 34);
-      default: return outer ? bufferRadius + 78 + (index % 3) * 26 : bufferRadius * 0.58;
+      case "near": return bufferRadius * (0.5 + ((driverSeed + index * 37) % 16) / 100);
+      case "mid_in": return bufferRadius * (0.76 + ((driverSeed + index * 53) % 14) / 100);
+      case "secondary": return bufferRadius + 190 + ((driverSeed + index * 29) % 60);
+      case "outer": return bufferRadius + 150 + ((driverSeed + index * 41) % 90);
+      default: return outer ? bufferRadius + 160 + (index % 3) * 40 : bufferRadius * 0.62;
     }
   };
   const routePath = (point: { x: number; y: number }) => {
     const dx = point.x - center.x;
     const dy = point.y - center.y;
-    const midX = center.x + dx * 0.5 - dy * 0.1;
-    const midY = center.y + dy * 0.5 + dx * 0.1;
+    const reach = Math.hypot(dx, dy);
+    // 먼 목적지일수록 크게 휘어 원본처럼 캔버스를 가로질러 흐른다.
+    const bend = Math.min(0.3, 0.1 + reach / 2200);
+    const midX = center.x + dx * 0.5 - dy * bend;
+    const midY = center.y + dy * 0.5 + dx * bend;
     return `M${center.x} ${center.y} Q${midX} ${midY}, ${point.x} ${point.y}`;
   };
-  const destinationViews = visibleDestinations.map((item, index) => {
+  const rawViews = visibleDestinations.map((item, index) => {
     const outer = item.destination.living_zone_role === "outer";
     const zone = agentDestZones[index];
     // Geometry from the AI profile when available: bearing_deg (0°=north,
@@ -2044,14 +2047,32 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
     const angle = zone && Number.isFinite(zone.bearing_deg)
       ? ((Number(zone.bearing_deg) - 90) * Math.PI) / 180
       : fallbackAngle;
-    const dist = bandRadius(zone?.distance_band, outer, index);
+    return { item, outer, angle, dist: bandRadius(zone?.distance_band, outer, index) };
+  });
+  // 방위가 몰리면 라벨이 겹치므로 최소 0.42rad씩 벌린다(실측 방위의 순서는 유지).
+  const sortedByAngle = [...rawViews].sort((a, b) => a.angle - b.angle);
+  for (let i = 1; i < sortedByAngle.length; i += 1) {
+    const gap = sortedByAngle[i].angle - sortedByAngle[i - 1].angle;
+    if (gap < 0.42) sortedByAngle[i].angle = sortedByAngle[i - 1].angle + 0.42;
+  }
+  // 하드 클램프 대신 광선-맞춤: 방위를 그대로 유지한 채, 라벨·배지 여백을 남기고
+  // 캔버스 경계 안에서 멈추도록 거리만 줄인다(모서리 짓눌림 방지).
+  const fitDistance = (angle: number, dist: number): number => {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    let t = dist;
+    if (cos > 0.001) t = Math.min(t, (mapWidth - 84 - center.x) / cos);
+    if (cos < -0.001) t = Math.min(t, (84 - center.x) / cos);
+    if (sin > 0.001) t = Math.min(t, (mapHeight - 118 - center.y) / sin);
+    if (sin < -0.001) t = Math.min(t, (74 - center.y) / sin);
+    return Math.max(48, t);
+  };
+  const destinationViews = rawViews.map(({ item, outer, angle, dist }) => {
+    const fitted = fitDistance(angle, dist);
     return {
       ...item,
       outer,
-      point: {
-        x: Math.max(48, Math.min(mapWidth - 48, center.x + Math.cos(angle) * dist)),
-        y: Math.max(64, Math.min(mapHeight - 64, center.y + Math.sin(angle) * dist))
-      }
+      point: { x: center.x + Math.cos(angle) * fitted, y: center.y + Math.sin(angle) * fitted }
     };
   });
 
@@ -2069,6 +2090,11 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
         </radialGradient>
       </defs>
       <rect x="0" y="0" width={mapWidth} height={mapHeight} rx="18" />
+      <g className="geo-roads" aria-hidden="true">
+        <path d={`M -40 ${mapHeight * 0.7 + (driverSeed % 40)} C ${mapWidth * 0.28} ${mapHeight * 0.58}, ${mapWidth * 0.52} ${mapHeight * 0.88}, ${mapWidth + 40} ${mapHeight * 0.52}`} />
+        <path d={`M -40 ${mapHeight * 0.26 + (driverSeed % 30)} C ${mapWidth * 0.32} ${mapHeight * 0.4}, ${mapWidth * 0.62} ${mapHeight * 0.14}, ${mapWidth + 40} ${mapHeight * 0.38}`} />
+        <path d={`M ${mapWidth * 0.6 + (driverSeed % 60)} -30 C ${mapWidth * 0.54} ${mapHeight * 0.42}, ${mapWidth * 0.74} ${mapHeight * 0.68}, ${mapWidth * 0.66} ${mapHeight + 30}`} />
+      </g>
       {[bufferRadius + 108, bufferRadius + 48].map((r) => (
         <circle key={`guide-${r}`} className="geo-guide-ring" cx={center.x} cy={center.y} r={r} />
       ))}
@@ -2097,7 +2123,7 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
       <g className="geo-core-ring">
         <circle cx={center.x} cy={center.y} r={bufferRadius} />
         <circle cx={center.x} cy={center.y} r={coreRadius} />
-        <text x={center.x} y={center.y - bufferRadius - 12} textAnchor="middle">{t(snapshot.living_zone.clusters[0]?.label_ko ?? "반복 거점 A")}</text>
+        <text x={center.x - bufferRadius * 0.62} y={center.y - bufferRadius * 0.86} textAnchor="middle">{t(snapshot.living_zone.clusters[0]?.label_ko ?? "반복 거점 A")}</text>
       </g>
 
       {snapshot.living_zone.clusters.slice(1).map((cluster, index) => {

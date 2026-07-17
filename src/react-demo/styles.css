@@ -7810,3 +7810,9 @@ h1, h2, h3 { letter-spacing: -0.014em; }
   border-radius: 999px;
   background: color-mix(in srgb, var(--line-strong) 70%, transparent);
 }
+
+/* 지도 배경 도로 리본 — 원본의 회색 곡선 질감 */
+.geo-roads path { fill: none; stroke: var(--line-strong); stroke-linecap: round; }
+.geo-roads path:nth-child(1) { stroke-width: 18; opacity: 0.14; }
+.geo-roads path:nth-child(2) { stroke-width: 11; opacity: 0.11; }
+.geo-roads path:nth-child(3) { stroke-width: 7; opacity: 0.09; }
