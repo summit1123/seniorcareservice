@@ -778,6 +778,8 @@ const dict: Record<string, string> = {
   "케어 축 판단": "Care-axis judgement",
   "권고와 다음 달": "Recommendation & next month",
   "생활권의 기준은 자택이 아니라 반복 방문이 만든 군집(거점)입니다. 중심권·완충권은 그 거점 중심에 적용되는 상품 인정 반경 — 완충권 = max(500m, min(개인 P90, 2km)). 자택은 지도의 원점(상대 위치 기준)일 뿐 판정 기준이 아닙니다.": "The living zone is anchored on clusters formed by repeated visits (hubs), not on the home. Core/buffer radii apply around hub centres — buffer = max(500m, min(personal P90, 2km)). The home is only the map origin (for relative positions), never the judgement anchor.",
+  "연간 판정": "Annual verdict",
+  "생활권과 최근 변화 목적지": "Living zone and recently changed destinations",
 };
 
 export default dict;

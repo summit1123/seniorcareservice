@@ -953,6 +953,7 @@ function CaseRail({
   const decisionFilters = [
     { value: "all", label: t("전체") },
     { value: "Reward", label: t("우대") },
+    { value: "Neutral", label: t("기본") },
     { value: "Care Review", label: t("케어") },
     { value: "Hold", label: t("보류") }
   ];
@@ -1002,14 +1003,12 @@ function CaseRail({
                   {t(option.environment_display_name_ko ?? "이동환경")} · {changeTag}
                 </small>
               </span>
-              {/* 카드에는 대표 상태 하나만: 케어 > 보류 > 우대 > 기본.
-                  (내부는 2축 그대로 — 상세·판정 화면에서 두 축이 다 보인다.) */}
+              {/* 카드에는 대표 상태 하나만: 케어 > 보류 > 우대 > 기본 — 필터와 동일 기준. */}
               <span className="case-state-pills">
                 {(() => {
-                  const care = option.care_state === "Care Review";
-                  const hold = option.reward_state === "Hold" || option.care_state === "Hold";
-                  const className = care ? "care" : hold ? "hold" : decisionClass(option.reward_state ?? "Neutral").className;
-                  const label = care ? t("케어") : hold ? t("보류") : option.reward_state === "Reward" ? t("우대") : t("기본");
+                  const state = caseDisplayState(option);
+                  const className = state === "Care Review" ? "care" : state === "Hold" ? "hold" : decisionClass(state).className;
+                  const label = state === "Care Review" ? t("케어") : state === "Hold" ? t("보류") : state === "Reward" ? t("우대") : t("기본");
                   return <em className={`risk-pill ${className}`}>{label}</em>;
                 })()}
               </span>
@@ -1077,7 +1076,7 @@ function DecisionSummaryCard({
 
       <div className="summary-decision-stack">
         <div className={`risk-score-block ${reward.className}`}>
-          <span>{t("연간 우대 축")}</span>
+          <span>{t("연간 판정")}</span>
           <strong>{stateLabelKo(reward.label)}</strong>
           <b>{tf("후보점수 {score}점", { score: numberFormatter.format(driver.annual_score.annual_senior_safe_mileage_score) })}</b>
         </div>
@@ -1201,7 +1200,7 @@ function LivingZoneDecisionMap({
       <div className="decision-section-head">
         <div>
           <p className="eyebrow">{t("생활권 판단 지도")}</p>
-          <h2>{zoneIsReady(driver.zone_status) ? t("자택 중심 생활권과 최근 변화 목적지") : t("생활권 미확정 · 반복 거점 근거 부족")}</h2>
+          <h2>{zoneIsReady(driver.zone_status) ? t("생활권과 최근 변화 목적지") : t("생활권 미확정 · 반복 거점 근거 부족")}</h2>
         </div>
         {profile && zoneMap && zoneIsReady(driver.zone_status) ? (
           <div className="map-kpis">
@@ -2428,12 +2427,16 @@ function monthlyIntegratedEvidenceScore(row: MonthlyEvidence) {
   return Math.max(0, Math.min(100, score));
 }
 
+/** 카드에 표시되는 대표 상태와 동일한 우선순위: 케어 > 보류 > 우대 > 기본. */
+function caseDisplayState(option: DriverOption): "Care Review" | "Hold" | "Reward" | "Neutral" {
+  if (option.care_state === "Care Review") return "Care Review";
+  if (option.reward_state === "Hold" || option.care_state === "Hold") return "Hold";
+  if (option.reward_state === "Reward") return "Reward";
+  return "Neutral";
+}
+
 function matchesCaseFilter(option: DriverOption, filter: string) {
-  if (filter === "all") return true;
-  if (filter === "Reward") return option.reward_state === "Reward";
-  if (filter === "Care Review") return option.care_state === "Care Review";
-  if (filter === "Hold") return option.reward_state === "Hold" || option.care_state === "Hold";
-  return false;
+  return filter === "all" || caseDisplayState(option) === filter;
 }
 
 function zoneIsReady(status: string | undefined) {

@@ -1058,11 +1058,11 @@ p {
   gap: 8px;
   height: 38px;
   padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--panel);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--panel-soft);
   color: var(--muted);
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
 .search-box input {
@@ -1074,18 +1074,20 @@ p {
 }
 
 .search-box:focus-within {
+  background: var(--panel);
   border-color: color-mix(in srgb, var(--primary) 55%, var(--line));
 }
 
 .filter-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 3px;
   margin: 10px 0 12px;
   padding: 3px;
   border-radius: 10px;
   background: var(--panel-soft);
 }
+.filter-row button { flex: 1 1 30%; }
 
 .filter-row button {
   min-height: 30px;
