@@ -4615,7 +4615,7 @@ body {
 
 .case-row.selected {
   border-color: var(--blue);
-  box-shadow: inset 4px 0 0 var(--blue), 0 10px 22px rgba(14, 140, 116, 0.08);
+  box-shadow: 0 10px 22px rgba(14, 140, 116, 0.08);
 }
 
 .filter-row button.active {
