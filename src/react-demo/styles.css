@@ -1058,8 +1058,8 @@ p {
   gap: 8px;
   height: 38px;
   padding: 0 12px;
-  border: 1px solid transparent;
-  border-radius: 999px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
   background: var(--panel-soft);
   color: var(--muted);
   transition: border-color 0.15s ease, background 0.15s ease;
@@ -1076,6 +1076,7 @@ p {
 .search-box:focus-within {
   background: var(--panel);
   border-color: color-mix(in srgb, var(--primary) 55%, var(--line));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 12%, transparent);
 }
 
 .filter-row {
@@ -7792,3 +7793,9 @@ h1, h2, h3 { letter-spacing: -0.014em; }
   .care-donut { flex-wrap: wrap; }
   .lab-table-card { overflow-x: auto; }
 }
+
+/* 사례 리스트 스크롤바 — 기본 흰 트랙이 검색창 옆 흰 줄 착시를 만들던 것 정리 */
+.case-list { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+.case-list::-webkit-scrollbar { width: 6px; }
+.case-list::-webkit-scrollbar-track { background: transparent; }
+.case-list::-webkit-scrollbar-thumb { border-radius: 999px; background: var(--line-strong); }
