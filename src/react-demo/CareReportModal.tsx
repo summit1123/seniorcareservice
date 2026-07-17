@@ -76,7 +76,7 @@ function ContributionDonut({ report }: { report: CareReport }) {
   const R = 52;
   const CIRC = 2 * Math.PI * R;
   let offset = 0;
-  const tones = ["#0e8c74", "#28a88e", "#4c63b6", "#c2762b"];
+  const tones = ["#0b63f6", "#5bc2e7", "#4c63b6", "#c2762b"];
   return (
     <div className="care-donut">
       <svg viewBox="0 0 140 140" role="img" aria-label={t("지표별 기여 분해")}>
