@@ -6559,15 +6559,15 @@ body,
 :root {
   color-scheme: light;
   /* surfaces & ink */
-  --bg: #f6f8f6;
+  --bg: #f5f7fb;
   --panel: #ffffff;
-  --panel-soft: #eef3f0;
-  --ink: #14231f;
-  --muted: #55635e;
-  --faint: #8a9793;
-  --line: #e2e8e4;
-  --line-strong: #c8d3ce;
-  --navy: #14231f;
+  --panel-soft: #f7f9fe;
+  --ink: #111827;
+  --muted: #64748b;
+  --faint: #94a3b8;
+  --line: #e6eaf2;
+  --line-strong: #cbd5e1;
+  --navy: #111827;
   /* primary blue (components read --blue / --green as the primary) — FourSure 원본 블루·하늘색 계열 */
   --blue: #0b63f6;
   --blue-deep: #0a4fc2;
@@ -6620,15 +6620,15 @@ body,
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0f1714;
-  --panel: #16211d;
-  --panel-soft: #1c2a25;
-  --ink: #e9efec;
-  --muted: #a4b2ad;
-  --faint: #75847e;
-  --line: #26332e;
-  --line-strong: #37453f;
-  --navy: #e9efec;
+  --bg: #0d1220;
+  --panel: #131a2b;
+  --panel-soft: #182238;
+  --ink: #e8edf7;
+  --muted: #a3aec4;
+  --faint: #74809a;
+  --line: #243049;
+  --line-strong: #35435f;
+  --navy: #e8edf7;
   --blue: #5aa2ff;
   --blue-deep: #7cb5ff;
   --blue-soft: #12233f;
@@ -6664,15 +6664,15 @@ body,
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --bg: #0f1714;
-    --panel: #16211d;
-    --panel-soft: #1c2a25;
-    --ink: #e9efec;
-    --muted: #a4b2ad;
-    --faint: #75847e;
-    --line: #26332e;
-    --line-strong: #37453f;
-    --navy: #e9efec;
+    --bg: #0d1220;
+    --panel: #131a2b;
+    --panel-soft: #182238;
+    --ink: #e8edf7;
+    --muted: #a3aec4;
+    --faint: #74809a;
+    --line: #243049;
+    --line-strong: #35435f;
+    --navy: #e8edf7;
     --blue: #5aa2ff;
     --blue-deep: #7cb5ff;
     --blue-soft: #12233f;
@@ -7816,3 +7816,11 @@ h1, h2, h3 { letter-spacing: -0.014em; }
 .geo-roads path:nth-child(1) { stroke-width: 18; opacity: 0.14; }
 .geo-roads path:nth-child(2) { stroke-width: 11; opacity: 0.11; }
 .geo-roads path:nth-child(3) { stroke-width: 7; opacity: 0.09; }
+
+/* 원본 FourSure 페이지 배경 — 쿨블루 그라데이션 (라이트 전용) */
+body { background: linear-gradient(180deg, #f7faff 0%, #f2f5f9 48%, #f7f8fb 100%) fixed; }
+:root[data-theme="dark"] body { background: var(--bg); }
+@media (prefers-color-scheme: dark) {
+  body { background: var(--bg); }
+  :root[data-theme="light"] body { background: linear-gradient(180deg, #f7faff 0%, #f2f5f9 48%, #f7f8fb 100%) fixed; }
+}
