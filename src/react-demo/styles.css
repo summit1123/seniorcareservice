@@ -7773,11 +7773,22 @@ h1, h2, h3 { letter-spacing: -0.014em; }
   .care-overlay { padding: 0; }
   .care-modal { width: 100%; max-height: 100dvh; border-radius: 0; border: 0; }
   .care-modal-head { flex-wrap: wrap; }
+  .care-stage-track { overflow-x: hidden; padding: 14px 12px; }
+  /* 그리드/플렉스 자식의 min-width:auto 체인이 카드 폭을 뷰포트 밖으로 밀어내는
+     것을 차단 — 넓은 콘텐츠(타임라인)는 카드 안에서 가로 스크롤한다. */
+  .care-staff,
+  .care-sec-block,
+  .care-grid,
+  .care-card,
+  .care-verdict > div,
+  .care-staff-reco { min-width: 0; }
   .care-meta { grid-template-columns: 1fr; }
   .care-staff-actions { flex-direction: column; align-items: stretch; }
-  .care-approve { justify-content: center; }
+  .care-approve { justify-content: center; white-space: normal; }
   .care-stage-track.stage-customer .care-customer { grid-template-columns: 1fr; }
   .phone-frame { width: min(340px, 92vw); }
-  .care-timeline { overflow-x: auto; }
+  .care-timeline { overflow-x: auto; padding-bottom: 6px; }
+  .care-timeline-col { flex: 0 0 30px; }
+  .care-donut { flex-wrap: wrap; }
   .lab-table-card { overflow-x: auto; }
 }
