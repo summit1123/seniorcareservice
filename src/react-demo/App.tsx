@@ -1269,7 +1269,7 @@ function LivingZoneDecisionMap({
         <span className="rl-safeout"><i />{t("생활권 밖 안정 · 중립")}</span>
         <span className="rl-risk"><i />{t("동시변화 검토")}</span>
       </div>
-      <p className="map-formula-note">{t("완충권 = max(500m, min(개인 P90, 2km)) — 군집이 만들어진 뒤 적용하는 상품 인정 반경입니다.")}</p>
+      <p className="map-formula-note">{t("생활권의 기준은 자택이 아니라 반복 방문이 만든 군집(거점)입니다. 중심권·완충권은 그 거점 중심에 적용되는 상품 인정 반경 — 완충권 = max(500m, min(개인 P90, 2km)). 자택은 지도의 원점(상대 위치 기준)일 뿐 판정 기준이 아닙니다.")}</p>
     </section>
   );
 }
