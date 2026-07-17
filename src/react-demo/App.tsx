@@ -414,6 +414,11 @@ function App() {
           />
 
           <section className="decision-main">
+            <EnvSwitcher
+              options={directory.driver_options}
+              selectedCustomerId={selectedCustomerId}
+              onSelect={selectProfile}
+            />
             <DecisionSummaryCard
               driver={driver}
               zoneMap={zoneMap}
@@ -939,6 +944,37 @@ function DecisionLegend({ label, detail, className }: { label: string; detail: s
   );
 }
 
+
+/** 같은 사람을 3개 이동환경에서 비교 — 회의 결정: 좌측은 사람, 환경은 중앙에서 전환. */
+function EnvSwitcher({ options, selectedCustomerId, onSelect }: {
+  options: DriverOption[];
+  selectedCustomerId: string;
+  onSelect: (id: string) => void;
+}) {
+  const current = options.find((o) => o.customer_id === selectedCustomerId);
+  if (!current) return null;
+  const person = personaName(current.customer_id);
+  const siblings = options.filter((o) => personaName(o.customer_id) === person);
+  if (siblings.length < 2) return null;
+  return (
+    <div className="env-switch" role="tablist" aria-label={t("이동환경 비교")}>
+      <span>{t("같은 사람 · 환경 비교")}</span>
+      {siblings.map((o) => (
+        <button
+          key={o.customer_id}
+          type="button"
+          role="tab"
+          aria-selected={o.customer_id === selectedCustomerId}
+          className={o.customer_id === selectedCustomerId ? "active" : ""}
+          onClick={() => onSelect(o.customer_id)}
+        >
+          {t(o.environment_display_name_ko ?? o.environment_id ?? "")}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function CaseRail({
   options,
   selectedCustomerId,
@@ -968,12 +1004,25 @@ function CaseRail({
     if (b.customer_id === selectedCustomerId) return 1;
     return personaIndex(a.customer_id) - personaIndex(b.customer_id);
   });
+  // 회의 결정: 좌측은 사람 60명만 — 같은 사람의 3개 환경 시나리오는 중앙의
+  // 환경 스위처로 비교한다. 대표 카드는 현재 선택된 환경의 시나리오.
+  const currentEnvId = options.find((o) => o.customer_id === selectedCustomerId)?.environment_id;
+  const personMap = new Map<string, DriverOption[]>();
+  ordered.forEach((o) => {
+    const key = personaName(o.customer_id);
+    const arr = personMap.get(key) ?? [];
+    arr.push(o);
+    personMap.set(key, arr);
+  });
+  const personRows = [...personMap.values()].map(
+    (arr) => arr.find((o) => o.environment_id === currentEnvId) ?? arr[0]
+  );
 
   return (
     <aside className="case-rail" aria-label={t("가상 시니어 사례 목록")}>
       <div className="rail-heading">
         <p className="eyebrow">{t("가상 사례")}</p>
-        <h2>{tf("{count}개 시나리오", { count: options.length })}</h2>
+        <h2>{tf("{count}명 · 환경 3종 시나리오", { count: personMap.size })}</h2>
       </div>
       <label className="search-box">
         <Search size={15} />
@@ -987,7 +1036,7 @@ function CaseRail({
         ))}
       </div>
       <div className="case-list">
-        {ordered.map((option) => {
+        {personRows.map((option) => {
           const changeTag = coreChangeTag(option.persona_type);
           return (
             <button
@@ -999,9 +1048,7 @@ function CaseRail({
             >
               <span>
                 <strong>{personaName(option.customer_id)}</strong>
-                <small>
-                  {t(option.environment_display_name_ko ?? "이동환경")} · {changeTag}
-                </small>
+                <small>{changeTag}</small>
               </span>
               {/* 카드에는 대표 상태 하나만: 케어 > 보류 > 우대 > 기본 — 필터와 동일 기준. */}
               <span className="case-state-pills">
@@ -1298,8 +1345,7 @@ function AnalysisTabs({
     { key: "Monthly Pattern", label: t("월별 패턴") },
     { key: "Risk Signals", label: t("위험 신호") },
     { key: "Premium Simulation", label: t("요율 샌드박스") },
-    { key: "Algorithm Lab", label: t("알고리즘 실험실") },
-    { key: "Report", label: t("리포트") }
+    { key: "Algorithm Lab", label: t("알고리즘 실험실") }
   ];
 
   return (
@@ -1455,13 +1501,13 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
     <div className="premium-simulation">
       <p className="premium-basis">{t("연간 할인율과 연 보험료 기준의 비교입니다")}</p>
       <div>
-        <span>{t("기존 마일리지 기준 · 국내")}</span>
+        <span>{t("기존 마일리지 할인율 · 국내")}</span>
         <strong>{percent(existingRate)}</strong>
         <i><b style={{ width: `${(existingRate / maxRate) * 100}%` }} /></i>
         <small>{tf("적용 시 연 보험료 {amount}", { amount: krwWithUsd(comparison.existing_net_premium_krw) })}</small>
       </div>
       <div>
-        <span>{t("마실 제안 산식 · 후보")}</span>
+        <span>{t("마실 제안 할인율 · 후보")}</span>
         <strong>{percent(proposedRate)}</strong>
         <i><b style={{ width: `${(proposedRate / maxRate) * 100}%` }} /></i>
         <small>{tf("적용 시 연 보험료 {amount}", { amount: krwWithUsd(comparison.proposed_net_premium_krw) })}</small>
@@ -1528,11 +1574,11 @@ function DecisionPanel({
 
       <div className="decision-money-stack">
         <div>
-          <span>{t("기존 마일리지 기준")}</span>
+          <span>{t("기존 마일리지 기준 할인율")}</span>
           <strong>{percent(comparison.existing_discount_rate_pct)}</strong>
         </div>
         <div>
-          <span>{t("마실 제안 후보")}</span>
+          <span>{t("마실 제안 할인율 · 후보")}</span>
           <strong>{percent(comparison.proposed_discount_rate_pct)}</strong>
           <small>{tf("통합점수 {score}점", { score: numberFormatter.format(comparison.annual_senior_safe_mileage_score) })}</small>
         </div>

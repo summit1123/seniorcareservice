@@ -7824,3 +7824,33 @@ body { background: linear-gradient(180deg, #f7faff 0%, #f2f5f9 48%, #f7f8fb 100%
   body { background: var(--bg); }
   :root[data-theme="light"] body { background: linear-gradient(180deg, #f7faff 0%, #f2f5f9 48%, #f7f8fb 100%) fixed; }
 }
+
+/* 환경 스위처 — 같은 사람의 3개 환경 시나리오 비교 */
+.env-switch { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.env-switch > span { margin-right: 4px; color: var(--muted); font-size: 10.5px; font-weight: 900; }
+.env-switch button { padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); color: var(--muted); font-size: 12px; font-weight: 800; cursor: pointer; }
+.env-switch button.active { border-color: var(--blue); background: var(--blue); color: #fff; }
+
+/* 본인 앱 — 눈에 띈 변화 / 월별 점수 / 가족 공유 옵트인 */
+.fam-changes { margin-top: 12px; }
+.fam-changes > span { display: block; color: var(--app-sub); font-size: 11px; font-weight: 900; }
+.fam-change-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; padding: 10px 12px; border-left: 3px solid var(--app-warn); border-radius: 12px; background: var(--app-card); }
+.fam-change-item.warn { border-left-color: var(--app-accent); }
+.fam-change-item.calm { border-left-color: var(--app-line); }
+.fam-change-item p { color: var(--app-ink); font-size: 12.5px; line-height: 1.5; }
+.fam-change-item small { color: var(--app-sub); font-size: 11px; }
+.fam-link { flex: none; border: 0; background: none; color: var(--app-accent); font-size: 11.5px; font-weight: 800; cursor: pointer; padding: 0; }
+.my-scores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.my-scores div { padding: 10px 6px; border-radius: 14px; background: var(--app-card); border: 1px solid var(--app-line); text-align: center; }
+.my-scores span { display: block; color: var(--app-sub); font-size: 9.5px; font-weight: 800; }
+.my-scores b { display: block; margin-top: 3px; color: var(--app-ink); font-size: 17px; font-weight: 950; font-variant-numeric: tabular-nums; }
+.fam-share { margin-top: 8px; width: 100%; padding: 11px 0; border: 1px dashed var(--app-line); border-radius: 999px; background: transparent; color: var(--app-sub); font-size: 12px; font-weight: 800; cursor: pointer; }
+.fam-optin { margin-top: 8px; color: var(--app-sub); font-size: 10.5px; line-height: 1.5; }
+.care-baseline-callout.sub { margin-top: 4px; background: var(--panel-soft); color: var(--muted); font-weight: 700; }
+
+/* 모바일: 리포트 생성 버튼 고정 — 심사위원 QR 접속 동선 */
+@media (max-width: 720px) {
+  .report-button { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 45; justify-content: center; box-shadow: 0 12px 30px rgba(11, 99, 246, 0.35); }
+  .decision-panel { padding-bottom: 76px; }
+  .env-switch { overflow-x: auto; flex-wrap: nowrap; }
+}
