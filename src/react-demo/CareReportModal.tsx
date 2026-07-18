@@ -560,14 +560,10 @@ export function CareReportModal({
                       {riskTypeLines.length ? riskTypeLines.map(([typeKey, count], idx) => (
                         <div key={typeKey} className="fam-change-item warn">
                           <p>{tf(RISK_TYPE_LINES[typeKey] ?? "위험 신호가 {n}회 있었어요", { n: count })}</p>
-                          {idx === 0 ? (
-                            <button type="button" className="fam-link" onClick={onClose}>{t("자세한 위치 알아보기")}</button>
-                          ) : null}
                         </div>
                       )) : trailRiskDelta !== null && trailRiskDelta >= 1 ? (
                         <div className="fam-change-item warn">
                           <p>{tf("급제동 같은 위험 신호가 최근 두 달보다 {pct}%p 늘었어요", { pct: numberFmt.format(trailRiskDelta) })}</p>
-                          <button type="button" className="fam-link" onClick={onClose}>{t("자세한 위치 알아보기")}</button>
                         </div>
                       ) : null}
                       <div className="fam-change-item calm">
