@@ -7855,6 +7855,7 @@ body { background: linear-gradient(180deg, #f7faff 0%, #f2f5f9 48%, #f7f8fb 100%
     position: fixed;
     left: 12px;
     right: 12px;
+    width: auto;
     bottom: calc(12px + env(safe-area-inset-bottom, 0px));
     z-index: 45;
     justify-content: center;
@@ -7904,6 +7905,7 @@ body { background: linear-gradient(180deg, #f7faff 0%, #f2f5f9 48%, #f7f8fb 100%
     position: fixed;
     left: 12px;
     right: 12px;
+    width: auto;
     bottom: calc(10px + env(safe-area-inset-bottom, 0px));
     z-index: 45;
     justify-content: center;
@@ -7913,7 +7915,20 @@ body { background: linear-gradient(180deg, #f7faff 0%, #f2f5f9 48%, #f7f8fb 100%
   .report-progress { display: none; }
 
   /* 월 보드·요약 카드류 압축 */
-  .month-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* 월 보드: 가로 스크롤 스트립(스냅) — 14칸을 세로로 쌓지 않는다 */
+  .month-board {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 6px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .month-board .month-card { flex: 0 0 118px; scroll-snap-align: center; }
+
+  /* 원장 비교표(고정 800px): 표 자체를 가로 스크롤 컨테이너로 */
+  .comparison-ledger { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .decision-summary-card { padding: 14px; gap: 14px; }
   .premium-simulation > div strong { font-size: 22px; }
   .filter-row button { min-height: 40px; }
