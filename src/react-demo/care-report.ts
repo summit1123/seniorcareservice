@@ -284,13 +284,22 @@ export function buildLocalCareReport(
       data_coverage_pct: selected.data_coverage_pct ?? 0,
       monthly_distance_km: selected.monthly_total_distance_km
     },
-    pattern_timeline: rows.map((row) => ({
-      month: row.service_month,
-      change_pct: Math.min(100, row.mobility_change_index_pct ?? row.out_zone_pattern_change_risk),
-      care: row.care_state === "Care Review",
-      baseline: row.period_role === "baseline",
-      selected: row.month === selected.month
-    })),
+    // 타임라인 막대 = 각 달을 '그 달의 직전 2개월 평균'과 비교한 변화량(감지 신호와
+    // 동일한 월 스케일). 케어 유지 상태는 주황색 플래그로 별도 표시된다.
+    pattern_timeline: rows.map((row, idx) => {
+      const cur = row.mobility_change_index_pct ?? row.out_zone_pattern_change_risk;
+      const prevVals = rows
+        .slice(Math.max(0, idx - 2), idx)
+        .map((r) => r.mobility_change_index_pct ?? r.out_zone_pattern_change_risk);
+      const prevAvg = prevVals.length ? prevVals.reduce((a, b) => a + b, 0) / prevVals.length : 0;
+      return {
+        month: row.service_month,
+        change_pct: idx < 2 ? 0 : Math.max(0, Math.min(100, cur - prevAvg)),
+        care: row.care_state === "Care Review",
+        baseline: row.period_role === "baseline",
+        selected: row.month === selected.month
+      };
+    }),
     weight_contributions: contributions,
     xai_reasons: xai,
     analyst_report_ko: analystParagraphs.join("\n\n"),

@@ -821,6 +821,8 @@ const dict: Record<string, string> = {
   "급제동 같은 위험 신호가 최근 두 달보다 {pct}%p 늘었어요": "Risk signals like hard braking rose {pct}%p vs the last two months",
   "③ 케어 축 게이트 — 직전 2개월 대비 두 변화가 같은 달 동시 급증하면 발동, 원래 생활로 복귀할 때까지 유지": "③ Care-axis gate — fires when both changes spike in the same month vs the previous two months; stays on until the pattern returns to the original life",
   "케어 유지 기준 · 원래 생활({b1}·{b2}) 대비 아직 {pct}%p 벗어남 — 복귀 시 해제": "Care-hold basis · still {pct}%p away from the original life ({b1}·{b2}) — released on return",
+  "이동 변화 타임라인 — 각 달은 직전 2개월 대비": "Mobility-change timeline — each month vs its previous two months",
+  "점선 = 생활권 학습 기간 · 주황 = 케어 검토 월(유지 포함) · 테두리 = 선택 월": "Dashed = zone-learning period · amber = care-review months (incl. holds) · outline = selected month",
 };
 
 export default dict;

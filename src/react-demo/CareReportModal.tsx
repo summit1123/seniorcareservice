@@ -330,7 +330,7 @@ export function CareReportModal({
                   <SectionMark n="03" label={t("근거 차트")} />
                   <div className="care-grid">
                     <div className="care-card">
-                      <span>{tf("이동 변화 타임라인 — 기준선 {b}개월 + 관찰 {n}개월", { b: baselineCount, n: Math.max(0, timeline.length - baselineCount) })}</span>
+                      <span>{t("이동 변화 타임라인 — 각 달은 직전 2개월 대비")}</span>
                       {trailMobDelta !== null ? (
                         <p className="care-baseline-callout">
                           {tf("선택 월 {month} — 직전 2개월({p1}·{p2}) 대비 이동 변화 {delta}%p", {
@@ -349,7 +349,7 @@ export function CareReportModal({
                         })}
                       </p>
                       <PatternTimeline report={report} />
-                      <small>{t("점선 = 기준선 관찰 · 주황 = 케어 검토 월 · 테두리 = 선택 월")}</small>
+                      <small>{t("점선 = 생활권 학습 기간 · 주황 = 케어 검토 월(유지 포함) · 테두리 = 선택 월")}</small>
                     </div>
                     <div className="care-card">
                       <span>{t("지표별 기여 분해")}</span>

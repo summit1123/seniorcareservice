@@ -7196,6 +7196,7 @@ h1, h2, h3 { letter-spacing: -0.014em; }
 .care-timeline-col i b { display: block; width: 100%; border-radius: 6px 6px 0 0; background: var(--green); }
 .care-timeline-col.baseline i { border: 1px dashed var(--line-strong); background: transparent; }
 .care-timeline-col.baseline i b { background: var(--line-strong); }
+.care-timeline-col.care i { background: var(--amber-soft); }
 .care-timeline-col.care i b { background: var(--care); }
 .care-timeline-col.selected i { outline: 2px solid var(--ink); outline-offset: 1px; }
 .care-timeline-col span { color: var(--faint); font-size: 8.5px; font-weight: 700; white-space: nowrap; }
