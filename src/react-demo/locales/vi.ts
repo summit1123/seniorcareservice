@@ -823,6 +823,17 @@ const dict: Record<string, string> = {
   "케어 유지 기준 · 원래 생활({b1}·{b2}) 대비 아직 {pct}%p 벗어남 — 복귀 시 해제": "Cơ sở duy trì chăm sóc · vẫn lệch {pct}%p so với nếp sống ban đầu ({b1}·{b2}) — trở lại là gỡ bỏ",
   "이동 변화 타임라인 — 각 달은 직전 2개월 대비": "Dòng thời gian thay đổi di chuyển — mỗi tháng so với hai tháng liền trước",
   "점선 = 생활권 학습 기간 · 주황 = 케어 검토 월(유지 포함) · 테두리 = 선택 월": "Nét đứt = giai đoạn học vùng sống · cam = tháng rà soát (gồm duy trì) · viền = tháng đã chọn",
+  "{month} 한 달 동안 {km}km를 주행했고 데이터 커버리지는 {cov}%였습니다. 첫 2개월({b1}·{b2})은 생활권 학습 기간이며, 월 평가는 각 달을 직전 2개월과 비교합니다.": "Trong {month}, đã lái {km}km với độ phủ dữ liệu {cov}%. Hai tháng đầu ({b1}·{b2}) là giai đoạn học vùng sống; mỗi tháng được đánh giá so với hai tháng liền trước.",
+  "직전 2개월 대비 이동 변화가 급증해 케어가 발동됐고, 원래 생활 대비 {mob}%p 벗어난 상태가 이어지고 있습니다. 생활권 안 안전점수 {inScore}점, 밖 {outScore}점 — 낯선 경로에서의 행동 변화가 주된 신호입니다.": "Di chuyển tăng vọt so với hai tháng trước đã kích hoạt Chăm sóc, và mẫu hình vẫn lệch {mob}%p so với nếp sống ban đầu. An toàn trong vùng {inScore}, ngoài vùng {outScore} — tín hiệu chính là thay đổi hành vi trên tuyến lạ.",
+  "직전 2개월 대비 이동 변화 {trail}%p로 급변 신호가 없습니다. 생활권 안 {inScore}점·밖 {outScore}점으로 행동 신호도 안정적입니다.": "Thay đổi di chuyển là {trail}%p so với hai tháng trước — không có tín hiệu tăng vọt. Trong vùng {inScore}, ngoài vùng {outScore}; tín hiệu hành vi ổn định.",
+  "이동과 위험행동 변화가 같은 달에 동시 급증해 케어가 발동됐으며, 원래 생활로 복귀할 때까지 유지됩니다. 자동 감액이나 제재 없이 사람 검토와 예방 지원 연결만 작동합니다.": "Thay đổi di chuyển và hành vi rủi ro tăng vọt cùng tháng, kích hoạt Chăm sóc, duy trì đến khi trở lại nếp sống ban đầu. Không giảm tự động hay chế tài — chỉ có rà soát con người và kết nối hỗ trợ phòng ngừa.",
+  "케어 축에서는 동시 급증 신호가 없습니다 — 위험행동 변화 {risk}%p로 예방 개입이 필요한 달이 아닙니다.": "Không có tín hiệu đồng tăng vọt trên trục Chăm sóc — thay đổi hành vi rủi ro {risk}%p, tháng này không cần can thiệp phòng ngừa.",
+  "다음 달에도 직전 2개월 대비 변화와 생활권 복귀 여부를 계속 관찰합니다. 이번 리포트에는 예방 지원 {n}건이 제안되었고, 담당자 확정 후 고객 앱으로 안내됩니다.": "Tháng tới tiếp tục quan sát thay đổi so với hai tháng trước và việc trở lại vùng sống. Báo cáo đề xuất {n} hỗ trợ phòng ngừa, gửi tới ứng dụng khách hàng sau khi nhân viên xác nhận.",
+  "다음 달에도 직전 2개월 대비 변화와 생활권 복귀 여부를 계속 관찰합니다. 이번 달 발동된 지원 신호는 없어 리포트만 발송됩니다.": "Tháng tới tiếp tục quan sát thay đổi so với hai tháng trước và việc trở lại vùng. Tháng này không có tín hiệu hỗ trợ nên chỉ gửi báo cáo.",
+  "직전 2개월 대비 급증으로 발동 — 원래 생활 대비 {mob}%p 이탈 지속(복귀 시 해제)": "Kích hoạt do tăng vọt so với hai tháng trước — vẫn lệch {mob}%p so với nếp sống ban đầu (trở lại là gỡ)",
+  "직전 2개월 대비 {trail}%p — 자연 변동 범위": "{trail}%p so với hai tháng trước — dao động tự nhiên",
+  "이동 변화와 같은 달 동시 급증 — 원래 생활 대비 {risk}%p 이탈로 케어 유지": "Đồng tăng vọt cùng tháng với thay đổi di chuyển — duy trì Chăm sóc với mức lệch {risk}%p",
+  "직전 2개월 대비 {trail}%p — 급증 신호 없음": "{trail}%p so với hai tháng trước — không có tín hiệu tăng vọt",
 };
 
 export default dict;

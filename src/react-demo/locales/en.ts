@@ -823,6 +823,17 @@ const dict: Record<string, string> = {
   "케어 유지 기준 · 원래 생활({b1}·{b2}) 대비 아직 {pct}%p 벗어남 — 복귀 시 해제": "Care-hold basis · still {pct}%p away from the original life ({b1}·{b2}) — released on return",
   "이동 변화 타임라인 — 각 달은 직전 2개월 대비": "Mobility-change timeline — each month vs its previous two months",
   "점선 = 생활권 학습 기간 · 주황 = 케어 검토 월(유지 포함) · 테두리 = 선택 월": "Dashed = zone-learning period · amber = care-review months (incl. holds) · outline = selected month",
+  "{month} 한 달 동안 {km}km를 주행했고 데이터 커버리지는 {cov}%였습니다. 첫 2개월({b1}·{b2})은 생활권 학습 기간이며, 월 평가는 각 달을 직전 2개월과 비교합니다.": "In {month}, the driver covered {km}km with {cov}% data coverage. The first two months ({b1}·{b2}) are the zone-learning period; each month is evaluated against its previous two months.",
+  "직전 2개월 대비 이동 변화가 급증해 케어가 발동됐고, 원래 생활 대비 {mob}%p 벗어난 상태가 이어지고 있습니다. 생활권 안 안전점수 {inScore}점, 밖 {outScore}점 — 낯선 경로에서의 행동 변화가 주된 신호입니다.": "Mobility spiked versus the previous two months, firing Care, and the pattern remains {mob}%p away from the original life. In-zone safety {inScore}, out-of-zone {outScore} — behaviour change on unfamiliar routes is the main signal.",
+  "직전 2개월 대비 이동 변화 {trail}%p로 급변 신호가 없습니다. 생활권 안 {inScore}점·밖 {outScore}점으로 행동 신호도 안정적입니다.": "Mobility change is {trail}%p versus the previous two months — no spike signal. In-zone {inScore} and out-of-zone {outScore}; behavioural signals are stable.",
+  "이동과 위험행동 변화가 같은 달에 동시 급증해 케어가 발동됐으며, 원래 생활로 복귀할 때까지 유지됩니다. 자동 감액이나 제재 없이 사람 검토와 예방 지원 연결만 작동합니다.": "Mobility and risky-behaviour changes spiked in the same month, firing Care, which stays on until the pattern returns to the original life. No automatic reductions or sanctions — only human review and preventive-support linkage.",
+  "케어 축에서는 동시 급증 신호가 없습니다 — 위험행동 변화 {risk}%p로 예방 개입이 필요한 달이 아닙니다.": "No co-spike signal on the Care axis — with risky-behaviour change at {risk}%p, this month needs no preventive intervention.",
+  "다음 달에도 직전 2개월 대비 변화와 생활권 복귀 여부를 계속 관찰합니다. 이번 리포트에는 예방 지원 {n}건이 제안되었고, 담당자 확정 후 고객 앱으로 안내됩니다.": "Next month we keep watching change versus the previous two months and whether the pattern returns to the living zone. This report proposes {n} preventive supports, delivered to the customer app after staff confirmation.",
+  "다음 달에도 직전 2개월 대비 변화와 생활권 복귀 여부를 계속 관찰합니다. 이번 달 발동된 지원 신호는 없어 리포트만 발송됩니다.": "Next month we keep watching change versus the previous two months and zone return. No support signals fired this month, so only the report is sent.",
+  "직전 2개월 대비 급증으로 발동 — 원래 생활 대비 {mob}%p 이탈 지속(복귀 시 해제)": "Fired by a spike vs the previous two months — still {mob}%p away from the original life (released on return)",
+  "직전 2개월 대비 {trail}%p — 자연 변동 범위": "{trail}%p vs the previous two months — natural variation",
+  "이동 변화와 같은 달 동시 급증 — 원래 생활 대비 {risk}%p 이탈로 케어 유지": "Co-spiked with the mobility change — Care held at {risk}%p away from the original life",
+  "직전 2개월 대비 {trail}%p — 급증 신호 없음": "{trail}%p vs the previous two months — no spike signal",
 };
 
 export default dict;

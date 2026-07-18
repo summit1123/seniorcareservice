@@ -155,6 +155,16 @@ export function buildLocalCareReport(
   const risk = selected.risky_behavior_change_index_pct ?? 0;
   const integrated = selected.monthly_integrated_evidence_score ?? null;
 
+  const selIdx = rows.findIndex((r) => r.month === selected.month);
+  const trailOf = (pick: (r: MonthlyEvidence) => number) => {
+    if (selIdx < 2) return 0;
+    const win = rows.slice(selIdx - 2, selIdx).map(pick);
+    return pick(selected) - win.reduce((a, b) => a + b, 0) / win.length;
+  };
+  const trailMob = trailOf((r) => r.mobility_change_index_pct ?? r.out_zone_pattern_change_risk);
+  const trailRisk = trailOf((r) => r.risky_behavior_change_index_pct ?? 0);
+
+
   const contributions = [
     { key: "mileage", label_ko: t("주행거리"), score: selected.mileage_score as number | null, weight_pct: weights.mileage },
     { key: "in_zone_safe", label_ko: t("생활권 안 안전"), score: selected.in_zone_safe_driving_score, weight_pct: weights.in_zone_safe },
@@ -182,8 +192,8 @@ export function buildLocalCareReport(
       label_ko: t("이동 맥락 변화"),
       direction: mob >= rules.care_mobility_change_threshold ? "attention" : "neutral",
       note_ko: mob >= rules.care_mobility_change_threshold
-        ? tf("기준선 대비 생활권 밖 비중이 {mob}%p 상승 — 케어 임계({th}%p) 초과", { mob: mob.toFixed(1), th: rules.care_mobility_change_threshold })
-        : tf("기준선 대비 {mob}%p — 임계 이내의 자연스러운 변동", { mob: mob.toFixed(1) })
+        ? tf("직전 2개월 대비 급증으로 발동 — 원래 생활 대비 {mob}%p 이탈 지속(복귀 시 해제)", { mob: mob.toFixed(1) })
+        : tf("직전 2개월 대비 {trail}%p — 자연 변동 범위", { trail: trailMob.toFixed(1) })
     },
     {
       label_ko: t("생활권 안 안전"),
@@ -203,8 +213,8 @@ export function buildLocalCareReport(
       label_ko: t("위험행동 변화"),
       direction: risk >= rules.care_risky_behavior_threshold ? "attention" : "positive",
       note_ko: risk >= rules.care_risky_behavior_threshold
-        ? tf("기준선 대비 {risk}%p 상승 — 이동 변화와 함께 나타나 케어 게이트 충족", { risk: risk.toFixed(1) })
-        : tf("기준선 대비 {risk}%p — 급증 신호 없음", { risk: risk.toFixed(1) })
+        ? tf("이동 변화와 같은 달 동시 급증 — 원래 생활 대비 {risk}%p 이탈로 케어 유지", { risk: risk.toFixed(1) })
+        : tf("직전 2개월 대비 {trail}%p — 급증 신호 없음", { trail: trailRisk.toFixed(1) })
     }
   ];
 
@@ -222,16 +232,16 @@ export function buildLocalCareReport(
   const outScoreText = selected.out_zone_safe_driving_score === null
     ? t("관측 없음") : `${selected.out_zone_safe_driving_score}`;
   const analystParagraphs = [
-    `**${t("이번 달 운전")}.** ` + tf("{month} 한 달 동안 {km}km를 주행했고 데이터 커버리지는 {cov}%였습니다. 평가는 첫 2개월({b1}·{b2})을 개인 기준선으로 고정하고, 그 이후의 변화만 봅니다.", {
+    `**${t("이번 달 운전")}.** ` + tf("{month} 한 달 동안 {km}km를 주행했고 데이터 커버리지는 {cov}%였습니다. 첫 2개월({b1}·{b2})은 생활권 학습 기간이며, 월 평가는 각 달을 직전 2개월과 비교합니다.", {
       month: selected.service_month, km: selected.monthly_total_distance_km,
       cov: selected.data_coverage_pct ?? 0, b1: baselineMonths[0] ?? "", b2: baselineMonths[1] ?? ""
     }),
-    `**${t("우려 지점")}.** ` + (mob >= rules.care_mobility_change_threshold
-      ? tf("이동 맥락에서는 생활권 밖 비중이 기준선 대비 {mob}%p 상승해 케어 임계({th}%p)를 초과했습니다. 생활권 안 안전점수 {inScore}점, 생활권 밖 {outScore}점 — 낯선 경로에서의 행동 변화가 주된 신호입니다.", {
-          mob: mob.toFixed(1), th: rules.care_mobility_change_threshold, inScore: inScoreText, outScore: outScoreText
+    `**${t("우려 지점")}.** ` + (careGate
+      ? tf("직전 2개월 대비 이동 변화가 급증해 케어가 발동됐고, 원래 생활 대비 {mob}%p 벗어난 상태가 이어지고 있습니다. 생활권 안 안전점수 {inScore}점, 밖 {outScore}점 — 낯선 경로에서의 행동 변화가 주된 신호입니다.", {
+          mob: mob.toFixed(1), inScore: inScoreText, outScore: outScoreText
         })
-      : tf("이동 맥락에서는 생활권 밖 비중 변화가 {mob}%p로 임계({th}%p) 이내였습니다. 생활권 안 {inScore}점·밖 {outScore}점으로 행동 신호는 안정적입니다.", {
-          mob: mob.toFixed(1), th: rules.care_mobility_change_threshold, inScore: inScoreText, outScore: outScoreText
+      : tf("직전 2개월 대비 이동 변화 {trail}%p로 급변 신호가 없습니다. 생활권 안 {inScore}점·밖 {outScore}점으로 행동 신호도 안정적입니다.", {
+          trail: trailMob.toFixed(1), inScore: inScoreText, outScore: outScoreText
         })),
     `**${t("우대 축 판단")}.** ` + (integrated !== null
       ? tf("우대 축 통합점수는 {score}점(임계 {th}점)입니다. 위치 자체로 감점하지 않으며, 주행거리·생활권 안/밖 안전·패턴 안정성 네 지표의 가중 합만 반영됩니다.", {
@@ -239,13 +249,11 @@ export function buildLocalCareReport(
         })
       : t("우대 축 통합점수는 이번 달 산출되지 않았습니다(데이터 요건 미충족은 불이익 사유가 아닙니다).")),
     `**${t("케어 축 판단")}.** ` + (careGate
-      ? tf("케어 축에서는 위험행동 변화 {risk}%p가 이동 변화와 같은 달에 나타나 동시변화 게이트를 충족했습니다. 이 신호는 자동 감액이나 제재로 이어지지 않으며, 사람 검토와 예방 지원 연결만 발동합니다.", { risk: risk.toFixed(1) })
-      : tf("케어 축에서는 위험행동 변화가 {risk}%p로 게이트 기준({th}%p) 미만 — 예방 개입이 필요한 신호는 없습니다.", {
-          risk: risk.toFixed(1), th: rules.care_risky_behavior_threshold
-        })),
+      ? t("이동과 위험행동 변화가 같은 달에 동시 급증해 케어가 발동됐으며, 원래 생활로 복귀할 때까지 유지됩니다. 자동 감액이나 제재 없이 사람 검토와 예방 지원 연결만 작동합니다.")
+      : tf("케어 축에서는 동시 급증 신호가 없습니다 — 위험행동 변화 {risk}%p로 예방 개입이 필요한 달이 아닙니다.", { risk: risk.toFixed(1) })),
     `**${t("권고와 다음 달")}.** ` + (aftercareItems.length
-      ? tf("다음 달에도 같은 기준선 대비 이동·행동 변화를 계속 관찰합니다. 이번 리포트에는 예방 지원 {n}건이 제안되었고, 담당자 확정 후 가족 앱으로 전달됩니다.", { n: aftercareItems.length })
-      : t("다음 달에도 같은 기준선 대비 이동·행동 변화를 계속 관찰합니다. 이번 달 발동된 지원 신호는 없어 리포트만 발송됩니다."))
+      ? tf("다음 달에도 직전 2개월 대비 변화와 생활권 복귀 여부를 계속 관찰합니다. 이번 리포트에는 예방 지원 {n}건이 제안되었고, 담당자 확정 후 고객 앱으로 안내됩니다.", { n: aftercareItems.length })
+      : t("다음 달에도 직전 2개월 대비 변화와 생활권 복귀 여부를 계속 관찰합니다. 이번 달 발동된 지원 신호는 없어 리포트만 발송됩니다."))
   ];
 
   const shortName = driverNameKo.replace(/\s*\(.*\)\s*$/, "");
