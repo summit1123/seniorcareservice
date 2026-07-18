@@ -966,7 +966,12 @@ def classify_month(
     risk_changed = float(metrics.get("risky_behavior_change_index", 0.0)) >= float(
         thresholds["risky_behavior_change_index"]
     )
-    care_state = "care_review" if mobility_changed and risk_changed else "none"
+    two_stage = metrics.get("care_two_stage_open")
+    care_state = (
+        ("care_review" if two_stage else "none")
+        if two_stage is not None
+        else ("care_review" if mobility_changed and risk_changed else "none")
+    )
     reason_codes = ["SUFFICIENT_EVIDENCE"]
     if observed_weight < total_weight:
         reason_codes.append("PARTIAL_SCORE_COMPONENTS_RENORMALIZED")
@@ -1115,6 +1120,31 @@ def _monthly_results(
     baseline_risk = sum(raw[month]["risky_behavior_rate"] for month in BASELINE_MONTHS) / len(BASELINE_MONTHS)
     baseline_outer = sum(raw[month]["outer_visit_share"] for month in BASELINE_MONTHS) / len(BASELINE_MONTHS)
 
+    # 케어 2단계 규칙(회의 확정): 월 평가는 월 스케일로 —
+    #   감지  = 직전 2개월 평균 대비 이동·위험 동시 급변
+    #   유지  = 발동 후 원래 생활(장기 기준선)로 복귀할 때까지 케어 유지
+    # mobility/risky_change_index(장기 이탈도)는 복귀 판단·표시용으로 그대로 둔다.
+    care_open = False
+    trailing_flags: dict[str, dict[str, bool]] = {}
+    ordered_months = list(ALL_MONTHS)
+    mob_th = float(product_rules["care_thresholds"]["mobility_change_index"])
+    risk_th = float(product_rules["care_thresholds"]["risky_behavior_change_index"])
+    for idx, month in enumerate(ordered_months):
+        if idx < 2:
+            trailing_flags[month] = {"fires": False, "open": False}
+            continue
+        prev1, prev2 = raw[ordered_months[idx - 1]], raw[ordered_months[idx - 2]]
+        cur = raw[month]
+        trail_mob = cur["outer_visit_share"] - (prev1["outer_visit_share"] + prev2["outer_visit_share"]) / 2
+        trail_risk = cur["risky_behavior_rate"] - (prev1["risky_behavior_rate"] + prev2["risky_behavior_rate"]) / 2
+        fires = trail_mob >= mob_th and trail_risk >= risk_th
+        sustained = (
+            (cur["outer_visit_share"] - baseline_outer) >= mob_th
+            and (cur["risky_behavior_rate"] - baseline_risk) >= risk_th
+        )
+        care_open = fires or (care_open and sustained)
+        trailing_flags[month] = {"fires": fires, "open": care_open}
+
     results: list[dict[str, Any]] = []
     for month in ALL_MONTHS:
         metrics = dict(raw[month])
@@ -1126,6 +1156,7 @@ def _monthly_results(
             max(0.0, metrics["risky_behavior_rate"] - baseline_risk),
             4,
         )
+        metrics["care_two_stage_open"] = trailing_flags[month]["open"]
         metrics["pattern_stability_score"] = round(
             max(0.0, 100.0 - metrics["risky_behavior_change_index"] * 100.0),
             2,

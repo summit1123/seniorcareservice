@@ -819,6 +819,8 @@ const dict: Record<string, string> = {
   "새로운 길 비중이 최근 두 달보다 {pct}%p 줄었어요": "Tỷ trọng tuyến mới giảm {pct}%p so với hai tháng gần nhất",
   "장기 기준 대비 {pct}%p": "{pct}%p so với cơ sở dài hạn",
   "급제동 같은 위험 신호가 최근 두 달보다 {pct}%p 늘었어요": "Tín hiệu rủi ro như phanh gấp tăng {pct}%p so với hai tháng gần nhất",
+  "③ 케어 축 게이트 — 직전 2개월 대비 두 변화가 같은 달 동시 급증하면 발동, 원래 생활로 복귀할 때까지 유지": "③ Cổng trục chăm sóc — kích hoạt khi cả hai thay đổi tăng vọt cùng tháng so với hai tháng trước; duy trì đến khi trở lại nếp sống ban đầu",
+  "케어 유지 기준 · 원래 생활({b1}·{b2}) 대비 아직 {pct}%p 벗어남 — 복귀 시 해제": "Cơ sở duy trì chăm sóc · vẫn lệch {pct}%p so với nếp sống ban đầu ({b1}·{b2}) — trở lại là gỡ bỏ",
 };
 
 export default dict;

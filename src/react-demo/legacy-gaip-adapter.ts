@@ -164,17 +164,37 @@ function monthlyRewardState(month: StudioMonthlyResult, rules: ProductRules, evi
   return monthlyWeightedScore(month, rules) >= rules.reward_score_threshold ? "Reward" : "Neutral";
 }
 
-function monthlyCareState(month: StudioMonthlyResult, rules: ProductRules, evidenceReady: boolean): string {
+/** 케어 2단계(회의 확정): 감지 = 직전 2개월 평균 대비 동시 급변, 유지 = 원래
+ * 생활(장기 기준선) 복귀 전까지. 샌드박스 임계 변경 시에도 같은 규칙으로 재계산. */
+function computeTwoStageCareOpen(months: StudioMonthlyResult[], rules: ProductRules): boolean[] {
+  const share = (m: StudioMonthlyResult) => m.outer_visit_share_pct;
+  const risk = (m: StudioMonthlyResult) => m.risky_behavior_rate_pct;
+  const open: boolean[] = [];
+  let careOpen = false;
+  for (let i = 0; i < months.length; i += 1) {
+    if (i < 2) { open.push(false); continue; }
+    const cur = months[i];
+    const trailMob = share(cur) - (share(months[i - 1]) + share(months[i - 2])) / 2;
+    const trailRisk = risk(cur) - (risk(months[i - 1]) + risk(months[i - 2])) / 2;
+    const fires = trailMob >= rules.care_mobility_change_threshold && trailRisk >= rules.care_risky_behavior_threshold;
+    // 장기 이탈도(mobility/risky_change_index)는 복귀 판단용
+    const sustained = cur.mobility_change_index_pct >= rules.care_mobility_change_threshold &&
+      cur.risky_behavior_change_index_pct >= rules.care_risky_behavior_threshold;
+    careOpen = fires || (careOpen && sustained);
+    open.push(careOpen);
+  }
+  return open;
+}
+
+function monthlyCareState(month: StudioMonthlyResult, rules: ProductRules, evidenceReady: boolean, careOpen: boolean): string {
   if (month.period_role === "baseline") return "Observation";
   if (!evidenceReady) return "Hold";
-  return month.mobility_change_index_pct >= rules.care_mobility_change_threshold &&
-    month.risky_behavior_change_index_pct >= rules.care_risky_behavior_threshold
-    ? "Care Review"
-    : "None";
+  return careOpen ? "Care Review" : "None";
 }
 
 function monthlyEvidence(driver: StudioDriver, rules: ProductRules): MonthlyEvidence[] {
   const basisTripCount = sum(baselineMonths(driver).map((month) => month.trip_count));
+  const careOpenByMonth = computeTwoStageCareOpen(driver.monthly_results, rules);
   return driver.monthly_results.map((month, index) => {
     const evidenceReady = month.zone_available && month.data_coverage_pct >= rules.minimum_data_coverage_pct;
     const basisStatus = month.period_role === "baseline"
@@ -206,7 +226,7 @@ function monthlyEvidence(driver: StudioDriver, rules: ProductRules): MonthlyEvid
       risky_behavior_change_index_pct: round(month.risky_behavior_change_index_pct),
       pattern_stability_score: round(month.pattern_stability_score),
       reward_state: monthlyRewardState(month, rules, evidenceReady),
-      care_state: monthlyCareState(month, rules, evidenceReady)
+      care_state: monthlyCareState(month, rules, evidenceReady, careOpenByMonth[index] ?? false)
     };
   });
 }
@@ -707,18 +727,18 @@ export function buildEvidenceReport(
 ): string {
   const driver = driverById(bundle, driverId);
   const activeRules = effectiveRules(bundle, rules);
-  const selected = selectedMonthlyResult(driver, month).result;
+  const picked = selectedMonthlyResult(driver, month);
+  const selected = picked.result;
   const result = sandboxDecision(driver, activeRules);
   const score = monthlyWeightedScore(selected, activeRules);
   const evidenceReady = selected.zone_available && selected.data_coverage_pct >= activeRules.minimum_data_coverage_pct;
-  const careGate =
-    selected.period_role === "evaluation" &&
-    evidenceReady &&
-    selected.mobility_change_index_pct >= activeRules.care_mobility_change_threshold &&
-    selected.risky_behavior_change_index_pct >= activeRules.care_risky_behavior_threshold;
+  const careOpenByMonth = computeTwoStageCareOpen(driver.monthly_results, activeRules);
+  const selectedIdx = driver.monthly_results.findIndex((m) => m.month === selected.month);
+  const careOpen = careOpenByMonth[selectedIdx] ?? false;
+  const careGate = selected.period_role === "evaluation" && evidenceReady && careOpen;
   const outScore = selected.out_zone_safe_score === null ? "N/A (해당 월 관찰 없음)" : `${round(selected.out_zone_safe_score)}점`;
   const rewardLabel = monthlyRewardState(selected, activeRules, evidenceReady);
-  const careLabel = monthlyCareState(selected, activeRules, evidenceReady);
+  const careLabel = monthlyCareState(selected, activeRules, evidenceReady, careOpen);
 
   return [
     `# ${selected.month} 근거 검토 초안`,

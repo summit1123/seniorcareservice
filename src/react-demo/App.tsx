@@ -675,7 +675,7 @@ function ScenarioControlPanel({
           <RuleNumber label={t("우대 충족월")} helper={t("12개월 중 우대 점수를 넘긴 달이 이만큼 있어야 연간 우대")} value={rules.reward_required_months} min={1} max={12} suffix={t("개월")} onChange={(value) => updateRule("reward_required_months", value)} />
           <RuleNumber label={t("최소 데이터")} helper={t("이 커버리지 미만이면 판단 보류(불이익 없음)")} value={rules.minimum_data_coverage_pct} min={50} max={100} suffix="%" onChange={(value) => updateRule("minimum_data_coverage_pct", value)} />
         </div>
-        <span className="sandbox-axis-label care">{t("③ 케어 축 게이트 — 가중치와 독립. 두 값을 같은 달에 동시 초과해야 예방 케어 검토")}</span>
+        <span className="sandbox-axis-label care">{t("③ 케어 축 게이트 — 직전 2개월 대비 두 변화가 같은 달 동시 급증하면 발동, 원래 생활로 복귀할 때까지 유지")}</span>
         <div className="sandbox-threshold-grid">
           <RuleNumber label={t("이동 변화 임계")} helper={t("기준선 대비 생활권 밖 비중 상승폭이 이 값을 넘어야 케어 후보")} value={rules.care_mobility_change_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_mobility_change_threshold", value)} />
           <RuleNumber label={t("위험행동 변화 임계")} helper={t("기준선 대비 위험행동 상승폭 — 이동 변화와 함께 넘어야 케어")} value={rules.care_risky_behavior_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_risky_behavior_threshold", value)} />

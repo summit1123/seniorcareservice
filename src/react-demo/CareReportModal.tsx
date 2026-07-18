@@ -342,7 +342,7 @@ export function CareReportModal({
                         </p>
                       ) : null}
                       <p className="care-baseline-callout sub">
-                        {tf("케어 판정 기준 · 장기 기준선(첫 2개월, {b1}·{b2}) 대비 {pct}%p", {
+                        {tf("케어 유지 기준 · 원래 생활({b1}·{b2}) 대비 아직 {pct}%p 벗어남 — 복귀 시 해제", {
                           b1: report.pattern_timeline[0]?.month ?? "",
                           b2: report.pattern_timeline[1]?.month ?? "",
                           pct: numberFmt.format(report.metrics.mobility_change_pct)

@@ -819,6 +819,8 @@ const dict: Record<string, string> = {
   "새로운 길 비중이 최근 두 달보다 {pct}%p 줄었어요": "Share of new routes fell {pct}%p vs the last two months",
   "장기 기준 대비 {pct}%p": "{pct}%p vs long-term baseline",
   "급제동 같은 위험 신호가 최근 두 달보다 {pct}%p 늘었어요": "Risk signals like hard braking rose {pct}%p vs the last two months",
+  "③ 케어 축 게이트 — 직전 2개월 대비 두 변화가 같은 달 동시 급증하면 발동, 원래 생활로 복귀할 때까지 유지": "③ Care-axis gate — fires when both changes spike in the same month vs the previous two months; stays on until the pattern returns to the original life",
+  "케어 유지 기준 · 원래 생활({b1}·{b2}) 대비 아직 {pct}%p 벗어남 — 복귀 시 해제": "Care-hold basis · still {pct}%p away from the original life ({b1}·{b2}) — released on return",
 };
 
 export default dict;
