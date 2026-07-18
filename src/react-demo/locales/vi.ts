@@ -813,6 +813,12 @@ const dict: Record<string, string> = {
   "{count}명 · 환경 3종 시나리오": "{count} người · mỗi người 3 môi trường",
   "같은 사람 · 환경 비교": "Cùng một người · so sánh môi trường",
   "이동환경 비교": "So sánh môi trường di chuyển",
+  "선택 월 {month} — 직전 2개월({p1}·{p2}) 대비 이동 변화 {delta}%p": "Tháng đã chọn {month} — thay đổi di chuyển {delta}%p so với hai tháng liền trước ({p1}·{p2})",
+  "케어 판정 기준 · 장기 기준선(첫 2개월, {b1}·{b2}) 대비 {pct}%p": "Cơ sở phán định chăm sóc · {pct}%p so với đường cơ sở dài hạn (2 tháng đầu, {b1}·{b2})",
+  "새로운 길 비중이 최근 두 달보다 {pct}%p 늘었어요": "Tỷ trọng tuyến mới tăng {pct}%p so với hai tháng gần nhất",
+  "새로운 길 비중이 최근 두 달보다 {pct}%p 줄었어요": "Tỷ trọng tuyến mới giảm {pct}%p so với hai tháng gần nhất",
+  "장기 기준 대비 {pct}%p": "{pct}%p so với cơ sở dài hạn",
+  "급제동 같은 위험 신호가 최근 두 달보다 {pct}%p 늘었어요": "Tín hiệu rủi ro như phanh gấp tăng {pct}%p so với hai tháng gần nhất",
 };
 
 export default dict;

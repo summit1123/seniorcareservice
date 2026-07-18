@@ -229,12 +229,20 @@ export function CareReportModal({
   const baselineAvgKm = baselineRows.length
     ? baselineRows.reduce((sum, r) => sum + r.monthly_total_distance_km, 0) / baselineRows.length
     : null;
-  // 전월 대비 이동 변화(팀 요청 #4): 판정 기준선(첫 2개월)은 유지, 참고용 전월 델타 병기.
+  // 리포트의 주 비교는 직전 2개월(예: 8월 리포트 → 6·7월) 대비 — 회의 결정.
+  // 케어 '판정'은 장기 기준선(첫 2개월) 유지, 표기만 최근 대비가 주가 된다.
   const selRowIdx = rows.findIndex((r) => r.month === selectedRow.month);
-  const prevRow = selRowIdx > 0 ? rows[selRowIdx - 1] : null;
-  const prevDelta = prevRow
-    ? (selectedRow.mobility_change_index_pct ?? 0) - (prevRow.mobility_change_index_pct ?? 0)
-    : null;
+  const prev1 = selRowIdx > 0 ? rows[selRowIdx - 1] : null;
+  const prev2 = selRowIdx > 1 ? rows[selRowIdx - 2] : null;
+  const trailAvg = (pick: (r: MonthlyEvidence) => number) => {
+    const vals = [prev1, prev2].filter((r): r is MonthlyEvidence => r !== null).map(pick);
+    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+  };
+  const trailMobBase = trailAvg((r) => r.mobility_change_index_pct ?? 0);
+  const trailRiskBase = trailAvg((r) => r.risky_behavior_change_index_pct ?? 0);
+  const trailMobDelta = trailMobBase === null ? null : (selectedRow.mobility_change_index_pct ?? 0) - trailMobBase;
+  const trailRiskDelta = trailRiskBase === null ? null : (selectedRow.risky_behavior_change_index_pct ?? 0) - trailRiskBase;
+  const signed = (v: number) => (v >= 0 ? "+" : "") + numberFmt.format(v);
   const careStatus = report.verdict.care_axis === "Care Review" ? "watch" : (report.verdict.favorable_axis || "").toLowerCase() === "hold" ? "hold" : "ok";
   const familyName = report.driver.name_ko.replace(/\s*\(.*\)\s*$/, "");
   const selfBody = careStatus === "watch"
@@ -323,22 +331,23 @@ export function CareReportModal({
                   <div className="care-grid">
                     <div className="care-card">
                       <span>{tf("이동 변화 타임라인 — 기준선 {b}개월 + 관찰 {n}개월", { b: baselineCount, n: Math.max(0, timeline.length - baselineCount) })}</span>
-                      <p className="care-baseline-callout">
-                        {tf("선택 월 {month} — 개인 기준선(첫 2개월, {b1}·{b2}) 대비 이동 변화 {pct}%p", {
-                          month: report.report_month,
+                      {trailMobDelta !== null ? (
+                        <p className="care-baseline-callout">
+                          {tf("선택 월 {month} — 직전 2개월({p1}·{p2}) 대비 이동 변화 {delta}%p", {
+                            month: report.report_month,
+                            p1: prev2?.service_month ?? prev1?.service_month ?? "",
+                            p2: prev2 ? prev1?.service_month ?? "" : "",
+                            delta: signed(trailMobDelta)
+                          })}
+                        </p>
+                      ) : null}
+                      <p className="care-baseline-callout sub">
+                        {tf("케어 판정 기준 · 장기 기준선(첫 2개월, {b1}·{b2}) 대비 {pct}%p", {
                           b1: report.pattern_timeline[0]?.month ?? "",
                           b2: report.pattern_timeline[1]?.month ?? "",
                           pct: numberFmt.format(report.metrics.mobility_change_pct)
                         })}
                       </p>
-                      {prevDelta !== null ? (
-                        <p className="care-baseline-callout sub">
-                          {tf("참고 · 전월({prev}) 대비 이동 변화 {delta}%p", {
-                            prev: prevRow?.service_month ?? "",
-                            delta: (prevDelta >= 0 ? "+" : "") + numberFmt.format(prevDelta)
-                          })}
-                        </p>
-                      ) : null}
                       <PatternTimeline report={report} />
                       <small>{t("점선 = 기준선 관찰 · 주황 = 케어 검토 월 · 테두리 = 선택 월")}</small>
                     </div>
@@ -508,17 +517,19 @@ export function CareReportModal({
                     </div>
                     <div className="fam-changes">
                       <span>{t("이번 달 눈에 띈 변화")}</span>
-                      {report.metrics.mobility_change_pct > 0 ? (
+                      {trailMobDelta !== null && Math.abs(trailMobDelta) >= 1 ? (
                         <div className="fam-change-item">
                           <p>
-                            {tf("새로운 길 비중이 {pct}%p 늘었어요", { pct: numberFmt.format(report.metrics.mobility_change_pct) })}
-                            {prevDelta !== null ? <small> · {tf("전월 대비 {delta}%p", { delta: (prevDelta >= 0 ? "+" : "") + numberFmt.format(prevDelta) })}</small> : null}
+                            {trailMobDelta >= 0
+                              ? tf("새로운 길 비중이 최근 두 달보다 {pct}%p 늘었어요", { pct: numberFmt.format(Math.abs(trailMobDelta)) })
+                              : tf("새로운 길 비중이 최근 두 달보다 {pct}%p 줄었어요", { pct: numberFmt.format(Math.abs(trailMobDelta)) })}
+                            <small> · {tf("장기 기준 대비 {pct}%p", { pct: numberFmt.format(report.metrics.mobility_change_pct) })}</small>
                           </p>
                         </div>
                       ) : null}
-                      {report.metrics.risky_change_pct > 0 ? (
+                      {trailRiskDelta !== null && trailRiskDelta >= 1 ? (
                         <div className="fam-change-item warn">
-                          <p>{tf("급제동 같은 위험 신호가 {pct}%p 늘었어요", { pct: numberFmt.format(report.metrics.risky_change_pct) })}</p>
+                          <p>{tf("급제동 같은 위험 신호가 최근 두 달보다 {pct}%p 늘었어요", { pct: numberFmt.format(trailRiskDelta) })}</p>
                           <button type="button" className="fam-link" onClick={onClose}>{t("자세한 위치 알아보기")}</button>
                         </div>
                       ) : null}
