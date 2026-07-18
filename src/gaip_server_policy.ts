@@ -129,6 +129,7 @@ function projectMonthlyResult(value: unknown): JsonRecord {
     "integrated_score",
     "location_penalty",
     "reason_codes",
+    "risk_event_type_counts",
     "observed_score_weight_pct",
     "component_availability",
     "source_status"

@@ -82,6 +82,8 @@ export interface StudioMonthlyResult {
   out_zone_trip_count?: number;
   /** Per-destination (visit_label) aggregates from the real events, so risk/km land on the destination that produced them. */
   destination_breakdown?: DestinationBreakdown[];
+  /** UBI 위험운전 유형별 실측 건수 (hard_brake·sudden_accel·speeding·night_outer). */
+  risk_event_type_counts?: Record<string, number>;
   observed_score_weight_pct?: number;
   pattern_stability_score: number;
   mobility_change_index_pct: number;

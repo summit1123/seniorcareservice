@@ -417,6 +417,32 @@ def _month_visit_weights(
     return {"Routine Hub A": 0.62, "Routine Hub B": 0.38}
 
 
+# UBI 표준 위험운전 유형. 이벤트 '수'는 기존 로직 그대로이고, 이 헬퍼는 그 수를
+# 유형으로 분해만 한다(합계 보존). 가중치는 성향·위치에 따라 선언적으로 고정.
+_RISK_TYPE_WEIGHTS_OUTER_COCHANGE = {"night_outer": 0.45, "hard_brake": 0.35, "speeding": 0.20}
+_RISK_TYPE_WEIGHTS_IN_ZONE = {"hard_brake": 0.40, "speeding": 0.35, "sudden_accel": 0.25}
+_RISK_TYPE_WEIGHTS_DEFAULT = {"hard_brake": 0.50, "speeding": 0.30, "sudden_accel": 0.20}
+
+
+def _risk_event_types(
+    count: int, disposition: Mapping[str, Any], is_outer_visit: bool, rng: random.Random
+) -> dict[str, int]:
+    if count <= 0:
+        return {}
+    locus = disposition.get("risk_locus")
+    if locus == "outer" and is_outer_visit:
+        weights = _RISK_TYPE_WEIGHTS_OUTER_COCHANGE
+    elif locus == "in_zone":
+        weights = _RISK_TYPE_WEIGHTS_IN_ZONE
+    else:
+        weights = _RISK_TYPE_WEIGHTS_DEFAULT
+    types: dict[str, int] = {}
+    for _ in range(count):
+        label = _choose_weighted(rng, weights)
+        types[label] = types.get(label, 0) + 1
+    return types
+
+
 def _risk_event_count(
     disposition: Mapping[str, Any],
     evaluation_month: int | None,
@@ -509,6 +535,10 @@ def _generate_visits_for_driver(driver: Mapping[str, Any], seed: int) -> list[di
             latitude, longitude = _offset_coordinate(center_lat, center_lon, radius, rng.uniform(0, 360))
             trip_id = f"{driver['driver_id']}-{month.replace('-', '')}-{visit_index + 1:02d}"
             risk_event_count = _risk_event_count(disposition, evaluation_month, visit_label, rng)
+            risk_event_types = _risk_event_types(
+                risk_event_count, disposition, visit_label == "New Hub",
+                random.Random(_stable_seed(seed, trip_id, "risk-types")),
+            )
             visit_date = _visit_date(month, visit_index, int(driver["persona_sequence"]))
             data_coverage_pct = (
                 round(60.0 + rng.random() * 12.0, 1)
@@ -534,6 +564,7 @@ def _generate_visits_for_driver(driver: Mapping[str, Any], seed: int) -> list[di
                     "home_dy_m": int(round((latitude - home_lat) * 111_320.0 / 10.0) * 10),
                     "trip_distance_km": _trip_distance_km(disposition, environment_id, visit_label, rng),
                     "risk_event_count": risk_event_count,
+                    "risk_event_types": risk_event_types,
                     "data_coverage_pct": data_coverage_pct,
                     "source_status": "simulated",
                 }
@@ -811,6 +842,10 @@ def _generate_visits_from_profile(
             latitude, longitude = _offset_coordinate(center_lat, center_lon, radius, rng.uniform(0, 360))
             trip_id = f"{driver['driver_id']}-{month.replace('-', '')}-{visit_index + 1:02d}"
             risk_event_count = _profile_risk_event_count(disposition, dest, all_month_num, change_month, rng)
+            risk_event_types = _risk_event_types(
+                risk_event_count, disposition, str(dest.get("role")) in ("change_destination", "secondary"),
+                random.Random(_stable_seed(seed, trip_id, "risk-types")),
+            )
             visit_date = _visit_date(month, visit_index, int(driver["persona_sequence"]))
             data_coverage_pct = (
                 round(60.0 + rng.random() * 12.0, 1)
@@ -836,6 +871,7 @@ def _generate_visits_from_profile(
                     "home_dy_m": int(round((latitude - home_lat) * 111_320.0 / 10.0) * 10),
                     "trip_distance_km": _profile_trip_distance_km(disposition, environment_id, dest, rng),
                     "risk_event_count": risk_event_count,
+                    "risk_event_types": risk_event_types,
                     "data_coverage_pct": data_coverage_pct,
                     "source_status": "simulated",
                 }
@@ -1097,6 +1133,10 @@ def _monthly_results(
             entry["distance_km"] = round(entry["distance_km"], 2)
             entry["is_outer"] = entry["out_zone_count"] > entry["in_zone_count"]
             destination_breakdown.append(entry)
+        risk_type_counts: dict[str, int] = {}
+        for row in rows:
+            for type_label, type_count in (row.get("risk_event_types") or {}).items():
+                risk_type_counts[type_label] = risk_type_counts.get(type_label, 0) + int(type_count)
         return {
             "month": month,
             "period_role": _period_role(month),
@@ -1114,6 +1154,7 @@ def _monthly_results(
             "out_zone_safe_score": _safety_score(out_zone),
             "zone_available": bool(hubs),
             "destination_breakdown": destination_breakdown,
+            "risk_event_type_counts": risk_type_counts,
         }
 
     raw = {month: raw_month_metrics(month) for month in ALL_MONTHS}

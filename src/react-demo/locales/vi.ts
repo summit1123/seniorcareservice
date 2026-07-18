@@ -834,6 +834,11 @@ const dict: Record<string, string> = {
   "직전 2개월 대비 {trail}%p — 자연 변동 범위": "{trail}%p so với hai tháng trước — dao động tự nhiên",
   "이동 변화와 같은 달 동시 급증 — 원래 생활 대비 {risk}%p 이탈로 케어 유지": "Đồng tăng vọt cùng tháng với thay đổi di chuyển — duy trì Chăm sóc với mức lệch {risk}%p",
   "직전 2개월 대비 {trail}%p — 급증 신호 없음": "{trail}%p so với hai tháng trước — không có tín hiệu tăng vọt",
+  "급제동이 {n}회 있었어요": "Có {n} lần phanh gấp",
+  "야간에 익숙하지 않은 길 운전이 {n}회 있었어요": "Có {n} lần lái ban đêm trên đường lạ",
+  "속도가 빨랐던 구간이 {n}회 있었어요": "Có {n} đoạn chạy nhanh hơn bình thường",
+  "급가속이 {n}회 있었어요": "Có {n} lần tăng tốc đột ngột",
+  "위험 신호가 {n}회 있었어요": "Có {n} tín hiệu rủi ro",
 };
 
 export default dict;

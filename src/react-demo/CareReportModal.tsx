@@ -23,6 +23,14 @@ import { enrichCareReport } from "./api";
 import type { DriverAnnualSummary, MonthlyEvidence } from "./types";
 import type { ProductRules } from "./gaip-types";
 
+/** UBI 위험운전 유형 → 본인 앱 문장 (실측 건수 인용). */
+const RISK_TYPE_LINES: Record<string, string> = {
+  hard_brake: "급제동이 {n}회 있었어요",
+  night_outer: "야간에 익숙하지 않은 길 운전이 {n}회 있었어요",
+  speeding: "속도가 빨랐던 구간이 {n}회 있었어요",
+  sudden_accel: "급가속이 {n}회 있었어요"
+};
+
 const numberFmt = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
 
 /** 생성 단계 티커 — 실제 파이프라인 순서(엔진 값 → 기준선 → 규칙 → 서사)를 그대로 읽어준다. */
@@ -242,6 +250,10 @@ export function CareReportModal({
   const trailRiskBase = trailAvg((r) => r.risky_behavior_change_index_pct ?? 0);
   const trailMobDelta = trailMobBase === null ? null : (selectedRow.mobility_change_index_pct ?? 0) - trailMobBase;
   const trailRiskDelta = trailRiskBase === null ? null : (selectedRow.risky_behavior_change_index_pct ?? 0) - trailRiskBase;
+  const riskTypeLines = Object.entries(selectedRow.risk_event_type_counts ?? {})
+    .filter(([, count]) => count > 0)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
   const signed = (v: number) => (v >= 0 ? "+" : "") + numberFmt.format(v);
   const careStatus = report.verdict.care_axis === "Care Review" ? "watch" : (report.verdict.favorable_axis || "").toLowerCase() === "hold" ? "hold" : "ok";
   const familyName = report.driver.name_ko.replace(/\s*\(.*\)\s*$/, "");
@@ -527,7 +539,14 @@ export function CareReportModal({
                           </p>
                         </div>
                       ) : null}
-                      {trailRiskDelta !== null && trailRiskDelta >= 1 ? (
+                      {riskTypeLines.length ? riskTypeLines.map(([typeKey, count], idx) => (
+                        <div key={typeKey} className="fam-change-item warn">
+                          <p>{tf(RISK_TYPE_LINES[typeKey] ?? "위험 신호가 {n}회 있었어요", { n: count })}</p>
+                          {idx === 0 ? (
+                            <button type="button" className="fam-link" onClick={onClose}>{t("자세한 위치 알아보기")}</button>
+                          ) : null}
+                        </div>
+                      )) : trailRiskDelta !== null && trailRiskDelta >= 1 ? (
                         <div className="fam-change-item warn">
                           <p>{tf("급제동 같은 위험 신호가 최근 두 달보다 {pct}%p 늘었어요", { pct: numberFmt.format(trailRiskDelta) })}</p>
                           <button type="button" className="fam-link" onClick={onClose}>{t("자세한 위치 알아보기")}</button>

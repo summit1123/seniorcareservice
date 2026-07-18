@@ -254,6 +254,11 @@ function normalizeMonthlyResults(item: JsonRecord): StudioMonthlyResult[] {
             .filter((pt): pt is unknown[] => Array.isArray(pt))
             .map((pt) => pt.map((v) => number(v, 0)))
         })),
+      risk_event_type_counts: Object.fromEntries(
+        Object.entries(
+          (first(month, ["risk_event_type_counts"]) as Record<string, unknown> | undefined) ?? {}
+        ).map(([key, value]) => [key, number(value, 0)])
+      ),
       observed_score_weight_pct: number(first(month, ["observed_score_weight_pct"]), 0),
       pattern_stability_score: number(first(month, ["pattern_stability_score", "mobility_stability_score"]), 0),
       mobility_change_index_pct: number(first(month, ["mobility_change_index"]), 0) * 100,

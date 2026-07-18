@@ -151,6 +151,7 @@ export interface AbComparison {
 }
 
 export interface MonthlyEvidence {
+  risk_event_type_counts?: Record<string, number>;
   service_month: string;
   month: number;
   basis_status: string;

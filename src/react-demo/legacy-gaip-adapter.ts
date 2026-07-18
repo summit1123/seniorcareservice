@@ -226,7 +226,8 @@ function monthlyEvidence(driver: StudioDriver, rules: ProductRules): MonthlyEvid
       risky_behavior_change_index_pct: round(month.risky_behavior_change_index_pct),
       pattern_stability_score: round(month.pattern_stability_score),
       reward_state: monthlyRewardState(month, rules, evidenceReady),
-      care_state: monthlyCareState(month, rules, evidenceReady, careOpenByMonth[index] ?? false)
+      care_state: monthlyCareState(month, rules, evidenceReady, careOpenByMonth[index] ?? false),
+      risk_event_type_counts: month.risk_event_type_counts ?? {}
     };
   });
 }
