@@ -2035,8 +2035,11 @@ function GeoLivingZoneCanvas({ driver, snapshot, profile }: { driver: DriverAnnu
   const center = { x: mapWidth * 0.3, y: mapHeight * 0.52 };
   const radialP90M = snapshot.living_zone.clusters[0]?.p90_radius_m ?? snapshot.living_zone.buffer.departure_p90_threshold_m;
   const productBufferM = Math.max(500, Math.min(2000, radialP90M));
-  const coreRadius = 58;
-  const bufferRadius = Math.max(coreRadius + 44, Math.min(195, 88 + productBufferM / 11));
+  // 환경별 차이가 화면에 보이게: 완충권 px는 실제 P90에 비례(도심 ~500m는 작게,
+  // 광역 ~1500m+는 크게), 중심권 500m는 완충권 대비 '실제 비율'로 그린다 —
+  // 도심은 중심권≈완충권(빽빽), 광역은 큰 완충권 속 작은 중심권.
+  const bufferRadius = Math.max(64, Math.min(215, 55 + productBufferM * 0.11));
+  const coreRadius = Math.max(30, Math.min(bufferRadius - 4, bufferRadius * (500 / productBufferM)));
 
   // ---- 실측 방문점 투영 -----------------------------------------------------
   // 모든 점은 엔진이 생성한 실제 방문 이벤트의 자택 기준 상대변위(m)다. 완충권
