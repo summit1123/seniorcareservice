@@ -7881,3 +7881,40 @@ body { background: linear-gradient(180deg, #f7faff 0%, #f2f5f9 48%, #f7f8fb 100%
   font-style: normal;
   font-variant-numeric: tabular-nums;
 }
+
+/* ============================================================
+   모바일(≤480px) 정밀 패스 — 실기기 QR 열람 기준.
+   데스크톱 고정 타이포·높이를 뷰포트 스케일로 재조정한다.
+   ============================================================ */
+@media (max-width: 480px) {
+  h1, .brand-block h1 { font-size: 21px; line-height: 1.24; }
+  h2 { font-size: 16px; }
+  .rail-heading h2 { font-size: 19px; }
+  .workbench { padding: 10px; }
+  .app-header { grid-template-columns: 1fr; gap: 12px; padding: 16px 0 12px; margin-bottom: 18px; }
+  .app-header p { font-size: 13px; }
+  .eyebrow { font-size: 10.5px; }
+
+  /* 레일: 화면 스크롤에 맡긴다 — sticky·내부 이중 스크롤 제거 */
+  .case-rail { position: static; max-height: none; overflow: visible; }
+  .case-list { max-height: 46vh; }
+
+  /* 케어 리포트 진입 버튼: 하단 고정 + 안전영역, 콘텐츠 가림 방지 여백 */
+  .report-button {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    z-index: 45;
+    justify-content: center;
+    box-shadow: 0 14px 34px rgba(11, 99, 246, 0.35);
+  }
+  .decision-dashboard { padding-bottom: 84px; }
+  .report-progress { display: none; }
+
+  /* 월 보드·요약 카드류 압축 */
+  .month-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .decision-summary-card { padding: 14px; gap: 14px; }
+  .premium-simulation > div strong { font-size: 22px; }
+  .filter-row button { min-height: 40px; }
+}
