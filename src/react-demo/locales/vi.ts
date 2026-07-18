@@ -839,6 +839,10 @@ const dict: Record<string, string> = {
   "속도가 빨랐던 구간이 {n}회 있었어요": "Có {n} đoạn chạy nhanh hơn bình thường",
   "급가속이 {n}회 있었어요": "Có {n} lần tăng tốc đột ngột",
   "위험 신호가 {n}회 있었어요": "Có {n} tín hiệu rủi ro",
+  "급제동 {n}회": "Phanh gấp ×{n}",
+  "야간 외곽 {n}회": "Đêm ngoài vùng ×{n}",
+  "과속 {n}회": "Chạy nhanh ×{n}",
+  "급가속 {n}회": "Tăng tốc gấp ×{n}",
 };
 
 export default dict;

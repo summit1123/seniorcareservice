@@ -24,6 +24,14 @@ import type { DriverAnnualSummary, MonthlyEvidence } from "./types";
 import type { ProductRules } from "./gaip-types";
 
 /** UBI 위험운전 유형 → 본인 앱 문장 (실측 건수 인용). */
+/** XAI 칩용 짧은 라벨. */
+const RISK_TYPE_CHIPS: Record<string, string> = {
+  hard_brake: "급제동 {n}회",
+  night_outer: "야간 외곽 {n}회",
+  speeding: "과속 {n}회",
+  sudden_accel: "급가속 {n}회"
+};
+
 const RISK_TYPE_LINES: Record<string, string> = {
   hard_brake: "급제동이 {n}회 있었어요",
   night_outer: "야간에 익숙하지 않은 길 운전이 {n}회 있었어요",
@@ -254,6 +262,9 @@ export function CareReportModal({
     .filter(([, count]) => count > 0)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3);
+  const riskTypeChips = Object.entries(selectedRow.risk_event_type_counts ?? {})
+    .filter(([, count]) => count > 0)
+    .sort((a, b) => b[1] - a[1]);
   const signed = (v: number) => (v >= 0 ? "+" : "") + numberFmt.format(v);
   const careStatus = report.verdict.care_axis === "Care Review" ? "watch" : (report.verdict.favorable_axis || "").toLowerCase() === "hold" ? "hold" : "ok";
   const familyName = report.driver.name_ko.replace(/\s*\(.*\)\s*$/, "");
@@ -378,6 +389,13 @@ export function CareReportModal({
                         <li key={r.label_ko} className={r.direction} style={{ "--j": idx } as React.CSSProperties}>
                           <b>{t(r.label_ko)}</b>
                           <p>{r.note_ko}</p>
+                          {idx === 3 && riskTypeChips.length ? (
+                            <span className="xai-type-chips">
+                              {riskTypeChips.map(([typeKey, count]) => (
+                                <em key={typeKey}>{tf(RISK_TYPE_CHIPS[typeKey] ?? "{n}건", { n: count })}</em>
+                              ))}
+                            </span>
+                          ) : null}
                         </li>
                       ))}
                     </ul>

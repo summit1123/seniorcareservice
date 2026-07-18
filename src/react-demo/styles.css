@@ -7868,3 +7868,16 @@ body { background: linear-gradient(180deg, #f7faff 0%, #f2f5f9 48%, #f7f8fb 100%
   .decision-panel { padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)); }
   .env-switch { overflow-x: auto; flex-wrap: nowrap; }
 }
+
+/* XAI 위험 유형 칩 — 실측 건수 */
+.xai-type-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
+.xai-type-chips em {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--amber-soft);
+  color: var(--pill-care-fg, #b54819);
+  font-size: 10.5px;
+  font-weight: 800;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+}
