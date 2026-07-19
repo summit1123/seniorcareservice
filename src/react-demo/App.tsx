@@ -1017,6 +1017,14 @@ function CaseRail({
   const personRows = [...personMap.values()].map(
     (arr) => arr.find((o) => o.environment_id === currentEnvId) ?? arr[0]
   );
+  // 환경 3종 상태 카운트(팀 결정: '케어1/우대1/기본1' 식) — 필터와 무관하게 전체 기준.
+  const fullGroupByName = new Map<string, DriverOption[]>();
+  options.forEach((o) => {
+    const key = personaName(o.customer_id);
+    const arr = fullGroupByName.get(key) ?? [];
+    arr.push(o);
+    fullGroupByName.set(key, arr);
+  });
 
   return (
     <aside className="case-rail" aria-label={t("가상 시니어 사례 목록")}>
@@ -1053,10 +1061,23 @@ function CaseRail({
               {/* 카드에는 대표 상태 하나만: 케어 > 보류 > 우대 > 기본 — 필터와 동일 기준. */}
               <span className="case-state-pills">
                 {(() => {
-                  const state = caseDisplayState(option);
-                  const className = state === "Care Review" ? "care" : state === "Hold" ? "hold" : decisionClass(state).className;
-                  const label = state === "Care Review" ? t("케어") : state === "Hold" ? t("보류") : state === "Reward" ? t("우대") : t("기본");
-                  return <em className={`risk-pill ${className}`}>{label}</em>;
+                  const group = fullGroupByName.get(personaName(option.customer_id)) ?? [option];
+                  const counts = new Map<string, number>();
+                  group.forEach((o) => {
+                    const st = caseDisplayState(o);
+                    counts.set(st, (counts.get(st) ?? 0) + 1);
+                  });
+                  const order: Array<["Care Review" | "Hold" | "Reward" | "Neutral", string, string]> = [
+                    ["Care Review", "care", t("케어")],
+                    ["Hold", "hold", t("보류")],
+                    ["Reward", decisionClass("Reward").className, t("우대")],
+                    ["Neutral", decisionClass("Neutral").className, t("기본")]
+                  ];
+                  return order
+                    .filter(([state]) => (counts.get(state) ?? 0) > 0)
+                    .map(([state, className, label]) => (
+                      <em key={state} className={`risk-pill ${className}`}>{label} {counts.get(state)}</em>
+                    ));
                 })()}
               </span>
             </button>

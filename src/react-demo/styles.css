@@ -7933,3 +7933,7 @@ body { background: linear-gradient(180deg, #f7faff 0%, #f2f5f9 48%, #f7f8fb 100%
   .premium-simulation > div strong { font-size: 22px; }
   .filter-row button { min-height: 40px; }
 }
+
+/* 사람 카드 상태 필 — 환경 3종 카운트 스택 */
+.case-state-pills { display: flex; flex-direction: column; gap: 3px; align-items: flex-end; }
+.case-row { grid-template-columns: minmax(0, 1fr) auto; }
