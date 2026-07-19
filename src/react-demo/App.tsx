@@ -1056,29 +1056,28 @@ function CaseRail({
             >
               <span>
                 <strong>{personaName(option.customer_id)}</strong>
-                <small>{changeTag}</small>
-              </span>
-              {/* 카드에는 대표 상태 하나만: 케어 > 보류 > 우대 > 기본 — 필터와 동일 기준. */}
-              <span className="case-state-pills">
-                {(() => {
-                  const group = fullGroupByName.get(personaName(option.customer_id)) ?? [option];
-                  const counts = new Map<string, number>();
-                  group.forEach((o) => {
-                    const st = caseDisplayState(o);
-                    counts.set(st, (counts.get(st) ?? 0) + 1);
-                  });
-                  const order: Array<["Care Review" | "Hold" | "Reward" | "Neutral", string, string]> = [
-                    ["Care Review", "care", t("케어")],
-                    ["Hold", "hold", t("보류")],
-                    ["Reward", decisionClass("Reward").className, t("우대")],
-                    ["Neutral", decisionClass("Neutral").className, t("기본")]
-                  ];
-                  return order
-                    .filter(([state]) => (counts.get(state) ?? 0) > 0)
-                    .map(([state, className, label]) => (
-                      <em key={state} className={`risk-pill ${className}`}>{label} {counts.get(state)}</em>
-                    ));
-                })()}
+                <small>
+                  {changeTag}
+                  {(() => {
+                    const group = fullGroupByName.get(personaName(option.customer_id)) ?? [option];
+                    const counts = new Map<string, number>();
+                    group.forEach((o) => {
+                      const st = caseDisplayState(o);
+                      counts.set(st, (counts.get(st) ?? 0) + 1);
+                    });
+                    const order: Array<[string, string, string]> = [
+                      ["Care Review", "care", t("케어")],
+                      ["Hold", "hold", t("보류")],
+                      ["Reward", "good", t("우대")],
+                      ["Neutral", "base", t("기본")]
+                    ];
+                    return order
+                      .filter(([state]) => (counts.get(state) ?? 0) > 0)
+                      .map(([state, cls, label]) => (
+                        <i key={state} className={`state-inline ${cls}`}>{label}{counts.get(state)}</i>
+                      ));
+                  })()}
+                </small>
               </span>
             </button>
           );

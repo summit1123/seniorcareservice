@@ -7937,3 +7937,11 @@ body { background: linear-gradient(180deg, #f7faff 0%, #f2f5f9 48%, #f7f8fb 100%
 /* 사람 카드 상태 필 — 환경 3종 카운트 스택 */
 .case-state-pills { display: flex; flex-direction: column; gap: 3px; align-items: flex-end; }
 .case-row { grid-template-columns: minmax(0, 1fr) auto; }
+
+/* 사람 카드 — 이름 아래 환경 3종 상태 카운트 텍스트 */
+.case-row { grid-template-columns: minmax(0, 1fr); }
+.state-inline { font-style: normal; font-weight: 800; margin-left: 6px; font-variant-numeric: tabular-nums; }
+.state-inline.care { color: var(--pill-care-fg, #b54819); }
+.state-inline.hold { color: var(--pill-hold-fg, #596966); }
+.state-inline.good { color: var(--primary-strong); }
+.state-inline.base { color: var(--muted); }
