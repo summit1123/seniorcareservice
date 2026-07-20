@@ -846,6 +846,7 @@ const dict: Record<string, string> = {
   "연간 · 우대 축(보험료)": "Annual · Favorable axis (premium)",
   "연간 · 케어 축: 검토 {n}개월 발생 — 목록의 '케어' 표기 기준": "Annual · Care axis: review fired in {n} months — basis of the 'Care' tag in the list",
   "연간 · 케어 축: 발생 없음": "Annual · Care axis: none fired",
+  "연간 {state}": "Annual {state}",
 };
 
 export default dict;

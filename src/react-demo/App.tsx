@@ -1597,7 +1597,7 @@ function DecisionPanel({
       <div className="decision-panel-head">
         <p className="eyebrow">{t("사람 검토")}</p>
         <h2>{t("검토 제안")}</h2>
-        <em className={`decision ${decision.className}`}>{stateLabelKo(decision.label)}</em>
+        <em className={`decision ${decision.className}`} title={t("연간 · 우대 축(보험료)")}>{tf("연간 {state}", { state: stateLabelKo(decision.label) })}</em>
       </div>
 
       <div className="decision-money-stack">
