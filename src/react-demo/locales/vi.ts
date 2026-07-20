@@ -849,6 +849,8 @@ const dict: Record<string, string> = {
   "연간 {state}": "Năm: {state}",
   "케어 검토 {n}개월 동안 우대 보너스가 정지되어 '기본'입니다 — 목록의 '케어' 표기와 같은 이유": "'Cơ bản' vì thưởng ưu đãi bị tạm dừng trong {n} tháng rà soát — cùng lý do với nhãn 'Chăm sóc' ở danh sách",
   "연간 · 케어 축: 검토 {n}개월 발생 — 우대 요건은 그와 별개로 충족": "Năm · Trục chăm sóc: {n} tháng phát sinh — điều kiện ưu đãi vẫn đạt riêng",
+  "우대 축(보험료): {state} · 후보점수 {score}점": "Trục ưu đãi (phí): {state} · điểm ứng viên {score}",
+  "연간 할인율 {rate}% · 기존 마일리지 {existing}%": "Giảm giá năm {rate}% · biểu phí hiện hành {existing}%",
 };
 
 export default dict;

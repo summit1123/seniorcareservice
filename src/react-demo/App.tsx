@@ -1142,10 +1142,17 @@ function DecisionSummaryCard({
       </div>
 
       <div className="summary-decision-stack">
-        <div className={`risk-score-block ${reward.className}`}>
-          <span>{t("연간 · 우대 축(보험료)")}</span>
-          <strong>{stateLabelKo(reward.label)}</strong>
-          <b>{tf("후보점수 {score}점", { score: numberFormatter.format(driver.annual_score.annual_senior_safe_mileage_score) })}</b>
+        {(() => {
+          const collapsed = driver.care_state === "Care Review"
+            ? { label: t("케어"), className: "care" }
+            : driver.reward_state === "Hold" || driver.care_state === "Hold"
+              ? { label: t("판단 보류"), className: reward.className }
+              : { label: stateLabelKo(driver.reward_state ?? "Neutral"), className: reward.className };
+          return (
+        <div className={`risk-score-block ${collapsed.className}`}>
+          <span>{t("연간 판정")}</span>
+          <strong>{collapsed.label}</strong>
+          <b>{tf("연간 할인율 {rate}% · 기존 마일리지 {existing}%", { rate: numberFormatter.format(driver.ab_comparison.proposed_discount_rate_pct), existing: numberFormatter.format(driver.ab_comparison.existing_discount_rate_pct) })}</b>
           <small className="axis-note">
             {(() => {
               const careMonthCount = rows.filter((row) => row.care_state === "Care Review").length;
@@ -1158,6 +1165,8 @@ function DecisionSummaryCard({
             })()}
           </small>
         </div>
+          );
+        })()}
 
         <div className={`premium-delta-block ${care.className}`}>
           <span>{tf("선택 월 {month} 케어 축", { month: selectedRow?.service_month ?? tf("{n}월", { n: selectedMonth }) })}</span>
@@ -1600,7 +1609,18 @@ function DecisionPanel({
       <div className="decision-panel-head">
         <p className="eyebrow">{t("사람 검토")}</p>
         <h2>{t("검토 제안")}</h2>
-        <em className={`decision ${decision.className}`} title={t("연간 · 우대 축(보험료)")}>{tf("연간 {state}", { state: stateLabelKo(decision.label) })}</em>
+        <em
+          className={`decision ${driver.care_state === "Care Review" ? "care" : decision.className}`}
+          title={t("연간 판정")}
+        >
+          {tf("연간 {state}", {
+            state: driver.care_state === "Care Review"
+              ? t("케어")
+              : driver.reward_state === "Hold" || driver.care_state === "Hold"
+                ? t("판단 보류")
+                : stateLabelKo(driver.reward_state ?? "Neutral")
+          })}
+        </em>
       </div>
 
       <div className="decision-money-stack">
