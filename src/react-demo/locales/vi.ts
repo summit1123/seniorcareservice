@@ -851,6 +851,9 @@ const dict: Record<string, string> = {
   "연간 · 케어 축: 검토 {n}개월 발생 — 우대 요건은 그와 별개로 충족": "Năm · Trục chăm sóc: {n} tháng phát sinh — điều kiện ưu đãi vẫn đạt riêng",
   "우대 축(보험료): {state} · 후보점수 {score}점": "Trục ưu đãi (phí): {state} · điểm ứng viên {score}",
   "연간 할인율 {rate}% · 기존 마일리지 {existing}%": "Giảm giá năm {rate}% · biểu phí hiện hành {existing}%",
+  "동시변화로 케어 검토가 {n}개월 발생한 해 — 그 달들은 우대 보너스가 정지되어 할인율이 기존보다 낮습니다": "Năm có {n} tháng rà soát do đồng biến — các tháng đó thưởng ưu đãi tạm dừng nên mức giảm thấp hơn biểu phí hiện hành",
+  "케어 검토 {n}개월 발생 — 나머지 달의 우대 요건은 충족": "{n} tháng rà soát — các tháng còn lại vẫn đạt điều kiện ưu đãi",
+  "케어 검토 발생 없음 — 안정 주행 기반 할인": "Không phát sinh rà soát — giảm giá dựa trên lái xe ổn định",
 };
 
 export default dict;

@@ -1157,11 +1157,11 @@ function DecisionSummaryCard({
             {(() => {
               const careMonthCount = rows.filter((row) => row.care_state === "Care Review").length;
               if (careMonthCount > 0 && reward.label !== "Reward") {
-                return tf("케어 검토 {n}개월 동안 우대 보너스가 정지되어 '기본'입니다 — 목록의 '케어' 표기와 같은 이유", { n: careMonthCount });
+                return tf("동시변화로 케어 검토가 {n}개월 발생한 해 — 그 달들은 우대 보너스가 정지되어 할인율이 기존보다 낮습니다", { n: careMonthCount });
               }
               return careMonthCount > 0
-                ? tf("연간 · 케어 축: 검토 {n}개월 발생 — 우대 요건은 그와 별개로 충족", { n: careMonthCount })
-                : t("연간 · 케어 축: 발생 없음");
+                ? tf("케어 검토 {n}개월 발생 — 나머지 달의 우대 요건은 충족", { n: careMonthCount })
+                : t("케어 검토 발생 없음 — 안정 주행 기반 할인");
             })()}
           </small>
         </div>

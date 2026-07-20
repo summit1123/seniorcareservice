@@ -851,6 +851,9 @@ const dict: Record<string, string> = {
   "연간 · 케어 축: 검토 {n}개월 발생 — 우대 요건은 그와 별개로 충족": "Annual · Care axis: fired in {n} months — favorable requirements met independently",
   "우대 축(보험료): {state} · 후보점수 {score}점": "Favorable axis (premium): {state} · candidate score {score}",
   "연간 할인율 {rate}% · 기존 마일리지 {existing}%": "Annual discount {rate}% · existing mileage {existing}%",
+  "동시변화로 케어 검토가 {n}개월 발생한 해 — 그 달들은 우대 보너스가 정지되어 할인율이 기존보다 낮습니다": "A year with {n} care-review months from co-change — the favorable bonus paused in those months, so the discount is lower than the existing tariff",
+  "케어 검토 {n}개월 발생 — 나머지 달의 우대 요건은 충족": "Care review fired in {n} months — favorable requirements met in the remaining months",
+  "케어 검토 발생 없음 — 안정 주행 기반 할인": "No care review fired — discount based on stable driving",
 };
 
 export default dict;
