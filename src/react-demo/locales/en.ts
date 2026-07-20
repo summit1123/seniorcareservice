@@ -847,6 +847,8 @@ const dict: Record<string, string> = {
   "연간 · 케어 축: 검토 {n}개월 발생 — 목록의 '케어' 표기 기준": "Annual · Care axis: review fired in {n} months — basis of the 'Care' tag in the list",
   "연간 · 케어 축: 발생 없음": "Annual · Care axis: none fired",
   "연간 {state}": "Annual {state}",
+  "케어 검토 {n}개월 동안 우대 보너스가 정지되어 '기본'입니다 — 목록의 '케어' 표기와 같은 이유": "'Standard' because the favorable bonus was paused during {n} care-review months — the same reason as the 'Care' tag in the list",
+  "연간 · 케어 축: 검토 {n}개월 발생 — 우대 요건은 그와 별개로 충족": "Annual · Care axis: fired in {n} months — favorable requirements met independently",
 };
 
 export default dict;
