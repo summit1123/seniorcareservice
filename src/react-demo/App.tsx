@@ -1143,9 +1143,17 @@ function DecisionSummaryCard({
 
       <div className="summary-decision-stack">
         <div className={`risk-score-block ${reward.className}`}>
-          <span>{t("연간 판정")}</span>
+          <span>{t("연간 · 우대 축(보험료)")}</span>
           <strong>{stateLabelKo(reward.label)}</strong>
           <b>{tf("후보점수 {score}점", { score: numberFormatter.format(driver.annual_score.annual_senior_safe_mileage_score) })}</b>
+          <small className="axis-note">
+            {(() => {
+              const careMonthCount = rows.filter((row) => row.care_state === "Care Review").length;
+              return careMonthCount > 0
+                ? tf("연간 · 케어 축: 검토 {n}개월 발생 — 목록의 '케어' 표기 기준", { n: careMonthCount })
+                : t("연간 · 케어 축: 발생 없음");
+            })()}
+          </small>
         </div>
 
         <div className={`premium-delta-block ${care.className}`}>

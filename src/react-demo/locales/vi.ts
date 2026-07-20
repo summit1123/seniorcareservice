@@ -843,6 +843,9 @@ const dict: Record<string, string> = {
   "야간 외곽 {n}회": "Đêm ngoài vùng ×{n}",
   "과속 {n}회": "Chạy nhanh ×{n}",
   "급가속 {n}회": "Tăng tốc gấp ×{n}",
+  "연간 · 우대 축(보험료)": "Năm · Trục ưu đãi (phí)",
+  "연간 · 케어 축: 검토 {n}개월 발생 — 목록의 '케어' 표기 기준": "Năm · Trục chăm sóc: phát sinh rà soát {n} tháng — căn cứ nhãn 'Chăm sóc' ở danh sách",
+  "연간 · 케어 축: 발생 없음": "Năm · Trục chăm sóc: không phát sinh",
 };
 
 export default dict;

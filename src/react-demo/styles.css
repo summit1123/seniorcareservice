@@ -7945,3 +7945,6 @@ body { background: linear-gradient(180deg, #f7faff 0%, #f2f5f9 48%, #f7f8fb 100%
 .state-inline.hold { color: var(--pill-hold-fg, #596966); }
 .state-inline.good { color: var(--primary-strong); }
 .state-inline.base { color: var(--muted); }
+
+/* 축 표기 보조선 — 우대 축 블록 안에서 케어 축 발생 여부를 함께 말한다 */
+.risk-score-block .axis-note { display: block; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--line); color: var(--muted); font-size: 10.5px; font-weight: 700; }
