@@ -55,27 +55,57 @@ POOLS: dict[str, list[tuple[str, str]]] = {
 FALLBACK = [("단골 나들이처", "Regular Outing Spot"), ("자주 가는 곳", "Frequent Stop")]
 
 
+# 가족 관계어 보존: AI 원본에 이 단어가 있으면 관계를 바꾸지 않는다.
+FAMILY_KEEP = ("딸", "아들", "손주", "손녀", "손자", "동생", "언니", "누나", "형", "며느리", "사위")
+
+
 def main() -> None:
     raw = json.loads(PROFILES.read_text(encoding="utf-8"))
     profiles = raw["profiles"] if isinstance(raw, dict) and "profiles" in raw else raw
     items = profiles.items() if isinstance(profiles, dict) else list(enumerate(profiles))
 
-    changed = 0
+    # 1차 스캔: 전 프로필에서 라벨 사용 빈도 — '중복된 라벨만' 교체 대상
+    from collections import Counter
+    freq: Counter[str] = Counter()
+    for _k, prof in (profiles.items() if isinstance(profiles, dict) else enumerate(profiles)):
+        for zone in prof.get("zones", []):
+            freq[str(zone.get("label_ko"))] += 1
+
+    changed = kept = 0
     for key, prof in items:
         rng = random.Random(f"label-diversity|{key}")
         used: set[str] = set()
-        for zi, zone in enumerate(prof.get("zones", [])):
-            pool = POOLS.get(str(zone.get("kind")), FALLBACK)
-            # 사람 안에서 중복 회피, 사람 간에는 시드로 자연 분산
+        for zone in prof.get("zones", []):
+            original = str(zone.get("label_ko") or "")
+            kind = str(zone.get("kind"))
+            # 보존 규칙 ①: 전체에서 2회 이하로 쓰인 고유 라벨은 AI 원본 유지
+            if freq[original] <= 2 and original:
+                used.add(original)
+                kept += 1
+                continue
+            # 보존 규칙 ②: 가족 존은 원본의 관계어를 유지한 채 명칭만 정규화
+            if kind == "family":
+                rel = next((w for w in FAMILY_KEEP if w in original), None)
+                if rel:
+                    ko = f"{rel}네 집" if not rel.endswith("주") else f"{rel}네 집"
+                    en_map = {"딸": "Daughter's Home", "아들": "Son's Home", "손주": "Grandchild's Home",
+                              "손녀": "Granddaughter's Home", "손자": "Grandson's Home", "동생": "Sibling's Home"}
+                    en = en_map.get(rel, "Family Home")
+                    if original != ko:
+                        changed += 1
+                    zone["label_ko"], zone["label_en"] = ko, en
+                    used.add(ko)
+                    continue
+            # 그 외(중복 라벨): 같은 kind 풀에서 시드 추첨
+            pool = POOLS.get(kind, FALLBACK)
             candidates = [p for p in pool if p[0] not in used] or pool
             ko, en = candidates[rng.randrange(len(candidates))]
             used.add(ko)
-            if zone.get("label_ko") != ko:
+            if original != ko:
                 changed += 1
-            zone["label_ko"] = ko
-            zone["label_en"] = en
+            zone["label_ko"], zone["label_en"] = ko, en
     PROFILES.write_text(json.dumps(raw, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"라벨 교체 {changed}건 완료")
+    print(f"교체 {changed}건 · AI 원본 유지 {kept}건")
 
 
 if __name__ == "__main__":
