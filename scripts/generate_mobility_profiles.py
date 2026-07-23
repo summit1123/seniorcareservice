@@ -141,3 +141,6 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+# TODO(LABEL_DIVERSITY_RULE): 다음 프로필 재생성 시 프롬프트에 아래 규칙을 포함할 것.
+# \n라벨 다양성 규칙(LABEL_DIVERSITY_RULE): 존 이름은 사람마다 서로 다르게 지어라. 이미 사용된 라벨 목록이 주어지면 그 목록의 이름을 재사용하지 마라. 전형적인 한 가지 이름(예: 새마을시장)으로 수렴하지 말 것.

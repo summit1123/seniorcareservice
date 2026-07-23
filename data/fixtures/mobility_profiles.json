@@ -13,8 +13,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "미소마트",
+          "label_en": "Smile Mart",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -25,8 +25,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 노인복지관",
-          "label_en": "Community Senior Center",
+          "label_ko": "동네 경로당",
+          "label_en": "Senior Hall",
           "kind": "senior_center",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -37,8 +37,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "손주네 집",
-          "label_en": "Grandchildren's House",
+          "label_ko": "막내네 집",
+          "label_en": "Youngest's Home",
           "kind": "family",
           "role": "in_zone",
           "bearing_deg": 200.0,
@@ -63,8 +63,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Saemaul Market",
+          "label_ko": "풍년시장",
+          "label_en": "Harvest Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 45.0,
@@ -75,8 +75,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 종합사회복지관",
-          "label_en": "Local Community Center",
+          "label_ko": "복지관 프로그램",
+          "label_en": "Welfare Center Program",
           "kind": "community",
           "role": "in_zone",
           "bearing_deg": 90.0,
@@ -87,8 +87,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 산책 공원",
-          "label_en": "Neighborhood Park",
+          "label_ko": "냇가 산책길",
+          "label_en": "Riverside Walk",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -113,8 +113,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "솔뫼시장",
+          "label_en": "Pine Hill Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 30.0,
@@ -125,8 +125,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 산책로",
-          "label_en": "Local Walking Trail",
+          "label_ko": "파크골프장",
+          "label_en": "Park Golf Course",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -151,8 +151,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "중앙시장",
+          "label_en": "Central Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -163,8 +163,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "성당 봉사",
-          "label_en": "Church Service",
+          "label_ko": "새벽교회",
+          "label_en": "Dawn Church",
           "kind": "church",
           "role": "in_zone",
           "bearing_deg": 75.0,
@@ -175,8 +175,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "단골 병원",
-          "label_en": "Regular Clinic",
+          "label_ko": "한의원",
+          "label_en": "Korean Medicine Clinic",
           "kind": "clinic",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -201,8 +201,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "장터거리",
+          "label_en": "Old Fair Street",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 85.0,
@@ -213,8 +213,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "근처 바둑 동호회",
-          "label_en": "Local Baduk Club",
+          "label_ko": "약수터",
+          "label_en": "Mineral Spring",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 200.0,
@@ -239,8 +239,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Saemaeul Market",
+          "label_ko": "솔뫼시장",
+          "label_en": "Pine Hill Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -251,8 +251,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "친구 김씨네",
-          "label_en": "Friend Kim's House",
+          "label_ko": "이웃사촌 집",
+          "label_en": "Close Neighbor's Home",
           "kind": "friend",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -263,8 +263,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 복지관",
-          "label_en": "Local Senior Center",
+          "label_ko": "마을 노인정",
+          "label_en": "Village Elder Lounge",
           "kind": "senior_center",
           "role": "in_zone",
           "bearing_deg": 200.0,
@@ -289,8 +289,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 노인정",
-          "label_en": "Neighborhood Senior Center",
+          "label_ko": "실버 사랑방",
+          "label_en": "Silver Lounge",
           "kind": "senior_center",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -315,8 +315,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "솔뫼시장",
+          "label_en": "Pine Hill Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 30.0,
@@ -327,8 +327,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "가까운 산 사찰",
-          "label_en": "Nearby Mountain Temple",
+          "label_ko": "산사",
+          "label_en": "Mountain Temple",
           "kind": "temple",
           "role": "in_zone",
           "bearing_deg": 220.0,
@@ -353,8 +353,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "은행나무시장",
+          "label_en": "Ginkgo Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -365,8 +365,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 노인복지관",
-          "label_en": "Local Senior Center",
+          "label_ko": "동네 경로당",
+          "label_en": "Senior Hall",
           "kind": "senior_center",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -377,8 +377,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "마을의원",
-          "label_en": "Community Clinic",
+          "label_ko": "동네 내과",
+          "label_en": "Internal Medicine Clinic",
           "kind": "clinic",
           "role": "in_zone",
           "bearing_deg": 200.0,
@@ -403,8 +403,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Saemaeul Market",
+          "label_ko": "장터거리",
+          "label_en": "Old Fair Street",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 90.0,
@@ -415,8 +415,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 바둑 동호회",
-          "label_en": "Local Go Club",
+          "label_ko": "게이트볼장",
+          "label_en": "Gateball Court",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 180.0,
@@ -441,8 +441,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 병원",
-          "label_en": "Neighborhood Hospital",
+          "label_ko": "종합병원",
+          "label_en": "General Hospital",
           "kind": "hospital",
           "role": "in_zone",
           "bearing_deg": 90.0,
@@ -453,8 +453,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 노래 교실",
-          "label_en": "Local Singing Class",
+          "label_ko": "게이트볼장",
+          "label_en": "Gateball Court",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 220.0,
@@ -465,8 +465,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "새마을시장",
-          "label_en": "Saemaeul Market",
+          "label_ko": "솔뫼시장",
+          "label_en": "Pine Hill Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 310.0,
@@ -491,8 +491,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "장터거리",
+          "label_en": "Old Fair Street",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -503,8 +503,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "근처 낚시터",
-          "label_en": "Nearby Fishing Spot",
+          "label_ko": "약수터",
+          "label_en": "Mineral Spring",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -515,8 +515,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "손주 집",
-          "label_en": "Grandchildren's House",
+          "label_ko": "동생네 집",
+          "label_en": "Sibling's Home",
           "kind": "family",
           "role": "in_zone",
           "bearing_deg": 200.0,
@@ -541,8 +541,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 노인정",
-          "label_en": "Local Senior Center",
+          "label_ko": "어르신 쉼터",
+          "label_en": "Elders' Rest House",
           "kind": "senior_center",
           "role": "in_zone",
           "bearing_deg": 90.0,
@@ -553,8 +553,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "오거리시장",
+          "label_en": "Five-way Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 180.0,
@@ -579,8 +579,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "골목시장",
+          "label_en": "Alley Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -591,8 +591,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 서예 학원",
-          "label_en": "Local Calligraphy Academy",
+          "label_ko": "서예 교실",
+          "label_en": "Calligraphy Class",
           "kind": "community",
           "role": "in_zone",
           "bearing_deg": 70.0,
@@ -603,8 +603,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "바둑 클럽",
-          "label_en": "Go Club",
+          "label_ko": "뒷산 등산로",
+          "label_en": "Back-hill Trail",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -629,8 +629,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "골목시장",
+          "label_en": "Alley Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -641,8 +641,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네한의원",
-          "label_en": "Local Clinic",
+          "label_ko": "한의원",
+          "label_en": "Korean Medicine Clinic",
           "kind": "clinic",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -653,8 +653,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "할머니쉼터",
-          "label_en": "Grandma Social Center",
+          "label_ko": "동네 경로당",
+          "label_en": "Senior Hall",
           "kind": "senior_center",
           "role": "in_zone",
           "bearing_deg": 210.0,
@@ -679,8 +679,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "큰길시장",
+          "label_en": "Main Street Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 60.0,
@@ -691,8 +691,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 커뮤니티 센터",
-          "label_en": "Local Community Center",
+          "label_ko": "호수공원",
+          "label_en": "Lake Park",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 150.0,
@@ -717,8 +717,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "햇살마트",
+          "label_en": "Sunshine Mart",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -729,8 +729,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "지역 교회",
-          "label_en": "Local Church",
+          "label_ko": "새벽교회",
+          "label_en": "Dawn Church",
           "kind": "church",
           "role": "in_zone",
           "bearing_deg": 90.0,
@@ -741,8 +741,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "바둑 동호회",
-          "label_en": "Go Club",
+          "label_ko": "냇가 산책길",
+          "label_en": "Riverside Walk",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 150.0,
@@ -767,8 +767,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "풍년시장",
+          "label_en": "Harvest Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -779,8 +779,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 성당",
-          "label_en": "Local Church",
+          "label_ko": "새벽교회",
+          "label_en": "Dawn Church",
           "kind": "church",
           "role": "in_zone",
           "bearing_deg": 110.0,
@@ -805,8 +805,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "큰길시장",
+          "label_en": "Main Street Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -817,8 +817,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "지역 커뮤니티 센터",
-          "label_en": "Local Community Center",
+          "label_ko": "노래 교실",
+          "label_en": "Singing Class",
           "kind": "community",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -829,8 +829,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "노인복지센터",
-          "label_en": "Senior Center",
+          "label_ko": "실버 사랑방",
+          "label_en": "Silver Lounge",
           "kind": "senior_center",
           "role": "in_zone",
           "bearing_deg": 210.0,
@@ -855,8 +855,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 보건소",
-          "label_en": "Neighborhood Clinic",
+          "label_ko": "동네 내과",
+          "label_en": "Internal Medicine Clinic",
           "kind": "clinic",
           "role": "in_zone",
           "bearing_deg": 90.0,
@@ -867,8 +867,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "서예 교실",
-          "label_en": "Calligraphy Class",
+          "label_ko": "동네 목욕탕",
+          "label_en": "Neighborhood Bathhouse",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 180.0,
@@ -879,8 +879,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 시장",
-          "label_en": "Local Market",
+          "label_ko": "동네 하나마트",
+          "label_en": "Corner Grocery",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 270.0,
@@ -905,8 +905,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 마트",
-          "label_en": "Neighborhood Market",
+          "label_ko": "장터거리",
+          "label_en": "Old Fair Street",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 60.0,
@@ -917,8 +917,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "지역 병원",
-          "label_en": "Local Hospital",
+          "label_ko": "종합병원",
+          "label_en": "General Hospital",
           "kind": "hospital",
           "role": "in_zone",
           "bearing_deg": 180.0,
@@ -929,8 +929,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "근교 등산로",
-          "label_en": "Nearby Hiking Trail",
+          "label_ko": "낚시터",
+          "label_en": "Fishing Spot",
           "kind": "leisure",
           "role": "change_destination",
           "bearing_deg": 270.0,
@@ -955,8 +955,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "동네 하나마트",
+          "label_en": "Corner Grocery",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -967,8 +967,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "서예 교실",
-          "label_en": "Calligraphy Class",
+          "label_ko": "노래 교실",
+          "label_en": "Singing Class",
           "kind": "community",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -979,8 +979,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "새로운 서예 전시회",
-          "label_en": "New Calligraphy Exhibition",
+          "label_ko": "약수터",
+          "label_en": "Mineral Spring",
           "kind": "leisure",
           "role": "change_destination",
           "bearing_deg": 180.0,
@@ -1005,8 +1005,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Saemaeul Market",
+          "label_ko": "햇살마트",
+          "label_en": "Sunshine Mart",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 30.0,
@@ -1017,8 +1017,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "지역 바둑 모임",
-          "label_en": "Local Go Club",
+          "label_ko": "주민센터 문화교실",
+          "label_en": "Community Culture Class",
           "kind": "community",
           "role": "in_zone",
           "bearing_deg": 150.0,
@@ -1029,8 +1029,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "종합병원 정기검진",
-          "label_en": "General Hospital Checkup",
+          "label_ko": "종합병원",
+          "label_en": "General Hospital",
           "kind": "hospital",
           "role": "change_destination",
           "bearing_deg": 220.0,
@@ -1055,8 +1055,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 성당",
-          "label_en": "Neighborhood Church",
+          "label_ko": "언덕 위 교회",
+          "label_en": "Hillside Church",
           "kind": "church",
           "role": "in_zone",
           "bearing_deg": 90.0,
@@ -1067,8 +1067,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "우리동네 마트",
-          "label_en": "Neighborhood Market",
+          "label_ko": "동네 하나마트",
+          "label_en": "Corner Grocery",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -1079,8 +1079,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "손주 집",
-          "label_en": "Grandchildren's Home",
+          "label_ko": "손주네 집",
+          "label_en": "Grandchild's Home",
           "kind": "family",
           "role": "change_destination",
           "bearing_deg": 135.0,
@@ -1105,8 +1105,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "골목시장",
+          "label_en": "Alley Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -1117,8 +1117,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "널리 건강센터",
-          "label_en": "Local Health Center",
+          "label_ko": "한의원",
+          "label_en": "Korean Medicine Clinic",
           "kind": "clinic",
           "role": "in_zone",
           "bearing_deg": 110.0,
@@ -1129,8 +1129,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "가족 모임 장소",
-          "label_en": "Family Gathering Place",
+          "label_ko": "동생네 집",
+          "label_en": "Sibling's Home",
           "kind": "family",
           "role": "change_destination",
           "bearing_deg": 200.0,
@@ -1155,8 +1155,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "동네 하나마트",
+          "label_en": "Corner Grocery",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -1167,8 +1167,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "북부 탁구장",
-          "label_en": "Northern Table Tennis Hall",
+          "label_ko": "게이트볼장",
+          "label_en": "Gateball Court",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 130.0,
@@ -1179,8 +1179,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "산마루 약수터",
-          "label_en": "Sanmaru Mineral Spring",
+          "label_ko": "호수공원",
+          "label_en": "Lake Park",
           "kind": "leisure",
           "role": "change_destination",
           "bearing_deg": 200.0,
@@ -1205,8 +1205,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "동네 하나마트",
+          "label_en": "Corner Grocery",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -1217,8 +1217,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 체육 공원",
-          "label_en": "Community Sports Park",
+          "label_ko": "뒷산 등산로",
+          "label_en": "Back-hill Trail",
           "kind": "leisure",
           "role": "change_destination",
           "bearing_deg": 120.0,
@@ -1229,8 +1229,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "아들 집",
-          "label_en": "Son's House",
+          "label_ko": "딸네 집",
+          "label_en": "Daughter's Home",
           "kind": "family",
           "role": "in_zone",
           "bearing_deg": 200.0,
@@ -1255,8 +1255,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "중앙시장",
+          "label_en": "Central Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -1267,8 +1267,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 노인정",
-          "label_en": "Local Senior Center",
+          "label_ko": "동네 경로당",
+          "label_en": "Senior Hall",
           "kind": "senior_center",
           "role": "in_zone",
           "bearing_deg": 170.0,
@@ -1279,8 +1279,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 병원",
-          "label_en": "Local Clinic",
+          "label_ko": "정형외과 의원",
+          "label_en": "Orthopedic Clinic",
           "kind": "clinic",
           "role": "change_destination",
           "bearing_deg": 290.0,
@@ -1305,8 +1305,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Saemaeul Market",
+          "label_ko": "샘터시장",
+          "label_en": "Springside Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -1317,8 +1317,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "자녀 집",
-          "label_en": "Child's Home",
+          "label_ko": "딸네 집",
+          "label_en": "Daughter's Home",
           "kind": "family",
           "role": "change_destination",
           "bearing_deg": 180.0,
@@ -1343,8 +1343,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 전통시장",
-          "label_en": "Neighborhood Traditional Market",
+          "label_ko": "은행나무시장",
+          "label_en": "Ginkgo Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 50.0,
@@ -1355,8 +1355,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "시민 서예 교실",
-          "label_en": "Community Calligraphy Class",
+          "label_ko": "파크골프장",
+          "label_en": "Park Golf Course",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 135.0,
@@ -1367,8 +1367,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "도심 미술관",
-          "label_en": "City Art Museum",
+          "label_ko": "낚시터",
+          "label_en": "Fishing Spot",
           "kind": "leisure",
           "role": "change_destination",
           "bearing_deg": 200.0,
@@ -1393,8 +1393,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "골목시장",
+          "label_en": "Alley Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 70.0,
@@ -1405,8 +1405,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "성당",
-          "label_en": "Church",
+          "label_ko": "언덕 위 교회",
+          "label_en": "Hillside Church",
           "kind": "church",
           "role": "in_zone",
           "bearing_deg": 150.0,
@@ -1417,8 +1417,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "신규 등산로",
-          "label_en": "New Hiking Trail",
+          "label_ko": "장미공원",
+          "label_en": "Rose Park",
           "kind": "leisure",
           "role": "change_destination",
           "bearing_deg": 220.0,
@@ -1443,8 +1443,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "동네 문화센터",
-          "label_en": "Local Community Center",
+          "label_ko": "탁구 교실",
+          "label_en": "Table Tennis Class",
           "kind": "community",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -1455,8 +1455,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "근교 새 탁구장",
-          "label_en": "New Suburban Table Tennis Hall",
+          "label_ko": "호수공원",
+          "label_en": "Lake Park",
           "kind": "leisure",
           "role": "change_destination",
           "bearing_deg": 120.0,
@@ -1467,8 +1467,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "풍년시장",
+          "label_en": "Harvest Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 75.0,
@@ -1493,8 +1493,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Saemaul Market",
+          "label_ko": "은행나무시장",
+          "label_en": "Ginkgo Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -1505,8 +1505,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "동네 노인정",
-          "label_en": "Local Senior Center",
+          "label_ko": "장수 경로당",
+          "label_en": "Longevity Hall",
           "kind": "senior_center",
           "role": "in_zone",
           "bearing_deg": 90.0,
@@ -1517,8 +1517,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "시외 도로변 정원",
-          "label_en": "Outskirt Roadside Garden",
+          "label_ko": "텃밭",
+          "label_en": "Vegetable Patch",
           "kind": "farm",
           "role": "change_destination",
           "bearing_deg": 150.0,
@@ -1543,8 +1543,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "장터거리",
+          "label_en": "Old Fair Street",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -1555,8 +1555,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "도시 외곽 텃밭",
-          "label_en": "Suburban Allotment",
+          "label_ko": "비닐하우스",
+          "label_en": "Greenhouse",
           "kind": "farm",
           "role": "change_destination",
           "bearing_deg": 75.0,
@@ -1567,8 +1567,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "친목계 모임 장소",
-          "label_en": "Friend Meeting Place",
+          "label_ko": "주민센터 문화교실",
+          "label_en": "Community Culture Class",
           "kind": "community",
           "role": "in_zone",
           "bearing_deg": 200.0,
@@ -1593,8 +1593,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "골목시장",
+          "label_en": "Alley Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -1605,8 +1605,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "손주네 집",
-          "label_en": "Grandchildren's House",
+          "label_ko": "아들네 집",
+          "label_en": "Son's Home",
           "kind": "family",
           "role": "in_zone",
           "bearing_deg": 180.0,
@@ -1617,8 +1617,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "산리 약수터",
-          "label_en": "Sanri Spring",
+          "label_ko": "파크골프장",
+          "label_en": "Park Golf Course",
           "kind": "leisure",
           "role": "change_destination",
           "bearing_deg": 300.0,
@@ -1643,8 +1643,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Saemaeul Market",
+          "label_ko": "솔뫼시장",
+          "label_en": "Pine Hill Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -1655,8 +1655,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "친한 이웃집",
-          "label_en": "Friendly Neighbor's House",
+          "label_ko": "옛 동료 집",
+          "label_en": "Old Colleague's Home",
           "kind": "friend",
           "role": "in_zone",
           "bearing_deg": 75.0,
@@ -1667,8 +1667,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "외곽 텃밭",
-          "label_en": "Outskirts Garden",
+          "label_ko": "텃밭",
+          "label_en": "Vegetable Patch",
           "kind": "farm",
           "role": "change_destination",
           "bearing_deg": 220.0,
@@ -1693,8 +1693,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Saemaeul Market",
+          "label_ko": "샘터시장",
+          "label_en": "Springside Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -1705,8 +1705,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "딸 집",
-          "label_en": "Daughter's House",
+          "label_ko": "동생네 집",
+          "label_en": "Sibling's Home",
           "kind": "family",
           "role": "change_destination",
           "bearing_deg": 95.0,
@@ -1731,8 +1731,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "햇살마트",
+          "label_en": "Sunshine Mart",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -1743,8 +1743,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "노인복지센터",
-          "label_en": "Senior Welfare Center",
+          "label_ko": "장수 경로당",
+          "label_en": "Longevity Hall",
           "kind": "senior_center",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -1755,8 +1755,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "야외 노래공연장",
-          "label_en": "Outdoor Singing Venue",
+          "label_ko": "파크골프장",
+          "label_en": "Park Golf Course",
           "kind": "leisure",
           "role": "change_destination",
           "bearing_deg": 210.0,
@@ -1781,8 +1781,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "은행나무시장",
+          "label_en": "Ginkgo Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -1793,8 +1793,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "우리동네 레크리에이션 센터",
-          "label_en": "Neighborhood Recreation Center",
+          "label_ko": "낚시터",
+          "label_en": "Fishing Spot",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 110.0,
@@ -1805,8 +1805,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "강변 낚시터",
-          "label_en": "Riverside Fishing Spot",
+          "label_ko": "동네 목욕탕",
+          "label_en": "Neighborhood Bathhouse",
           "kind": "leisure",
           "role": "change_destination",
           "bearing_deg": 200.0,
@@ -1831,8 +1831,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 문화센터",
-          "label_en": "Local Culture Center",
+          "label_ko": "주민센터 문화교실",
+          "label_en": "Community Culture Class",
           "kind": "community",
           "role": "in_zone",
           "bearing_deg": 70.0,
@@ -1843,8 +1843,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "송정 노래 교실",
-          "label_en": "Songjeong Singing Class",
+          "label_ko": "낚시터",
+          "label_en": "Fishing Spot",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -1855,8 +1855,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "등산로 입구",
-          "label_en": "Hiking Trail Entrance",
+          "label_ko": "게이트볼장",
+          "label_en": "Gateball Court",
           "kind": "leisure",
           "role": "change_destination",
           "bearing_deg": 210.0,
@@ -1881,8 +1881,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 성당",
-          "label_en": "Local Church",
+          "label_ko": "동네 성당",
+          "label_en": "Parish Church",
           "kind": "church",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -1893,8 +1893,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "딸 집",
-          "label_en": "Daughter's Home",
+          "label_ko": "막내네 집",
+          "label_en": "Youngest's Home",
           "kind": "family",
           "role": "secondary",
           "bearing_deg": 120.0,
@@ -1905,8 +1905,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "경로우대센터",
-          "label_en": "Senior Center",
+          "label_ko": "어르신 쉼터",
+          "label_en": "Elders' Rest House",
           "kind": "senior_center",
           "role": "in_zone",
           "bearing_deg": 270.0,
@@ -1931,8 +1931,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "햇살마트",
+          "label_en": "Sunshine Mart",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 45.0,
@@ -1943,8 +1943,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "주말 농장",
-          "label_en": "Weekend Farm",
+          "label_ko": "비닐하우스",
+          "label_en": "Greenhouse",
           "kind": "farm",
           "role": "secondary",
           "bearing_deg": 270.0,
@@ -1955,8 +1955,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "가족 집",
-          "label_en": "Family House",
+          "label_ko": "동생네 집",
+          "label_en": "Sibling's Home",
           "kind": "family",
           "role": "secondary",
           "bearing_deg": 180.0,
@@ -1981,8 +1981,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 병원",
-          "label_en": "Local Clinic",
+          "label_ko": "안과 의원",
+          "label_en": "Eye Clinic",
           "kind": "clinic",
           "role": "in_zone",
           "bearing_deg": 65.0,
@@ -1993,8 +1993,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "자녀 집",
-          "label_en": "Child's House",
+          "label_ko": "아들네 집",
+          "label_en": "Son's Home",
           "kind": "family",
           "role": "secondary",
           "bearing_deg": 120.0,
@@ -2005,8 +2005,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "농지",
-          "label_en": "Farm",
+          "label_ko": "주말농장",
+          "label_en": "Weekend Farm",
           "kind": "farm",
           "role": "secondary",
           "bearing_deg": 200.0,
@@ -2031,8 +2031,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "샘터시장",
+          "label_en": "Springside Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -2043,8 +2043,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "딸의 집",
-          "label_en": "Daughter's House",
+          "label_ko": "아들네 집",
+          "label_en": "Son's Home",
           "kind": "family",
           "role": "secondary",
           "bearing_deg": 120.0,
@@ -2069,8 +2069,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "풍년시장",
+          "label_en": "Harvest Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -2081,8 +2081,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "손주 집",
-          "label_en": "Grandchildren's Home",
+          "label_ko": "손주네 집",
+          "label_en": "Grandchild's Home",
           "kind": "family",
           "role": "secondary",
           "bearing_deg": 130.0,
@@ -2107,8 +2107,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Saemaul Market",
+          "label_ko": "샘터시장",
+          "label_en": "Springside Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 45.0,
@@ -2119,8 +2119,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "금자텃밭 농장",
-          "label_en": "Geumja's Farm",
+          "label_ko": "비닐하우스",
+          "label_en": "Greenhouse",
           "kind": "farm",
           "role": "secondary",
           "bearing_deg": 120.0,
@@ -2145,8 +2145,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "골목시장",
+          "label_en": "Alley Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -2157,8 +2157,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "딸의 집",
-          "label_en": "Daughter's Home",
+          "label_ko": "동생네 집",
+          "label_en": "Sibling's Home",
           "kind": "family",
           "role": "secondary",
           "bearing_deg": 230.0,
@@ -2169,8 +2169,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "마을 회관",
-          "label_en": "Community Center",
+          "label_ko": "마을회관",
+          "label_en": "Village Hall",
           "kind": "community",
           "role": "in_zone",
           "bearing_deg": 90.0,
@@ -2195,8 +2195,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 바둑 모임",
-          "label_en": "Neighborhood Go Club",
+          "label_ko": "노래 교실",
+          "label_en": "Singing Class",
           "kind": "community",
           "role": "in_zone",
           "bearing_deg": 90.0,
@@ -2207,8 +2207,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "가족 방문지",
-          "label_en": "Family Visit",
+          "label_ko": "손주네 집",
+          "label_en": "Grandchild's Home",
           "kind": "family",
           "role": "secondary",
           "bearing_deg": 270.0,
@@ -2233,8 +2233,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "동네 게이트볼장",
-          "label_en": "Local Gateball Court",
+          "label_ko": "호수공원",
+          "label_en": "Lake Park",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 50.0,
@@ -2245,8 +2245,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "아들네 집",
-          "label_en": "Son's House",
+          "label_ko": "손주네 집",
+          "label_en": "Grandchild's Home",
           "kind": "family",
           "role": "secondary",
           "bearing_deg": 200.0,
@@ -2271,8 +2271,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 건강 클리닉",
-          "label_en": "Neighborhood Health Clinic",
+          "label_ko": "안과 의원",
+          "label_en": "Eye Clinic",
           "kind": "clinic",
           "role": "in_zone",
           "bearing_deg": 90.0,
@@ -2283,8 +2283,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "딸의 집",
-          "label_en": "Daughter's House",
+          "label_ko": "동생네 집",
+          "label_en": "Sibling's Home",
           "kind": "family",
           "role": "secondary",
           "bearing_deg": 210.0,
@@ -2295,8 +2295,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "우리 마을 시장",
-          "label_en": "Village Market",
+          "label_ko": "동네 하나마트",
+          "label_en": "Corner Grocery",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 330.0,
@@ -2321,8 +2321,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Saemaeul Market",
+          "label_ko": "은행나무시장",
+          "label_en": "Ginkgo Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -2333,8 +2333,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "친구 집",
-          "label_en": "Friend's House",
+          "label_ko": "옛 동료 집",
+          "label_en": "Old Colleague's Home",
           "kind": "friend",
           "role": "in_zone",
           "bearing_deg": 160.0,
@@ -2345,8 +2345,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "손주 집",
-          "label_en": "Grandchild's House",
+          "label_ko": "막내네 집",
+          "label_en": "Youngest's Home",
           "kind": "family",
           "role": "secondary",
           "bearing_deg": 250.0,
@@ -2371,8 +2371,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 바둑회관",
-          "label_en": "Local Baduk Club",
+          "label_ko": "마을회관",
+          "label_en": "Village Hall",
           "kind": "community",
           "role": "in_zone",
           "bearing_deg": 30.0,
@@ -2383,8 +2383,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "중앙 시장",
-          "label_en": "Central Market",
+          "label_ko": "샘터시장",
+          "label_en": "Springside Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 200.0,
@@ -2395,8 +2395,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "시립 도서관",
-          "label_en": "City Library",
+          "label_ko": "노래 교실",
+          "label_en": "Singing Class",
           "kind": "community",
           "role": "secondary",
           "bearing_deg": 120.0,
@@ -2421,8 +2421,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 바둑 클럽",
-          "label_en": "Local Baduk Club",
+          "label_ko": "약수터",
+          "label_en": "Mineral Spring",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 70.0,
@@ -2433,8 +2433,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "중앙 병원",
-          "label_en": "Central Hospital",
+          "label_ko": "재활병원",
+          "label_en": "Rehab Hospital",
           "kind": "hospital",
           "role": "secondary",
           "bearing_deg": 150.0,
@@ -2445,8 +2445,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "우리동네 시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "은행나무시장",
+          "label_en": "Ginkgo Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 30.0,
@@ -2471,8 +2471,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 약수터",
-          "label_en": "Neighborhood Spring",
+          "label_ko": "동네 목욕탕",
+          "label_en": "Neighborhood Bathhouse",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 45.0,
@@ -2483,8 +2483,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "큰길시장",
+          "label_en": "Main Street Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 90.0,
@@ -2495,8 +2495,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "시외 교회",
-          "label_en": "Out-of-town Church",
+          "label_ko": "언덕 위 교회",
+          "label_en": "Hillside Church",
           "kind": "church",
           "role": "secondary",
           "bearing_deg": 135.0,
@@ -2521,8 +2521,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "솔뫼시장",
+          "label_en": "Pine Hill Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -2533,8 +2533,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "노래 교실",
-          "label_en": "Singing Class",
+          "label_ko": "약수터",
+          "label_en": "Mineral Spring",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -2545,8 +2545,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "손주 유치원",
-          "label_en": "Grandchild's Kindergarten",
+          "label_ko": "큰딸 집",
+          "label_en": "Eldest Daughter's Home",
           "kind": "family",
           "role": "in_zone",
           "bearing_deg": 300.0,
@@ -2571,8 +2571,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "동네 노인정",
-          "label_en": "Local Senior Center",
+          "label_ko": "장수 경로당",
+          "label_en": "Longevity Hall",
           "kind": "senior_center",
           "role": "in_zone",
           "bearing_deg": 90.0,
@@ -2583,8 +2583,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "우리동네 슈퍼마켓",
-          "label_en": "Neighborhood Supermarket",
+          "label_ko": "큰길시장",
+          "label_en": "Main Street Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 210.0,
@@ -2595,8 +2595,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "도시 외곽 체육관",
-          "label_en": "Suburban Gym",
+          "label_ko": "낚시터",
+          "label_en": "Fishing Spot",
           "kind": "leisure",
           "role": "secondary",
           "bearing_deg": 330.0,
@@ -2621,8 +2621,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "오거리시장",
+          "label_en": "Five-way Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -2633,8 +2633,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "지역 봉사센터",
-          "label_en": "Local Volunteer Center",
+          "label_ko": "노래 교실",
+          "label_en": "Singing Class",
           "kind": "community",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -2645,8 +2645,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "주말 탁구클럽",
-          "label_en": "Weekend Ping-Pong Club",
+          "label_ko": "약수터",
+          "label_en": "Mineral Spring",
           "kind": "leisure",
           "role": "secondary",
           "bearing_deg": 200.0,
@@ -2671,8 +2671,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Saemaeul Market",
+          "label_ko": "샘터시장",
+          "label_en": "Springside Market",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 40.0,
@@ -2697,8 +2697,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "동네 하나마트",
+          "label_en": "Corner Grocery",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 45.0,
@@ -2709,8 +2709,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "역사 문화 체육센터",
-          "label_en": "Local Culture and Sports Center",
+          "label_ko": "냇가 산책길",
+          "label_en": "Riverside Walk",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 150.0,
@@ -2721,8 +2721,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "시립 도서관",
-          "label_en": "City Library",
+          "label_ko": "복지관 프로그램",
+          "label_en": "Welfare Center Program",
           "kind": "community",
           "role": "secondary",
           "bearing_deg": 220.0,
@@ -2733,8 +2733,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "탁구 클럽",
-          "label_en": "Ping Pong Club",
+          "label_ko": "파크골프장",
+          "label_en": "Park Golf Course",
           "kind": "leisure",
           "role": "in_zone",
           "bearing_deg": 300.0,
@@ -2759,8 +2759,8 @@
       "home_label_en": "Home area",
       "zones": [
         {
-          "label_ko": "우리동네 새마을시장",
-          "label_en": "Neighborhood Market",
+          "label_ko": "미소마트",
+          "label_en": "Smile Mart",
           "kind": "market",
           "role": "in_zone",
           "bearing_deg": 60.0,
@@ -2771,8 +2771,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "우리동네 노인정",
-          "label_en": "Local Senior Center",
+          "label_ko": "주민센터 문화교실",
+          "label_en": "Community Culture Class",
           "kind": "community",
           "role": "in_zone",
           "bearing_deg": 120.0,
@@ -2783,8 +2783,8 @@
           "active_to_month": 14
         },
         {
-          "label_ko": "강변 낚시터",
-          "label_en": "Riverside Fishing Spot",
+          "label_ko": "파크골프장",
+          "label_en": "Park Golf Course",
           "kind": "leisure",
           "role": "secondary",
           "bearing_deg": 200.0,
