@@ -22,6 +22,11 @@ from src.product.mileage_discount_table import (
 )
 
 from .clustering import dbscan_distinct_days, locate_product_zone, summarize_clusters
+from .taas_risk_weights import (
+    RISK_TYPE_WEIGHTS_BASE,
+    RISK_TYPE_WEIGHTS_OUTER_NIGHT,
+    TAAS_RISK_WEIGHT_PROVENANCE,
+)
 
 
 DEFAULT_SEED = 26_071_406
@@ -418,10 +423,8 @@ def _month_visit_weights(
 
 
 # UBI 표준 위험운전 유형. 이벤트 '수'는 기존 로직 그대로이고, 이 헬퍼는 그 수를
-# 유형으로 분해만 한다(합계 보존). 가중치는 성향·위치에 따라 선언적으로 고정.
-_RISK_TYPE_WEIGHTS_OUTER_COCHANGE = {"night_outer": 0.45, "hard_brake": 0.35, "speeding": 0.20}
-_RISK_TYPE_WEIGHTS_IN_ZONE = {"hard_brake": 0.40, "speeding": 0.35, "sudden_accel": 0.25}
-_RISK_TYPE_WEIGHTS_DEFAULT = {"hard_brake": 0.50, "speeding": 0.30, "sudden_accel": 0.20}
+# 유형으로 분해만 한다(합계 보존). 가중치는 taas_risk_weights 가 TAAS 표에서 유도한
+# 값이며(외곽 야간 맥락 vs 그 외 두 분포), 수기 상수를 두지 않는다.
 
 
 def _risk_event_types(
@@ -431,11 +434,9 @@ def _risk_event_types(
         return {}
     locus = disposition.get("risk_locus")
     if locus == "outer" and is_outer_visit:
-        weights = _RISK_TYPE_WEIGHTS_OUTER_COCHANGE
-    elif locus == "in_zone":
-        weights = _RISK_TYPE_WEIGHTS_IN_ZONE
+        weights = RISK_TYPE_WEIGHTS_OUTER_NIGHT
     else:
-        weights = _RISK_TYPE_WEIGHTS_DEFAULT
+        weights = RISK_TYPE_WEIGHTS_BASE
     types: dict[str, int] = {}
     for _ in range(count):
         label = _choose_weighted(rng, weights)
@@ -1893,6 +1894,7 @@ def _build_bundle_and_events(
                     "ui_loading_policy": "summary_bundle_only",
                 }
             },
+            "taas_risk_weight_provenance": TAAS_RISK_WEIGHT_PROVENANCE,
             "disclaimer": "Synthetic scenario results are not observed loss outcomes and do not set premiums, underwriting, or care decisions.",
         },
         "source_status_legend": {
