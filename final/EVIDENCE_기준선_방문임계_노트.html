@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>근거 노트 — 기준선 2개월 · 방문 3일 임계</title>
+<style>
+:root{
+  --bg:#f7f9fc; --surface:#ffffff; --ink:#182230; --ink-2:#42506b; --ink-3:#7b869e;
+  --line:#e3e9f2; --accent:#0b63f6; --accent-deep:#0a4fc2; --accent-soft:#eaf1fe;
+  --warn-bg:#fff7ec; --warn-line:#f3ddb9; --warn-ink:#8a5a13;
+  --kill-bg:#eef7f1; --kill-line:#cfe6d8; --kill-ink:#1e6b45;
+  --quote-bg:#f2f6fd; --mono:"SF Mono",ui-monospace,Menlo,monospace;
+}
+:root[data-theme="dark"], :root[data-theme="dark"] body{color-scheme:dark}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#101623; --surface:#18202f; --ink:#e8edf6; --ink-2:#b3bed2; --ink-3:#7d8aa3;
+    --line:#26324a; --accent:#5aa2ff; --accent-deep:#7cb5ff; --accent-soft:#1b2a45;
+    --warn-bg:#2a2213; --warn-line:#4a3a1c; --warn-ink:#e3b76b;
+    --kill-bg:#152a20; --kill-line:#24452f; --kill-ink:#7fd6a5;
+    --quote-bg:#1a2438;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f7f9fc; --surface:#ffffff; --ink:#182230; --ink-2:#42506b; --ink-3:#7b869e;
+  --line:#e3e9f2; --accent:#0b63f6; --accent-deep:#0a4fc2; --accent-soft:#eaf1fe;
+  --warn-bg:#fff7ec; --warn-line:#f3ddb9; --warn-ink:#8a5a13;
+  --kill-bg:#eef7f1; --kill-line:#cfe6d8; --kill-ink:#1e6b45;
+  --quote-bg:#f2f6fd;
+}
+:root[data-theme="dark"]{
+  --bg:#101623; --surface:#18202f; --ink:#e8edf6; --ink-2:#b3bed2; --ink-3:#7d8aa3;
+  --line:#26324a; --accent:#5aa2ff; --accent-deep:#7cb5ff; --accent-soft:#1b2a45;
+  --warn-bg:#2a2213; --warn-line:#4a3a1c; --warn-ink:#e3b76b;
+  --kill-bg:#152a20; --kill-line:#24452f; --kill-ink:#7fd6a5;
+  --quote-bg:#1a2438;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"Pretendard Variable",Pretendard,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
+  line-height:1.65; font-size:15.5px; padding:0 20px 80px;
+}
+.wrap{max-width:860px;margin:0 auto}
+header{padding:52px 0 28px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:700;text-transform:uppercase;margin-bottom:10px}
+h1{font-size:clamp(24px,4vw,32px);line-height:1.3;letter-spacing:-.01em;text-wrap:balance}
+.meta{margin-top:12px;font-size:13px;color:var(--ink-3)}
+.meta strong{color:var(--warn-ink)}
+h2{font-size:20px;margin:52px 0 6px;letter-spacing:-.01em;display:flex;align-items:baseline;gap:10px}
+h2 .no{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600}
+h3{font-size:16px;margin:28px 0 10px;color:var(--ink)}
+.sub{color:var(--ink-3);font-size:13.5px;margin-bottom:18px}
+p{margin:10px 0;color:var(--ink-2)}
+p strong,li strong{color:var(--ink)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:22px 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 16px}
+.card .k{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:700;letter-spacing:.08em;margin-bottom:8px}
+.card h4{font-size:14.5px;margin-bottom:6px;line-height:1.45}
+.card p{font-size:13px;margin:0;color:var(--ink-2)}
+.tablebox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:560px}
+th{background:var(--accent-soft);color:var(--ink);text-align:left;padding:10px 14px;font-size:12.5px;letter-spacing:.02em;border-bottom:1px solid var(--line)}
+td{padding:10px 14px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td b{color:var(--ink)}
+.num{font-variant-numeric:tabular-nums}
+.hl td{background:color-mix(in srgb, var(--accent) 7%, transparent)}
+blockquote{
+  background:var(--quote-bg);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;
+  padding:14px 18px;margin:14px 0;color:var(--ink-2);font-size:14px
+}
+blockquote .src{display:block;margin-top:8px;font-size:12px;color:var(--ink-3)}
+.callout{border-radius:10px;padding:12px 16px;margin:14px 0;font-size:13.5px;border:1px solid}
+.callout.warn{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn-ink)}
+.callout.kill{background:var(--kill-bg);border-color:var(--kill-line);color:var(--kill-ink)}
+.callout b{color:inherit}
+.script{
+  background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);
+  border-radius:10px;padding:16px 20px;margin:14px 0
+}
+.script .q{font-size:12.5px;font-weight:700;color:var(--accent);margin-bottom:8px}
+.script p{font-size:14px;margin:0;color:var(--ink-2)}
+ul,ol{margin:10px 0 10px 22px;color:var(--ink-2)}
+li{margin:6px 0}
+a{color:var(--accent);text-decoration:none;word-break:break-all}
+a:hover{text-decoration:underline}
+code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);padding:1px 6px;border-radius:5px;color:var(--accent-deep)}
+.foot{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">MASIL · FourSure — GAIP 2026 근거 노트</div>
+  <h1>기준선 2개월 · "서로 다른 날 3일" 방문 임계의 통계·문헌 근거</h1>
+  <div class="meta">2차 피드백 #7(베이스라인)·#10(DBSCAN)·"왜 3회냐" 대응 — 조사 완료판 · 2026-07-24 · 모든 인용 원문 확인 · <strong>로컬 문서(미커밋)</strong></div>
+</header>
+
+<h2><span class="no">0</span>한눈 요약 — 결정타 3개</h2>
+<div class="cards">
+  <div class="card"><div class="k">문헌 선례</div><h4>Isaacman 2011이 우리와 같은 값을 썼다</h4><p>60일 관찰 · 전체 일수의 5% = <b>서로 다른 날 3일 이상</b> · 횟수가 아니라 '날 수'로 계수 — 관찰 창·단위·임계 전부 일치하는 동료심사 선례.</p></div>
+  <div class="card"><div class="k">원저자 자인</div><h4>DBSCAN 한계는 원논문이 스스로 인정</h4><p>Ester 1996 p.229 — "전역 eps는 밀도가 다른 군집을 병합할 수 있다". 반박 불가 인용 → "그래서 지역별 eps 차등을 설계했다".</p></div>
+  <div class="card"><div class="k">국내 통계</div><h4>방문 빈도 앵커 확보</h4><p>65세+ 월평균 내원 <b>3.75일</b>(건보공단) · 경로당 이용자 주 <b>2.9회</b> · 고령운전자 최빈 운전 <b>주 3~5회</b>(소비자원 2024).</p></div>
+</div>
+
+<h2><span class="no">1</span>"왜 서로 다른 날 3일인가" — 4겹 답변</h2>
+
+<h3>1-1. 문헌 정면 인용 — Isaacman et al. 2011</h3>
+<blockquote>
+  "cell towers in the cluster should have been contacted on <b>more than 5% of the total days</b> in the study. In our case, this translates to the <b>Days factor being higher than 2</b>" (§3.2)
+  <br>"Sorting by <b>call-days rather than total calls</b> helps to decrease the influence of cell towers … that had a burst of events on those days" (§3.1)
+  <span class="src">Isaacman et al., <i>Identifying Important Places in People's Lives from Cellular Network Data</i>, Pervasive 2011, LNCS 6696 — <a href="https://mrmgroup.cs.princeton.edu/papers/Isaacman_pervasive11.pdf">원문 PDF</a></span>
+</blockquote>
+<p>60일 데이터 기준 "서로 다른 날 3일 이상" — 우리 규칙(2개월 창 + 3일)과 값까지 일치. 하루 중복 방문을 1일로 세는 논리도 동일.</p>
+<div class="callout warn">⚠ 발표 시 병기: 원문은 3일 고정이 아니라 <b>관찰 기간의 5% 상대 기준</b>(60일→3일). 우리도 "2개월 창의 5% = 3일"로 말하면 정확히 정합. 원 논문은 보조 조건(첫-마지막 접촉 간격 14일 초과 등)을 병용.</div>
+
+<h3>1-2. 오류 확률 계산 (푸아송) — "통계에 의거한 논리"의 본체</h3>
+<div class="tablebox"><table>
+  <tr><th>임계</th><th>우연 방문지 오인 확률<br>(2개월 1회 수준, λ=1)</th><th>진짜 거점 성립 확률 (실통계 앵커)</th></tr>
+  <tr><td class="num">2일</td><td class="num"><b>26.4%</b> — 성묘 두 번이면 생활권</td><td>사실상 100%</td></tr>
+  <tr class="hl"><td class="num"><b>3일</b></td><td class="num"><b>8.0%</b></td><td class="num">병원(월 3.75일, λ=7.5): <b>98.0%</b> · 복지관(주 1.5회, λ=12): <b>99.9%</b></td></tr>
+  <tr><td class="num">4일</td><td class="num">1.9%</td><td class="num">월 2회 수준 거점(λ=4)이면 <b>56.7%로 급락</b> — 뜸한 진짜 거점 절반 누락</td></tr>
+</table></div>
+<p><b>3 = 오인(우연→생활권)과 누락(진짜 거점 탈락)을 동시에 억제하는 최소 정수.</b> 2는 오인이 3배 이상, 4는 저빈도 진짜 거점을 절반 가까이 놓친다. (가정 명시: 방문일 발생의 독립·정상성, λ는 아래 실통계로 앵커)</p>
+
+<h3>1-3. λ의 실통계 앵커 (국내 공식 통계)</h3>
+<div class="tablebox"><table>
+  <tr><th>거점 유형</th><th>실측 빈도</th><th>출처</th></tr>
+  <tr><td>병의원</td><td class="num">65세+ 1인 월평균 입내원 <b>3.75일</b> (연 45일, 65세 미만의 2.9배)</td><td><a href="https://www.khidi.or.kr/board/view?pageNum=4&rowCnt=20&no1=2895&linkId=48901395&menuId=MENU01499">건보공단 2022 주요통계</a></td></tr>
+  <tr><td>병의원(보조)</td><td>노인 68.8%가 최근 1개월 내 외래 이용</td><td><a href="https://www.mohw.go.kr/board.es?mid=a10503010100&bid=0027&act=view&list_no=1483352">복지부 2023 노인실태조사</a></td></tr>
+  <tr><td>경로당</td><td class="num">이용자 주 평균 <b>2.9회</b> (이용률 26.5% — 노인 최다 이용 여가시설)</td><td>2023 노인실태조사</td></tr>
+  <tr><td>복지관</td><td class="num">이용자 주 평균 <b>1.5회</b> (이용률 9.6%)</td><td>2023 노인실태조사 <i>(원보고서 표 재확인 권장)</i></td></tr>
+  <tr><td>운전 빈도</td><td class="num">고령운전자 최빈 <b>주 3~5회</b>(36.7%), 주 1회 이상 88%</td><td><a href="https://www.kca.go.kr/smartconsumer/board/download.do?fno=10046786&bid=00000146&did=1003858738&menukey=7301">한국소비자원 2024 (n=300)</a></td></tr>
+</table></div>
+<div class="callout warn">⚠ 서술 수위: 경로당·복지관 빈도는 <b>이용자 기준</b> — "해당 시설을 생활 거점으로 삼는 노인 기준"으로 말할 것 (전체 노인 아님).</div>
+
+<h3>1-4. 우리 데이터 실측 (역할 한정)</h3>
+<ul>
+  <li>180건 기준선 2개월의 목적지 그룹 369개 중 3일 미만 6개(1.6%) — <b>임계 3에서 진짜 생활 거점이 탈락한 사례 0</b> (미탐 방어 실측).</li>
+</ul>
+<div class="callout warn">⚠ <b>오탐 방어(우연 방문지 배제)는 이 실측으로 주장 금지</b> — 합성 데이터는 설계상 우연 방문지가 드묾. 오탐 방어는 §1-2 확률 논리로만.</div>
+
+<h2><span class="no">2</span>"왜 기준선 2개월인가" — 역산 + 선례</h2>
+
+<h3>2-1. 실통계 역산 (심사위원이 제안한 그 방식)</h3>
+<ul>
+  <li>운전 빈도: 소비자원 2024 최빈 <b>주 3~5회</b> → <b>2개월 운전 26~43회</b>. (일본 앵커: JAMA 2025 — 65세+ 주운전자 주 3.9일, 월 290km ≈ 연 3,500km)</li>
+  <li>트립당 거리: 국토부 KTDB 2013 승용차 트립당 평균 14.0km (전연령 대체 참고치).</li>
+  <li><b>역산 결론</b>: 2개월이면 운전일 ~30일 안팎 — 월 2회급 저빈도 거점도 4회 이상 누적되어 3일 임계를 실통계 빈도로 안정 충족. <b>1개월(운전 13~22회)은 저빈도 거점이 임계 경계에 걸림.</b></li>
+</ul>
+<div class="callout warn">⚠ 미확인: <b>국내 고령 운전자 '연령별' 연평균 주행거리 공식 통계는 공개 웹에 부재</b> (보험개발원 비공개, TS 통계는 차종별만). 팀 액션 — 보험개발원 접근 또는 일본(JAMA)·미국(FHWA, 65+는 전연령의 57%) 비율 앵커 사용 명시. 한국 전연령 차량 앵커: 연 1.28만km (TS 2023).</div>
+
+<h3>2-2. 관찰 창 선례</h3>
+<div class="tablebox"><table>
+  <tr><th>관찰 창</th><th>누가</th></tr>
+  <tr><td class="num">2주</td><td>UMTRI 자연주행 기준선 — "Roughly the first 2 weeks … baseline driving period" (<a href="https://pubmed.ncbi.nlm.nih.gov/29584495/">TIP 2018</a>)</td></tr>
+  <tr><td class="num">1개월</td><td>DRIVES 고령자 GPS 연구 기준선 — "first full month" (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9535782/">PMC9535782</a>)</td></tr>
+  <tr class="hl"><td class="num"><b>60일(2개월)</b></td><td><b>Isaacman 2011의 관찰 창</b> — 5% 규칙이 3일이 되는 그 창</td></tr>
+  <tr><td class="num">3개월</td><td>표준 이동범위 척도 DHQ의 회상 구간 (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7317610/">LongROAD</a>)</td></tr>
+  <tr><td class="num">4개월</td><td>Candrive 국제 코호트 재평가 주기 (<a href="https://pubmed.ncbi.nlm.nih.gov/23541299/">Marshall 2013</a>)</td></tr>
+  <tr><td class="num">3~6개월</td><td>업계 UBI rating period 관행 <i>(스니펫 수준 — 발표 인용 전 재확인)</i></td></tr>
+</table></div>
+<p><b>"연구 기준선(2주~1개월)보다 보수적, 업계 요율 관행(3~6개월)보다 신속한 중간값 — 그리고 방문 일수 기준의 원 논문이 쓴 창과 동일."</b></p>
+
+<h2><span class="no">3</span>DBSCAN 밀도 논쟁 근거 매핑표 <span style="font-size:13px;color:var(--ink-3);font-weight:400">(은서&동현 조사 파트)</span></h2>
+
+<h3>3-1. 킬러 카드 — 원저자의 자인</h3>
+<blockquote>
+  "Therefore, DBSCAN uses <b>global values for Eps and MinPts</b>, i.e. <b>the same values for all clusters</b>." · "DBSCAN <b>may merge two clusters</b> … into one cluster, if two clusters of <b>different density</b> are 'close' to each other."
+  <span class="src">Ester, Kriegel, Sander, Xu (1996), KDD-96, p.229 — <a href="http://cdn.aaai.org/KDD/1996/KDD96-037.pdf">원문 PDF</a></span>
+</blockquote>
+<div class="callout kill"><b>답변 프레임:</b> "지적하신 한계는 원논문이 스스로 자인한 것이고, 저희는 그걸 알고 <b>지역 유형별 eps 차등</b>을 설계했습니다. 원논문의 파라미터 휴리스틱('가장 희박한 클러스터 기준')을 도농 혼재 데이터에 그대로 쓰면 도시 생활권이 과대 병합되는데, 그게 바로 저희가 전역 eps를 버린 이유입니다."</div>
+
+<h3>3-2. 해법 계보</h3>
+<div class="tablebox"><table>
+  <tr><th>방법</th><th>서지 (원문 확인)</th><th>밀도 대응 방식</th></tr>
+  <tr><td>DBSCAN</td><td>Ester et al. 1996, KDD-96, pp.226–231</td><td>전역 eps — 한계 자인 (p.229)</td></tr>
+  <tr class="hl"><td><b>지역별 eps 차등</b></td><td>우리 구현 — 260/520/1,100m</td><td>이산 보정 — VDBSCAN과 같은 정공법 계열</td></tr>
+  <tr><td>VDBSCAN</td><td>Liu, Zhou, Wu 2007, ICSSSM (DOI 10.1109/ICSSSM.2007.4280175)</td><td>k-dist plot에서 밀도 수준별 복수 eps</td></tr>
+  <tr><td>ADBSCAN</td><td>Intel 특허 알고리즘 (arXiv 논문 존재)</td><td>지역 밀도에 따라 eps 자동 조절</td></tr>
+  <tr><td>OPTICS</td><td>Ankerst et al. 1999, SIGMOD'99, pp.49–60</td><td>단일 eps 대신 밀도 순서 구조 산출</td></tr>
+  <tr class="hl"><td><b>HDBSCAN</b></td><td>Campello, Moulavi, Sander 2013, PAKDD, LNCS 7819</td><td>계층적 밀도 추정 — eps 자체 제거. <b>우리 실험실에서 실측 비교 중</b></td></tr>
+  <tr><td>SNN</td><td>Ertöz, Steinbach, Kumar 2003, SDM'03, pp.47–58</td><td>공유 최근접 이웃 유사도 — 밀도 문제 "완화(alleviates)"</td></tr>
+  <tr><td>ST-DBSCAN</td><td>Birant &amp; Kut 2007, DKE 60(1):208–221</td><td>공간+시간 이중 eps + density factor</td></tr>
+  <tr><td>응용 표준</td><td>Zheng 2009 (WWW) · Palma 2008 (SAC) · Zhou 2007</td><td>모빌리티 장소 인식에서 밀도 군집 = 표준 기법의 증거</td></tr>
+</table></div>
+<div class="callout warn">⚠ <b>과대인용 경고:</b> SNN을 "밀도 불변(invariant)"이라고 말하지 말 것 — 원문에 그 단어 없음, "완화" 수준 + 클러스터 내부 균질 조건부. 발표 수위: "클러스터 간 밀도 차이를 완화하는 계열".</div>
+
+<h3>3-3. 장소 인식 문헌의 임계값 (참고 — 일수 기준 아님 주의)</h3>
+<div class="tablebox"><table>
+  <tr><th>논문</th><th>임계값</th><th>주의</th></tr>
+  <tr><td>Ashbrook &amp; Starner 2003</td><td>10분 정지 + 반경 0.5마일</td><td>방문 일수 기준 없음 — 체류시간 선례로만</td></tr>
+  <tr><td>Zheng et al. 2009 (GeoLife)</td><td>20분 / 200m stay point</td><td>1회 체류로 성립 — 일수 기준 없음</td></tr>
+  <tr><td>Hariharan &amp; Toyama 2004</td><td>50m / 10분 (예시 설정)</td><td>파라미터는 응용별 설정 명시</td></tr>
+  <tr><td>Montoliu et al. 2013</td><td>30분 / 250m (권장 20~40분, 200~300m)</td><td>일수 요건 없음</td></tr>
+  <tr class="hl"><td><b>Isaacman et al. 2011</b></td><td><b>관찰 일수의 5% (60일→3일) + call-days 단위</b></td><td><b>일수 기준의 유일한 직접 선례 — 정면 인용 대상</b></td></tr>
+</table></div>
+
+<h2><span class="no">4</span>발표 문장 완성본</h2>
+
+<div class="script"><div class="q">Q. "왜 서로 다른 날 3일인가?"</div>
+<p>"세 겹입니다. 첫째, 통계 논리 — 임계를 2일로 낮추면 2개월에 한 번 가는 우연 방문지가 생활권으로 오인될 확률이 26%지만 3일이면 8%로 떨어지고, 4일로 올리면 월 2회 수준의 진짜 거점을 절반 가까이 놓칩니다. 3은 두 오류를 동시에 억제하는 최소 정수입니다. 둘째, 그 계산의 빈도 가정은 건강보험 통계(65세 이상 월평균 내원 3.75일)와 노인실태조사(경로당 주 2.9회)로 앵커했습니다. 셋째, 선례 — 통신 데이터로 중요 장소를 식별한 Isaacman(2011)이 60일 관찰에서 '전체 일수의 5%, 즉 서로 다른 날 3일 이상'을 같은 목적으로 사용했고, 방문 횟수가 아니라 방문한 날 수로 세는 이유까지 저희와 동일합니다."</p></div>
+
+<div class="script"><div class="q">Q. "왜 기준선이 2개월인가?"</div>
+<p>"고령 운전자 운전 빈도(최빈 주 3~5회, 소비자원 2024)를 역산하면 2개월에 운전 26~43회 — 월 2회 수준의 저빈도 거점도 3일 임계를 안정적으로 채우는 최소 기간입니다. 1개월이면 경계에 걸립니다. 자연주행 연구들의 기준선(2주~1개월)보다 보수적이고, 업계 요율 산정 관행(3~6개월)보다 개입이 빠르며, 방문 일수 기준의 원 논문이 쓴 관찰 창(60일)과 같습니다."</p></div>
+
+<div class="script"><div class="q">Q. "DBSCAN이 도농 밀도 차이에 안전한가?"</div>
+<p>"지적하신 한계는 DBSCAN 원논문(1996)이 229쪽에서 스스로 자인한 것입니다 — 전역 eps는 밀도가 다른 군집을 병합할 수 있다. 저희는 그래서 전역 eps를 버리고 지역 유형별 차등(260/520/1,100m)을 설계했고, eps가 아예 없는 HDBSCAN을 실험실에서 나란히 비교 중이며, 제안 주신 좌표 변환 계열(ADBSCAN 등)은 그 연속화 버전으로 로드맵에 수용합니다."</p></div>
+
+<h2><span class="no">5</span>남은 확인 항목 (팀)</h2>
+<ol>
+  <li>국내 고령 운전자 연령별 연 주행거리 — 보험개발원 자료 접근 (미확보 시 일본 JAMA·미국 FHWA 비율 앵커 사용 명시)</li>
+  <li>복지관 주 1.5회 수치 — 노인실태조사 원보고서 표 재확인</li>
+  <li>노인실태조사 68.8% 외래 수치 — 보도자료 원문 재확인</li>
+  <li>업계 UBI rating period 3~6개월 — 원문 재확인 후 인용 여부 결정</li>
+</ol>
+
+<div class="foot">MASIL/FourSure · GAIP 2026 결선 준비 · 근거 노트 (기준선·방문 임계) · 2026-07-24 작성 — 원본: reports/EVIDENCE_기준선_방문임계_노트.md</div>
+
+</div>
+</body>
+</html>

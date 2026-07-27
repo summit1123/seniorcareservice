@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>생활권 판정 방법론 — 원리·근거·검증</title>
+<style>
+:root{
+  --bg:#f7f9fc; --surface:#ffffff; --ink:#182230; --ink-2:#42506b; --ink-3:#7b869e;
+  --line:#e3e9f2; --accent:#0b63f6; --accent-deep:#0a4fc2; --accent-soft:#eaf1fe;
+  --warn-bg:#fff7ec; --warn-line:#f3ddb9; --warn-ink:#8a5a13;
+  --kill-bg:#eef7f1; --kill-line:#cfe6d8; --kill-ink:#1e6b45;
+  --quote-bg:#f2f6fd; --mono:"SF Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#101623; --surface:#18202f; --ink:#e8edf6; --ink-2:#b3bed2; --ink-3:#7d8aa3;
+    --line:#26324a; --accent:#5aa2ff; --accent-deep:#7cb5ff; --accent-soft:#1b2a45;
+    --warn-bg:#2a2213; --warn-line:#4a3a1c; --warn-ink:#e3b76b;
+    --kill-bg:#152a20; --kill-line:#24452f; --kill-ink:#7fd6a5;
+    --quote-bg:#1a2438;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f7f9fc; --surface:#ffffff; --ink:#182230; --ink-2:#42506b; --ink-3:#7b869e;
+  --line:#e3e9f2; --accent:#0b63f6; --accent-deep:#0a4fc2; --accent-soft:#eaf1fe;
+  --warn-bg:#fff7ec; --warn-line:#f3ddb9; --warn-ink:#8a5a13;
+  --kill-bg:#eef7f1; --kill-line:#cfe6d8; --kill-ink:#1e6b45; --quote-bg:#f2f6fd;
+}
+:root[data-theme="dark"]{
+  --bg:#101623; --surface:#18202f; --ink:#e8edf6; --ink-2:#b3bed2; --ink-3:#7d8aa3;
+  --line:#26324a; --accent:#5aa2ff; --accent-deep:#7cb5ff; --accent-soft:#1b2a45;
+  --warn-bg:#2a2213; --warn-line:#4a3a1c; --warn-ink:#e3b76b;
+  --kill-bg:#152a20; --kill-line:#24452f; --kill-ink:#7fd6a5; --quote-bg:#1a2438;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;line-height:1.65;font-size:15.5px;padding:0 20px 80px}
+.wrap{max-width:880px;margin:0 auto}
+header{padding:52px 0 26px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:700;text-transform:uppercase;margin-bottom:10px}
+h1{font-size:clamp(24px,4vw,32px);line-height:1.3;text-wrap:balance}
+.meta{margin-top:12px;font-size:13px;color:var(--ink-3)}
+h2{font-size:20px;margin:52px 0 6px;display:flex;align-items:baseline;gap:10px}
+h2 .no{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600}
+h3{font-size:16px;margin:28px 0 10px}
+p{margin:10px 0;color:var(--ink-2)}
+p strong,li strong{color:var(--ink)}
+.tablebox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:560px}
+th{background:var(--accent-soft);color:var(--ink);text-align:left;padding:10px 14px;font-size:12.5px;border-bottom:1px solid var(--line)}
+td{padding:10px 14px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td b{color:var(--ink)}
+.hl td{background:color-mix(in srgb, var(--accent) 7%, transparent)}
+blockquote{background:var(--quote-bg);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0;color:var(--ink-2);font-size:14px}
+.callout{border-radius:10px;padding:12px 16px;margin:14px 0;font-size:13.5px;border:1px solid}
+.callout.warn{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn-ink)}
+.callout.kill{background:var(--kill-bg);border-color:var(--kill-line);color:var(--kill-ink)}
+.flow{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:16px 0;font-family:var(--mono);font-size:13px;color:var(--ink-2);overflow-x:auto;white-space:pre}
+ul,ol{margin:10px 0 10px 22px;color:var(--ink-2)}
+li{margin:6px 0}
+a{color:var(--accent);text-decoration:none;word-break:break-all}
+a:hover{text-decoration:underline}
+code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);padding:1px 6px;border-radius:5px;color:var(--accent-deep)}
+.num{font-variant-numeric:tabular-nums}
+.foot{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">MASIL · FourSure — GAIP 2026 결선 준비</div>
+  <h1>생활권 판정 방법론 — 원리 · 파라미터 근거 · 검증</h1>
+  <div class="meta">2026-07-24 · 모든 수치는 코드·데이터 실측, 모든 인용은 원문 확인 · 심사 질문 대응 순서로 구성 (1장 어떻게 만드나 → 2장 숫자 근거 → 3장 고객 영향 → 4장 검증 → 5장 한계)</div>
+</header>
+
+<h2><span class="no">1</span>생활권의 정의와 생성 원리</h2>
+
+<h3>1-1. 입력 데이터 — 시동 기반 방문 이벤트</h3>
+<p>트립당 1개, <strong>시동을 끈 지점의 점 좌표 + 날짜</strong>만 사용한다. 주행 궤적(폴리라인)은 수집하지 않는다 — 이유는 둘:</p>
+<ul>
+  <li><strong>프라이버시</strong>: 데이터 최소화. 표시 계층은 좌표 자체를 차단(자택 기준 상대변위 10m 반올림).</li>
+  <li><strong>방법론</strong>: 원시 GPS 스트림을 군집화에 넣으면 이동 한 번에도 도로를 따라 수백 점이 찍혀 <strong>도로가 생활권으로 오인</strong>된다. 정류점(시동 끔) 단위가 올바른 입력.</li>
+</ul>
+
+<h3>1-2. 생성 3단계</h3>
+<div class="flow">시동 끈 점들
+  → [① 묶기]  서로 260m 안이면 같은 덩어리로 연쇄 (eps — 지역별 260/520/1,100m)
+  → [② 승격]  덩어리 안 점들의 서로 다른 날짜 ≥ 3일이면 생활 거점 (하루 중복 = 1일)
+  → [③ 원]    확정 거점에 상품 존: 중심권 500m(보장) + 완충 P90(실측, 하한 500m·상한 2km)
+이후 매달: 고정된 원에 비춰 방문을 안/밖으로 집계 (원은 재학습 절차 전까지 불변)</div>
+<ul>
+  <li><strong>eps는 "이웃으로 볼 반경"</strong>이지 생활권 반경이 아니다 — 묶기가 끝나면 역할 종료, 화면에 그려지지 않는다.</li>
+  <li><strong>연쇄의 용도는 거점 내부</strong>: 시장 입구·골목·주차장의 산포를 한 거점으로 뭉치는 접착제. 집·시장·복지관은 이어지지 않고 <strong>각자 섬</strong>이 되는 게 정상 — 생활권은 군도(섬들의 집합)다.</li>
+  <li><strong>날짜로 세는 이유</strong>: 점 개수 기준이면 하루 중복 방문(주차 이동·중복 핑)이 습관으로 둔갑한다. 부수 효과로 일회성 경유지가 두 동네를 잇는 다리가 되는 것도 차단.</li>
+</ul>
+
+<h3>1-3. 원본 DBSCAN 대조 — 무엇을 왜 바꿨나</h3>
+<div class="tablebox"><table>
+  <tr><th>나사</th><th>원본 (Ester et al. 1996)</th><th>우리</th><th>이유</th></tr>
+  <tr><td>점의 의미</td><td>임의 데이터 점</td><td>시동 끈 방문 이벤트(날짜 포함)</td><td>도메인 부여</td></tr>
+  <tr><td>거리</td><td>유클리드</td><td>하버사인(구면 미터)</td><td>위경도 표준 처리</td></tr>
+  <tr class="hl"><td><b>핵심점 조건</b></td><td>eps 안 점 ≥ MinPts개 (2차원 팁: 4)</td><td><b>eps 안 점들의 서로 다른 날짜 ≥ 3일</b></td><td>하루 버스트 방어 (Isaacman call-days 논리)</td></tr>
+  <tr class="hl"><td><b>eps</b></td><td>전역 1개 — 원저자가 밀도 한계 자인(p.229)</td><td><b>지역 유형별 3단</b></td><td>도농 밀도 보정</td></tr>
+  <tr><td>연쇄 방식</td><td>density-reachable</td><td>그대로 유지</td><td>검증된 표준</td></tr>
+  <tr><td>노이즈</td><td>버려짐</td><td><b>"생활권 밖 방문"으로 보존</b> — 벌점 없는 맥락 데이터</td><td>위치 중립 + 변화 감지 재료</td></tr>
+  <tr><td>출력 용도</td><td>군집이 최종 결과(임의 모양)</td><td>군집은 중간 산물 — 위에 상품 존(원)을 얹음</td><td>약관·설명 가능 형태 (발견은 아메바, 약속은 원)</td></tr>
+</table></div>
+
+<h3>1-4. 생활권이 되지 못하는 3개 경로 (탈락 규칙)</h3>
+<div class="tablebox"><table>
+  <tr><th>탈락 경로</th><th>걸러지는 것</th><th>원리</th></tr>
+  <tr><td>① 날짜 부족</td><td>명절 성묘(1일) · 이삿날 왕복(1일) · 1박2일 여행(2일)</td><td>서로 다른 날 3일 미만 — 점이 500개여도 탈락</td></tr>
+  <tr><td>② 고립</td><td>한 번 간 낚시터·휴게소</td><td>260m 안 이웃 없음 — 연결 불가</td></tr>
+  <tr><td>③ 시기 밖</td><td>3개월차부터의 새 단골</td><td>학습은 기준선 2개월 창에서만 — 신규 반영은 재학습 절차(승인 게이트)</td></tr>
+</table></div>
+<p>탈락 = 삭제가 아니다. 전부 "생활권 밖 방문"으로 남아 <strong>월별 밖 비중</strong>(변화 감지 재료)이 된다. 노이즈에 별도 필터는 없다 — 합격 규칙의 여집합이 자동으로 노이즈다.</p>
+
+<h2><span class="no">2</span>파라미터 근거 <span style="font-size:13px;color:var(--ink-3);font-weight:400">— 공통 방어 형식: 인정 → 문헌 → 계산·규칙 → 민감도 → 파일럿</span></h2>
+
+<h3>2-1. 파라미터 인벤토리</h3>
+<div class="tablebox"><table>
+  <tr><th>값</th><th>성격</th><th>근거 요약</th></tr>
+  <tr><td>eps 260/520/1,100m</td><td>고정(지역별)</td><td>도심 값은 장소인식 문헌 통용 대역(200~300m) + ×2 축척 규칙 + 실험실 민감도</td></tr>
+  <tr><td>서로 다른 날 3일</td><td>고정</td><td>Isaacman 2011 정면 일치 + 푸아송 오류표 + 국내 방문빈도 통계</td></tr>
+  <tr><td>기준선 2개월</td><td>고정</td><td>운전빈도 역산 + 관찰 창 선례 스펙트럼 + Isaacman 60일 창 동일</td></tr>
+  <tr><td>중심권 500m</td><td>고정(상품 약속)</td><td>국내 기준상품 최소 반경 계승 + 고객 보호 하한(잔진동 흡수)</td></tr>
+  <tr><td>완충 P90</td><td><b>실측</b>(사람×거점)</td><td>"방문의 90%가 들어오는 반경" — 예외 한둘에 안 흔들리는 자 · 하한 500m/상한 2km 가드레일</td></tr>
+</table></div>
+
+<h3>2-2. "왜 3일" — 4겹</h3>
+<ul>
+  <li><strong>문헌 정면 일치</strong>: Isaacman et al. 2011 (Pervasive) — 중요 장소 기준 = "관찰 일수의 5% 초과 = 60일 데이터에서 서로 다른 날 3일 이상" + 통화 수 아닌 <strong>접촉 일수(call-days)</strong>로 계수. 관찰 창·단위·값 모두 우리와 일치. <a href="https://mrmgroup.cs.princeton.edu/papers/Isaacman_pervasive11.pdf">원문 PDF</a></li>
+  <li><strong>오류 확률(푸아송)</strong>: 임계 2일 = 우연 방문지(2개월 1회, λ=1) 오인 26.4% / <b>3일 = 8.0%</b> / 4일 = 1.9%이지만 월 2회급 진짜 거점(λ=4) 성립률이 56.7%로 급락 → <strong>3 = 오인·누락 동시 억제 최소 정수</strong></li>
+  <li><strong>빈도 앵커(국내 공식 통계)</strong>: 65세+ 월평균 입내원 3.75일(건보공단 2022) → 병원 성립률 98.0% · 경로당 이용자 주 2.9회 · 복지관 이용자 주 1.5회(2023 노인실태조사)</li>
+  <li><strong>비용 비대칭 설계</strong>: 우연 장소 포함 실수는 저비용(위치 중립·기준선일 뿐), 진짜 거점 누락은 고비용(밖 비중 상시 오염) → 문턱은 우연만 거를 만큼 낮게</li>
+</ul>
+
+<h3>2-3. "왜 2개월" — 3겹</h3>
+<ul>
+  <li><strong>역산</strong>: 고령운전자 최빈 운전 빈도 주 3~5회(소비자원 2024) → 2개월 26~43회 운전 → 월 2회급 저빈도 거점도 3일 임계 안정 충족. 1개월은 경계.</li>
+  <li><strong>선례 스펙트럼</strong>: UMTRI 2주 → DRIVES 1개월 → <b>Isaacman 60일(우리와 동일)</b> → DHQ 3개월 → Candrive 4개월 → 업계 rating 3~6개월. "연구 기준선보다 보수적, 업계 관행보다 신속한 중간값."</li>
+  <li><strong>민감도 실측(예정)</strong>: 1/2/3개월 재판정 비교 — 엔진 파라미터라 즉시 가능.</li>
+</ul>
+<div class="callout warn">⚠ Lally(습관 66일)는 보조 한 문장으로만 — 새 습관 <b>형성</b> 연구이지 기존 패턴 <b>관측</b> 기간 근거가 아니며, 범위가 18~254일이라 주력으로 쓰면 역공당함.</div>
+
+<h3>2-4. "왜 260/520/1,100" — 정직한 3겹</h3>
+<ul>
+  <li><strong>인정</strong>: 절대값을 주는 문헌은 없다 — 설계값이다.</li>
+  <li><strong>기준값은 문헌 대역</strong>: 장소인식 연구의 공간 임계 — Zheng 200m, Montoliu 권장 200~300m → 도심 260m는 그 한가운데.</li>
+  <li><strong>나머지는 축척 규칙</strong>: 260→520→1,100은 ×2 비례 — 환경 설계 전체(트립 5.4/11/24km, 도달반경 900/1,500/3,000m)와 같은 축척. 임의 숫자 3개가 아니라 "기준값 1 + 규칙 1".</li>
+  <li><strong>확정은 파일럿</strong>: 실데이터의 지역별 k-거리 그래프로 재도출(원논문 표준 휴리스틱).</li>
+</ul>
+
+<h3>2-5. 중심권 500m와 P90 — 약속과 측정</h3>
+<blockquote>P90 = "당신은 실제로 이만큼 다닙니다"(측정) · 500m = "그래도 최소 이만큼은 인정합니다"(약속)</blockquote>
+<ul>
+  <li>하한이 없으면: 규칙적인 고객의 P90이 150m로 나와, 길 건너 주차(200m)가 "생활권 밖"으로 찍히는 잔진동 오염 발생 → <strong>고객에게 불리한 방향으로는 측정을 따라가지 않는다</strong>는 보호 하한.</li>
+  <li>2km 상한 = 역방향 보호(원이 무한 확장되면 감지 신호 자체가 죽음).</li>
+  <li>P90에 최댓값·평균을 안 쓰는 이유: 장날 한 번의 900m 주차가 원을 4배로 키우는 것 방지.</li>
+</ul>
+
+<h2><span class="no">3</span>판정 로직과 요율 연결</h2>
+
+<h3>3-1. 안/밖은 벌점이 아니라 눈금</h3>
+<ul>
+  <li>원 밖 방문 = 집계만 됨. <strong>위치는 점수에 산입되지 않는다</strong>(<code>outer_zone_policy: context_only_no_location_penalty</code>).</li>
+  <li>위험운전은 장소 불문 동일 무게 — 케어 축 위험 지표(위험 트립 비율)는 위치를 안 본다. 우대 점수는 오히려 <strong>권내 안전(30) &gt; 권외 안전(20)</strong> — 삶의 대부분이 안에서 일어나므로.</li>
+  <li>밖이 의미를 갖는 유일한 순간: "밖 비중 급증"과 "위험행동 급증"이 <strong>같은 달에 동시</strong>일 때 — 밖의 위험 가중이 아니라 <strong>변화의 동시성</strong>.</li>
+</ul>
+<div class="tablebox"><table>
+  <tr><th></th><th>어디서</th><th>어떻게</th><th>결과</th></tr>
+  <tr><td>김</td><td>생활권 안에서만</td><td>급제동 잦음(만성)</td><td>안전점수 하락 → <b>기본</b>. 케어 아님(변화 아님) — 이 유형 30건 실측</td></tr>
+  <tr><td>박</td><td>매달 멀리</td><td>안전</td><td><b>우대 유지</b> — 밖 비중 높아도 무관(광역·복수생활권형 실측)</td></tr>
+  <tr><td>이</td><td>평소 안 → 이번 달 밖 급증</td><td>위험행동도 동반 급증</td><td><b>케어</b> — 밖이라서가 아니라 평소와 달라져서</td></tr>
+</table></div>
+
+<h3>3-2. 돈에 생기는 일 — 정직 버전</h3>
+<ul>
+  <li><strong>할증은 구조상 부재</strong>: 할증률 0 고정 + 할인 하한 0% → 기본보험료 초과 불가.</li>
+  <li>위치 전면 변경(이사)만으로는 <strong>아무 일도 없음</strong> — 이사형 30건 전원 케어 미발동·우대 유지.</li>
+  <li>케어(동시 급변) 시: 그 달 우대 미산입, 연간 케어면 보너스 정지 + 할인 13%p 축소 → <strong>마일리지 기준상품 대비 순보험료가 높아질 수 있음</strong>(정직 고지 필수 — "불이익 전혀 없음" 발화 금지).</li>
+  <li><strong>해제</strong>: 학습 기준선 대비 두 이탈 지수 중 <strong>하나라도</strong> 임계 미만이 된 평가월에 자동 해제(같은 달). "복귀해야 해제" 아님 — 영구 이주도 운전이 안정되면 해제.</li>
+</ul>
+
+<h2><span class="no">4</span>검증 체계 — 알고리즘 실험실</h2>
+
+<h3>4-1. 지표 읽는 법</h3>
+<div class="tablebox"><table>
+  <tr><th>지표</th><th>뜻</th><th>이 수치가 증명하는 것</th></tr>
+  <tr><td>커버리지</td><td>방문점 중 어느 거점에든 소속된 비율(~90%대)</td><td>방문 대부분이 생활권으로 설명됨</td></tr>
+  <tr><td>소음</td><td>어디에도 못 붙은 일회성 방문(6~7%)</td><td>0%가 아닌 게 정상 — 일회성까지 묶지 않았다는 뜻</td></tr>
+  <tr class="hl"><td><b>과병합</b></td><td>다른 목적지가 한 덩어리로 합쳐진 사람 수 — <b>0/60</b></td><td>eps가 과대하지 않음 (원논문 자인 사고의 실측 부재)</td></tr>
+  <tr class="hl"><td><b>정기거점 누락</b></td><td>진짜 거점이 성립 못 한 사람 수 — <b>1~2/60</b></td><td>eps가 과소하지도 않음 (파편화 거의 없음)</td></tr>
+</table></div>
+<p><strong>채점이 가능한 이유</strong>: 합성 데이터에는 정답 라벨(어느 방문이 설계상 어느 존인지)이 있다 — "합성 = 로직 검증용" 주장의 실물. 화면 하단에 Simulated 명시 + "알고리즘 채택·교체는 사람 검토로 결정" 거버넌스 문장 포함.</p>
+
+<h3>4-2. 판정 강건성 실측</h3>
+<ul>
+  <li>같은 사람 × 3환경: <strong>연간 케어 판정 60/60 동일 · 연간 우대 56/60 동일</strong>(갈림 4명은 전원 케어 발동자 — 케어 정지 월수 차이).</li>
+  <li>HDBSCAN 비교 실측: 대표 사례(gaip-091)에서 무리3·이웃2 설정 시 거점 8개로 파편화, 커버리지 71.9%로 하락 — <strong>"왜 기본으로 안 쓰나"의 실측 증거</strong>. eps 제거의 대가는 파라미터가 미터(설명 가능)에서 개수·안정성(설명 곤란)으로 이동하는 것.</li>
+</ul>
+
+<h2><span class="no">5</span>한계와 로드맵 (선제 선언)</h2>
+<ul>
+  <li><strong>미확인 통계</strong>: 국내 고령 운전자 연령별 연 주행거리 — 공개 웹에 부재. 보험개발원 접근 또는 일본 JAMA(65세+ 연 ~3,500km)·미국 FHWA(전연령의 57%) 비율 앵커 명시 사용.</li>
+  <li><strong>eps 파일럿 보정</strong>: 지역별 k-거리 그래프로 데이터에서 재도출(원논문 표준 방법).</li>
+  <li><strong>실데이터 3단 파이프라인(로드맵)</strong>: 엣지 정류점 추출 → HDBSCAN → 방문일수 필터 — 문헌 표준 구조. 현 구현(시동점 + 지역별 eps + 3일 내장)은 설명가능성·프라이버시·소표본에 최적화된 현 단계 선택.</li>
+  <li><strong>재학습 절차</strong>: 이사 후 신규 생활권 반영은 담당자 승인 게이트(자동 아님).</li>
+</ul>
+
+<h2><span class="no">부록</span>출처 전집 (원문 확인 완료)</h2>
+<div class="tablebox"><table>
+  <tr><th>주제</th><th>출처</th><th>핵심</th></tr>
+  <tr><td>일수 기준 선례</td><td><a href="https://mrmgroup.cs.princeton.edu/papers/Isaacman_pervasive11.pdf">Isaacman et al. 2011, Pervasive</a></td><td>60일 관찰 · 5% = 3일 · call-days 계수</td></tr>
+  <tr><td>DBSCAN 원논문</td><td><a href="http://cdn.aaai.org/KDD/1996/KDD96-037.pdf">Ester et al. 1996, KDD-96</a></td><td>p.229 전역 eps 한계 자인 — 킬러 인용</td></tr>
+  <tr><td>밀도 적응 계보</td><td>Ankerst 1999(OPTICS) · Campello 2013(HDBSCAN) · Liu 2007(VDBSCAN) · Ertöz 2003(SNN) · Birant&amp;Kut 2007(ST-DBSCAN)</td><td>해법 계열 — DOI 전부 확인 (근거 노트 §3)</td></tr>
+  <tr><td>공간 임계 대역</td><td>Zheng 2009(200m) · Montoliu 2013(200~300m 권장) · Ashbrook 2003(10분/0.5마일) · Hariharan 2004</td><td>도심 eps 260m의 문헌 대역</td></tr>
+  <tr><td>관찰 창 선례</td><td>UMTRI(<a href="https://pubmed.ncbi.nlm.nih.gov/29584495/">2주</a>) · DRIVES(<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9535782/">1개월</a>) · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7317610/">DHQ 3개월</a> · <a href="https://pubmed.ncbi.nlm.nih.gov/23541299/">Candrive 4개월</a></td><td>기준선 2개월의 포지셔닝</td></tr>
+  <tr><td>국내 빈도 통계</td><td>건보공단 2022(월 입내원 3.75일) · 2023 노인실태조사(경로당 주 2.9회) · <a href="https://www.kca.go.kr/smartconsumer/board/download.do?fno=10046786&bid=00000146&did=1003858738&menukey=7301">소비자원 2024(주 3~5회)</a></td><td>λ 앵커</td></tr>
+  <tr><td>설계 근거 문헌</td><td>LongROAD ML(<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8167558/">집 15마일 내 통행 비율 = 최상위 예측 변수</a>) · DRIVES/Neurology 2025(<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12662389/">개인 내 변화 기울기가 신호</a>)</td><td>생활권·변화 감지 설계의 직접 근거</td></tr>
+</table></div>
+<div class="callout warn">⚠ 인용 금지: Octo 사례(클레임 15.9% 등 — 원출처 확인 실패) · Progressive 3배 요율/손해율 15%(2차 자료만) · SNN "밀도 불변" 표현(원문에 없음 — "완화"까지만) · "실제 드라이빙 로그 기반"(1차 자료 오류 표현)</div>
+
+<div class="foot">MASIL/FourSure · 생활권 판정 방법론 통합 보고서 · 2026-07-24 · 상세 원천: reports/EVIDENCE_기준선_방문임계_노트.md · reports/FEEDBACK2_대응계획.md (로컬, 미커밋)</div>
+
+</div>
+</body>
+</html>

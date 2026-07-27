@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>담당 파트 — 기준선 2개월 · 30/30/20/20 근거 정리</title>
+<style>
+:root{
+  --bg:#f7f9fc; --surface:#ffffff; --ink:#182230; --ink-2:#42506b; --ink-3:#7b869e;
+  --line:#e3e9f2; --accent:#0b63f6; --accent-deep:#0a4fc2; --accent-soft:#eaf1fe;
+  --warn-bg:#fff7ec; --warn-line:#f3ddb9; --warn-ink:#8a5a13;
+  --kill-bg:#eef7f1; --kill-line:#cfe6d8; --kill-ink:#1e6b45;
+  --quote-bg:#f2f6fd; --mono:"SF Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#101623; --surface:#18202f; --ink:#e8edf6; --ink-2:#b3bed2; --ink-3:#7d8aa3;
+    --line:#26324a; --accent:#5aa2ff; --accent-deep:#7cb5ff; --accent-soft:#1b2a45;
+    --warn-bg:#2a2213; --warn-line:#4a3a1c; --warn-ink:#e3b76b;
+    --kill-bg:#152a20; --kill-line:#24452f; --kill-ink:#7fd6a5; --quote-bg:#1a2438;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f7f9fc; --surface:#ffffff; --ink:#182230; --ink-2:#42506b; --ink-3:#7b869e;
+  --line:#e3e9f2; --accent:#0b63f6; --accent-deep:#0a4fc2; --accent-soft:#eaf1fe;
+  --warn-bg:#fff7ec; --warn-line:#f3ddb9; --warn-ink:#8a5a13;
+  --kill-bg:#eef7f1; --kill-line:#cfe6d8; --kill-ink:#1e6b45; --quote-bg:#f2f6fd;
+}
+:root[data-theme="dark"]{
+  --bg:#101623; --surface:#18202f; --ink:#e8edf6; --ink-2:#b3bed2; --ink-3:#7d8aa3;
+  --line:#26324a; --accent:#5aa2ff; --accent-deep:#7cb5ff; --accent-soft:#1b2a45;
+  --warn-bg:#2a2213; --warn-line:#4a3a1c; --warn-ink:#e3b76b;
+  --kill-bg:#152a20; --kill-line:#24452f; --kill-ink:#7fd6a5; --quote-bg:#1a2438;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;line-height:1.65;font-size:15.5px;padding:0 20px 80px}
+.wrap{max-width:860px;margin:0 auto}
+header{padding:52px 0 26px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:700;text-transform:uppercase;margin-bottom:10px}
+h1{font-size:clamp(24px,4vw,30px);line-height:1.3;text-wrap:balance}
+.meta{margin-top:12px;font-size:13px;color:var(--ink-3)}
+h2{font-size:20px;margin:52px 0 6px;display:flex;align-items:baseline;gap:10px}
+h2 .no{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600}
+h3{font-size:16px;margin:28px 0 10px}
+p{margin:10px 0;color:var(--ink-2)}
+p strong,li strong{color:var(--ink)}
+.tablebox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:560px}
+th{background:var(--accent-soft);color:var(--ink);text-align:left;padding:10px 14px;font-size:12.5px;border-bottom:1px solid var(--line)}
+td{padding:10px 14px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td b{color:var(--ink)}
+.hl td{background:color-mix(in srgb, var(--accent) 7%, transparent)}
+.calc{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:16px 20px;margin:14px 0;font-size:14px;color:var(--ink-2)}
+.calc .t{font-size:12.5px;font-weight:700;color:var(--accent);margin-bottom:8px}
+.calc code{display:block;font-family:var(--mono);font-size:13px;background:var(--accent-soft);border-radius:8px;padding:10px 14px;margin:8px 0;color:var(--accent-deep);overflow-x:auto;white-space:pre}
+.callout{border-radius:10px;padding:12px 16px;margin:14px 0;font-size:13.5px;border:1px solid}
+.callout.warn{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn-ink)}
+.callout.kill{background:var(--kill-bg);border-color:var(--kill-line);color:var(--kill-ink)}
+.script{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:16px 20px;margin:14px 0}
+.script .q{font-size:12.5px;font-weight:700;color:var(--accent);margin-bottom:8px}
+.script p{font-size:14px;margin:0}
+ul,ol{margin:10px 0 10px 22px;color:var(--ink-2)}
+li{margin:6px 0}
+a{color:var(--accent);text-decoration:none;word-break:break-all}
+a:hover{text-decoration:underline}
+.num{font-variant-numeric:tabular-nums}
+.foot{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">MASIL · FourSure — 개인 담당 파트</div>
+  <h1>기준선 2개월 · 가중치 30/30/20/20 — 근거 정리 (계산식·출처 포함)</h1>
+  <div class="meta">2026-07-24 · 심사 지적 #7·#11 대응 · 모든 인용 원문 확인 · 계산은 재현 가능하도록 식 병기</div>
+</header>
+
+<h2><span class="no">1</span>기준선 2개월 설정 근거</h2>
+
+<p><strong>한 줄 결론</strong>: 2개월은 임의값이 아니라 — ① 고령 운전 빈도 통계에서 역산한 최소 안전 기간이고, ② 연구 기준선(2주~1개월)보다 보수적이며 업계 관행(3~6개월)보다 신속한 중간값이고, ③ 방문 일수 기준의 원 논문이 쓴 관찰 창(60일)과 같다.</p>
+
+<h3>1-1. 역산 계산 (심사위원이 제안한 그 방식)</h3>
+<div class="calc"><div class="t">계산 ① — 2개월 동안 운전이 몇 번 쌓이나</div>
+<code>고령운전자 최빈 운전 빈도 = 주 3~5회  (한국소비자원 2024, n=300, 최빈 구간 36.7%)
+2개월 ≈ 8.7주  →  운전 횟수 = 3×8.7 ~ 5×8.7 = 약 26 ~ 43회</code>
+교차 확인: 일본자동차공업회(JAMA) 2025 — 65세+ 주운전자 주 3.9일 차량 사용 → 2개월 약 34일. 두 독립 통계가 같은 범위.</div>
+<div class="calc"><div class="t">계산 ② — 가장 뜸한 진짜 거점이 존 성립 요건(서로 다른 3일)을 채우나</div>
+<code>병원:   월 3.75일 방문 (건보공단 2022, 65세+ 월평균 입내원)  → 2개월 7.5일 ≥ 3 ✓
+보수 가정(월 2회 거점): 2개월 4회 ≥ 3 ✓
+1개월이면: 2회 &lt; 3 ✗ — 임계 경계에 걸림  →  2개월이 최소 안전선</code></div>
+<div class="calc"><div class="t">계산 ③ — 오류 확률 (푸아송, P(X≥k) = 1 − Σ e⁻λ·λⁱ/i!)</div>
+<code>우연 방문지 (2개월 1회 수준, λ=1):   3일 임계에 걸릴 확률  8.0%   (2일 임계면 26.4%)
+진짜 거점 — 병원 (λ=7.5):            3일 임계 성립 확률   98.0%
+진짜 거점 — 월 2회 보수 가정 (λ=4):   3일 성립 76.2% · 4일로 올리면 56.7%로 급락</code>
+→ "2개월 + 3일" 조합이 우연은 거르고(8%) 진짜는 붙잡는(98%) 균형점이라는 정량 근거.</div>
+
+<h3>1-2. 선례 스펙트럼 (전부 원문 확인)</h3>
+<div class="tablebox"><table>
+  <tr><th>관찰 창</th><th>누가</th><th>출처</th></tr>
+  <tr><td class="num">2주</td><td>UMTRI 자연주행 기준선 — "Roughly the first 2 weeks … baseline driving period" (n=108)</td><td><a href="https://pubmed.ncbi.nlm.nih.gov/29584495/">Traffic Injury Prevention 2018</a></td></tr>
+  <tr><td class="num">1개월</td><td>DRIVES 고령자 GPS 연구 — 기준선 = "first full month" (n=161, 평균 24개월 추적)</td><td><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9535782/">PMC9535782</a></td></tr>
+  <tr class="hl"><td class="num"><b>60일 = 2개월</b></td><td><b>Isaacman 2011 — 중요 장소 판정의 관찰 창. "전체 일수의 5% 초과 = Days &gt; 2 = 서로 다른 날 3일 이상"</b></td><td><a href="https://mrmgroup.cs.princeton.edu/papers/Isaacman_pervasive11.pdf">Pervasive 2011 원문 PDF §3.2</a></td></tr>
+  <tr><td class="num">3개월</td><td>표준 이동범위 척도 DHQ의 회상 구간 (LongROAD 사용)</td><td><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7317610/">PMC7317610</a></td></tr>
+  <tr><td class="num">4개월</td><td>Candrive 국제 고령운전 코호트의 재평가 주기 (n=928)</td><td><a href="https://pubmed.ncbi.nlm.nih.gov/23541299/">Marshall et al. 2013</a></td></tr>
+  <tr><td class="num">3~6개월</td><td>업계 UBI rating period 관행 <i>(스니펫 수준 — 발표 인용 전 원문 재확인)</i></td><td>AAP 2025 현장실험 보도</td></tr>
+</table></div>
+<p>포지셔닝 문장: <strong>"연구 기준선(2주~1개월)보다 2배 이상 보수적, 업계 요율 관행(3~6개월)보다 개입이 빠른 중간값 — 그리고 방문 일수 기준을 쓴 원 논문의 관찰 창과 동일."</strong></p>
+
+<h3>1-3. Lally(습관 66일) 사용 지침</h3>
+<div class="callout warn"><b>보조 한 문장으로만 쓸 것</b> — "행동과학에서도 습관의 안정화를 두 달 안팎으로 본다는 보고가 있습니다(Lally et al. 2010, 자동화 중앙값 66일)." 주력으로 쓰면 안 되는 이유: ① 그 연구는 <b>새 습관 형성</b> 기간(n=96, 12주)이지 기존 패턴의 <b>관측 기간</b> 근거가 아님 — "그건 습관 만들기 연구인데요" 한 방에 무너짐 ② 범위가 18~254일이라 66일 단정도 불가. 출처: <a href="https://doi.org/10.1002/ejsp.674">Lally et al., EJSP 40(6), 998–1009</a></div>
+
+<div class="script"><div class="q">발표 문장 (그대로 읽기)</div>
+<p>"기준선 2개월은 세 겹의 근거로 정했습니다. 첫째, 역산 — 고령 운전자 최빈 운전 빈도(주 3~5회, 소비자원 2024)로 계산하면 2개월에 운전 26~43회가 쌓여, 월 2회 수준의 저빈도 거점도 존 성립 요건을 안정적으로 채웁니다. 1개월이면 경계에 걸립니다. 둘째, 선례 — 자연주행 연구들의 기준선(2주~1개월)보다 보수적이고 업계 요율 산정 관행(3~6개월)보다 빠르며, 방문 일수 기준을 쓴 Isaacman(2011)의 관찰 창 60일과 같습니다. 셋째, 민감도 — 기준선을 1/2/3개월로 바꿔 180개 시나리오를 재판정하는 분석을 준비하고 있습니다."</p></div>
+
+<div class="tablebox"><table>
+  <tr><th>예상 꼬리질문</th><th>응답</th></tr>
+  <tr><td>"왜 1개월은 안 되나"</td><td>"월 2회 거점이 2회밖에 못 쌓여 3일 임계 경계에 걸립니다 — 진짜 거점을 놓칠 위험이 확률로 커집니다(성립률 98%→76% 이하)."</td></tr>
+  <tr><td>"국내 주행거리 통계로 역산했나"</td><td>"국내 고령자 연령별 주행거리 공식 통계는 공개돼 있지 않아(보험개발원 비공개), 운전 빈도(소비자원)와 일본 JAMA 통계를 교차 앵커로 썼습니다 — 두 독립 출처가 같은 범위를 줍니다."</td></tr>
+</table></div>
+
+<h2><span class="no">2</span>가중치 30/30/20/20 — 손해율 연결 논리</h2>
+
+<p><strong>한 줄 결론</strong>: 가중치가 설계값임을 인정하되 — ① 그 값이 만드는 재무 효과(위험군 오할인 회수)는 실측돼 있고, ② 손익분기 요구치는 문헌 실증 효과의 절반 이하로 보수적이며, ③ 모든 값이 공개 파라미터라 손해율 목표로 재캘리브레이션하는 절차까지 설계돼 있다.</p>
+
+<h3>2-1. 구조 확인</h3>
+<p>연간 우대 점수 = 주행 30 + 생활권 내 안전 30 + 생활권 밖 안전 20 + 패턴 안정성 20 (합 100) — ≥75점을 12개월 중 9개월 충족 시 보너스 최대 7%p. 권내(30) &gt; 권외(20)인 이유: 노출(주행)의 대부분이 생활권 안에서 일어나므로 안쪽 행동이 더 무겁게 반영되는 것이 공정.</p>
+
+<h3>2-2. 재무 실측 — "위험군에 대한 부적절한 할인은 손해" 의 수치화</h3>
+<div class="calc"><div class="t">실측 ① — 요율 재배분 (180 시나리오)</div>
+<code>동시변화(위험) 세그먼트 평균 할인:  19.6%  →  7.9%   (부적절 할인 회수 −11.7%p)
+안정 세그먼트: +4 ~ +6%p 상향  (안전 운전의 대가로 재배분)</code>
+심사위원 표현 그대로: "위험군에 대한 부적절한 할인은 회사의 손해" — 그 회수분의 실측치.</div>
+<div class="calc"><div class="t">실측 ② — 케어 개입의 손익분기</div>
+<code>재배분 후 포트폴리오 수입 델타 = −1.74% (연 약 205만원 / 180건)
+손익분기 조건:  케어 세그먼트 클레임 절감액 ≥ 수입 감소액
+→ 필요한 클레임 절감률 = 10.3 ~ 12.4%</code>
+문헌 실증 효과와 비교: 텔레매틱스 피드백만으로 급제동 21% 감소(6개월), 고령자 개입(인지·운전 훈련) 메타분석 사고 30~32% 감소 → <b>요구치(10.3~12.4%)는 문헌 실증의 절반 이하 = 보수적 가정에서도 성립.</b></div>
+
+<h3>2-3. 문헌 앵커 (전부 확인, 주의 병기)</h3>
+<div class="tablebox"><table>
+  <tr><th>근거</th><th>내용</th><th>출처</th></tr>
+  <tr><td>UBI → 손해율 개선 (계리 실증)</td><td>미국 개인 자동차보험 이중차분 분석 — UBI 도입이 손해율을 유의하게 개선(조기 도입사)</td><td><a href="https://www.tandfonline.com/doi/abs/10.1080/10920277.2021.1953536">Che, Liebenberg &amp; Xu 2022, North American Actuarial Journal 26(3)</a></td></tr>
+  <tr><td>피드백 → 행동 개선</td><td>UBI 가입 후 6개월 만에 일평균 급제동 21% 감소 (n≈10만) <i>(발표 전 초록 재확인 권장)</i></td><td><a href="https://pubsonline.informs.org/doi/10.1287/mksc.2018.1126">Soleymanian et al. 2019, Marketing Science 38(1)</a></td></tr>
+  <tr><td>행동 개선 → 클레임 감소</td><td>고위험·고참여군 3개월: 주의분산 −20%·급제동 −9%·과속 −27% → 대인 클레임 −5.5% 추정. 위험 5분위 간 클레임 빈도 ~3배</td><td><a href="https://m.cmtelematics.com/hubfs/CMT%20Study%20-%20UBI%20Engagement%20Impact.pdf">CMT 백서 2023 (n≈10만)</a></td></tr>
+  <tr><td>고령자 개입 효과</td><td>인지훈련 → 과실사고 약 30% 감소(OR 0.729) · 운전훈련 → 사고 32% 감소(RR 0.68)</td><td>AAP 메타분석 · Ishii 2023 메타분석</td></tr>
+  <tr class="hl"><td><b>기존 마일리지 특약 대비 우위 (핵심 카드)</b></td><td><b>연 5,000km 미만 저주행 고령 집단은 km당 사고 위험이 오히려 높음(저주행 편향)</b> — "주행거리만 보는 특약은 이 세그먼트를 체계적으로 잘못 할인. 행동·패턴 축 추가 자체가 손해율 관리"</td><td><a href="https://pubmed.ncbi.nlm.nih.gov/23477415/">Langford et al. 2013 (Candrive/Ozcandrive), AAP</a></td></tr>
+  <tr><td>업계 규모감 (보조)</td><td>텔레매틱스로 합산비율 최대 7%p, 비용 차감 후 ~5%p 개선 추정 — <i>업계 싱크탱크 추정임을 명시</i></td><td><a href="https://www.insurancethoughtleadership.com/telematics/tech-secret-combined-ratio-below-100">IoT Insurance Observatory</a></td></tr>
+</table></div>
+<div class="callout warn">⚠ <b>인용 금지</b>: Octo 사례(클레임 15.9% 감소, 합산비율 108→95.5 — 원출처 확인 실패) · Progressive "3배 요율 차등/손해율 15% 우수"(2차 자료만). 이 수치들이 검색에 자주 떠도 쓰지 말 것.</div>
+
+<h3>2-4. 캘리브레이션 약속 (개선 방향 답변)</h3>
+<ul>
+  <li>모든 가중치·임계가 <strong>선언적 파라미터</strong> — 요율 샌드박스에서 심사위원이 직접 바꾸면 180건 판정·요율이 즉시 재계산(숨은 튜닝 없음의 증명).</li>
+  <li>2단계: 가중치를 <strong>위험군 식별력</strong>(케어군-우대군의 위험행동률 분리도)과 <strong>손해율 개선 목표</strong>에 맞춰 재캘리브레이션 — 목표 지표를 바꾸면 재배분 결과가 화면에서 바로 보이므로 캘리브레이션 자체가 시연 가능.</li>
+  <li>(예정 실측) 가중치 ±10 변동 시 판정 강건성 + 식별력 최적 조합 탐색 — 엔진에서 실행 가능.</li>
+</ul>
+
+<div class="script"><div class="q">발표 문장 (그대로 읽기)</div>
+<p>"30/30/20/20은 손해율 목표에서 도출된 값이 아니라 설계 시작점입니다 — 인정합니다. 대신 그 값이 만드는 재무 효과를 실측했습니다: 위험 세그먼트의 평균 할인이 19.6%에서 7.9%로 회수됩니다. 말씀하신 '위험군에 대한 부적절한 할인은 회사의 손해'가 정확히 이 수치입니다. 케어 개입의 손익분기는 세그먼트 클레임 10.3~12.4% 절감인데, 문헌 실증 효과(급제동 21% 감소, 고령자 개입 사고 30% 감소)의 절반 이하라 보수적 가정에서도 성립합니다. 그리고 기존 마일리지 특약과의 차이 — 연 5천km 미만 저주행 고령 집단은 km당 위험이 오히려 높다는 것이 문헌으로 확인돼 있어서, 주행거리 하나로는 이 세그먼트를 체계적으로 잘못 할인하게 됩니다. 저희 행동·패턴 축이 그 오할인을 잡는 장치이고, 모든 가중치는 공개 파라미터라 지금 이 자리에서 바꿔 검증하실 수 있습니다."</p></div>
+
+<div class="tablebox"><table>
+  <tr><th>예상 꼬리질문</th><th>응답</th></tr>
+  <tr><td>"그 재배분·손익분기도 합성 데이터 계산 아닌가"</td><td>"맞습니다 — 그래서 '이 값이 옳다'가 아니라 '이 구조가 위험군 오할인을 회수하는 방향으로 작동한다'는 로직 검증으로 제시하고, 절대 수치 확정은 파일럿 경험 데이터의 몫입니다."</td></tr>
+  <tr><td>"왜 주행 30인가, 안전이 더 커야 하지 않나"</td><td>"안전 축 합계가 50(권내 30+권외 20)으로 이미 최대입니다. 주행 30은 기존 마일리지 체계와의 연속성 — 이 특약이 마일리지 위에 얹히는 구조임을 반영한 배분입니다."</td></tr>
+  <tr><td>"손해율 목표 캘리브레이션은 언제"</td><td>"파일럿에서 경험 손해율이 확보되는 시점입니다. 그 전 단계로 합성 데이터에서 식별력 기준 민감도 분석을 준비하고 있습니다."</td></tr>
+</table></div>
+
+<h2><span class="no">3</span>남은 일 (체크리스트)</h2>
+<ul>
+  <li>☐ 국내 고령 운전자 연령별 연 주행거리 — 보험개발원 자료 접근 시도 (미확보 시 "국내 통계 부재 → 소비자원 빈도 + 일본 JAMA 교차 앵커" 명시)</li>
+  <li>☐ 업계 UBI rating period 3~6개월 — 원문 재확인 후 인용 여부 결정</li>
+  <li>☐ 급제동 21%(Soleymanian) — 원문 초록 재확인</li>
+  <li>☐ 베이스라인 1/2/3개월 민감도 실측 (개발 요청 시 반나절)</li>
+  <li>☐ 가중치 강건성·식별력 실측 (개발 요청 시 반나절)</li>
+</ul>
+
+<div class="foot">MASIL/FourSure · 개인 담당 파트 근거 정리 · 2026-07-24 · 원천: reports/EVIDENCE_기준선_방문임계_노트.md · reports/FEEDBACK2_대응계획.md §2-F·§5 (로컬, 미커밋)</div>
+
+</div>
+</body>
+</html>
