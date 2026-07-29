@@ -90,13 +90,30 @@ def grid_sweep(drivers):
     near = [w for w in grid if all(abs(a - b) <= 5 for a, b in zip(w, (30, 30, 20, 20)))]
     nv = [changes[w] for w in near]
     print(f"■ 현행 ±5 이웃 {len(near)}개 — 중앙값 {st.median(nv):.0f}건 · 최대 {max(nv)}건")
-    by_m = defaultdict(list)
-    for w, c in changes.items():
-        by_m[w[0]].append(c)
-    print("■ 주행거리 가중치별 평균 변경 (민감도의 주범):")
-    for k in sorted(by_m):
-        if k <= 50:
-            print(f"   mileage={k:2d}: {st.mean(by_m[k]):5.1f}건")
+    # 4축 각각을 같은 조건에서 본다. 한 축을 볼 때 나머지 지배 축(주행거리≤30,
+    # 안 안전≥25)은 안정 구간에 고정해 교란을 제거한다 — 고정하지 않으면 다른
+    # 축의 폭주가 그 축의 효과로 잘못 읽힌다.
+    views = [
+        ("주행거리", 0, lambda w: w[1] >= 25, "안 안전≥25 고정"),
+        ("안 안전", 1, lambda w: w[0] <= 30, "주행거리≤30 고정"),
+        ("밖 안전", 2, lambda w: w[0] <= 30 and w[1] >= 25, "주행거리≤30·안 안전≥25 고정"),
+        ("패턴 안정성", 3, lambda w: w[0] <= 30 and w[1] >= 25, "주행거리≤30·안 안전≥25 고정"),
+    ]
+    profiles = {}
+    for name, idx, keep, note in views:
+        d = defaultdict(list)
+        for w, c in changes.items():
+            if keep(w):
+                d[w[idx]].append(c)
+        prof = {k: st.mean(v) for k, v in sorted(d.items()) if k <= 50 and len(v) >= 3}
+        profiles[name] = prof
+        span = max(prof.values()) - min(prof.values())
+        print(f"\n■ {name} ({note}) — 진폭 {span:.0f}건")
+        print("   " + "  ".join(f"{k}:{m:5.1f}" for k, m in prof.items()))
+    stable = [w for w in grid if w[0] <= 30 and w[1] >= 25]
+    sv = [changes[w] for w in stable]
+    print(f"\n■ 두 안정 구간(주행거리≤30·안 안전≥25)을 지키는 {len(stable)}개 조합 "
+          f"— 중앙값 {st.median(sv):.0f}건 · 최대 {max(sv)}건")
     return changes
 
 
