@@ -73,3 +73,34 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+def grid_sweep(drivers):
+    """가중치 공간 전체(5 단위, 각 축 ≥5, 합 100 = 969개)를 스윕한다."""
+    import itertools, statistics as st
+    from collections import defaultdict
+    base = annual_reward_states(drivers, VARIANTS["30/30/20/20 (현행)"])
+    grid = [c for c in itertools.product(range(5, 90, 5), repeat=4) if sum(c) == 100]
+    changes = {}
+    for w in grid:
+        s = annual_reward_states(drivers, w)
+        changes[w] = sum(1 for a, b in zip(base, s) if a != b)
+    vals = list(changes.values())
+    print(f"\n■ 전체 격자 {len(grid)}개 조합 — 판정 변경 중앙값 {st.median(vals):.0f}건 · 최대 {max(vals)}건")
+    near = [w for w in grid if all(abs(a - b) <= 5 for a, b in zip(w, (30, 30, 20, 20)))]
+    nv = [changes[w] for w in near]
+    print(f"■ 현행 ±5 이웃 {len(near)}개 — 중앙값 {st.median(nv):.0f}건 · 최대 {max(nv)}건")
+    by_m = defaultdict(list)
+    for w, c in changes.items():
+        by_m[w[0]].append(c)
+    print("■ 주행거리 가중치별 평균 변경 (민감도의 주범):")
+    for k in sorted(by_m):
+        if k <= 50:
+            print(f"   mileage={k:2d}: {st.mean(by_m[k]):5.1f}건")
+    return changes
+
+
+if __name__ == "__main__":
+    import json as _j
+    _drivers = _j.loads(BUNDLE.read_text(encoding="utf-8"))["drivers"]
+    grid_sweep(_drivers)
