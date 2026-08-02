@@ -106,8 +106,8 @@ test("Reward uses the same monthly formula and requires 9 of 12 eligible months"
 
 test("Care requires mobility and risky-behavior changes in the same eligible month", () => {
   const months = Array.from({ length: 12 }, (_, index) => month(index));
-  months[2] = month(2, { mobility_change_index_pct: 40, risky_behavior_change_index_pct: 0 });
-  months[7] = month(7, { mobility_change_index_pct: 0, risky_behavior_change_index_pct: 40 });
+  months[2] = month(2, { outer_visit_share_pct: 40, mobility_change_index_pct: 40 });
+  months[7] = month(7, { risky_behavior_rate_pct: 40, risky_behavior_change_index_pct: 40 });
   const result = decide(months);
 
   assert.equal(result.care_review_month_count, 0);
@@ -118,7 +118,12 @@ test("Care requires mobility and risky-behavior changes in the same eligible mon
 
 test("Reward and Care are independent axes, and Care routes pricing to the reduction", () => {
   const months = Array.from({ length: 12 }, (_, index) => month(index));
-  months[6] = month(6, { mobility_change_index_pct: 40, risky_behavior_change_index_pct: 30 });
+  months[6] = month(6, {
+    outer_visit_share_pct: 40,
+    risky_behavior_rate_pct: 30,
+    mobility_change_index_pct: 40,
+    risky_behavior_change_index_pct: 30
+  });
   const result = decide(months, { careDiscountReduction: 13 });
 
   // Both axes fire independently.

@@ -1084,20 +1084,71 @@ def pricing_sandbox(
     }
 
 
+def _rolling_hubs_by_month(
+    driver: Mapping[str, Any],
+    events: Sequence[Mapping[str, Any]],
+    product_rules: Mapping[str, Any],
+) -> tuple[dict[str, list[dict[str, Any]]], dict[str, int]]:
+    """채택 설계(2026-08-02): 생활권 지도는 매달 직전 2개월 방문으로 재군집.
+
+    기준선 두 달은 기준선 창(첫 2개월)의 지도를 쓰고, 평가 월 M은 [M-2, M-1]
+    창으로 재형성한다(해당 월 데이터는 형성에서 제외 — 누출 방지). 군집이
+    비면 직전 지도를 유지한다(원안 폴백). 케어의 평소값·해제 기준은 기준선에
+    고정된 채로 두어(케어 분리) 지도 갱신이 위험 판정을 초기화하지 않는다.
+    """
+    environment = ENVIRONMENTS[str(driver["environment_id"])]
+    home_center = _hub_centers(driver)["__home__"]
+    by_month: dict[str, list[Mapping[str, Any]]] = defaultdict(list)
+    for event in events:
+        by_month[str(event["month"])].append(event)
+
+    hubs_by_month: dict[str, list[dict[str, Any]]] = {}
+    stats = {"fallback_month_count": 0}
+    prev_hubs: list[dict[str, Any]] = []
+    ordered_months = list(ALL_MONTHS)
+    for idx, month in enumerate(ordered_months):
+        window = ordered_months[:2] if idx <= 1 else ordered_months[idx - 2 : idx]
+        window_events = [event for m in window for event in by_month.get(m, [])]
+        hubs: list[dict[str, Any]] = []
+        if window_events:
+            clustering = dbscan_distinct_days(
+                window_events,
+                eps_m=float(environment["dbscan_eps_m"]),
+                min_distinct_days=3,
+            )
+            hubs = summarize_clusters(
+                window_events,
+                clustering["labels"],
+                core_radius_m=float(product_rules["core_radius_m"]),
+                buffer_cap_m=float(product_rules["buffer_cap_m"]),
+                home_zone_reach_m=float(environment["zone_reach_m"]) * _HOME_ZONE_REACH_FACTOR,
+                home_center=home_center,
+            )
+        if not hubs and prev_hubs:
+            hubs = prev_hubs
+            stats["fallback_month_count"] += 1
+        hubs_by_month[month] = hubs
+        prev_hubs = hubs
+    return hubs_by_month, stats
+
+
 def _monthly_results(
     driver: Mapping[str, Any],
     events: Sequence[Mapping[str, Any]],
-    hubs: Sequence[Mapping[str, Any]],
+    hubs_by_month: Mapping[str, Sequence[Mapping[str, Any]]],
     product_rules: Mapping[str, Any],
 ) -> list[dict[str, Any]]:
     by_month: dict[str, list[Mapping[str, Any]]] = defaultdict(list)
     located: dict[str, dict[str, Any]] = {}
     for event in events:
         by_month[str(event["month"])].append(event)
-        located[str(event["visit_event_id"])] = locate_product_zone(event, hubs)
+        located[str(event["visit_event_id"])] = locate_product_zone(
+            event, hubs_by_month.get(str(event["month"]), [])
+        )
 
     def raw_month_metrics(month: str) -> dict[str, Any]:
         rows = by_month[month]
+        hubs = hubs_by_month.get(month, [])
         in_zone = [row for row in rows if located[str(row["visit_event_id"])]["zone"] in {"core", "buffer"}]
         out_zone = [row for row in rows if located[str(row["visit_event_id"])]["zone"] == "outer"]
         total_distance = sum(float(row["trip_distance_km"]) for row in rows)
@@ -1279,7 +1330,8 @@ def _driver_summary(
         }
         for hub in hubs
     ]
-    monthly = _monthly_results(driver, events, hubs, product_rules)
+    hubs_by_month, rolling_stats = _rolling_hubs_by_month(driver, events, product_rules)
+    monthly = _monthly_results(driver, events, hubs_by_month, product_rules)
     evaluation = [result for result in monthly if result["period_role"] == "evaluation"]
     annual_reward, annual_care = _annual_state(monthly, product_rules)
     annual_distance = sum(float(result["total_distance_km"]) for result in evaluation)
@@ -1334,6 +1386,11 @@ def _driver_summary(
             "distance_metric": "haversine_m",
             "eps_m": float(environment["dbscan_eps_m"]),
             "min_distinct_days": 3,
+            "zone_refresh_policy": "rolling_2m",
+            "zone_refresh_fallback_month_count": rolling_stats["fallback_month_count"],
+            "monthly_hub_counts": {
+                month: len(hubs_by_month.get(month, [])) for month in ALL_MONTHS
+            },
             "repeated_hub_count": len(hubs),
             "routine_hubs": public_hubs,
             "new_hub_label_ko": new_hub_label_ko,
@@ -1957,9 +2014,16 @@ def _build_bundle_and_events(
         "algorithm": {
             "reference": {
                 "name": "DBSCAN",
-                "purpose": "Detect recurrent hubs from baseline visit events.",
+                "purpose": "Detect recurrent hubs from a rolling two-month visit window, refreshed monthly.",
                 "distance_metric": "haversine_m",
                 "min_distinct_days": 3,
+                "zone_refresh": {
+                    "policy": "rolling_2m",
+                    "window_months": 2,
+                    "current_month_excluded": True,
+                    "empty_cluster_fallback": "previous_map",
+                    "care_baseline_decoupled": True,
+                },
                 "environment_eps_m": {
                     key: float(value["dbscan_eps_m"])
                     for key, value in ENVIRONMENTS.items()

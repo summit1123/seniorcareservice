@@ -132,11 +132,39 @@ export function calculateSandboxDecision(input: SandboxDecisionInput): SandboxRe
   const score = scores.length ? scores.reduce((sum, value) => sum + value, 0) / scores.length : 0;
   const requiredMonths = Math.max(1, Math.round(finite(rewardRequiredMonths, 9)));
   const rewardMonths = scored.filter(({ score: monthScore }) => monthScore >= rewardThreshold);
-  const careMonths = careEligible.filter(
-    (month) =>
-      month.mobility_change_index_pct >= careMobilityThreshold &&
-      month.risky_behavior_change_index_pct >= careRiskThreshold
-  );
+  // Care mirrors the backend two-stage rule exactly: a month OPENS care when both
+  // indicators jump vs the trailing two-month average, and STAYS open only while
+  // the driver has not returned to the long-term baseline (first two months).
+  // The baseline anchor is decoupled from the rolling living-zone map on purpose.
+  const ordered = driver.monthly_results;
+  const baselinePair = ordered.slice(0, 2);
+  const baselineOuter = baselinePair.length
+    ? baselinePair.reduce((sum, month) => sum + month.outer_visit_share_pct, 0) / baselinePair.length
+    : 0;
+  const baselineRisk = baselinePair.length
+    ? baselinePair.reduce((sum, month) => sum + month.risky_behavior_rate_pct, 0) / baselinePair.length
+    : 0;
+  const careOpenByMonth = new Map<string, boolean>();
+  let careOpen = false;
+  ordered.forEach((cur, index) => {
+    if (index < 2) {
+      careOpenByMonth.set(cur.month, false);
+      return;
+    }
+    const prev1 = ordered[index - 1];
+    const prev2 = ordered[index - 2];
+    const trailMobility =
+      cur.outer_visit_share_pct - (prev1.outer_visit_share_pct + prev2.outer_visit_share_pct) / 2;
+    const trailRisk =
+      cur.risky_behavior_rate_pct - (prev1.risky_behavior_rate_pct + prev2.risky_behavior_rate_pct) / 2;
+    const fires = trailMobility >= careMobilityThreshold && trailRisk >= careRiskThreshold;
+    const sustained =
+      cur.outer_visit_share_pct - baselineOuter >= careMobilityThreshold &&
+      cur.risky_behavior_rate_pct - baselineRisk >= careRiskThreshold;
+    careOpen = fires || (careOpen && sustained);
+    careOpenByMonth.set(cur.month, careOpen);
+  });
+  const careMonths = careEligible.filter((month) => careOpenByMonth.get(month.month) === true);
 
   const rewardEvidenceSufficient = scored.length >= requiredMonths;
   const rewardEligible = rewardEvidenceSufficient && rewardMonths.length >= requiredMonths;

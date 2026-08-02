@@ -1223,7 +1223,7 @@ function DecisionProcessFrame({
     {
       title: t("생활권 생성"),
       value: zoneBasis,
-      detail: t("기준선 2개월의 반복 목적지와 이동 반경 반영"),
+      detail: t("직전 2개월의 반복 목적지와 이동 반경 반영 · 매달 갱신"),
       icon: MapPinned
     },
     {
@@ -1291,6 +1291,7 @@ function LivingZoneDecisionMap({
         </div>
         {profile && zoneMap && zoneIsReady(driver.zone_status) ? (
           <div className="map-kpis">
+            <span>{t("지도 갱신 · 매달 직전 2개월")}</span>
             <span>{tf("개인 P90 {p90}m", { p90: Math.round(zoneMap.snapshot.living_zone.buffer.departure_p90_threshold_m).toLocaleString("ko-KR") })}</span>
             <span>{tf("생활권 밖 {pct} · 감점 0", { pct: percent(profile.outZoneRatio * 100) })}</span>
             <span>{tf("위험행동 {n}건", { n: profile.riskEvents })}</span>
@@ -1757,7 +1758,7 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
         <div>
           <span>AI 1</span>
           <strong>{t("생활권 자동 생성")}</strong>
-          <p>{t("기준선 2개월의 목적지를 DBSCAN으로 군집화하고, 개인 P90 반경으로 주차·우회 같은 작은 흔들림을 흡수합니다.")}</p>
+          <p>{t("매달 직전 2개월의 목적지를 DBSCAN으로 군집화해 지도를 갱신하고, 개인 P90 반경으로 주차·우회 같은 작은 흔들림을 흡수합니다.")}</p>
         </div>
         <div>
           <span>AI 2</span>
@@ -1780,7 +1781,7 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
         <ArrowRight size={18} />
         <div className="flow-step">
           <span>2</span>
-          <strong>{t("2개월 기준선으로 생활권 생성")}</strong>
+          <strong>{t("직전 2개월 기록으로 생활권 형성·갱신")}</strong>
           <p>{t("DBSCAN은 반복 거점을 찾고, 각 거점에 중심권 500m와 중심–방문점 P90 완충권을 별도로 적용합니다.")}</p>
         </div>
         <ArrowRight size={18} />
