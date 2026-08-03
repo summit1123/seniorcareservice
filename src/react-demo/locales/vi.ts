@@ -498,7 +498,7 @@ const dict: Record<string, string> = {
   "근거 부족 · 판단 보류 · 불이익 없음": "Thiếu căn cứ · Tạm hoãn · không bất lợi",
   "담당자가 근거 확인 후 비징벌적 케어 여부 검토": "Người phụ trách xác nhận căn cứ rồi xét duyệt việc có Care không mang tính trừng phạt hay không",
   "변화 추세 관찰 · 자동 조치 없음": "Quan sát xu hướng thay đổi · không có hành động tự động",
-  "기본 유지": "Giữ Neutral",
+  "기본 유지": "Giữ Standard",
   "멀리 가지 않아도 생활권 안 급감속·과속이 누적되는 저주행 위험군": "Nhóm rủi ro ít di chuyển mà phanh gấp · vượt tốc trong vùng sinh hoạt tích lũy dù không đi xa",
   "이동 맥락만 달라지고 위험행동은 그대로여서 Care를 제안하면 안 되는 음성 대조군": "Nhóm đối chứng âm mà chỉ bối cảnh di chuyển thay đổi còn hành vi rủi ro giữ nguyên nên không được đề xuất Care",
   "같은 평가월에 이동과 위험행동이 함께 달라져 사람 검토가 필요한 핵심군": "Nhóm cốt lõi cần xét duyệt bởi con người vì di chuyển và hành vi rủi ro cùng thay đổi trong một tháng đánh giá",

@@ -355,6 +355,8 @@ function normalizeDrivers(root: JsonRecord, personas: PersonaType[], environment
     const driverNameKo = text(first(item, ["driver_name_ko"])) || undefined;
     const driverNameEn = text(first(item, ["driver_name_en"])) || undefined;
     const driverAge = nullableNumber(first(item, ["age"])) ?? undefined;
+    // Display shows birth year, not age (evaluation year is 2026 in the sim calendar).
+    const birthYear = nullableNumber(first(item, ["birth_year"])) ?? (driverAge !== undefined ? 2026 - driverAge : undefined);
 
     const monthlyReasonCodes = array(item.monthly_results)
       .filter(isRecord)
@@ -369,14 +371,14 @@ function normalizeDrivers(root: JsonRecord, personas: PersonaType[], environment
       id,
       display_label: text(
         first(item, ["display_label", "display_name", "label"]),
-        driverNameKo && driverAge !== undefined
-          ? `${driverNameKo} (${driverAge}세)`
+        driverNameKo && birthYear !== undefined
+          ? `${driverNameKo} (${birthYear}년생)`
           : `합성 운전자 ${String(index + 1).padStart(2, "0")}`
       ),
       driver_name_ko: driverNameKo,
       driver_name_en: driverNameEn,
       // English display label — romanized name for non-Korean locales.
-      display_label_en: driverNameEn && driverAge !== undefined ? `${driverNameEn} (${driverAge})` : undefined,
+      display_label_en: driverNameEn && birthYear !== undefined ? `${driverNameEn} (b. ${birthYear})` : undefined,
       age: driverAge,
       persona_id: personaId,
       persona_label: text(first(item, ["persona_label", "persona_display_name_ko"]), personas.find((persona) => persona.id === personaId)?.label ?? personaLabel(personaId)),

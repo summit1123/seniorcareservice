@@ -140,7 +140,7 @@ function tierLabelKo(reward?: string | null, care?: string | null) {
 }
 
 const dynamicTextTranslations: Record<string, string> = {
-  Standard: "Neutral",
+  Neutral: "Standard",
   "Preventive Care": "Care Review"
 };
 

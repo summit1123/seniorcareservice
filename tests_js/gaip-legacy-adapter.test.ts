@@ -34,10 +34,10 @@ test("legacy dashboard adapter preserves the original IA contract with 180 drive
   const defaultSummary = adaptAnnualSummary(bundle, directory.default_customer_id);
   assert.equal(defaultSummary.care_state, "Care Review");
 
-  // Driver options display the synthetic person name with age, and the Korea
-  // reference tier label is rendered in Korean (display-only).
+  // Driver options display the synthetic person name with birth year, and the
+  // Korea reference tier label is rendered in Korean (display-only).
   for (const option of directory.driver_options) {
-    assert.match(option.label, /^[가-힣]{2,4} \(\d{2}세\)$/, option.label);
+    assert.match(option.label, /^[가-힣]{2,4} \(\d{4}년생\)$/, option.label);
     assert.match(option.existing_matched_tier_label, /^기존 마일리지 기준 \d+(\.\d+)?%$/);
   }
 
