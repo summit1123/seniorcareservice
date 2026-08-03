@@ -1342,6 +1342,20 @@ p {
   background: var(--panel);
 }
 
+
+.formula-experiment-badge {
+  margin-left: auto;
+  font-style: normal;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, #b45309 14%, transparent);
+  color: #b45309;
+  border: 1px solid color-mix(in srgb, #b45309 35%, transparent);
+  white-space: nowrap;
+}
+
 .blueprint-title {
   display: flex;
   gap: 8px;

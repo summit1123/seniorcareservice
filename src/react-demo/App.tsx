@@ -1750,6 +1750,14 @@ function InsightCard({ title, value, detail }: { title: string; value: string; d
 
 function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryResponse }) {
   const weights = normalizeProductWeights(directory.product_rules?.weights ?? referenceProductRules.weights);
+  const adopted = normalizeProductWeights(referenceProductRules.weights);
+  // Guard against misreading a sandbox experiment as the adopted formula: the
+  // card mirrors live slider values, so flag any deviation from 30/30/20/20.
+  const isExperiment =
+    weights.mileage !== adopted.mileage ||
+    weights.in_zone_safe !== adopted.in_zone_safe ||
+    weights.out_zone_safe !== adopted.out_zone_safe ||
+    weights.pattern_stability !== adopted.pattern_stability;
   return (
     <section className="panel blueprint-panel" aria-label={t("데이터 생성 방식과 최종 산식")}>
       <div className="panel-head">
@@ -1803,6 +1811,7 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
           <div className="blueprint-title">
             <BarChart3 size={17} />
             <strong>{t("최종 통합점수 산식")}</strong>
+            {isExperiment ? <em className="formula-experiment-badge">{t("실험 중 — 채택값 30/30/20/20 아님")}</em> : null}
           </div>
           <p className="formula-lead">
             {t("한국 마일리지 거리 기준은 참조값으로 유지하되, 우대 산식과 케어 동시조건을 분리해 처벌 없는 예방지원 구조를 검증합니다.")}
@@ -1838,7 +1847,7 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
         <div className="formula-evidence-card">
           <div className="blueprint-title">
             <ShieldCheck size={17} />
-            <strong>{t("왜 이 비율을 선택했나")}</strong>
+            <strong>{t("왜 30/30/20/20을 선택했나")}</strong>
           </div>
           <div className="evidence-checklist">
             <div>
