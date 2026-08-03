@@ -1768,8 +1768,8 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
         </div>
         <div>
           <span>AI 2</span>
-          <strong>{t("4개 지표 가중치 선택")}</strong>
-          <p>{t("주행거리, 생활권 안 안전, 생활권 밖 안전, 위험변화를 어느 비율로 반영할지 후보 산식을 비교합니다.")}</p>
+          <strong>{t("가중치 후보 탐색 · 민감도 검증")}</strong>
+          <p>{t("후보 가중치 탐색·랭킹은 오프라인 1회 산출물로 남겨 감사 가능하며, 채택값 30/30/20/20은 사람이 설계한 초기값입니다. 969개 조합 전수 민감도(결정론 재판정)로 둔감성만 검증합니다 — AI가 가중치를 확정하지 않습니다.")}</p>
         </div>
         <div>
           <span>AI 3</span>
