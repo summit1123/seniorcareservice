@@ -7,40 +7,27 @@
 // re-renders after `setLocale`, so no per-component context threading is needed.
 
 import en from "./locales/en";
-import ja from "./locales/ja";
-import vi from "./locales/vi";
-import zh from "./locales/zh";
 
-export type Locale = "ko" | "en" | "zh" | "ja" | "vi";
+// ko/en only for the finals — zh/ja/vi packs were removed (unreviewed
+// translations); re-add from git history after the competition if needed.
+export type Locale = "ko" | "en";
 
-export const LOCALE_ORDER: Locale[] = ["ko", "en", "zh", "ja", "vi"];
+export const LOCALE_ORDER: Locale[] = ["en", "ko"];
 
 export const LOCALE_META: Record<Locale, { label: string; short: string; htmlLang: string }> = {
   ko: { label: "한국어", short: "KO", htmlLang: "ko" },
-  en: { label: "English", short: "EN", htmlLang: "en" },
-  zh: { label: "简体中文", short: "中", htmlLang: "zh-Hans" },
-  ja: { label: "日本語", short: "日", htmlLang: "ja" },
-  vi: { label: "Tiếng Việt", short: "VI", htmlLang: "vi" }
+  en: { label: "English", short: "EN", htmlLang: "en" }
 };
 
 const DICTIONARIES: Record<Exclude<Locale, "ko">, Record<string, string>> = {
-  en,
-  zh,
-  ja,
-  vi
+  en
 };
 
 const LOCALE_STORAGE_KEY = "masil.locale";
 
 function initialLocale(): Locale {
-  // Persisted choice wins; otherwise ENGLISH — GAIP is a Singapore competition,
-  // so the very first screen must open in English.
-  try {
-    const saved = typeof localStorage !== "undefined" ? localStorage.getItem(LOCALE_STORAGE_KEY) : null;
-    if (saved && (LOCALE_ORDER as string[]).includes(saved)) return saved as Locale;
-  } catch {
-    // storage unavailable (private mode 등) — fall through
-  }
+  // ALWAYS English on entry (팀 결정 8/3) — a previous visitor's saved choice
+  // must not leak into a judge's first screen. Switching applies per session.
   return "en";
 }
 

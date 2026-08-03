@@ -216,13 +216,9 @@ function App() {
     }
   };
 
-  const [lang, setLang] = useState<Locale>(() => {
-    // Persisted choice (legacy key included) wins; otherwise the i18n default —
-    // ENGLISH first screen for the Singapore competition.
-    if (typeof localStorage === "undefined") return getLocale();
-    const saved = localStorage.getItem("masil-lang");
-    return saved && LOCALE_ORDER.includes(saved as Locale) ? (saved as Locale) : getLocale();
-  });
+  // ALWAYS English on entry (팀 결정 8/3): ignore any persisted choice so a
+  // judge's first screen is EN even on a shared demo machine.
+  const [lang, setLang] = useState<Locale>(() => getLocale());
   // Keep the i18n module locale in sync (source of truth for t()).
   if (typeof document !== "undefined") setLocale(lang);
   const changeLang = (next: Locale) => {
