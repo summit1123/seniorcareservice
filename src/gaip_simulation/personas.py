@@ -175,6 +175,47 @@ ROMAN_GIVEN: dict[str, str] = {
 }
 ROMAN_SUFFIX: dict[str, str] = {"자": "ja", "순": "soon", "덕": "deok"}
 
+# ---------------------------------------------------------------------------
+# Western display names for non-Korean locales (judges are Western; deck uses
+# English personas). Era-appropriate senior names (b. 1940s-50s). Assignment
+# uses a DEDICATED seed stream so existing roster RNG draws are untouched —
+# ages, households, dispositions, and therefore all judgments stay identical.
+# ---------------------------------------------------------------------------
+WESTERN_GIVEN_FEMALE = (
+    "Margaret", "Dorothy", "Ruth", "Betty", "Carol", "Nancy", "Judith", "Patricia",
+    "Barbara", "Susan", "Linda", "Helen", "Joan", "Shirley", "Diane", "Janet",
+    "Alice", "Gloria", "Jean", "Marilyn", "Kathleen", "Elaine", "Frances", "Joyce",
+    "Martha", "Norma", "Phyllis", "Rose", "Sylvia", "Eleanor",
+)
+WESTERN_GIVEN_MALE = (
+    "David", "Richard", "Robert", "James", "William", "Charles", "Harold", "Kenneth",
+    "Ronald", "Gerald", "Frank", "Raymond", "Lawrence", "Eugene", "Roger", "Walter",
+    "Dennis", "Douglas", "Arthur", "Henry", "Carl", "Peter", "Paul", "Edward",
+    "George", "Jack", "Leonard", "Ralph", "Stanley", "Norman",
+)
+WESTERN_FAMILY = (
+    "Miller", "Johnson", "Smith", "Brown", "Davis", "Wilson", "Anderson", "Taylor",
+    "Thomas", "Moore", "Clark", "Lewis", "Walker", "Hall", "Young", "Allen",
+    "King", "Wright", "Scott", "Green", "Baker", "Adams", "Nelson", "Hill",
+    "Campbell", "Mitchell", "Carter", "Turner", "Collins", "Parker",
+)
+
+
+def western_name(seed: int, person_id: str, sex: str, used: set[str]) -> str:
+    """Deterministic unique Western name from a dedicated seed stream."""
+    import random
+
+    rng = random.Random(_person_seed(seed, "western-name", person_id))
+    pool = WESTERN_GIVEN_FEMALE if sex == "female" else WESTERN_GIVEN_MALE
+    for _ in range(400):
+        candidate = f"{rng.choice(pool)} {rng.choice(WESTERN_FAMILY)}"
+        if candidate not in used:
+            used.add(candidate)
+            return candidate
+    candidate = f"{rng.choice(pool)} {rng.choice(WESTERN_FAMILY)}-{person_id[-2:]}"
+    used.add(candidate)
+    return candidate
+
 
 def romanize_name(name_ko: str) -> str:
     """김순애 → "Kim Soon-ae"; collision names with a 3rd syllable get "-ja" 등."""
@@ -316,6 +357,7 @@ def build_person_roster(seed: int) -> list[dict[str, Any]]:
     import random
 
     used_names: set[str] = set()
+    used_names_en: set[str] = set()
     roster: list[dict[str, Any]] = []
     sequence = 0
     for archetype in ARCHETYPES:
@@ -388,7 +430,7 @@ def build_person_roster(seed: int) -> list[dict[str, Any]]:
                     "designed_type": dtype,
                     "designed_type_ko": DESIGNED_TYPES[dtype],
                     "name_ko": name,
-                    "name_en": romanize_name(name),
+                    "name_en": western_name(seed, person_id, sex, used_names_en),
                     "age": age,
                     "sex": sex,
                     "household": household,

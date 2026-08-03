@@ -1,2804 +1,2804 @@
 {
-  "schema": "masil_gaip_mobility_profiles_v1",
-  "seed": 26071406,
-  "model": "gpt-4o",
-  "count": 60,
-  "profiles": [
+ "schema": "masil_gaip_mobility_profiles_v1",
+ "seed": 26071406,
+ "model": "gpt-4o",
+ "count": 60,
+ "profiles": [
+  {
+   "person_id": "p01",
+   "archetype_id": "stable_reward",
+   "reasoning_ko": "허종국 씨는 안전을 최우선으로 하며, 익숙한 동네 안에서 규칙적인 이동을 선호합니다.",
+   "reasoning_en": "Mr. King prioritizes safety and prefers to move regularly within his familiar neighborhood.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
     {
-      "person_id": "p01",
-      "archetype_id": "stable_reward",
-      "reasoning_ko": "허종국 씨는 안전을 최우선으로 하며, 익숙한 동네 안에서 규칙적인 이동을 선호합니다.",
-      "reasoning_en": "Mr. Heo prioritizes safety and prefers to move regularly within his familiar neighborhood.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "미소마트",
-          "label_en": "Smile Mart",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네 노인복지관",
-          "label_en": "Community Senior Center",
-          "kind": "senior_center",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "near",
-          "visit_share": 0.3,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "손주네 집",
-          "label_en": "Grandchildren's House",
-          "kind": "family",
-          "role": "in_zone",
-          "bearing_deg": 200.0,
-          "distance_band": "near",
-          "visit_share": 0.25,
-          "typical_days_ko": "주말",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
+     "label_ko": "미소마트",
+     "label_en": "Smile Mart",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
     },
     {
-      "person_id": "p02",
-      "archetype_id": "stable_reward",
-      "reasoning_ko": "박병호씨는 익숙한 생활권 내에서 주로 낮 시간에 활동하며, 새로운 목적지가 필요하지 않습니다.",
-      "reasoning_en": "Mr. Park prefers to move within a familiar area mainly during daytime, with no need for new destinations.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "풍년시장",
-          "label_en": "Harvest Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 45.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네 종합사회복지관",
-          "label_en": "Local Community Center",
-          "kind": "community",
-          "role": "in_zone",
-          "bearing_deg": 90.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네 산책 공원",
-          "label_en": "Neighborhood Park",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "near",
-          "visit_share": 0.2,
-          "typical_days_ko": "토 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
+     "label_ko": "동네 노인복지관",
+     "label_en": "Community Senior Center",
+     "kind": "senior_center",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "near",
+     "visit_share": 0.3,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
     },
     {
-      "person_id": "p03",
-      "archetype_id": "stable_reward",
-      "reasoning_ko": "심상철 씨는 규칙적인 생활 패턴을 유지하기 위해 매주 시장을 방문하며, 산책도 일상적으로 하고 있습니다.",
-      "reasoning_en": "Mr. Shim maintains a regular routine by visiting the market weekly and taking walks regularly.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "솔뫼시장",
-          "label_en": "Pine Hill Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 30.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네 산책로",
-          "label_en": "Local Walking Trail",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "near",
-          "visit_share": 0.55,
-          "typical_days_ko": "화·목·토 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p04",
-      "archetype_id": "stable_reward",
-      "reasoning_ko": "이덕례씨는 평소와 같은 장소를 반복적으로 방문하여 안전한 운전을 힘쓴다.",
-      "reasoning_en": "Lee Deok-rye regularly visits familiar places, focusing on safe driving.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "중앙시장",
-          "label_en": "Central Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "성당 봉사",
-          "label_en": "Church Service",
-          "kind": "church",
-          "role": "in_zone",
-          "bearing_deg": 75.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "토요일 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "단골 병원",
-          "label_en": "Regular Clinic",
-          "kind": "clinic",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "near",
-          "visit_share": 0.2,
-          "typical_days_ko": "화요일 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p05",
-      "archetype_id": "stable_reward",
-      "reasoning_ko": "심동철 씨는 익숙한 동네에서 낮 시간에만 반복적으로 이동하여 주로 생활 용품을 구매하거나 바둑을 두기 위해 시장에 방문하는 것이 주요 활동입니다.",
-      "reasoning_en": "Mr. Dongchul Shim mainly visits the local market for daily necessities or to play Baduk, reflecting his preference to move within familiar areas during daylight hours.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "장터거리",
-          "label_en": "Old Fair Street",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 85.0,
-          "distance_band": "near",
-          "visit_share": 0.6429,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "근처 바둑 동호회",
-          "label_en": "Local Baduk Club",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 200.0,
-          "distance_band": "near",
-          "visit_share": 0.3571,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p06",
-      "archetype_id": "stable_reward",
-      "reasoning_ko": "한옥임 씨는 주로 익숙한 길로 낮 시간에 이동하며, 지역 시장과 친구 집을 자주 방문하여 사회활동을 유지합니다.",
-      "reasoning_en": "Han Ok-im mostly travels on familiar roads during the day, frequently visiting the local market and a friend's house to maintain social activities.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "솔뫼시장",
-          "label_en": "Pine Hill Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "친구 김씨네",
-          "label_en": "Friend Kim's House",
-          "kind": "friend",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네 복지관",
-          "label_en": "Local Senior Center",
-          "kind": "senior_center",
-          "role": "in_zone",
-          "bearing_deg": 200.0,
-          "distance_band": "near",
-          "visit_share": 0.2,
-          "typical_days_ko": "토 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p07",
-      "archetype_id": "stable_reward",
-      "reasoning_ko": "문병일 씨는 안전한 저주행 운전자로서 일상적으로 가까운 노인정과 시장을 방문합니다.",
-      "reasoning_en": "Mr. Moon, as a safe low-mileage driver, routinely visits the nearby senior center and market.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "실버 사랑방",
-          "label_en": "Silver Lounge",
-          "kind": "senior_center",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 1.0,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p08",
-      "archetype_id": "stable_reward",
-      "reasoning_ko": "서옥임 씨는 규칙적인 생활 리듬을 유지하며, 자주 방문하는 시장과 사찰이 주요 목적지입니다.",
-      "reasoning_en": "Ms. Seo maintains a regular routine with frequent visits to the market and temple as key destinations.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "솔뫼시장",
-          "label_en": "Pine Hill Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 30.0,
-          "distance_band": "near",
-          "visit_share": 0.5625,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "가까운 산 사찰",
-          "label_en": "Nearby Mountain Temple",
-          "kind": "temple",
-          "role": "in_zone",
-          "bearing_deg": 220.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.4375,
-          "typical_days_ko": "주말",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p09",
-      "archetype_id": "stable_reward",
-      "reasoning_ko": "장옥녀는 주로 자택 가까운 곳을 방문하며 낮 시간 동안만 이동하기 때문에 익숙한 동네 안에서 반복적으로 이동합니다.",
-      "reasoning_en": "Jang Ok-nyeo mainly visits places close to her home and travels only during daytime, repeating her movements within a familiar area.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "은행나무시장",
-          "label_en": "Ginkgo Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네 노인복지관",
-          "label_en": "Local Senior Center",
-          "kind": "senior_center",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "마을의원",
-          "label_en": "Community Clinic",
-          "kind": "clinic",
-          "role": "in_zone",
-          "bearing_deg": 200.0,
-          "distance_band": "near",
-          "visit_share": 0.2,
-          "typical_days_ko": "금요일 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p10",
-      "archetype_id": "stable_reward",
-      "reasoning_ko": "정재복은 주로 익숙한 시장과 바둑 동호회에 방문합니다. 이 패턴은 주기적이며 큰 변화 없이 유지됩니다.",
-      "reasoning_en": "Jung Jae-bok frequently visits a familiar market and a go club. This pattern is regular and remains stable without significant changes.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "장터거리",
-          "label_en": "Old Fair Street",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 90.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "화·목·토 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네 바둑 동호회",
-          "label_en": "Local Go Club",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 180.0,
-          "distance_band": "near",
-          "visit_share": 0.55,
-          "typical_days_ko": "월·수·금 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p11",
-      "archetype_id": "in_zone_risky",
-      "reasoning_ko": "송말순 씨는 건강 유지와 취미 생활을 위해 자주 병원과 노래 교실을 방문하지만, 생활 반경은 크게 변하지 않습니다.",
-      "reasoning_en": "Ms. Song visits the hospital and singing class frequently to maintain health and pursue hobbies, but her travel range remains stable.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "우리동네 병원",
-          "label_en": "Neighborhood Hospital",
-          "kind": "hospital",
-          "role": "in_zone",
-          "bearing_deg": 90.0,
-          "distance_band": "near",
-          "visit_share": 0.4,
-          "typical_days_ko": "화·목 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네 노래 교실",
-          "label_en": "Local Singing Class",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 220.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "월·금 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "새마을시장",
-          "label_en": "Saemaeul Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 310.0,
-          "distance_band": "near",
-          "visit_share": 0.25,
-          "typical_days_ko": "토 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p12",
-      "archetype_id": "in_zone_risky",
-      "reasoning_ko": "이재만 씨는 생활권 내에서 익숙한 경로를 자주 다니며, 시장에서의 경험 덕분에 빠르게 움직이려는 경향이 있습니다.",
-      "reasoning_en": "Mr. Lee often travels familiar routes within his neighborhood and tends to move quickly due to his market experience.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "장터거리",
-          "label_en": "Old Fair Street",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "근처 낚시터",
-          "label_en": "Nearby Fishing Spot",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·토 이른 아침",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "손주네 집",
-          "label_en": "Grandchild's Home",
-          "kind": "family",
-          "role": "in_zone",
-          "bearing_deg": 200.0,
-          "distance_band": "near",
-          "visit_share": 0.2,
-          "typical_days_ko": "주말 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p13",
-      "archetype_id": "in_zone_risky",
-      "reasoning_ko": "배종호는 주로 동네 노인정과 시장을 방문하며, 일상 생활이 고정되어 있습니다.",
-      "reasoning_en": "Baek Jong-ho primarily visits the local senior center and market, and his daily routine is stable.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "어르신 쉼터",
-          "label_en": "Elders' Rest House",
-          "kind": "senior_center",
-          "role": "in_zone",
-          "bearing_deg": 90.0,
-          "distance_band": "near",
-          "visit_share": 0.55,
-          "typical_days_ko": "월·수·토 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "오거리시장",
-          "label_en": "Five-way Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 180.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "화·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p14",
-      "archetype_id": "in_zone_risky",
-      "reasoning_ko": "조말순은 생활권 안에서 서예와 바둑을 즐기며 가까운 목적지 위주로 안전하게 다니고자 합니다.",
-      "reasoning_en": "Jomalsoon prefers to enjoy calligraphy and Go within her local area, focusing on safe trips to nearby destinations.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "골목시장",
-          "label_en": "Alley Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네 서예 학원",
-          "label_en": "Local Calligraphy Academy",
-          "kind": "community",
-          "role": "in_zone",
-          "bearing_deg": 70.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "바둑 클럽",
-          "label_en": "Go Club",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "near",
-          "visit_share": 0.2,
-          "typical_days_ko": "주말 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p15",
-      "archetype_id": "in_zone_risky",
-      "reasoning_ko": "전옥녀는 자택 근처 생활권에서 주로 활동하며, 안정적인 이동 패턴을 유지합니다.",
-      "reasoning_en": "Jeon Ok-nyeo maintains a stable movement pattern, primarily operating within her local living area.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "골목시장",
-          "label_en": "Alley Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네한의원",
-          "label_en": "Local Clinic",
-          "kind": "clinic",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "near",
-          "visit_share": 0.3,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "할머니쉼터",
-          "label_en": "Grandma Social Center",
-          "kind": "senior_center",
-          "role": "in_zone",
-          "bearing_deg": 210.0,
-          "distance_band": "near",
-          "visit_share": 0.25,
-          "typical_days_ko": "토 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p16",
-      "archetype_id": "in_zone_risky",
-      "reasoning_ko": "류영순은 자녀의 도움을 받아 손주 등하원을 책임지며, 지역 마트를 자주 방문합니다. 바둑을 두러 커뮤니티 센터도 종종 방문합니다.",
-      "reasoning_en": "Ryu Young-soon assists with her grandchildren's school commute and frequently visits the local market. She also enjoys visiting the community center for Go games.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "큰길시장",
-          "label_en": "Main Street Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 60.0,
-          "distance_band": "near",
-          "visit_share": 0.5625,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네 커뮤니티 센터",
-          "label_en": "Local Community Center",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 150.0,
-          "distance_band": "near",
-          "visit_share": 0.4375,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p17",
-      "archetype_id": "in_zone_risky",
-      "reasoning_ko": "이금자는 종교 생활과 바둑을 즐기는 시니어로 인해, 자주 가는 교회와 바둑 동호회를 중심으로 이동이 이루어집니다.",
-      "reasoning_en": "Lee Geum-ja is a senior who enjoys religious activities and playing Go, leading to frequent visits to a nearby church and Go club.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "햇살마트",
-          "label_en": "Sunshine Mart",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "지역 교회",
-          "label_en": "Local Church",
-          "kind": "church",
-          "role": "in_zone",
-          "bearing_deg": 90.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "일요일 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "바둑 동호회",
-          "label_en": "Go Club",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 150.0,
-          "distance_band": "near",
-          "visit_share": 0.2,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p18",
-      "archetype_id": "in_zone_risky",
-      "reasoning_ko": "최순예는 생활권 안에서 주로 다니며, 약수터와 성당 방문을 통해 일상을 유지합니다.",
-      "reasoning_en": "Choi Sun-ye maintains her routine within her living area, visiting places like the spring and her church.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "풍년시장",
-          "label_en": "Harvest Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.5625,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네 성당",
-          "label_en": "Local Church",
-          "kind": "church",
-          "role": "in_zone",
-          "bearing_deg": 110.0,
-          "distance_band": "near",
-          "visit_share": 0.4375,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p19",
-      "archetype_id": "in_zone_risky",
-      "reasoning_ko": "서귀순 씨는 정년퇴직 이후 주변 생활권 내에서 봉사활동과 개인 취미를 주로 하므로 특정 목적지에 자주 방문합니다.",
-      "reasoning_en": "Ms. Seo frequently visits specific destinations as she engages in volunteer work and personal hobbies within her local area after retirement.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "큰길시장",
-          "label_en": "Main Street Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "지역 커뮤니티 센터",
-          "label_en": "Local Community Center",
-          "kind": "community",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "노인복지센터",
-          "label_en": "Senior Center",
-          "kind": "senior_center",
-          "role": "in_zone",
-          "bearing_deg": 210.0,
-          "distance_band": "near",
-          "visit_share": 0.2,
-          "typical_days_ko": "토 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p20",
-      "archetype_id": "in_zone_risky",
-      "reasoning_ko": "송재훈은 생활권 내에서 자주 이동하며 병원과 서예 교실을 주로 방문합니다. 속도 습관 개선을 목표로 합니다.",
-      "reasoning_en": "Song Jae-hoon frequently travels within his neighborhood, visiting the clinic and calligraphy class, aiming to improve his speed habits.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "우리동네 보건소",
-          "label_en": "Neighborhood Clinic",
-          "kind": "clinic",
-          "role": "in_zone",
-          "bearing_deg": 90.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "서예 교실",
-          "label_en": "Calligraphy Class",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 180.0,
-          "distance_band": "near",
-          "visit_share": 0.3,
-          "typical_days_ko": "월·금 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네 시장",
-          "label_en": "Local Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 270.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "수·토 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p21",
-      "archetype_id": "mobility_change_safe",
-      "reasoning_ko": "한종국 씨는 건강상의 이유로 병원 방문이 잦으며, 동네 시장에서 장을 보며 일상적인 생활을 유지합니다. 하반기부터는 등산을 위한 이동이 늘어납니다.",
-      "reasoning_en": "Mr. Han frequently visits the hospital for health reasons and maintains his daily routine by shopping at the neighborhood market. From the second half of the year, trips for hiking increase.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "우리동네 마트",
-          "label_en": "Neighborhood Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 60.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "지역 병원",
-          "label_en": "Local Hospital",
-          "kind": "hospital",
-          "role": "in_zone",
-          "bearing_deg": 180.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "근교 등산로",
-          "label_en": "Nearby Hiking Trail",
-          "kind": "leisure",
-          "role": "change_destination",
-          "bearing_deg": 270.0,
-          "distance_band": "outer",
-          "visit_share": 0.2,
-          "typical_days_ko": "토요일 오전",
-          "active_from_month": 9,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 9,
-      "change_trigger_ko": "하반기에 등산을 시작하면서 새로운 등산로를 찾음",
-      "change_trigger_en": "Started hiking in the second half of the year, discovering a new trail",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p22",
-      "archetype_id": "mobility_change_safe",
-      "reasoning_ko": "오종국 씨는 서예 교실을 정기적으로 방문하며 시장에서 필요한 물품을 구매하는 일상적인 패턴을 유지한다. 이러한 생활권은 그의 일상에 중요한 부분을 차지하며, 하반기에 새로운 서예 전시회 참여가 그의 이동 범위를 넓힌다.",
-      "reasoning_en": "Mr. Oh Jong-guk regularly visits his calligraphy class and shops for essentials at the market, maintaining a routine pattern. These zones are crucial to his daily life, and participation in a new calligraphy exhibition in the latter half of the year expands his travel range.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "동네 하나마트",
-          "label_en": "Corner Grocery",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "서예 교실",
-          "label_en": "Calligraphy Class",
-          "kind": "community",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.35,
-          "typical_days_ko": "토요일 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "새로운 서예 전시회",
-          "label_en": "New Calligraphy Exhibition",
-          "kind": "leisure",
-          "role": "change_destination",
-          "bearing_deg": 180.0,
-          "distance_band": "outer",
-          "visit_share": 0.2,
-          "typical_days_ko": "주말 오후",
-          "active_from_month": 9,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 9,
-      "change_trigger_ko": "하반기 새로 열리는 서예 전시회 참석",
-      "change_trigger_en": "Participation in a new calligraphy exhibition in the latter half of the year",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p23",
-      "archetype_id": "mobility_change_safe",
-      "reasoning_ko": "안복순 씨는 정년퇴직 후 바둑과 봉사활동으로 시간을 보내며 이동이 많아졌다. 생활권 내 가까운 시장과 바둑 모임을 자주 방문하여 일상을 유지한다.",
-      "reasoning_en": "As a retiree, Mrs. Ahn spends more time driving to participate in Go games and community service, frequently visiting local markets and gatherings.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "햇살마트",
-          "label_en": "Sunshine Mart",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 30.0,
-          "distance_band": "near",
-          "visit_share": 0.4,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "지역 바둑 모임",
-          "label_en": "Local Go Club",
-          "kind": "community",
-          "role": "in_zone",
-          "bearing_deg": 150.0,
-          "distance_band": "near",
-          "visit_share": 0.3,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "종합병원 정기검진",
-          "label_en": "General Hospital Checkup",
-          "kind": "hospital",
-          "role": "change_destination",
-          "bearing_deg": 220.0,
-          "distance_band": "outer",
-          "visit_share": 0.3,
-          "typical_days_ko": "격월 화요일 오전",
-          "active_from_month": 8,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 8,
-      "change_trigger_ko": "건강 검진 일정이 추가되어 정기적으로 방문하게 됐다.",
-      "change_trigger_en": "A scheduled health checkup was added, necessitating regular visits.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p24",
-      "archetype_id": "mobility_change_safe",
-      "reasoning_ko": "황정순 씨는 규칙적인 종교 생활을 위해 자주 성당을 방문합니다. 하반기부터는 퇴근 후 손주 돌보기를 위해 가족 집을 자주 방문합니다.",
-      "reasoning_en": "Ms. Hwang regularly visits the church for her religious activities. Starting in the second half of the year, she frequently visits her family home to take care of her grandchildren after school.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "우리동네 성당",
-          "label_en": "Neighborhood Church",
-          "kind": "church",
-          "role": "in_zone",
-          "bearing_deg": 90.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "일요일 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "우리동네 마트",
-          "label_en": "Neighborhood Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.3,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "손주네 집",
-          "label_en": "Grandchild's Home",
-          "kind": "family",
-          "role": "change_destination",
-          "bearing_deg": 135.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 8,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 8,
-      "change_trigger_ko": "가족의 요청 때문에 손주 돌봄이 필요해짐.",
-      "change_trigger_en": "Due to a family request, she needs to take care of her grandchildren.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p25",
-      "archetype_id": "mobility_change_safe",
-      "reasoning_ko": "강재훈은 건강과 취미생활을 위해 규칙적으로 마을시장과 건강센터를 방문하며, 하반기에는 가족 모임을 위해 먼 거리를 다니기 시작한다.",
-      "reasoning_en": "Kang Jae-hoon visits the local market and health center regularly for wellness and hobbies, and starts traveling further for family gatherings in the latter half of the year.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "골목시장",
-          "label_en": "Alley Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "널리 건강센터",
-          "label_en": "Local Health Center",
-          "kind": "clinic",
-          "role": "in_zone",
-          "bearing_deg": 110.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "가족 모임 장소",
-          "label_en": "Family Gathering Place",
-          "kind": "family",
-          "role": "change_destination",
-          "bearing_deg": 200.0,
-          "distance_band": "outer",
-          "visit_share": 0.2,
-          "typical_days_ko": "토요일 오후",
-          "active_from_month": 9,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 9,
-      "change_trigger_ko": "가족 모임 일정이 하반기부터 시작되어 이동 범위가 넓어짐.",
-      "change_trigger_en": "Family gathering schedules start in the latter half of the year, expanding travel range.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p26",
-      "archetype_id": "mobility_change_safe",
-      "reasoning_ko": "신기석은 은퇴 후 더 많은 이동을 하지만 야간에는 운전을 자제합니다. 이는 활발한 낮 활동과 주간 취미 생활로 이어집니다.",
-      "reasoning_en": "After retirement, Shin Ki-seok travels more but avoids driving at night, leading to active daytime activities and leisure pursuits.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "동네 하나마트",
-          "label_en": "Corner Grocery",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "북부 탁구장",
-          "label_en": "Northern Table Tennis Hall",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 130.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "산마루 약수터",
-          "label_en": "Sanmaru Mineral Spring",
-          "kind": "leisure",
-          "role": "change_destination",
-          "bearing_deg": 200.0,
-          "distance_band": "near",
-          "visit_share": 0.2,
-          "typical_days_ko": "주말 오전",
-          "active_from_month": 9,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 9,
-      "change_trigger_ko": "새로운 산책 루트로 산마루 약수터 방문 시작",
-      "change_trigger_en": "Started visiting Sanmaru Mineral Spring as a new walking route",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p27",
-      "archetype_id": "mobility_change_safe",
-      "reasoning_ko": "전영자는 일주일에 세 번 시장에 가고, 산책 범위가 하반기부터 확대되어 체육 공원을 새로 자주 방문하게 된다.",
-      "reasoning_en": "Yeongja visits the market three times a week, and from the second half of the year, she often visits a sports park as her walking range expands.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "동네 하나마트",
-          "label_en": "Corner Grocery",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네 체육 공원",
-          "label_en": "Community Sports Park",
-          "kind": "leisure",
-          "role": "change_destination",
-          "bearing_deg": 120.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.3,
-          "typical_days_ko": "화·목·토 오후",
-          "active_from_month": 8,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "아들 집",
-          "label_en": "Son's House",
-          "kind": "family",
-          "role": "in_zone",
-          "bearing_deg": 200.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.25,
-          "typical_days_ko": "주말 전일",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 8,
-      "change_trigger_ko": "손주 돌봄을 위해 체육 공원을 다니기 시작했다.",
-      "change_trigger_en": "Started visiting the sports park for childcare activities.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p28",
-      "archetype_id": "mobility_change_safe",
-      "reasoning_ko": "김말자는 노인정과 시장에서 시간을 보내며 생활 반경을 확대하고 있지만, 항상 안전을 우선시합니다.",
-      "reasoning_en": "Kim Malja spends her time at the senior center and market, expanding her range while still prioritizing safety.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "중앙시장",
-          "label_en": "Central Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네 경로당",
-          "label_en": "Senior Hall",
-          "kind": "senior_center",
-          "role": "in_zone",
-          "bearing_deg": 170.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "동네 병원",
-          "label_en": "Local Clinic",
-          "kind": "clinic",
-          "role": "change_destination",
-          "bearing_deg": 290.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.2,
-          "typical_days_ko": "토요일 오전",
-          "active_from_month": 8,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 8,
-      "change_trigger_ko": "건강 검진을 위해 병원을 추가 방문하게 되었습니다.",
-      "change_trigger_en": "Started additional visits to the clinic for health checkups.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p29",
-      "archetype_id": "mobility_change_safe",
-      "reasoning_ko": "장금자는 은퇴 후 농사를 계속하며 동네 시장을 자주 이용하고 있습니다. 하반기에는 손주 돌봄을 위해 자녀 집 방문이 시작되어 이동 범위가 넓어졌습니다.",
-      "reasoning_en": "Jang Geum-ja continues farming post-retirement and frequently visits the local market. In the latter half of the year, her travel scope expands as she begins visiting her child's home for grandchild care.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "샘터시장",
-          "label_en": "Springside Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "자녀 집",
-          "label_en": "Child's Home",
-          "kind": "family",
-          "role": "change_destination",
-          "bearing_deg": 180.0,
-          "distance_band": "outer",
-          "visit_share": 0.55,
-          "typical_days_ko": "토·일 오후",
-          "active_from_month": 9,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 9,
-      "change_trigger_ko": "장금자는 하반기부터 손자의 돌봄을 위해 자녀 집을 방문하기 시작했습니다.",
-      "change_trigger_en": "Jang Geum-ja began visiting her child's home for grandchild care in the latter half of the year.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p30",
-      "archetype_id": "mobility_change_safe",
-      "reasoning_ko": "손금순 씨는 오랜 택시 운전 경력으로 운전에 자신이 있으며, 서예 취미를 즐기는 생활을 유지하고 있습니다. 하반기에 이동 범위가 넓어졌지만 안전 운전을 유지하고 있습니다.",
-      "reasoning_en": "Ms. Son Geum-soon is confident in driving due to her long taxi driving career and maintains her lifestyle by enjoying calligraphy as a hobby. In the second half of the year, her travel range expanded, but she continues to drive safely.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "우리동네 전통시장",
-          "label_en": "Neighborhood Traditional Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 50.0,
-          "distance_band": "near",
-          "visit_share": 0.4,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "시민 서예 교실",
-          "label_en": "Community Calligraphy Class",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 135.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "도심 미술관",
-          "label_en": "City Art Museum",
-          "kind": "leisure",
-          "role": "change_destination",
-          "bearing_deg": 200.0,
-          "distance_band": "outer",
-          "visit_share": 0.25,
-          "typical_days_ko": "토요일 오전",
-          "active_from_month": 9,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 9,
-      "change_trigger_ko": "새로운 서예 전시 관람을 위해서",
-      "change_trigger_en": "To visit a new calligraphy exhibition",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p31",
-      "archetype_id": "mobility_risk_cochange",
-      "reasoning_ko": "윤순예는 취미 활동을 위한 새로운 경로를 탐색하며, 이는 위험행동 증가로 이어질 수 있다.",
-      "reasoning_en": "Yun Soon-ye explores new routes for recreational activities, which may lead to increased risky behavior.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "우리동네 시장",
-          "label_en": "Neighborhood Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 70.0,
-          "distance_band": "near",
-          "visit_share": 0.3,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "성당",
-          "label_en": "Church",
-          "kind": "church",
-          "role": "in_zone",
-          "bearing_deg": 150.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "신규 등산로",
-          "label_en": "New Hiking Trail",
-          "kind": "leisure",
-          "role": "change_destination",
-          "bearing_deg": 220.0,
-          "distance_band": "outer",
-          "visit_share": 0.35,
-          "typical_days_ko": "주말 오후",
-          "active_from_month": 9,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 9,
-      "change_trigger_ko": "새로운 등산로 탐방 및 외곽 이동 증가로 인해 변화 발생.",
-      "change_trigger_en": "Change occurred due to exploration of a new hiking trail and increased suburban travel.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p32",
-      "archetype_id": "mobility_risk_cochange",
-      "reasoning_ko": "허순덕 씨는 서예 수업을 위해 가까운 문화센터에 자주 방문하며, 여름부터 외곽의 새로운 장소로 이동이 증가하여 경로에서 위험행동이 나타났습니다.",
-      "reasoning_en": "Mr. Heo visits a nearby community center frequently for calligraphy lessons, and from summer, increased trips to a new location on the outskirts have led to risky behavior on these routes.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "동네 문화센터",
-          "label_en": "Local Community Center",
-          "kind": "community",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.3,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "근교 새 탁구장",
-          "label_en": "New Suburban Table Tennis Hall",
-          "kind": "leisure",
-          "role": "change_destination",
-          "bearing_deg": 120.0,
-          "distance_band": "outer",
-          "visit_share": 0.25,
-          "typical_days_ko": "토요일 오후",
-          "active_from_month": 9,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "장터거리",
-          "label_en": "Old Fair Street",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 75.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 9,
-      "change_trigger_ko": "하반기부터는 외곽으로 탁구 활동이 늘어남에 따라 이동이 증가했습니다.",
-      "change_trigger_en": "From the second half of the year, increased travel due to more frequent table tennis activities in the outskirts.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p33",
-      "archetype_id": "mobility_risk_cochange",
-      "reasoning_ko": "김영도의 생활에서 바둑과 화투를 위한 노인정에 자주 방문하며, 취미로 텃밭을 가꾸는 일로 자택 근처 시장을 주로 찾는다. 하반기에 외곽 경로가 변화하며 새로운 위험 행동이 나타나고 있다.",
-      "reasoning_en": "Kim Young-do frequently visits the local senior center for playing baduk and hwatu and often goes to a nearby market for gardening supplies. In the second half of the year, new external routes lead to risky driving behaviors.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "은행나무시장",
-          "label_en": "Ginkgo Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "장수 경로당",
-          "label_en": "Longevity Hall",
-          "kind": "senior_center",
-          "role": "in_zone",
-          "bearing_deg": 90.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목·토 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "시외 도로변 정원",
-          "label_en": "Outskirt Roadside Garden",
-          "kind": "farm",
-          "role": "change_destination",
-          "bearing_deg": 150.0,
-          "distance_band": "outer",
-          "visit_share": 0.2,
-          "typical_days_ko": "주말 낮",
-          "active_from_month": 9,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 9,
-      "change_trigger_ko": "가꾸던 텃밭을 더 넓은 외곽 지역으로 확장한 이후 외곽 경로가 변화했다.",
-      "change_trigger_en": "After expanding his gardening activities to a larger outskirts area, his driving routes changed.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p34",
-      "archetype_id": "mobility_risk_cochange",
-      "reasoning_ko": "김일만 씨는 취미와 사교 활동으로 인해 외곽으로 더 자주 이동하게 되며, 하반기에는 그 경로에서의 위험행동이 증가합니다.",
-      "reasoning_en": "Mr. Kim frequents rural areas more often due to hobbies and social activities, and in the latter half of the year, risky behaviors increase on these routes.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "장터거리",
-          "label_en": "Old Fair Street",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "도시 외곽 텃밭",
-          "label_en": "Suburban Allotment",
-          "kind": "farm",
-          "role": "change_destination",
-          "bearing_deg": 75.0,
-          "distance_band": "outer",
-          "visit_share": 0.25,
-          "typical_days_ko": "주말 오전",
-          "active_from_month": 9,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "친목계 모임 장소",
-          "label_en": "Friend Meeting Place",
-          "kind": "community",
-          "role": "in_zone",
-          "bearing_deg": 200.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.3,
-          "typical_days_ko": "화·목 저녁",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 9,
-      "change_trigger_ko": "하반기부터 텃밭 가꾸기 활동이 증가하며 외곽 이동이 늘어났다.",
-      "change_trigger_en": "From the latter half of the year, increased allotment gardening activities lead to more rural travel.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p35",
-      "archetype_id": "mobility_risk_cochange",
-      "reasoning_ko": "조정순 씨는 은퇴 후 일상적인 약수터 방문 외에 하반기에 새로운 외곽 경로를 이용하다 위험 행동이 증가했습니다.",
-      "reasoning_en": "After retirement, Mr. Cho regularly visits a nearby spring but has shown increased risky behavior on a new outer route in the latter half of the year.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "골목시장",
-          "label_en": "Alley Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "손주네 집",
-          "label_en": "Grandchildren's House",
-          "kind": "family",
-          "role": "in_zone",
-          "bearing_deg": 180.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.3,
-          "typical_days_ko": "주말 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "산리 약수터",
-          "label_en": "Sanri Spring",
-          "kind": "leisure",
-          "role": "change_destination",
-          "bearing_deg": 300.0,
-          "distance_band": "outer",
-          "visit_share": 0.25,
-          "typical_days_ko": "화·목·토 새벽",
-          "active_from_month": 8,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 8,
-      "change_trigger_ko": "산리 약수터에서의 새벽 산책이 시작되었습니다.",
-      "change_trigger_en": "Early morning walks at Sanri Spring began.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p36",
-      "archetype_id": "mobility_risk_cochange",
-      "reasoning_ko": "홍갑룡 씨는 지역 친구들과의 모임과 취미인 텃밭 가꾸기를 위해 마을 시장과 편의시설에 자주 방문합니다. 하반기에는 새로운 텃밭을 마련하여 외곽과 야간 운전이 증가했습니다.",
-      "reasoning_en": "Hong Gapryong frequently visits the village market and convenience facilities for gatherings with local friends and for his hobby of gardening. In the latter half of the year, he has increased his outer and nighttime travel due to a new garden plot.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "솔뫼시장",
-          "label_en": "Pine Hill Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "친한 이웃집",
-          "label_en": "Friendly Neighbor's House",
-          "kind": "friend",
-          "role": "in_zone",
-          "bearing_deg": 75.0,
-          "distance_band": "near",
-          "visit_share": 0.25,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "외곽 텃밭",
-          "label_en": "Outskirts Garden",
-          "kind": "farm",
-          "role": "change_destination",
-          "bearing_deg": 220.0,
-          "distance_band": "outer",
-          "visit_share": 0.3,
-          "typical_days_ko": "주말",
-          "active_from_month": 9,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 9,
-      "change_trigger_ko": "새로운 텃밭을 마련하여 하반기부터 외곽 방문이 증가했습니다.",
-      "change_trigger_en": "Acquired a new garden plot, increasing visits to the outskirts starting in the latter half of the year.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p37",
-      "archetype_id": "mobility_risk_cochange",
-      "reasoning_ko": "손기석 씨는 과거에 시장에서 오래 일했기 때문에 집 근처 새마을시장에서 장을 보며 일상을 보낸다. 하반기부터 손주들을 보기 위해 외곽에 있는 딸 집을 자주 방문하게 되었고, 이러한 방문 증가가 야간 운전의 위험 요소가 되었다.",
-      "reasoning_en": "Mr. Son Gi-seok spends his daily life shopping at the local Saemaeul Market due to his long experience working in the market. He began visiting his daughter's house in the outskirts more frequently in the second half to see his grandchildren, which increased night driving risks.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "샘터시장",
-          "label_en": "Springside Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.6429,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "딸 집",
-          "label_en": "Daughter's House",
-          "kind": "family",
-          "role": "change_destination",
-          "bearing_deg": 95.0,
-          "distance_band": "outer",
-          "visit_share": 0.3571,
-          "typical_days_ko": "토·일 저녁",
-          "active_from_month": 9,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 9,
-      "change_trigger_ko": "손주를 보기 위해 딸 집 방문이 잦아졌다.",
-      "change_trigger_en": "Frequent visits to the daughter's house began to see the grandchildren.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p38",
-      "archetype_id": "mobility_risk_cochange",
-      "reasoning_ko": "한영자는 택시 경력이 있어 운전에 자신이 있지만, 외곽 지역의 새로운 경로에서는 안전하게 운전해야 할 필요가 있습니다.",
-      "reasoning_en": "Han Young-ja is confident in driving due to her taxi driving experience, but she needs to drive safely on the new routes in the outskirts.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "햇살마트",
-          "label_en": "Sunshine Mart",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "노인복지센터",
-          "label_en": "Senior Welfare Center",
-          "kind": "senior_center",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.25,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "야외 노래공연장",
-          "label_en": "Outdoor Singing Venue",
-          "kind": "leisure",
-          "role": "change_destination",
-          "bearing_deg": 210.0,
-          "distance_band": "outer",
-          "visit_share": 0.3,
-          "typical_days_ko": "주말 저녁",
-          "active_from_month": 9,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 9,
-      "change_trigger_ko": "외곽의 노래 공연장을 찾기 시작한 것이 계기가 되어 경로가 달라졌습니다.",
-      "change_trigger_en": "The change in routes was triggered by the beginning of visits to an outdoor singing venue in the outskirts.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p39",
-      "archetype_id": "mobility_risk_cochange",
-      "reasoning_ko": "고말순 님은 지역 봉사활동과 취미 생활을 위해 주로 근처 시장과 레크리에이션 센터를 방문하나, 하반기에는 낚시를 위해 외곽 이동이 늘어납니다.",
-      "reasoning_en": "Ms. Ko Mal-soon mainly visits the nearby market and recreation center for community activities and hobbies, but in the second half of the year, her trips to the outskirts increase for fishing.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "은행나무시장",
-          "label_en": "Ginkgo Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "우리동네 레크리에이션 센터",
-          "label_en": "Neighborhood Recreation Center",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 110.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "강변 낚시터",
-          "label_en": "Riverside Fishing Spot",
-          "kind": "leisure",
-          "role": "change_destination",
-          "bearing_deg": 200.0,
-          "distance_band": "outer",
-          "visit_share": 0.2,
-          "typical_days_ko": "토요일 야간",
-          "active_from_month": 9,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 9,
-      "change_trigger_ko": "9월부터 낚시 시즌 시작에 따라 외곽 낚시터 방문이 증가하면서 위험 운전 행동이 함께 나타납니다.",
-      "change_trigger_en": "Starting from September, the fishing season prompts increased visits to the outskirts-fishing spot, accompanied by risky driving behaviors.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p40",
-      "archetype_id": "mobility_risk_cochange",
-      "reasoning_ko": "이만수 님은 서예 수업과 노래 교실을 자주 방문하면서 본인의 취미를 즐기며 시간을 보내고 있습니다.",
-      "reasoning_en": "Mr. Lee frequently attends calligraphy classes and singing classes, enjoying his hobbies.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "우리동네 문화센터",
-          "label_en": "Local Culture Center",
-          "kind": "community",
-          "role": "in_zone",
-          "bearing_deg": 70.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "송정 노래 교실",
-          "label_en": "Songjeong Singing Class",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "등산로 입구",
-          "label_en": "Hiking Trail Entrance",
-          "kind": "leisure",
-          "role": "change_destination",
-          "bearing_deg": 210.0,
-          "distance_band": "outer",
-          "visit_share": 0.2,
-          "typical_days_ko": "주말 오후",
-          "active_from_month": 9,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": 9,
-      "change_trigger_ko": "하반기부터 건강을 위해 등산을 시작했습니다.",
-      "change_trigger_en": "Started hiking for health reasons in the second half of the year.",
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p41",
-      "archetype_id": "multi_zone",
-      "reasoning_ko": "남순예는 성당 봉사와 가족 돌봄을 위해 익숙한 경로로 두 생활권을 오가며 안정된 운전을 유지합니다.",
-      "reasoning_en": "Nam Soon-ye maintains stable driving between familiar routes for church service and family care.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "우리동네 성당",
-          "label_en": "Local Church",
-          "kind": "church",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "딸 집",
-          "label_en": "Daughter's Home",
-          "kind": "family",
-          "role": "secondary",
-          "bearing_deg": 120.0,
-          "distance_band": "secondary",
-          "visit_share": 0.35,
-          "typical_days_ko": "토·일 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "경로우대센터",
-          "label_en": "Senior Center",
-          "kind": "senior_center",
-          "role": "in_zone",
-          "bearing_deg": 270.0,
-          "distance_band": "near",
-          "visit_share": 0.2,
-          "typical_days_ko": "화·목 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p42",
-      "archetype_id": "multi_zone",
-      "reasoning_ko": "유순애는 주말마다 낚시와 등산을 즐기므로, 근처 시장과 주말 농장을 자주 방문하며 균형 잡힌 생활을 유지합니다.",
-      "reasoning_en": "Yoo Soon-ae enjoys fishing and hiking on weekends, frequently visiting a nearby market and weekend farm to maintain a balanced lifestyle.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "햇살마트",
-          "label_en": "Sunshine Mart",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 45.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "주말 농장",
-          "label_en": "Weekend Farm",
-          "kind": "farm",
-          "role": "secondary",
-          "bearing_deg": 270.0,
-          "distance_band": "outer",
-          "visit_share": 0.35,
-          "typical_days_ko": "토·일 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "가족 집",
-          "label_en": "Family House",
-          "kind": "family",
-          "role": "secondary",
-          "bearing_deg": 180.0,
-          "distance_band": "outer",
-          "visit_share": 0.2,
-          "typical_days_ko": "격주 토요일",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p43",
-      "archetype_id": "multi_zone",
-      "reasoning_ko": "최영자는 병원 방문과 가족을 돌보기 위해 안전한 운전을 유지하며 정기적으로 자택과 멀리 떨어진 가족 집을 방문합니다.",
-      "reasoning_en": "Young-ja Choi maintains safe driving as she regularly visits a distant family house and a clinic to manage her health.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "우리동네 병원",
-          "label_en": "Local Clinic",
-          "kind": "clinic",
-          "role": "in_zone",
-          "bearing_deg": 65.0,
-          "distance_band": "near",
-          "visit_share": 0.3,
-          "typical_days_ko": "월·수 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "자녀 집",
-          "label_en": "Child's House",
-          "kind": "family",
-          "role": "secondary",
-          "bearing_deg": 120.0,
-          "distance_band": "secondary",
-          "visit_share": 0.35,
-          "typical_days_ko": "주말",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "농지",
-          "label_en": "Farm",
-          "kind": "farm",
-          "role": "secondary",
-          "bearing_deg": 200.0,
-          "distance_band": "outer",
-          "visit_share": 0.35,
-          "typical_days_ko": "매월 첫째 주",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p44",
-      "archetype_id": "multi_zone",
-      "reasoning_ko": "권말순 씨는 주로 자택과 가까운 시장과 좀 더 멀리 있는 가족의 집을 자주 방문하며 생활 권역을 관리합니다.",
-      "reasoning_en": "Gwon Malsun mainly manages her mobility between her home, a nearby market, and a more distant family residence.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "샘터시장",
-          "label_en": "Springside Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "딸네 집",
-          "label_en": "Daughter's Home",
-          "kind": "family",
-          "role": "secondary",
-          "bearing_deg": 120.0,
-          "distance_band": "secondary",
-          "visit_share": 0.55,
-          "typical_days_ko": "주말 전체",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p45",
-      "archetype_id": "multi_zone",
-      "reasoning_ko": "고명숙 씨는 손주 등교를 돕기 위해 주기적으로 가족의 집을 방문하며 안전운전을 유지합니다.",
-      "reasoning_en": "Ms. Go regularly visits her family's home to help with her grandchildren's commute, maintaining her safe driving routine.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "풍년시장",
-          "label_en": "Harvest Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "손주네 집",
-          "label_en": "Grandchild's Home",
-          "kind": "family",
-          "role": "secondary",
-          "bearing_deg": 130.0,
-          "distance_band": "secondary",
-          "visit_share": 0.55,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p46",
-      "archetype_id": "multi_zone",
-      "reasoning_ko": "권금자는 손주를 돌보고 취미생활을 유지하기 위해 시장과 농지를 규칙적으로 방문한다.",
-      "reasoning_en": "Kwon Geum-ja regularly visits the market and farmland to care for her grandchildren and maintain her hobby.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "샘터시장",
-          "label_en": "Springside Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 45.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "금자텃밭 농장",
-          "label_en": "Geumja's Farm",
-          "kind": "farm",
-          "role": "secondary",
-          "bearing_deg": 120.0,
-          "distance_band": "secondary",
-          "visit_share": 0.55,
-          "typical_days_ko": "화·목·토 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p47",
-      "archetype_id": "multi_zone",
-      "reasoning_ko": "김점례는 농사일을 완전히 은퇴했지만 가족을 돌보기 위해 규칙적으로 먼 곳을 방문하며, 텃밭과 화투 취미를 유지합니다.",
-      "reasoning_en": "Kim Jeomrye has retired from farming but regularly visits distant places to care for family, while maintaining her garden and playing cards.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "골목시장",
-          "label_en": "Alley Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "딸네 집",
-          "label_en": "Daughter's Home",
-          "kind": "family",
-          "role": "secondary",
-          "bearing_deg": 230.0,
-          "distance_band": "outer",
-          "visit_share": 0.35,
-          "typical_days_ko": "매주 토요일",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "마을 회관",
-          "label_en": "Community Center",
-          "kind": "community",
-          "role": "in_zone",
-          "bearing_deg": 90.0,
-          "distance_band": "near",
-          "visit_share": 0.2,
-          "typical_days_ko": "화·목 저녁",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p48",
-      "archetype_id": "multi_zone",
-      "reasoning_ko": "남귀순 씨는 바둑과 가족 방문을 중심으로 생활하며, 자택과 주요 거점을 규칙적으로 오가며 안정적인 일상을 유지하고 있습니다.",
-      "reasoning_en": "Mr. Nam Kwi-soon maintains a stable routine, focusing on Go and family visits, regularly traveling between home and key destinations.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "우리동네 바둑 모임",
-          "label_en": "Neighborhood Go Club",
-          "kind": "community",
-          "role": "in_zone",
-          "bearing_deg": 90.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "가족 방문지",
-          "label_en": "Family Visit",
-          "kind": "family",
-          "role": "secondary",
-          "bearing_deg": 270.0,
-          "distance_band": "secondary",
-          "visit_share": 0.55,
-          "typical_days_ko": "주말",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p49",
-      "archetype_id": "multi_zone",
-      "reasoning_ko": "배병희 씨는 두 번째 거점인 멀리 떨어진 가족 집을 정기적으로 방문하며, 가까이 있는 게이트볼장을 자주 찾아 주변 생활권을 유지합니다.",
-      "reasoning_en": "Mr. Bae regularly visits his distant family home as a secondary location, while frequently going to the nearby gateball court to maintain his local routines.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "동네 게이트볼장",
-          "label_en": "Local Gateball Court",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 50.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "아들네 집",
-          "label_en": "Son's House",
-          "kind": "family",
-          "role": "secondary",
-          "bearing_deg": 200.0,
-          "distance_band": "secondary",
-          "visit_share": 0.55,
-          "typical_days_ko": "매주 토요일",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p50",
-      "archetype_id": "multi_zone",
-      "reasoning_ko": "심정자는 자주 병원을 방문하며 가족을 돌보기 위해 먼 거리도 마다하지 않습니다.",
-      "reasoning_en": "Shim Jeongja frequently visits the hospital and doesn't hesitate to travel long distances to care for her family.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "우리동네 건강 클리닉",
-          "label_en": "Neighborhood Health Clinic",
-          "kind": "clinic",
-          "role": "in_zone",
-          "bearing_deg": 90.0,
-          "distance_band": "near",
-          "visit_share": 0.25,
-          "typical_days_ko": "월·목 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "딸네 집",
-          "label_en": "Daughter's Home",
-          "kind": "family",
-          "role": "secondary",
-          "bearing_deg": 210.0,
-          "distance_band": "secondary",
-          "visit_share": 0.45,
-          "typical_days_ko": "화·토 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "우리 마을 시장",
-          "label_en": "Village Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 330.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.3,
-          "typical_days_ko": "수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p51",
-      "archetype_id": "wide_area_safe",
-      "reasoning_ko": "신춘자는 생활 반경을 넓히는 것을 좋아하여 친구를 방문하고 시장에 가기 위해 자주 운전합니다.",
-      "reasoning_en": "Shin Choon-ja enjoys extending her living radius by driving frequently to visit friends and go to the market.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "은행나무시장",
-          "label_en": "Ginkgo Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "친구 집",
-          "label_en": "Friend's House",
-          "kind": "friend",
-          "role": "in_zone",
-          "bearing_deg": 160.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.25,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "손주네 집",
-          "label_en": "Grandchild's Home",
-          "kind": "family",
-          "role": "secondary",
-          "bearing_deg": 250.0,
-          "distance_band": "outer",
-          "visit_share": 0.3,
-          "typical_days_ko": "주말",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p52",
-      "archetype_id": "wide_area_safe",
-      "reasoning_ko": "박재술은 생활 반경이 넓지만 위험 없이 안정적으로 이동하며, 매일 같은 패턴을 유지하고 있다.",
-      "reasoning_en": "Jaesul Park maintains a wide range without risk, adhering to a consistent daily pattern.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "우리동네 바둑회관",
-          "label_en": "Local Baduk Club",
-          "kind": "community",
-          "role": "in_zone",
-          "bearing_deg": 30.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "중앙 시장",
-          "label_en": "Central Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 200.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "시립 도서관",
-          "label_en": "City Library",
-          "kind": "community",
-          "role": "secondary",
-          "bearing_deg": 120.0,
-          "distance_band": "outer",
-          "visit_share": 0.2,
-          "typical_days_ko": "토 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p53",
-      "archetype_id": "wide_area_safe",
-      "reasoning_ko": "배옥분은 넓은 생활 반경을 유지하지만 안전 규칙을 잘 지키면서 주기적으로 병원을 방문하고 바둑을 두러 간다.",
-      "reasoning_en": "Baek Okbun maintains a wide range of activities, regularly visiting clinics and playing baduk while following safety rules.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "우리동네 바둑 클럽",
-          "label_en": "Local Baduk Club",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 70.0,
-          "distance_band": "near",
-          "visit_share": 0.3,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "중앙 병원",
-          "label_en": "Central Hospital",
-          "kind": "hospital",
-          "role": "secondary",
-          "bearing_deg": 150.0,
-          "distance_band": "outer",
-          "visit_share": 0.35,
-          "typical_days_ko": "월·수 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "우리동네 시장",
-          "label_en": "Neighborhood Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 30.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "토 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p54",
-      "archetype_id": "wide_area_safe",
-      "reasoning_ko": "백복순은 은퇴 후 건강을 유지하기 위해 약수터와 지역 시장을 자주 방문하며, 꾸준한 생활 패턴을 유지합니다.",
-      "reasoning_en": "Baek Bok-soon maintains a regular routine by frequently visiting a local spring and market to stay healthy after retirement.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "우리동네 약수터",
-          "label_en": "Neighborhood Spring",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 45.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "매일 아침",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "샘터시장",
-          "label_en": "Springside Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 90.0,
-          "distance_band": "near",
-          "visit_share": 0.3,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "시외 교회",
-          "label_en": "Out-of-town Church",
-          "kind": "church",
-          "role": "secondary",
-          "bearing_deg": 135.0,
-          "distance_band": "outer",
-          "visit_share": 0.35,
-          "typical_days_ko": "일요일 아침",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p55",
-      "archetype_id": "wide_area_safe",
-      "reasoning_ko": "강순덕은 손주를 데려다주고 취미 생활을 즐기기 위해 다양하고 멀리 있는 목적지를 방문합니다. 이로 인해 그녀의 이동 반경은 넓습니다.",
-      "reasoning_en": "Kang Soon-deok visits diverse and distant destinations to help with her grandchild and enjoy her hobbies, resulting in a wide travel radius.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "솔뫼시장",
-          "label_en": "Pine Hill Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.25,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "노래 교실",
-          "label_en": "Singing Class",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.4,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "손주 유치원",
-          "label_en": "Grandchild's Kindergarten",
-          "kind": "family",
-          "role": "in_zone",
-          "bearing_deg": 300.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.35,
-          "typical_days_ko": "매일 오전·오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p56",
-      "archetype_id": "wide_area_safe",
-      "reasoning_ko": "남옥분 씨는 넓은 생활 반경을 유지하면서 안전 운전을 중시하므로, 자주 방문하는 노인정과 슈퍼마켓이 그녀의 주요 생활 목적지다.",
-      "reasoning_en": "As Ms. Nam Ok-bun values safe driving while maintaining a wide living range, the senior center and supermarket are her main destinations.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "장수 경로당",
-          "label_en": "Longevity Hall",
-          "kind": "senior_center",
-          "role": "in_zone",
-          "bearing_deg": 90.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "우리동네 슈퍼마켓",
-          "label_en": "Neighborhood Supermarket",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 210.0,
-          "distance_band": "near",
-          "visit_share": 0.4,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "도시 외곽 체육관",
-          "label_en": "Suburban Gym",
-          "kind": "leisure",
-          "role": "secondary",
-          "bearing_deg": 330.0,
-          "distance_band": "secondary",
-          "visit_share": 0.25,
-          "typical_days_ko": "주말 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p57",
-      "archetype_id": "wide_area_safe",
-      "reasoning_ko": "신순애 씨는 정기적인 봉사활동과 탁구 취미를 즐기며 안전한 운전을 유지합니다.",
-      "reasoning_en": "Ms. Shin regularly engages in volunteer activities and enjoys her ping-pong hobby, maintaining safe driving habits.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "오거리시장",
-          "label_en": "Five-way Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 0.45,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "지역 봉사센터",
-          "label_en": "Local Volunteer Center",
-          "kind": "community",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.35,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "주말 탁구클럽",
-          "label_en": "Weekend Ping-Pong Club",
-          "kind": "leisure",
-          "role": "secondary",
-          "bearing_deg": 200.0,
-          "distance_band": "outer",
-          "visit_share": 0.2,
-          "typical_days_ko": "토·일 아침",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p58",
-      "archetype_id": "wide_area_safe",
-      "reasoning_ko": "김순예 씨는 필요한 볼일만 최소한으로 처리하며, 자주 가는 목적지가 제한적이다. 그녀는 생활 반경이 넓지만 주로 안전한 경로로 이동하며 텔레매틱스 데이터가 희소하다.",
-      "reasoning_en": "Kim Soonye travels only as needed, with limited destinations. Despite a wide travel radius, she maintains safe routes, resulting in sparse telematics data.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "샘터시장",
-          "label_en": "Springside Market",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 40.0,
-          "distance_band": "near",
-          "visit_share": 1.0,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p59",
-      "archetype_id": "wide_area_safe",
-      "reasoning_ko": "황정호는 오랜 운전 경험과 안전 운전을 통해 다양한 목적지에 다닙니다. 여가와 쇼핑을 위해 생활권 내외를 규칙적으로 방문합니다.",
-      "reasoning_en": "Hwang Jung-ho, with his extensive driving experience and adherence to safety regulations, visits various destinations regularly for leisure and shopping within and beyond his living area.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "동네 하나마트",
-          "label_en": "Corner Grocery",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 45.0,
-          "distance_band": "near",
-          "visit_share": 0.3,
-          "typical_days_ko": "화·목 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "역사 문화 체육센터",
-          "label_en": "Local Culture and Sports Center",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 150.0,
-          "distance_band": "near",
-          "visit_share": 0.25,
-          "typical_days_ko": "월·수·금 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "시립 도서관",
-          "label_en": "City Library",
-          "kind": "community",
-          "role": "secondary",
-          "bearing_deg": 220.0,
-          "distance_band": "mid_in",
-          "visit_share": 0.2,
-          "typical_days_ko": "토요일 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "탁구 클럽",
-          "label_en": "Ping Pong Club",
-          "kind": "leisure",
-          "role": "in_zone",
-          "bearing_deg": 300.0,
-          "distance_band": "near",
-          "visit_share": 0.25,
-          "typical_days_ko": "주말 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
-    },
-    {
-      "person_id": "p60",
-      "archetype_id": "wide_area_safe",
-      "reasoning_ko": "남기석 씨는 넓은 생활 반경을 가지며 규정 속도를 지켜 안전운전을 습관으로 삼고 있습니다. 주로 동네 시장과 노인정을 자주 방문하는 일정입니다.",
-      "reasoning_en": "Mr. Nam Giseok maintains a wide travel range while adhering to safe driving practices by following speed limits. He frequently visits the neighborhood market and senior center.",
-      "home_label_ko": "자택 인근",
-      "home_label_en": "Home area",
-      "zones": [
-        {
-          "label_ko": "미소마트",
-          "label_en": "Smile Mart",
-          "kind": "market",
-          "role": "in_zone",
-          "bearing_deg": 60.0,
-          "distance_band": "near",
-          "visit_share": 0.35,
-          "typical_days_ko": "월·수·금 오전",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "주민센터 문화교실",
-          "label_en": "Community Culture Class",
-          "kind": "community",
-          "role": "in_zone",
-          "bearing_deg": 120.0,
-          "distance_band": "near",
-          "visit_share": 0.25,
-          "typical_days_ko": "화·목 오후",
-          "active_from_month": 1,
-          "active_to_month": 14
-        },
-        {
-          "label_ko": "강변 낚시터",
-          "label_en": "Riverside Fishing Spot",
-          "kind": "leisure",
-          "role": "secondary",
-          "bearing_deg": 200.0,
-          "distance_band": "outer",
-          "visit_share": 0.4,
-          "typical_days_ko": "토·일 종일",
-          "active_from_month": 1,
-          "active_to_month": 14
-        }
-      ],
-      "change_month": null,
-      "change_trigger_ko": null,
-      "change_trigger_en": null,
-      "source": "mobility_agent"
+     "label_ko": "손주네 집",
+     "label_en": "Grandchildren's House",
+     "kind": "family",
+     "role": "in_zone",
+     "bearing_deg": 200.0,
+     "distance_band": "near",
+     "visit_share": 0.25,
+     "typical_days_ko": "주말",
+     "active_from_month": 1,
+     "active_to_month": 14
     }
-  ]
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p02",
+   "archetype_id": "stable_reward",
+   "reasoning_ko": "박병호씨는 익숙한 생활권 내에서 주로 낮 시간에 활동하며, 새로운 목적지가 필요하지 않습니다.",
+   "reasoning_en": "Mr. Walker prefers to move within a familiar area mainly during daytime, with no need for new destinations.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "풍년시장",
+     "label_en": "Harvest Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 45.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "동네 종합사회복지관",
+     "label_en": "Local Community Center",
+     "kind": "community",
+     "role": "in_zone",
+     "bearing_deg": 90.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "동네 산책 공원",
+     "label_en": "Neighborhood Park",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "near",
+     "visit_share": 0.2,
+     "typical_days_ko": "토 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p03",
+   "archetype_id": "stable_reward",
+   "reasoning_ko": "심상철 씨는 규칙적인 생활 패턴을 유지하기 위해 매주 시장을 방문하며, 산책도 일상적으로 하고 있습니다.",
+   "reasoning_en": "Mr. Baker maintains a regular routine by visiting the market weekly and taking walks regularly.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "솔뫼시장",
+     "label_en": "Pine Hill Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 30.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "동네 산책로",
+     "label_en": "Local Walking Trail",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "near",
+     "visit_share": 0.55,
+     "typical_days_ko": "화·목·토 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p04",
+   "archetype_id": "stable_reward",
+   "reasoning_ko": "이덕례씨는 평소와 같은 장소를 반복적으로 방문하여 안전한 운전을 힘쓴다.",
+   "reasoning_en": "Phyllis Green regularly visits familiar places, focusing on safe driving.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "중앙시장",
+     "label_en": "Central Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "성당 봉사",
+     "label_en": "Church Service",
+     "kind": "church",
+     "role": "in_zone",
+     "bearing_deg": 75.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "토요일 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "단골 병원",
+     "label_en": "Regular Clinic",
+     "kind": "clinic",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "near",
+     "visit_share": 0.2,
+     "typical_days_ko": "화요일 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p05",
+   "archetype_id": "stable_reward",
+   "reasoning_ko": "심동철 씨는 익숙한 동네에서 낮 시간에만 반복적으로 이동하여 주로 생활 용품을 구매하거나 바둑을 두기 위해 시장에 방문하는 것이 주요 활동입니다.",
+   "reasoning_en": "Mr. David Young mainly visits the local market for daily necessities or to play Baduk, reflecting his preference to move within familiar areas during daylight hours.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "장터거리",
+     "label_en": "Old Fair Street",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 85.0,
+     "distance_band": "near",
+     "visit_share": 0.6429,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "근처 바둑 동호회",
+     "label_en": "Local Baduk Club",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 200.0,
+     "distance_band": "near",
+     "visit_share": 0.3571,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p06",
+   "archetype_id": "stable_reward",
+   "reasoning_ko": "한옥임 씨는 주로 익숙한 길로 낮 시간에 이동하며, 지역 시장과 친구 집을 자주 방문하여 사회활동을 유지합니다.",
+   "reasoning_en": "Susan Lewis mostly travels on familiar roads during the day, frequently visiting the local market and a friend's house to maintain social activities.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "솔뫼시장",
+     "label_en": "Pine Hill Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "친구 김씨네",
+     "label_en": "Friend Kim's House",
+     "kind": "friend",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "동네 복지관",
+     "label_en": "Local Senior Center",
+     "kind": "senior_center",
+     "role": "in_zone",
+     "bearing_deg": 200.0,
+     "distance_band": "near",
+     "visit_share": 0.2,
+     "typical_days_ko": "토 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p07",
+   "archetype_id": "stable_reward",
+   "reasoning_ko": "문병일 씨는 안전한 저주행 운전자로서 일상적으로 가까운 노인정과 시장을 방문합니다.",
+   "reasoning_en": "Mr. Thomas, as a safe low-mileage driver, routinely visits the nearby senior center and market.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "실버 사랑방",
+     "label_en": "Silver Lounge",
+     "kind": "senior_center",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 1.0,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p08",
+   "archetype_id": "stable_reward",
+   "reasoning_ko": "서옥임 씨는 규칙적인 생활 리듬을 유지하며, 자주 방문하는 시장과 사찰이 주요 목적지입니다.",
+   "reasoning_en": "Ms. Smith maintains a regular routine with frequent visits to the market and temple as key destinations.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "솔뫼시장",
+     "label_en": "Pine Hill Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 30.0,
+     "distance_band": "near",
+     "visit_share": 0.5625,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "가까운 산 사찰",
+     "label_en": "Nearby Mountain Temple",
+     "kind": "temple",
+     "role": "in_zone",
+     "bearing_deg": 220.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.4375,
+     "typical_days_ko": "주말",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p09",
+   "archetype_id": "stable_reward",
+   "reasoning_ko": "장옥녀는 주로 자택 가까운 곳을 방문하며 낮 시간 동안만 이동하기 때문에 익숙한 동네 안에서 반복적으로 이동합니다.",
+   "reasoning_en": "Elaine Walker mainly visits places close to her home and travels only during daytime, repeating her movements within a familiar area.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "은행나무시장",
+     "label_en": "Ginkgo Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "동네 노인복지관",
+     "label_en": "Local Senior Center",
+     "kind": "senior_center",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "마을의원",
+     "label_en": "Community Clinic",
+     "kind": "clinic",
+     "role": "in_zone",
+     "bearing_deg": 200.0,
+     "distance_band": "near",
+     "visit_share": 0.2,
+     "typical_days_ko": "금요일 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p10",
+   "archetype_id": "stable_reward",
+   "reasoning_ko": "정재복은 주로 익숙한 시장과 바둑 동호회에 방문합니다. 이 패턴은 주기적이며 큰 변화 없이 유지됩니다.",
+   "reasoning_en": "Ralph Smith frequently visits a familiar market and a go club. This pattern is regular and remains stable without significant changes.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "장터거리",
+     "label_en": "Old Fair Street",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 90.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "화·목·토 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "동네 바둑 동호회",
+     "label_en": "Local Go Club",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 180.0,
+     "distance_band": "near",
+     "visit_share": 0.55,
+     "typical_days_ko": "월·수·금 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p11",
+   "archetype_id": "in_zone_risky",
+   "reasoning_ko": "송말순 씨는 건강 유지와 취미 생활을 위해 자주 병원과 노래 교실을 방문하지만, 생활 반경은 크게 변하지 않습니다.",
+   "reasoning_en": "Ms. Taylor visits the hospital and singing class frequently to maintain health and pursue hobbies, but her travel range remains stable.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "우리동네 병원",
+     "label_en": "Neighborhood Hospital",
+     "kind": "hospital",
+     "role": "in_zone",
+     "bearing_deg": 90.0,
+     "distance_band": "near",
+     "visit_share": 0.4,
+     "typical_days_ko": "화·목 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "동네 노래 교실",
+     "label_en": "Local Singing Class",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 220.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "월·금 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "새마을시장",
+     "label_en": "Saemaeul Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 310.0,
+     "distance_band": "near",
+     "visit_share": 0.25,
+     "typical_days_ko": "토 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p12",
+   "archetype_id": "in_zone_risky",
+   "reasoning_ko": "이재만 씨는 생활권 내에서 익숙한 경로를 자주 다니며, 시장에서의 경험 덕분에 빠르게 움직이려는 경향이 있습니다.",
+   "reasoning_en": "Mr. Lewis often travels familiar routes within his neighborhood and tends to move quickly due to his market experience.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "장터거리",
+     "label_en": "Old Fair Street",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "근처 낚시터",
+     "label_en": "Nearby Fishing Spot",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·토 이른 아침",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "손주네 집",
+     "label_en": "Grandchild's Home",
+     "kind": "family",
+     "role": "in_zone",
+     "bearing_deg": 200.0,
+     "distance_band": "near",
+     "visit_share": 0.2,
+     "typical_days_ko": "주말 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p13",
+   "archetype_id": "in_zone_risky",
+   "reasoning_ko": "배종호는 주로 동네 노인정과 시장을 방문하며, 일상 생활이 고정되어 있습니다.",
+   "reasoning_en": "Baek George primarily visits the local senior center and market, and his daily routine is stable.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "어르신 쉼터",
+     "label_en": "Elders' Rest House",
+     "kind": "senior_center",
+     "role": "in_zone",
+     "bearing_deg": 90.0,
+     "distance_band": "near",
+     "visit_share": 0.55,
+     "typical_days_ko": "월·수·토 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "오거리시장",
+     "label_en": "Five-way Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 180.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "화·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p14",
+   "archetype_id": "in_zone_risky",
+   "reasoning_ko": "조말순은 생활권 안에서 서예와 바둑을 즐기며 가까운 목적지 위주로 안전하게 다니고자 합니다.",
+   "reasoning_en": "Jomalsoon prefers to enjoy calligraphy and Go within her local area, focusing on safe trips to nearby destinations.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "골목시장",
+     "label_en": "Alley Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "동네 서예 학원",
+     "label_en": "Local Calligraphy Academy",
+     "kind": "community",
+     "role": "in_zone",
+     "bearing_deg": 70.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "바둑 클럽",
+     "label_en": "Go Club",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "near",
+     "visit_share": 0.2,
+     "typical_days_ko": "주말 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p15",
+   "archetype_id": "in_zone_risky",
+   "reasoning_ko": "전옥녀는 자택 근처 생활권에서 주로 활동하며, 안정적인 이동 패턴을 유지합니다.",
+   "reasoning_en": "Carol Smith maintains a stable movement pattern, primarily operating within her local living area.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "골목시장",
+     "label_en": "Alley Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "동네한의원",
+     "label_en": "Local Clinic",
+     "kind": "clinic",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "near",
+     "visit_share": 0.3,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "할머니쉼터",
+     "label_en": "Grandma Social Center",
+     "kind": "senior_center",
+     "role": "in_zone",
+     "bearing_deg": 210.0,
+     "distance_band": "near",
+     "visit_share": 0.25,
+     "typical_days_ko": "토 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p16",
+   "archetype_id": "in_zone_risky",
+   "reasoning_ko": "류영순은 자녀의 도움을 받아 손주 등하원을 책임지며, 지역 마트를 자주 방문합니다. 바둑을 두러 커뮤니티 센터도 종종 방문합니다.",
+   "reasoning_en": "Shirley Clark assists with her grandchildren's school commute and frequently visits the local market. She also enjoys visiting the community center for Go games.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "큰길시장",
+     "label_en": "Main Street Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 60.0,
+     "distance_band": "near",
+     "visit_share": 0.5625,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "동네 커뮤니티 센터",
+     "label_en": "Local Community Center",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 150.0,
+     "distance_band": "near",
+     "visit_share": 0.4375,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p17",
+   "archetype_id": "in_zone_risky",
+   "reasoning_ko": "이금자는 종교 생활과 바둑을 즐기는 시니어로 인해, 자주 가는 교회와 바둑 동호회를 중심으로 이동이 이루어집니다.",
+   "reasoning_en": "Shirley Wright is a senior who enjoys religious activities and playing Go, leading to frequent visits to a nearby church and Go club.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "햇살마트",
+     "label_en": "Sunshine Mart",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "지역 교회",
+     "label_en": "Local Church",
+     "kind": "church",
+     "role": "in_zone",
+     "bearing_deg": 90.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "일요일 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "바둑 동호회",
+     "label_en": "Go Club",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 150.0,
+     "distance_band": "near",
+     "visit_share": 0.2,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p18",
+   "archetype_id": "in_zone_risky",
+   "reasoning_ko": "최순예는 생활권 안에서 주로 다니며, 약수터와 성당 방문을 통해 일상을 유지합니다.",
+   "reasoning_en": "Choi Sun-ye maintains her routine within her living area, visiting places like the spring and her church.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "풍년시장",
+     "label_en": "Harvest Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.5625,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "동네 성당",
+     "label_en": "Local Church",
+     "kind": "church",
+     "role": "in_zone",
+     "bearing_deg": 110.0,
+     "distance_band": "near",
+     "visit_share": 0.4375,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p19",
+   "archetype_id": "in_zone_risky",
+   "reasoning_ko": "서귀순 씨는 정년퇴직 이후 주변 생활권 내에서 봉사활동과 개인 취미를 주로 하므로 특정 목적지에 자주 방문합니다.",
+   "reasoning_en": "Ms. Wright frequently visits specific destinations as she engages in volunteer work and personal hobbies within her local area after retirement.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "큰길시장",
+     "label_en": "Main Street Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "지역 커뮤니티 센터",
+     "label_en": "Local Community Center",
+     "kind": "community",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "노인복지센터",
+     "label_en": "Senior Center",
+     "kind": "senior_center",
+     "role": "in_zone",
+     "bearing_deg": 210.0,
+     "distance_band": "near",
+     "visit_share": 0.2,
+     "typical_days_ko": "토 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p20",
+   "archetype_id": "in_zone_risky",
+   "reasoning_ko": "송재훈은 생활권 내에서 자주 이동하며 병원과 서예 교실을 주로 방문합니다. 속도 습관 개선을 목표로 합니다.",
+   "reasoning_en": "William Collins frequently travels within his neighborhood, visiting the clinic and calligraphy class, aiming to improve his speed habits.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "우리동네 보건소",
+     "label_en": "Neighborhood Clinic",
+     "kind": "clinic",
+     "role": "in_zone",
+     "bearing_deg": 90.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "서예 교실",
+     "label_en": "Calligraphy Class",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 180.0,
+     "distance_band": "near",
+     "visit_share": 0.3,
+     "typical_days_ko": "월·금 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "동네 시장",
+     "label_en": "Local Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 270.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "수·토 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p21",
+   "archetype_id": "mobility_change_safe",
+   "reasoning_ko": "한종국 씨는 건강상의 이유로 병원 방문이 잦으며, 동네 시장에서 장을 보며 일상적인 생활을 유지합니다. 하반기부터는 등산을 위한 이동이 늘어납니다.",
+   "reasoning_en": "Mr. Wilson frequently visits the hospital for health reasons and maintains his daily routine by shopping at the neighborhood market. From the second half of the year, trips for hiking increase.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "우리동네 마트",
+     "label_en": "Neighborhood Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 60.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "지역 병원",
+     "label_en": "Local Hospital",
+     "kind": "hospital",
+     "role": "in_zone",
+     "bearing_deg": 180.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "근교 등산로",
+     "label_en": "Nearby Hiking Trail",
+     "kind": "leisure",
+     "role": "change_destination",
+     "bearing_deg": 270.0,
+     "distance_band": "outer",
+     "visit_share": 0.2,
+     "typical_days_ko": "토요일 오전",
+     "active_from_month": 9,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 9,
+   "change_trigger_ko": "하반기에 등산을 시작하면서 새로운 등산로를 찾음",
+   "change_trigger_en": "Started hiking in the second half of the year, discovering a new trail",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p22",
+   "archetype_id": "mobility_change_safe",
+   "reasoning_ko": "오종국 씨는 서예 교실을 정기적으로 방문하며 시장에서 필요한 물품을 구매하는 일상적인 패턴을 유지한다. 이러한 생활권은 그의 일상에 중요한 부분을 차지하며, 하반기에 새로운 서예 전시회 참여가 그의 이동 범위를 넓힌다.",
+   "reasoning_en": "Mr. Kenneth Young regularly visits his calligraphy class and shops for essentials at the market, maintaining a routine pattern. These zones are crucial to his daily life, and participation in a new calligraphy exhibition in the latter half of the year expands his travel range.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "동네 하나마트",
+     "label_en": "Corner Grocery",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "서예 교실",
+     "label_en": "Calligraphy Class",
+     "kind": "community",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.35,
+     "typical_days_ko": "토요일 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "새로운 서예 전시회",
+     "label_en": "New Calligraphy Exhibition",
+     "kind": "leisure",
+     "role": "change_destination",
+     "bearing_deg": 180.0,
+     "distance_band": "outer",
+     "visit_share": 0.2,
+     "typical_days_ko": "주말 오후",
+     "active_from_month": 9,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 9,
+   "change_trigger_ko": "하반기 새로 열리는 서예 전시회 참석",
+   "change_trigger_en": "Participation in a new calligraphy exhibition in the latter half of the year",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p23",
+   "archetype_id": "mobility_change_safe",
+   "reasoning_ko": "안복순 씨는 정년퇴직 후 바둑과 봉사활동으로 시간을 보내며 이동이 많아졌다. 생활권 내 가까운 시장과 바둑 모임을 자주 방문하여 일상을 유지한다.",
+   "reasoning_en": "As a retiree, Mrs. Taylor spends more time driving to participate in Go games and community service, frequently visiting local markets and gatherings.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "햇살마트",
+     "label_en": "Sunshine Mart",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 30.0,
+     "distance_band": "near",
+     "visit_share": 0.4,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "지역 바둑 모임",
+     "label_en": "Local Go Club",
+     "kind": "community",
+     "role": "in_zone",
+     "bearing_deg": 150.0,
+     "distance_band": "near",
+     "visit_share": 0.3,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "종합병원 정기검진",
+     "label_en": "General Hospital Checkup",
+     "kind": "hospital",
+     "role": "change_destination",
+     "bearing_deg": 220.0,
+     "distance_band": "outer",
+     "visit_share": 0.3,
+     "typical_days_ko": "격월 화요일 오전",
+     "active_from_month": 8,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 8,
+   "change_trigger_ko": "건강 검진 일정이 추가되어 정기적으로 방문하게 됐다.",
+   "change_trigger_en": "A scheduled health checkup was added, necessitating regular visits.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p24",
+   "archetype_id": "mobility_change_safe",
+   "reasoning_ko": "황정순 씨는 규칙적인 종교 생활을 위해 자주 성당을 방문합니다. 하반기부터는 퇴근 후 손주 돌보기를 위해 가족 집을 자주 방문합니다.",
+   "reasoning_en": "Ms. Clark regularly visits the church for her religious activities. Starting in the second half of the year, she frequently visits her family home to take care of her grandchildren after school.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "우리동네 성당",
+     "label_en": "Neighborhood Church",
+     "kind": "church",
+     "role": "in_zone",
+     "bearing_deg": 90.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "일요일 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "우리동네 마트",
+     "label_en": "Neighborhood Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.3,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "손주네 집",
+     "label_en": "Grandchild's Home",
+     "kind": "family",
+     "role": "change_destination",
+     "bearing_deg": 135.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 8,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 8,
+   "change_trigger_ko": "가족의 요청 때문에 손주 돌봄이 필요해짐.",
+   "change_trigger_en": "Due to a family request, she needs to take care of her grandchildren.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p25",
+   "archetype_id": "mobility_change_safe",
+   "reasoning_ko": "강재훈은 건강과 취미생활을 위해 규칙적으로 마을시장과 건강센터를 방문하며, 하반기에는 가족 모임을 위해 먼 거리를 다니기 시작한다.",
+   "reasoning_en": "Ralph Johnson visits the local market and health center regularly for wellness and hobbies, and starts traveling further for family gatherings in the latter half of the year.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "골목시장",
+     "label_en": "Alley Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "널리 건강센터",
+     "label_en": "Local Health Center",
+     "kind": "clinic",
+     "role": "in_zone",
+     "bearing_deg": 110.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "가족 모임 장소",
+     "label_en": "Family Gathering Place",
+     "kind": "family",
+     "role": "change_destination",
+     "bearing_deg": 200.0,
+     "distance_band": "outer",
+     "visit_share": 0.2,
+     "typical_days_ko": "토요일 오후",
+     "active_from_month": 9,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 9,
+   "change_trigger_ko": "가족 모임 일정이 하반기부터 시작되어 이동 범위가 넓어짐.",
+   "change_trigger_en": "Family gathering schedules start in the latter half of the year, expanding travel range.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p26",
+   "archetype_id": "mobility_change_safe",
+   "reasoning_ko": "신기석은 은퇴 후 더 많은 이동을 하지만 야간에는 운전을 자제합니다. 이는 활발한 낮 활동과 주간 취미 생활로 이어집니다.",
+   "reasoning_en": "After retirement, Henry Baker travels more but avoids driving at night, leading to active daytime activities and leisure pursuits.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "동네 하나마트",
+     "label_en": "Corner Grocery",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "북부 탁구장",
+     "label_en": "Northern Table Tennis Hall",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 130.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "산마루 약수터",
+     "label_en": "Sanmaru Mineral Spring",
+     "kind": "leisure",
+     "role": "change_destination",
+     "bearing_deg": 200.0,
+     "distance_band": "near",
+     "visit_share": 0.2,
+     "typical_days_ko": "주말 오전",
+     "active_from_month": 9,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 9,
+   "change_trigger_ko": "새로운 산책 루트로 산마루 약수터 방문 시작",
+   "change_trigger_en": "Started visiting Sanmaru Mineral Spring as a new walking route",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p27",
+   "archetype_id": "mobility_change_safe",
+   "reasoning_ko": "전영자는 일주일에 세 번 시장에 가고, 산책 범위가 하반기부터 확대되어 체육 공원을 새로 자주 방문하게 된다.",
+   "reasoning_en": "Yeongja visits the market three times a week, and from the second half of the year, she often visits a sports park as her walking range expands.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "동네 하나마트",
+     "label_en": "Corner Grocery",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "동네 체육 공원",
+     "label_en": "Community Sports Park",
+     "kind": "leisure",
+     "role": "change_destination",
+     "bearing_deg": 120.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.3,
+     "typical_days_ko": "화·목·토 오후",
+     "active_from_month": 8,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "아들 집",
+     "label_en": "Son's House",
+     "kind": "family",
+     "role": "in_zone",
+     "bearing_deg": 200.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.25,
+     "typical_days_ko": "주말 전일",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 8,
+   "change_trigger_ko": "손주 돌봄을 위해 체육 공원을 다니기 시작했다.",
+   "change_trigger_en": "Started visiting the sports park for childcare activities.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p28",
+   "archetype_id": "mobility_change_safe",
+   "reasoning_ko": "김말자는 노인정과 시장에서 시간을 보내며 생활 반경을 확대하고 있지만, 항상 안전을 우선시합니다.",
+   "reasoning_en": "Phyllis Brown spends her time at the senior center and market, expanding her range while still prioritizing safety.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "중앙시장",
+     "label_en": "Central Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "동네 경로당",
+     "label_en": "Senior Hall",
+     "kind": "senior_center",
+     "role": "in_zone",
+     "bearing_deg": 170.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "동네 병원",
+     "label_en": "Local Clinic",
+     "kind": "clinic",
+     "role": "change_destination",
+     "bearing_deg": 290.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.2,
+     "typical_days_ko": "토요일 오전",
+     "active_from_month": 8,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 8,
+   "change_trigger_ko": "건강 검진을 위해 병원을 추가 방문하게 되었습니다.",
+   "change_trigger_en": "Started additional visits to the clinic for health checkups.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p29",
+   "archetype_id": "mobility_change_safe",
+   "reasoning_ko": "장금자는 은퇴 후 농사를 계속하며 동네 시장을 자주 이용하고 있습니다. 하반기에는 손주 돌봄을 위해 자녀 집 방문이 시작되어 이동 범위가 넓어졌습니다.",
+   "reasoning_en": "Elaine Taylor continues farming post-retirement and frequently visits the local market. In the latter half of the year, her travel scope expands as she begins visiting her child's home for grandchild care.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "샘터시장",
+     "label_en": "Springside Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "자녀 집",
+     "label_en": "Child's Home",
+     "kind": "family",
+     "role": "change_destination",
+     "bearing_deg": 180.0,
+     "distance_band": "outer",
+     "visit_share": 0.55,
+     "typical_days_ko": "토·일 오후",
+     "active_from_month": 9,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 9,
+   "change_trigger_ko": "장금자는 하반기부터 손자의 돌봄을 위해 자녀 집을 방문하기 시작했습니다.",
+   "change_trigger_en": "Elaine Taylor began visiting her child's home for grandchild care in the latter half of the year.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p30",
+   "archetype_id": "mobility_change_safe",
+   "reasoning_ko": "손금순 씨는 오랜 택시 운전 경력으로 운전에 자신이 있으며, 서예 취미를 즐기는 생활을 유지하고 있습니다. 하반기에 이동 범위가 넓어졌지만 안전 운전을 유지하고 있습니다.",
+   "reasoning_en": "Ms. Margaret Campbell is confident in driving due to her long taxi driving career and maintains her lifestyle by enjoying calligraphy as a hobby. In the second half of the year, her travel range expanded, but she continues to drive safely.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "우리동네 전통시장",
+     "label_en": "Neighborhood Traditional Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 50.0,
+     "distance_band": "near",
+     "visit_share": 0.4,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "시민 서예 교실",
+     "label_en": "Community Calligraphy Class",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 135.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "도심 미술관",
+     "label_en": "City Art Museum",
+     "kind": "leisure",
+     "role": "change_destination",
+     "bearing_deg": 200.0,
+     "distance_band": "outer",
+     "visit_share": 0.25,
+     "typical_days_ko": "토요일 오전",
+     "active_from_month": 9,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 9,
+   "change_trigger_ko": "새로운 서예 전시 관람을 위해서",
+   "change_trigger_en": "To visit a new calligraphy exhibition",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p31",
+   "archetype_id": "mobility_risk_cochange",
+   "reasoning_ko": "윤순예는 취미 활동을 위한 새로운 경로를 탐색하며, 이는 위험행동 증가로 이어질 수 있다.",
+   "reasoning_en": "Jean Carter explores new routes for recreational activities, which may lead to increased risky behavior.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "우리동네 시장",
+     "label_en": "Neighborhood Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 70.0,
+     "distance_band": "near",
+     "visit_share": 0.3,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "성당",
+     "label_en": "Church",
+     "kind": "church",
+     "role": "in_zone",
+     "bearing_deg": 150.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "신규 등산로",
+     "label_en": "New Hiking Trail",
+     "kind": "leisure",
+     "role": "change_destination",
+     "bearing_deg": 220.0,
+     "distance_band": "outer",
+     "visit_share": 0.35,
+     "typical_days_ko": "주말 오후",
+     "active_from_month": 9,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 9,
+   "change_trigger_ko": "새로운 등산로 탐방 및 외곽 이동 증가로 인해 변화 발생.",
+   "change_trigger_en": "Change occurred due to exploration of a new hiking trail and increased suburban travel.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p32",
+   "archetype_id": "mobility_risk_cochange",
+   "reasoning_ko": "허순덕 씨는 서예 수업을 위해 가까운 문화센터에 자주 방문하며, 여름부터 외곽의 새로운 장소로 이동이 증가하여 경로에서 위험행동이 나타났습니다.",
+   "reasoning_en": "Mr. Moore visits a nearby community center frequently for calligraphy lessons, and from summer, increased trips to a new location on the outskirts have led to risky behavior on these routes.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "동네 문화센터",
+     "label_en": "Local Community Center",
+     "kind": "community",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.3,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "근교 새 탁구장",
+     "label_en": "New Suburban Table Tennis Hall",
+     "kind": "leisure",
+     "role": "change_destination",
+     "bearing_deg": 120.0,
+     "distance_band": "outer",
+     "visit_share": 0.25,
+     "typical_days_ko": "토요일 오후",
+     "active_from_month": 9,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "장터거리",
+     "label_en": "Old Fair Street",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 75.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 9,
+   "change_trigger_ko": "하반기부터는 외곽으로 탁구 활동이 늘어남에 따라 이동이 증가했습니다.",
+   "change_trigger_en": "From the second half of the year, increased travel due to more frequent table tennis activities in the outskirts.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p33",
+   "archetype_id": "mobility_risk_cochange",
+   "reasoning_ko": "김영도의 생활에서 바둑과 화투를 위한 노인정에 자주 방문하며, 취미로 텃밭을 가꾸는 일로 자택 근처 시장을 주로 찾는다. 하반기에 외곽 경로가 변화하며 새로운 위험 행동이 나타나고 있다.",
+   "reasoning_en": "Douglas Young frequently visits the local senior center for playing baduk and hwatu and often goes to a nearby market for gardening supplies. In the second half of the year, new external routes lead to risky driving behaviors.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "은행나무시장",
+     "label_en": "Ginkgo Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "장수 경로당",
+     "label_en": "Longevity Hall",
+     "kind": "senior_center",
+     "role": "in_zone",
+     "bearing_deg": 90.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목·토 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "시외 도로변 정원",
+     "label_en": "Outskirt Roadside Garden",
+     "kind": "farm",
+     "role": "change_destination",
+     "bearing_deg": 150.0,
+     "distance_band": "outer",
+     "visit_share": 0.2,
+     "typical_days_ko": "주말 낮",
+     "active_from_month": 9,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 9,
+   "change_trigger_ko": "가꾸던 텃밭을 더 넓은 외곽 지역으로 확장한 이후 외곽 경로가 변화했다.",
+   "change_trigger_en": "After expanding his gardening activities to a larger outskirts area, his driving routes changed.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p34",
+   "archetype_id": "mobility_risk_cochange",
+   "reasoning_ko": "김일만 씨는 취미와 사교 활동으로 인해 외곽으로 더 자주 이동하게 되며, 하반기에는 그 경로에서의 위험행동이 증가합니다.",
+   "reasoning_en": "Mr. Adams frequents rural areas more often due to hobbies and social activities, and in the latter half of the year, risky behaviors increase on these routes.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "장터거리",
+     "label_en": "Old Fair Street",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "도시 외곽 텃밭",
+     "label_en": "Suburban Allotment",
+     "kind": "farm",
+     "role": "change_destination",
+     "bearing_deg": 75.0,
+     "distance_band": "outer",
+     "visit_share": 0.25,
+     "typical_days_ko": "주말 오전",
+     "active_from_month": 9,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "친목계 모임 장소",
+     "label_en": "Friend Meeting Place",
+     "kind": "community",
+     "role": "in_zone",
+     "bearing_deg": 200.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.3,
+     "typical_days_ko": "화·목 저녁",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 9,
+   "change_trigger_ko": "하반기부터 텃밭 가꾸기 활동이 증가하며 외곽 이동이 늘어났다.",
+   "change_trigger_en": "From the latter half of the year, increased allotment gardening activities lead to more rural travel.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p35",
+   "archetype_id": "mobility_risk_cochange",
+   "reasoning_ko": "조정순 씨는 은퇴 후 일상적인 약수터 방문 외에 하반기에 새로운 외곽 경로를 이용하다 위험 행동이 증가했습니다.",
+   "reasoning_en": "After retirement, Mr. Anderson regularly visits a nearby spring but has shown increased risky behavior on a new outer route in the latter half of the year.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "골목시장",
+     "label_en": "Alley Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "손주네 집",
+     "label_en": "Grandchildren's House",
+     "kind": "family",
+     "role": "in_zone",
+     "bearing_deg": 180.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.3,
+     "typical_days_ko": "주말 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "산리 약수터",
+     "label_en": "Sanri Spring",
+     "kind": "leisure",
+     "role": "change_destination",
+     "bearing_deg": 300.0,
+     "distance_band": "outer",
+     "visit_share": 0.25,
+     "typical_days_ko": "화·목·토 새벽",
+     "active_from_month": 8,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 8,
+   "change_trigger_ko": "산리 약수터에서의 새벽 산책이 시작되었습니다.",
+   "change_trigger_en": "Early morning walks at Sanri Spring began.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p36",
+   "archetype_id": "mobility_risk_cochange",
+   "reasoning_ko": "홍갑룡 씨는 지역 친구들과의 모임과 취미인 텃밭 가꾸기를 위해 마을 시장과 편의시설에 자주 방문합니다. 하반기에는 새로운 텃밭을 마련하여 외곽과 야간 운전이 증가했습니다.",
+   "reasoning_en": "Edward Clark frequently visits the village market and convenience facilities for gatherings with local friends and for his hobby of gardening. In the latter half of the year, he has increased his outer and nighttime travel due to a new garden plot.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "솔뫼시장",
+     "label_en": "Pine Hill Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "친한 이웃집",
+     "label_en": "Friendly Neighbor's House",
+     "kind": "friend",
+     "role": "in_zone",
+     "bearing_deg": 75.0,
+     "distance_band": "near",
+     "visit_share": 0.25,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "외곽 텃밭",
+     "label_en": "Outskirts Garden",
+     "kind": "farm",
+     "role": "change_destination",
+     "bearing_deg": 220.0,
+     "distance_band": "outer",
+     "visit_share": 0.3,
+     "typical_days_ko": "주말",
+     "active_from_month": 9,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 9,
+   "change_trigger_ko": "새로운 텃밭을 마련하여 하반기부터 외곽 방문이 증가했습니다.",
+   "change_trigger_en": "Acquired a new garden plot, increasing visits to the outskirts starting in the latter half of the year.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p37",
+   "archetype_id": "mobility_risk_cochange",
+   "reasoning_ko": "손기석 씨는 과거에 시장에서 오래 일했기 때문에 집 근처 새마을시장에서 장을 보며 일상을 보낸다. 하반기부터 손주들을 보기 위해 외곽에 있는 딸 집을 자주 방문하게 되었고, 이러한 방문 증가가 야간 운전의 위험 요소가 되었다.",
+   "reasoning_en": "Mr. Turner Gi-seok spends his daily life shopping at the local Saemaeul Market due to his long experience working in the market. He began visiting his daughter's house in the outskirts more frequently in the second half to see his grandchildren, which increased night driving risks.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "샘터시장",
+     "label_en": "Springside Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.6429,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "딸 집",
+     "label_en": "Daughter's House",
+     "kind": "family",
+     "role": "change_destination",
+     "bearing_deg": 95.0,
+     "distance_band": "outer",
+     "visit_share": 0.3571,
+     "typical_days_ko": "토·일 저녁",
+     "active_from_month": 9,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 9,
+   "change_trigger_ko": "손주를 보기 위해 딸 집 방문이 잦아졌다.",
+   "change_trigger_en": "Frequent visits to the daughter's house began to see the grandchildren.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p38",
+   "archetype_id": "mobility_risk_cochange",
+   "reasoning_ko": "한영자는 택시 경력이 있어 운전에 자신이 있지만, 외곽 지역의 새로운 경로에서는 안전하게 운전해야 할 필요가 있습니다.",
+   "reasoning_en": "Sylvia Moore is confident in driving due to her taxi driving experience, but she needs to drive safely on the new routes in the outskirts.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "햇살마트",
+     "label_en": "Sunshine Mart",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "노인복지센터",
+     "label_en": "Senior Welfare Center",
+     "kind": "senior_center",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.25,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "야외 노래공연장",
+     "label_en": "Outdoor Singing Venue",
+     "kind": "leisure",
+     "role": "change_destination",
+     "bearing_deg": 210.0,
+     "distance_band": "outer",
+     "visit_share": 0.3,
+     "typical_days_ko": "주말 저녁",
+     "active_from_month": 9,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 9,
+   "change_trigger_ko": "외곽의 노래 공연장을 찾기 시작한 것이 계기가 되어 경로가 달라졌습니다.",
+   "change_trigger_en": "The change in routes was triggered by the beginning of visits to an outdoor singing venue in the outskirts.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p39",
+   "archetype_id": "mobility_risk_cochange",
+   "reasoning_ko": "고말순 님은 지역 봉사활동과 취미 생활을 위해 주로 근처 시장과 레크리에이션 센터를 방문하나, 하반기에는 낚시를 위해 외곽 이동이 늘어납니다.",
+   "reasoning_en": "Ms. Ruth Mitchell mainly visits the nearby market and recreation center for community activities and hobbies, but in the second half of the year, her trips to the outskirts increase for fishing.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "은행나무시장",
+     "label_en": "Ginkgo Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "우리동네 레크리에이션 센터",
+     "label_en": "Neighborhood Recreation Center",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 110.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "강변 낚시터",
+     "label_en": "Riverside Fishing Spot",
+     "kind": "leisure",
+     "role": "change_destination",
+     "bearing_deg": 200.0,
+     "distance_band": "outer",
+     "visit_share": 0.2,
+     "typical_days_ko": "토요일 야간",
+     "active_from_month": 9,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 9,
+   "change_trigger_ko": "9월부터 낚시 시즌 시작에 따라 외곽 낚시터 방문이 증가하면서 위험 운전 행동이 함께 나타납니다.",
+   "change_trigger_en": "Starting from September, the fishing season prompts increased visits to the outskirts-fishing spot, accompanied by risky driving behaviors.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p40",
+   "archetype_id": "mobility_risk_cochange",
+   "reasoning_ko": "이만수 님은 서예 수업과 노래 교실을 자주 방문하면서 본인의 취미를 즐기며 시간을 보내고 있습니다.",
+   "reasoning_en": "Mr. Clark frequently attends calligraphy classes and singing classes, enjoying his hobbies.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "우리동네 문화센터",
+     "label_en": "Local Culture Center",
+     "kind": "community",
+     "role": "in_zone",
+     "bearing_deg": 70.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "송정 노래 교실",
+     "label_en": "Songjeong Singing Class",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "등산로 입구",
+     "label_en": "Hiking Trail Entrance",
+     "kind": "leisure",
+     "role": "change_destination",
+     "bearing_deg": 210.0,
+     "distance_band": "outer",
+     "visit_share": 0.2,
+     "typical_days_ko": "주말 오후",
+     "active_from_month": 9,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": 9,
+   "change_trigger_ko": "하반기부터 건강을 위해 등산을 시작했습니다.",
+   "change_trigger_en": "Started hiking for health reasons in the second half of the year.",
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p41",
+   "archetype_id": "multi_zone",
+   "reasoning_ko": "남순예는 성당 봉사와 가족 돌봄을 위해 익숙한 경로로 두 생활권을 오가며 안정된 운전을 유지합니다.",
+   "reasoning_en": "Nancy Baker maintains stable driving between familiar routes for church service and family care.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "우리동네 성당",
+     "label_en": "Local Church",
+     "kind": "church",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "딸 집",
+     "label_en": "Daughter's Home",
+     "kind": "family",
+     "role": "secondary",
+     "bearing_deg": 120.0,
+     "distance_band": "secondary",
+     "visit_share": 0.35,
+     "typical_days_ko": "토·일 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "경로우대센터",
+     "label_en": "Senior Center",
+     "kind": "senior_center",
+     "role": "in_zone",
+     "bearing_deg": 270.0,
+     "distance_band": "near",
+     "visit_share": 0.2,
+     "typical_days_ko": "화·목 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p42",
+   "archetype_id": "multi_zone",
+   "reasoning_ko": "유순애는 주말마다 낚시와 등산을 즐기므로, 근처 시장과 주말 농장을 자주 방문하며 균형 잡힌 생활을 유지합니다.",
+   "reasoning_en": "Joan Young enjoys fishing and hiking on weekends, frequently visiting a nearby market and weekend farm to maintain a balanced lifestyle.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "햇살마트",
+     "label_en": "Sunshine Mart",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 45.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "주말 농장",
+     "label_en": "Weekend Farm",
+     "kind": "farm",
+     "role": "secondary",
+     "bearing_deg": 270.0,
+     "distance_band": "outer",
+     "visit_share": 0.35,
+     "typical_days_ko": "토·일 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "가족 집",
+     "label_en": "Family House",
+     "kind": "family",
+     "role": "secondary",
+     "bearing_deg": 180.0,
+     "distance_band": "outer",
+     "visit_share": 0.2,
+     "typical_days_ko": "격주 토요일",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p43",
+   "archetype_id": "multi_zone",
+   "reasoning_ko": "최영자는 병원 방문과 가족을 돌보기 위해 안전한 운전을 유지하며 정기적으로 자택과 멀리 떨어진 가족 집을 방문합니다.",
+   "reasoning_en": "Frances Johnson maintains safe driving as she regularly visits a distant family house and a clinic to manage her health.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "우리동네 병원",
+     "label_en": "Local Clinic",
+     "kind": "clinic",
+     "role": "in_zone",
+     "bearing_deg": 65.0,
+     "distance_band": "near",
+     "visit_share": 0.3,
+     "typical_days_ko": "월·수 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "자녀 집",
+     "label_en": "Child's House",
+     "kind": "family",
+     "role": "secondary",
+     "bearing_deg": 120.0,
+     "distance_band": "secondary",
+     "visit_share": 0.35,
+     "typical_days_ko": "주말",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "농지",
+     "label_en": "Farm",
+     "kind": "farm",
+     "role": "secondary",
+     "bearing_deg": 200.0,
+     "distance_band": "outer",
+     "visit_share": 0.35,
+     "typical_days_ko": "매월 첫째 주",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p44",
+   "archetype_id": "multi_zone",
+   "reasoning_ko": "권말순 씨는 주로 자택과 가까운 시장과 좀 더 멀리 있는 가족의 집을 자주 방문하며 생활 권역을 관리합니다.",
+   "reasoning_en": "Gwon Malsun mainly manages her mobility between her home, a nearby market, and a more distant family residence.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "샘터시장",
+     "label_en": "Springside Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "딸네 집",
+     "label_en": "Daughter's Home",
+     "kind": "family",
+     "role": "secondary",
+     "bearing_deg": 120.0,
+     "distance_band": "secondary",
+     "visit_share": 0.55,
+     "typical_days_ko": "주말 전체",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p45",
+   "archetype_id": "multi_zone",
+   "reasoning_ko": "고명숙 씨는 손주 등교를 돕기 위해 주기적으로 가족의 집을 방문하며 안전운전을 유지합니다.",
+   "reasoning_en": "Ms. Go regularly visits her family's home to help with her grandchildren's commute, maintaining her safe driving routine.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "풍년시장",
+     "label_en": "Harvest Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "손주네 집",
+     "label_en": "Grandchild's Home",
+     "kind": "family",
+     "role": "secondary",
+     "bearing_deg": 130.0,
+     "distance_band": "secondary",
+     "visit_share": 0.55,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p46",
+   "archetype_id": "multi_zone",
+   "reasoning_ko": "권금자는 손주를 돌보고 취미생활을 유지하기 위해 시장과 농지를 규칙적으로 방문한다.",
+   "reasoning_en": "Phyllis Thomas regularly visits the market and farmland to care for her grandchildren and maintain her hobby.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "샘터시장",
+     "label_en": "Springside Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 45.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "금자텃밭 농장",
+     "label_en": "Phyllis's Farm",
+     "kind": "farm",
+     "role": "secondary",
+     "bearing_deg": 120.0,
+     "distance_band": "secondary",
+     "visit_share": 0.55,
+     "typical_days_ko": "화·목·토 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p47",
+   "archetype_id": "multi_zone",
+   "reasoning_ko": "김점례는 농사일을 완전히 은퇴했지만 가족을 돌보기 위해 규칙적으로 먼 곳을 방문하며, 텃밭과 화투 취미를 유지합니다.",
+   "reasoning_en": "Phyllis Anderson has retired from farming but regularly visits distant places to care for family, while maintaining her garden and playing cards.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "골목시장",
+     "label_en": "Alley Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "딸네 집",
+     "label_en": "Daughter's Home",
+     "kind": "family",
+     "role": "secondary",
+     "bearing_deg": 230.0,
+     "distance_band": "outer",
+     "visit_share": 0.35,
+     "typical_days_ko": "매주 토요일",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "마을 회관",
+     "label_en": "Community Center",
+     "kind": "community",
+     "role": "in_zone",
+     "bearing_deg": 90.0,
+     "distance_band": "near",
+     "visit_share": 0.2,
+     "typical_days_ko": "화·목 저녁",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p48",
+   "archetype_id": "multi_zone",
+   "reasoning_ko": "남귀순 씨는 바둑과 가족 방문을 중심으로 생활하며, 자택과 주요 거점을 규칙적으로 오가며 안정적인 일상을 유지하고 있습니다.",
+   "reasoning_en": "Mr. Miller Kwi-soon maintains a stable routine, focusing on Go and family visits, regularly traveling between home and key destinations.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "우리동네 바둑 모임",
+     "label_en": "Neighborhood Go Club",
+     "kind": "community",
+     "role": "in_zone",
+     "bearing_deg": 90.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "가족 방문지",
+     "label_en": "Family Visit",
+     "kind": "family",
+     "role": "secondary",
+     "bearing_deg": 270.0,
+     "distance_band": "secondary",
+     "visit_share": 0.55,
+     "typical_days_ko": "주말",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p49",
+   "archetype_id": "multi_zone",
+   "reasoning_ko": "배병희 씨는 두 번째 거점인 멀리 떨어진 가족 집을 정기적으로 방문하며, 가까이 있는 게이트볼장을 자주 찾아 주변 생활권을 유지합니다.",
+   "reasoning_en": "Mr. Allen regularly visits his distant family home as a secondary location, while frequently going to the nearby gateball court to maintain his local routines.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "동네 게이트볼장",
+     "label_en": "Local Gateball Court",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 50.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "아들네 집",
+     "label_en": "Son's House",
+     "kind": "family",
+     "role": "secondary",
+     "bearing_deg": 200.0,
+     "distance_band": "secondary",
+     "visit_share": 0.55,
+     "typical_days_ko": "매주 토요일",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p50",
+   "archetype_id": "multi_zone",
+   "reasoning_ko": "심정자는 자주 병원을 방문하며 가족을 돌보기 위해 먼 거리도 마다하지 않습니다.",
+   "reasoning_en": "Shim Jeongja frequently visits the hospital and doesn't hesitate to travel long distances to care for her family.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "우리동네 건강 클리닉",
+     "label_en": "Neighborhood Health Clinic",
+     "kind": "clinic",
+     "role": "in_zone",
+     "bearing_deg": 90.0,
+     "distance_band": "near",
+     "visit_share": 0.25,
+     "typical_days_ko": "월·목 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "딸네 집",
+     "label_en": "Daughter's Home",
+     "kind": "family",
+     "role": "secondary",
+     "bearing_deg": 210.0,
+     "distance_band": "secondary",
+     "visit_share": 0.45,
+     "typical_days_ko": "화·토 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "우리 마을 시장",
+     "label_en": "Village Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 330.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.3,
+     "typical_days_ko": "수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p51",
+   "archetype_id": "wide_area_safe",
+   "reasoning_ko": "신춘자는 생활 반경을 넓히는 것을 좋아하여 친구를 방문하고 시장에 가기 위해 자주 운전합니다.",
+   "reasoning_en": "Judith Davis enjoys extending her living radius by driving frequently to visit friends and go to the market.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "은행나무시장",
+     "label_en": "Ginkgo Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "친구 집",
+     "label_en": "Friend's House",
+     "kind": "friend",
+     "role": "in_zone",
+     "bearing_deg": 160.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.25,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "손주네 집",
+     "label_en": "Grandchild's Home",
+     "kind": "family",
+     "role": "secondary",
+     "bearing_deg": 250.0,
+     "distance_band": "outer",
+     "visit_share": 0.3,
+     "typical_days_ko": "주말",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p52",
+   "archetype_id": "wide_area_safe",
+   "reasoning_ko": "박재술은 생활 반경이 넓지만 위험 없이 안정적으로 이동하며, 매일 같은 패턴을 유지하고 있다.",
+   "reasoning_en": "Jaesul Park maintains a wide range without risk, adhering to a consistent daily pattern.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "우리동네 바둑회관",
+     "label_en": "Local Baduk Club",
+     "kind": "community",
+     "role": "in_zone",
+     "bearing_deg": 30.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "중앙 시장",
+     "label_en": "Central Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 200.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "시립 도서관",
+     "label_en": "City Library",
+     "kind": "community",
+     "role": "secondary",
+     "bearing_deg": 120.0,
+     "distance_band": "outer",
+     "visit_share": 0.2,
+     "typical_days_ko": "토 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p53",
+   "archetype_id": "wide_area_safe",
+   "reasoning_ko": "배옥분은 넓은 생활 반경을 유지하지만 안전 규칙을 잘 지키면서 주기적으로 병원을 방문하고 바둑을 두러 간다.",
+   "reasoning_en": "Eleanor Wright maintains a wide range of activities, regularly visiting clinics and playing baduk while following safety rules.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "우리동네 바둑 클럽",
+     "label_en": "Local Baduk Club",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 70.0,
+     "distance_band": "near",
+     "visit_share": 0.3,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "중앙 병원",
+     "label_en": "Central Hospital",
+     "kind": "hospital",
+     "role": "secondary",
+     "bearing_deg": 150.0,
+     "distance_band": "outer",
+     "visit_share": 0.35,
+     "typical_days_ko": "월·수 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "우리동네 시장",
+     "label_en": "Neighborhood Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 30.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "토 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p54",
+   "archetype_id": "wide_area_safe",
+   "reasoning_ko": "백복순은 은퇴 후 건강을 유지하기 위해 약수터와 지역 시장을 자주 방문하며, 꾸준한 생활 패턴을 유지합니다.",
+   "reasoning_en": "Kathleen Hall maintains a regular routine by frequently visiting a local spring and market to stay healthy after retirement.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "우리동네 약수터",
+     "label_en": "Neighborhood Spring",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 45.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "매일 아침",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "샘터시장",
+     "label_en": "Springside Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 90.0,
+     "distance_band": "near",
+     "visit_share": 0.3,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "시외 교회",
+     "label_en": "Out-of-town Church",
+     "kind": "church",
+     "role": "secondary",
+     "bearing_deg": 135.0,
+     "distance_band": "outer",
+     "visit_share": 0.35,
+     "typical_days_ko": "일요일 아침",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p55",
+   "archetype_id": "wide_area_safe",
+   "reasoning_ko": "강순덕은 손주를 데려다주고 취미 생활을 즐기기 위해 다양하고 멀리 있는 목적지를 방문합니다. 이로 인해 그녀의 이동 반경은 넓습니다.",
+   "reasoning_en": "Alice Parker visits diverse and distant destinations to help with her grandchild and enjoy her hobbies, resulting in a wide travel radius.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "솔뫼시장",
+     "label_en": "Pine Hill Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.25,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "노래 교실",
+     "label_en": "Singing Class",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.4,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "손주 유치원",
+     "label_en": "Grandchild's Kindergarten",
+     "kind": "family",
+     "role": "in_zone",
+     "bearing_deg": 300.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.35,
+     "typical_days_ko": "매일 오전·오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p56",
+   "archetype_id": "wide_area_safe",
+   "reasoning_ko": "남옥분 씨는 넓은 생활 반경을 유지하면서 안전 운전을 중시하므로, 자주 방문하는 노인정과 슈퍼마켓이 그녀의 주요 생활 목적지다.",
+   "reasoning_en": "As Ms. Eleanor King values safe driving while maintaining a wide living range, the senior center and supermarket are her main destinations.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "장수 경로당",
+     "label_en": "Longevity Hall",
+     "kind": "senior_center",
+     "role": "in_zone",
+     "bearing_deg": 90.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "우리동네 슈퍼마켓",
+     "label_en": "Neighborhood Supermarket",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 210.0,
+     "distance_band": "near",
+     "visit_share": 0.4,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "도시 외곽 체육관",
+     "label_en": "Suburban Gym",
+     "kind": "leisure",
+     "role": "secondary",
+     "bearing_deg": 330.0,
+     "distance_band": "secondary",
+     "visit_share": 0.25,
+     "typical_days_ko": "주말 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p57",
+   "archetype_id": "wide_area_safe",
+   "reasoning_ko": "신순애 씨는 정기적인 봉사활동과 탁구 취미를 즐기며 안전한 운전을 유지합니다.",
+   "reasoning_en": "Ms. Young regularly engages in volunteer activities and enjoys her ping-pong hobby, maintaining safe driving habits.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "오거리시장",
+     "label_en": "Five-way Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 0.45,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "지역 봉사센터",
+     "label_en": "Local Volunteer Center",
+     "kind": "community",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.35,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "주말 탁구클럽",
+     "label_en": "Weekend Ping-Pong Club",
+     "kind": "leisure",
+     "role": "secondary",
+     "bearing_deg": 200.0,
+     "distance_band": "outer",
+     "visit_share": 0.2,
+     "typical_days_ko": "토·일 아침",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p58",
+   "archetype_id": "wide_area_safe",
+   "reasoning_ko": "김순예 씨는 필요한 볼일만 최소한으로 처리하며, 자주 가는 목적지가 제한적이다. 그녀는 생활 반경이 넓지만 주로 안전한 경로로 이동하며 텔레매틱스 데이터가 희소하다.",
+   "reasoning_en": "Helen Brown travels only as needed, with limited destinations. Despite a wide travel radius, she maintains safe routes, resulting in sparse telematics data.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "샘터시장",
+     "label_en": "Springside Market",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 40.0,
+     "distance_band": "near",
+     "visit_share": 1.0,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p59",
+   "archetype_id": "wide_area_safe",
+   "reasoning_ko": "황정호는 오랜 운전 경험과 안전 운전을 통해 다양한 목적지에 다닙니다. 여가와 쇼핑을 위해 생활권 내외를 규칙적으로 방문합니다.",
+   "reasoning_en": "Robert Miller, with his extensive driving experience and adherence to safety regulations, visits various destinations regularly for leisure and shopping within and beyond his living area.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "동네 하나마트",
+     "label_en": "Corner Grocery",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 45.0,
+     "distance_band": "near",
+     "visit_share": 0.3,
+     "typical_days_ko": "화·목 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "역사 문화 체육센터",
+     "label_en": "Local Culture and Sports Center",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 150.0,
+     "distance_band": "near",
+     "visit_share": 0.25,
+     "typical_days_ko": "월·수·금 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "시립 도서관",
+     "label_en": "City Library",
+     "kind": "community",
+     "role": "secondary",
+     "bearing_deg": 220.0,
+     "distance_band": "mid_in",
+     "visit_share": 0.2,
+     "typical_days_ko": "토요일 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "탁구 클럽",
+     "label_en": "Ping Pong Club",
+     "kind": "leisure",
+     "role": "in_zone",
+     "bearing_deg": 300.0,
+     "distance_band": "near",
+     "visit_share": 0.25,
+     "typical_days_ko": "주말 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  },
+  {
+   "person_id": "p60",
+   "archetype_id": "wide_area_safe",
+   "reasoning_ko": "남기석 씨는 넓은 생활 반경을 가지며 규정 속도를 지켜 안전운전을 습관으로 삼고 있습니다. 주로 동네 시장과 노인정을 자주 방문하는 일정입니다.",
+   "reasoning_en": "Mr. Miller Giseok maintains a wide travel range while adhering to safe driving practices by following speed limits. He frequently visits the neighborhood market and senior center.",
+   "home_label_ko": "자택 인근",
+   "home_label_en": "Home area",
+   "zones": [
+    {
+     "label_ko": "미소마트",
+     "label_en": "Smile Mart",
+     "kind": "market",
+     "role": "in_zone",
+     "bearing_deg": 60.0,
+     "distance_band": "near",
+     "visit_share": 0.35,
+     "typical_days_ko": "월·수·금 오전",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "주민센터 문화교실",
+     "label_en": "Community Culture Class",
+     "kind": "community",
+     "role": "in_zone",
+     "bearing_deg": 120.0,
+     "distance_band": "near",
+     "visit_share": 0.25,
+     "typical_days_ko": "화·목 오후",
+     "active_from_month": 1,
+     "active_to_month": 14
+    },
+    {
+     "label_ko": "강변 낚시터",
+     "label_en": "Riverside Fishing Spot",
+     "kind": "leisure",
+     "role": "secondary",
+     "bearing_deg": 200.0,
+     "distance_band": "outer",
+     "visit_share": 0.4,
+     "typical_days_ko": "토·일 종일",
+     "active_from_month": 1,
+     "active_to_month": 14
+    }
+   ],
+   "change_month": null,
+   "change_trigger_ko": null,
+   "change_trigger_en": null,
+   "source": "mobility_agent"
+  }
+ ]
 }
