@@ -606,6 +606,12 @@ function ScenarioControlPanel({
       rules: referenceProductRules
     },
     {
+      id: "revenue-neutral",
+      label: t("총액 중립 · 보너스 4%p"),
+      hint: t("보너스 상한만 7→4%p로 — 180건 평균 할인 델타 +0.02%p, 재분배(최고위험군 회수)는 유지"),
+      rules: { ...referenceProductRules, reward_discount_rate_pct: 4.0 }
+    },
+    {
       id: "intl-conservative",
       label: t("국제 예시 A · 보수적"),
       hint: t("우대 문턱을 높이고 케어를 더 민감하게 보는 시장 가정"),
@@ -912,7 +918,7 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
             <div>
               <span>{t("기존 대비 평균 차이")}</span>
               <strong>{signedPercentPoint(avgRateDelta)}</strong>
-              <small>{t("일괄 인상이 아니라 위험 기반 재분배의 순효과 — 저위험 시니어엔 우대, 변화군은 케어로 분리. 손해율 효과는 별도 실증.")}</small>
+              <small>{t("일괄 인상이 아니라 재분배의 순효과 — 최고위험군(동시변화형)에서 11.6%p를 회수해 안전군에 배분. 보너스 상한 4%p면 총액 중립(선언 파라미터). 손해율 효과는 별도 실증.")}</small>
             </div>
           </div>
           <p className="portfolio-footnote">
