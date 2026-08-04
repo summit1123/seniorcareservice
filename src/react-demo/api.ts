@@ -3,6 +3,7 @@ import { gaipStudioApi } from "./gaip-api";
 import {
   adaptAnnualSummary,
   adaptDirectory,
+  adaptRepresentativePair,
   adaptMonthlySnapshots,
   adaptZoneMap,
   buildEvidenceReport
@@ -10,6 +11,7 @@ import {
 import type { GaipStudioBundle, ProductRules } from "./gaip-types";
 import type {
   DriverAnnualSummary,
+  MatchedPairComparison,
   MonthlySnapshotResponse,
   PersonaDirectoryResponse,
   ZoneMapResponse
@@ -42,6 +44,9 @@ export const demoApi = {
   },
   async getAnnualSummary(driverId: string, rules?: ProductRules): Promise<DriverAnnualSummary> {
     return adaptAnnualSummary(await studio(), driverId, rules);
+  },
+  async getRepresentativePair(rules?: ProductRules): Promise<MatchedPairComparison | null> {
+    return adaptRepresentativePair(await studio(), rules);
   },
   async getMonthlySnapshots(driverId: string, rules?: ProductRules): Promise<MonthlySnapshotResponse> {
     return adaptMonthlySnapshots(await studio(), driverId, rules);

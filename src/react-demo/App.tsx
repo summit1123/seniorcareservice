@@ -488,10 +488,39 @@ function DesignOverviewPage({
           sandbox that lets a judge perturb that formula → persona overview. Knobs after
           the machine they tune. */}
       <OverviewComparisonPanel directory={directory} />
+      <RepresentativePairPanel rules={rules} />
       <ProductBlueprintPanel directory={directory} />
       {rules ? <ScenarioControlPanel rules={rules} onChange={onRulesChange} directory={directory} /> : null}
       <PersonaMatrix summaries={directory.persona_summaries} />
     </main>
+  );
+}
+
+// 대표 대조 사례 — 180개 시나리오에서 조건이 가장 비슷하고 행동만 다른 케어×우대
+// 페어를 고정 표로 보여준다. 샌드박스 규칙이 바뀌면 같은 기준으로 다시 고른다.
+function RepresentativePairPanel({ rules }: { rules: ProductRules | null }) {
+  const [pair, setPair] = useState<MatchedPairComparison | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    demoApi.getRepresentativePair(rules ?? undefined).then((result) => {
+      if (!cancelled) setPair(result);
+    }).catch(() => {
+      if (!cancelled) setPair(null);
+    });
+    return () => { cancelled = true; };
+  }, [rules]);
+  if (!pair) return null;
+  return (
+    <section className="panel representative-pair-panel" aria-label={t("대표 대조 사례")}>
+      <div className="panel-head">
+        <div>
+          <p className="eyebrow">{t("대표 사례")}</p>
+          <h2>{t("같은 조건, 다른 행동")}</h2>
+        </div>
+        <p className="panel-note">{t("180개 시나리오에서 조건이 가장 비슷하고 행동만 다른 두 사람의 실제 판정입니다.")}</p>
+      </div>
+      <MatchedPairTable pair={pair} selfTag={t("케어 사례")} otherTag={t("우대 사례")} />
+    </section>
   );
 }
 
@@ -1574,7 +1603,7 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
 
 // '같은 조건, 다른 행동' — 같은 차종(1단계는 기존 요율까지 동일)에서 반대 판정을
 // 받은 실제 시나리오와의 자동 대조. 상대가 없는 시나리오는 표를 그리지 않는다.
-function MatchedPairTable({ pair }: { pair: MatchedPairComparison | null }) {
+function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairComparison | null; selfTag?: string; otherTag?: string }) {
   if (!pair) return null;
   const won = (value: number) => `₩${Math.round(value).toLocaleString("ko-KR")}`;
   const name = (side: MatchedPairSide) => (getLocale() === "ko" ? side.display_label : side.display_label_en);
@@ -1596,8 +1625,8 @@ function MatchedPairTable({ pair }: { pair: MatchedPairComparison | null }) {
         <thead>
           <tr>
             <th />
-            <th>{name(pair.self)} <em>{t("현재 선택")}</em></th>
-            <th>{name(pair.other)} <em>{t("대조 사례")}</em></th>
+            <th>{name(pair.self)} <em>{selfTag ?? t("현재 선택")}</em></th>
+            <th>{name(pair.other)} <em>{otherTag ?? t("대조 사례")}</em></th>
           </tr>
         </thead>
         <tbody>

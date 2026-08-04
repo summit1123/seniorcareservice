@@ -2014,6 +2014,26 @@ p {
   background: var(--blue);
 }
 
+/* 오버뷰 대표 대조 사례 패널 */
+.representative-pair-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.representative-pair-panel .panel-note {
+  max-width: 430px;
+  text-align: right;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+@media (max-width: 720px) {
+  .representative-pair-panel .panel-note {
+    text-align: left;
+  }
+}
+
 /* '같은 조건, 다른 행동' 대조 표 — 부모 .premium-simulation div의 그리드 행 규칙을 되돌린다 */
 .premium-simulation .pair-compare,
 .premium-simulation .pair-compare-head {
@@ -2029,6 +2049,26 @@ p {
 
 .pair-compare-head {
   margin-bottom: 9px;
+}
+
+/* 헤드 타이포는 어디에 쓰이든 동일 — 요율 패널 밖(오버뷰 대표 사례)에서도 성립 */
+.pair-compare-head strong {
+  display: block;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.pair-compare-head span {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--muted);
+}
+
+/* 오버뷰 패널은 자체 h2가 있으므로 카드 안 제목은 숨기고 조건 요약만 남긴다 */
+.representative-pair-panel .pair-compare-head strong {
+  display: none;
 }
 
 .premium-simulation .pair-compare-head strong {

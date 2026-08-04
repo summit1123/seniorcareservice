@@ -8,6 +8,7 @@ import {
   adaptAnnualSummary,
   adaptDirectory,
   adaptMonthlySnapshots,
+  adaptRepresentativePair,
   adaptZoneMap,
   buildEvidenceReport
 } from "../src/react-demo/legacy-gaip-adapter.ts";
@@ -188,4 +189,16 @@ test("matched pair contrasts the same vehicle class and never exceeds the base p
     }
   }
   assert.ok(shown >= 80, `matched-pair coverage too low: ${shown}/180`);
+});
+
+test("representative pair picks the most-alike care/reward contrast deterministically", () => {
+  const pair = adaptRepresentativePair(bundle);
+  assert.ok(pair, "expected a representative pair");
+  assert.equal(pair.match_tier, "identical");
+  assert.equal(pair.self.care_state, "Care Review");
+  assert.equal(pair.other.reward_state, "Reward");
+  assert.equal(pair.self.existing_premium_krw, pair.other.existing_premium_krw);
+  // 현재 데이터 기준 1위 페어 — 데이터 재생성으로 순위가 정당하게 바뀌면 이 두 줄만 갱신.
+  assert.equal(pair.self.driver_id, "gaip-114");
+  assert.equal(pair.other.driver_id, "gaip-066");
 });

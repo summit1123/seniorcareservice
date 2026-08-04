@@ -364,6 +364,63 @@ function matchedPair(
   };
 }
 
+/**
+ * 심사 화면용 대표 대조 페어 — 180개 시나리오 전수에서 '조건은 가장 비슷하고
+ * 행동만 다른' 케어×우대 페어를 결정론적으로 고른다. 기본보험료·기존 요율이
+ * 동일한 페어만 후보로 두고, 거리·생활권 밖 비중·환경·연령의 동일성과
+ * 위험행동 대비 크기를 점수화한다(현재 데이터 1위: 한영자↔오종국).
+ */
+export function adaptRepresentativePair(bundle: GaipStudioBundle, rules?: ProductRules): MatchedPairComparison | null {
+  const activeRules = effectiveRules(bundle, rules);
+  const decisions = new Map<string, SandboxResult>();
+  const decisionFor = (driver: StudioDriver): SandboxResult => {
+    let result = decisions.get(driver.id);
+    if (!result) {
+      result = sandboxDecision(driver, activeRules);
+      decisions.set(driver.id, result);
+    }
+    return result;
+  };
+  const outerShareOf = (driver: StudioDriver) => mean(evaluationMonths(driver).map((month) => month.outer_visit_share_pct));
+  const riskCountOf = (driver: StudioDriver) =>
+    sum(evaluationMonths(driver).map((month) => sum(Object.values(month.risk_event_type_counts ?? {}))));
+
+  const cares: StudioDriver[] = [];
+  const rewards: StudioDriver[] = [];
+  for (const driver of bundle.drivers) {
+    const result = decisionFor(driver);
+    if (result.care_state === "Care Review") cares.push(driver);
+    else if (result.reward_state === "Reward") rewards.push(driver);
+  }
+
+  let best: { care: StudioDriver; reward: StudioDriver; score: number } | null = null;
+  for (const care of cares) {
+    for (const reward of rewards) {
+      const basePremium = care.tariff?.base_premium_krw;
+      if (basePremium === undefined || reward.tariff?.base_premium_krw !== basePremium) continue;
+      if (care.tariff?.korea_mileage_discount_rate_pct !== reward.tariff?.korea_mileage_discount_rate_pct) continue;
+      const maxDistance = Math.max(care.metrics.annual_distance_km, reward.metrics.annual_distance_km, 1);
+      const distanceGapPct = (Math.abs(care.metrics.annual_distance_km - reward.metrics.annual_distance_km) / maxDistance) * 100;
+      const outerGap = Math.abs(outerShareOf(care) - outerShareOf(reward));
+      const riskGap = riskCountOf(care) - riskCountOf(reward);
+      const score =
+        -distanceGapPct * 3 -
+        outerGap * 0.5 +
+        (care.environment_id === reward.environment_id ? 5 : 0) +
+        (care.age === reward.age ? 3 : 0) +
+        Math.min(riskGap, 200) / 20;
+      if (!best || score > best.score) best = { care, reward, score };
+    }
+  }
+  if (!best) return null;
+  return {
+    match_tier: "identical",
+    base_premium_krw: round(finite(best.care.tariff?.base_premium_krw)),
+    self: matchedPairSide(best.care, decisionFor(best.care)),
+    other: matchedPairSide(best.reward, decisionFor(best.reward))
+  };
+}
+
 function annualComparison(driver: StudioDriver, result: SandboxResult): AbComparison {
   const basePremium = finite(driver.tariff?.base_premium_krw);
   const referenceRate = finite(driver.tariff?.korea_mileage_discount_rate_pct);
