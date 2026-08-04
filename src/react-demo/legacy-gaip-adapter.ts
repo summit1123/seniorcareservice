@@ -13,6 +13,8 @@ import type {
   DriverAnnualSummary,
   ExistingTierSegment,
   Interpretation,
+  MatchedPairComparison,
+  MatchedPairSide,
   MonthlyEvidence,
   MonthlySnapshotResponse,
   PersonaDirectoryResponse,
@@ -278,6 +280,90 @@ function schematicDestinations(driver: StudioDriver): Record<string, Destination
   return destinations;
 }
 
+/** 대조 표의 한쪽을 요약한다 — 요율은 현재 샌드박스 규칙으로 계산된 결과를 쓴다. */
+function matchedPairSide(driver: StudioDriver, result: SandboxResult): MatchedPairSide {
+  const evaluation = evaluationMonths(driver);
+  const basePremium = finite(driver.tariff?.base_premium_krw);
+  const referenceRate = finite(driver.tariff?.korea_mileage_discount_rate_pct);
+  const referenceNet = driver.tariff?.korea_mileage_net_premium_krw ?? basePremium * (1 - referenceRate / 100);
+  const candidateRate = result.proposed_discount_rate_pct;
+  const candidateNet = result.proposed_net_premium_krw ?? basePremium * (1 - candidateRate / 100);
+  const hasRiskCounts = evaluation.some((month) => month.risk_event_type_counts);
+  return {
+    driver_id: driver.id,
+    display_label: driver.display_label,
+    display_label_en: driver.display_label_en ?? driver.display_label,
+    persona_label: driver.persona_label,
+    annual_distance_km: round(driver.metrics.annual_distance_km),
+    outer_share_pct: round(mean(evaluation.map((month) => month.outer_visit_share_pct)), 1),
+    risk_event_count: hasRiskCounts
+      ? sum(evaluation.map((month) => sum(Object.values(month.risk_event_type_counts ?? {}))))
+      : null,
+    care_month_count: result.care_review_month_count,
+    reward_state: result.reward_state,
+    care_state: result.care_state,
+    existing_rate_pct: round(referenceRate),
+    existing_premium_krw: round(referenceNet),
+    proposed_rate_pct: round(candidateRate),
+    proposed_premium_krw: round(candidateNet)
+  };
+}
+
+/**
+ * '같은 조건, 다른 행동' 대조 상대를 찾는다.
+ * 1단계: 기본보험료·기존 마일리지 요율이 모두 같은 반대 판정(케어↔우대) 사례 —
+ *        기존 제도에서는 두 사람의 연 보험료가 원 단위까지 같다.
+ * 2단계: 기본보험료만 같은(같은 차종) 반대 판정 사례.
+ * 둘 다 없으면 null — UI는 표를 그리지 않는다. self가 보류·기본이면 '반대
+ * 판정' 서사 자체가 성립하지 않으므로 역시 null이다(케어 또는 우대만 대조).
+ * 판정·요율은 현재 샌드박스 규칙으로 재계산하므로 심사위원이 가중치를
+ * 바꿔도 표가 함께 움직이고, 판정이 기본으로 떨어지면 표도 사라진다.
+ */
+function matchedPair(
+  bundle: GaipStudioBundle,
+  driver: StudioDriver,
+  result: SandboxResult,
+  rules: ProductRules
+): MatchedPairComparison | null {
+  const basePremium = driver.tariff?.base_premium_krw;
+  const referenceRate = driver.tariff?.korea_mileage_discount_rate_pct;
+  if (basePremium === undefined || referenceRate === undefined) return null;
+  const selfIsCare = result.care_state === "Care Review";
+  if (!selfIsCare && result.reward_state !== "Reward") return null;
+
+  let bestIdentical: { candidate: StudioDriver; decision: SandboxResult } | null = null;
+  let bestSameVehicle: { candidate: StudioDriver; decision: SandboxResult } | null = null;
+  const distanceGap = (candidate: StudioDriver) =>
+    Math.abs(candidate.metrics.annual_distance_km - driver.metrics.annual_distance_km);
+
+  for (const candidate of bundle.drivers) {
+    if (candidate.id === driver.id) continue;
+    if (candidate.tariff?.base_premium_krw !== basePremium) continue;
+    const decision = sandboxDecision(candidate, rules);
+    const candidateIsCare = decision.care_state === "Care Review";
+    const isOpposite = selfIsCare
+      ? !candidateIsCare && decision.reward_state === "Reward"
+      : candidateIsCare;
+    if (!isOpposite) continue;
+    if (candidate.tariff?.korea_mileage_discount_rate_pct === referenceRate) {
+      if (!bestIdentical || distanceGap(candidate) < distanceGap(bestIdentical.candidate)) {
+        bestIdentical = { candidate, decision };
+      }
+    } else if (!bestSameVehicle || distanceGap(candidate) < distanceGap(bestSameVehicle.candidate)) {
+      bestSameVehicle = { candidate, decision };
+    }
+  }
+
+  const matched = bestIdentical ?? bestSameVehicle;
+  if (!matched) return null;
+  return {
+    match_tier: bestIdentical ? "identical" : "same_vehicle",
+    base_premium_krw: round(finite(basePremium)),
+    self: matchedPairSide(driver, result),
+    other: matchedPairSide(matched.candidate, matched.decision)
+  };
+}
+
 function annualComparison(driver: StudioDriver, result: SandboxResult): AbComparison {
   const basePremium = finite(driver.tariff?.base_premium_krw);
   const referenceRate = finite(driver.tariff?.korea_mileage_discount_rate_pct);
@@ -389,7 +475,8 @@ export function adaptAnnualSummary(
     zone_status: driver.mobility.zone_status,
     evidence_status: status,
     model_version: bundle.metadata.bundle_version ?? "masil-gaip-simulation/v1",
-    mobility_profile: driver.mobility_profile ?? null
+    mobility_profile: driver.mobility_profile ?? null,
+    matched_pair: matchedPair(bundle, driver, result, activeRules)
   };
 }
 

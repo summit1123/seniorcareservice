@@ -175,6 +175,33 @@ export interface MonthlyEvidence {
   care_state?: string;
 }
 
+/** '같은 조건, 다른 행동' 대조 표의 한쪽(본인 또는 대조 상대). */
+export interface MatchedPairSide {
+  driver_id: string;
+  display_label: string;
+  display_label_en: string;
+  persona_label: string;
+  annual_distance_km: number;
+  outer_share_pct: number;
+  /** 평가기간 위험행동 실측 건수. 유형별 집계가 없는 시나리오는 null. */
+  risk_event_count: number | null;
+  care_month_count: number;
+  reward_state: string;
+  care_state: string;
+  existing_rate_pct: number;
+  existing_premium_krw: number;
+  proposed_rate_pct: number;
+  proposed_premium_krw: number;
+}
+
+export interface MatchedPairComparison {
+  /** "identical" = 기본보험료·기존 요율 모두 동일(기존 보험료 원 단위 동일), "same_vehicle" = 기본보험료만 동일. */
+  match_tier: "identical" | "same_vehicle";
+  base_premium_krw: number;
+  self: MatchedPairSide;
+  other: MatchedPairSide;
+}
+
 export interface DriverAnnualSummary {
   customer_id: string;
   driver_id: string;
@@ -195,6 +222,8 @@ export interface DriverAnnualSummary {
   evidence_status?: string;
   model_version?: string;
   mobility_profile?: MobilityProfile | null;
+  /** 같은 조건(차종/기존 요율)에서 반대 판정을 받은 실제 시나리오와의 대조. 상대가 없으면 null. */
+  matched_pair?: MatchedPairComparison | null;
 }
 
 export interface MonthlySnapshotResponse {

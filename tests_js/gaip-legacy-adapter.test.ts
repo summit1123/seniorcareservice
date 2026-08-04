@@ -142,3 +142,50 @@ test("map and evidence report use only approved synthetic labels and explicit hu
     new RegExp(`연간 후보 상태\\(참고\\): 우대 ${careSummary.reward_state} · 케어 ${careSummary.care_state}`)
   );
 });
+
+test("matched pair contrasts the same vehicle class and never exceeds the base premium", () => {
+  // gaip-114(한영자/Sylvia Moore)는 케어 검토 — 1단계 매칭이면 기존 요율·기존 보험료까지
+  // 동일한 우대 사례가 붙는다 (오종국/Kenneth Young 페어가 대표 사례).
+  const care = adaptAnnualSummary(bundle, "gaip-114");
+  assert.equal(care.care_state, "Care Review");
+  const pair = care.matched_pair;
+  assert.ok(pair, "care driver should find a reward counterpart");
+  assert.equal(pair.match_tier, "identical");
+  assert.equal(pair.self.existing_premium_krw, pair.other.existing_premium_krw);
+  assert.equal(pair.self.existing_rate_pct, pair.other.existing_rate_pct);
+  assert.equal(pair.other.care_state, "None");
+  assert.equal(pair.other.reward_state, "Reward");
+
+  // 요율은 '할인'만 존재 — 어느 쪽도 기준 보험료를 넘지 않는다(할증 없음).
+  for (const side of [pair.self, pair.other]) {
+    assert.ok(side.proposed_premium_krw <= pair.base_premium_krw, `${side.driver_id} premium above base`);
+    assert.ok(side.proposed_rate_pct >= 0);
+  }
+
+  // 우대 쪽에서 찾아도 반대 판정(케어)이 붙고, 차종(기본보험료)은 항상 동일하다.
+  const reward = adaptAnnualSummary(bundle, "gaip-066");
+  const rewardPair = reward.matched_pair;
+  assert.ok(rewardPair, "reward driver should find a care counterpart");
+  assert.equal(rewardPair.other.care_state, "Care Review");
+  assert.equal(rewardPair.match_tier, "identical");
+
+  // 보류(근거 부족)·기본 판정은 '반대 판정' 서사가 성립하지 않으므로 표가 없다.
+  const hold = adaptAnnualSummary(bundle, "gaip-019");
+  assert.equal(hold.reward_state, "Hold");
+  assert.equal(hold.matched_pair ?? null, null);
+
+  // 대조 상대가 없는 시나리오는 null — 표를 그리지 않는다 (커버리지 전수 검증).
+  let shown = 0;
+  for (const option of directory.driver_options) {
+    const summary = adaptAnnualSummary(bundle, option.driver_id);
+    if (summary.matched_pair) {
+      shown += 1;
+      const self = summary.matched_pair.self;
+      assert.equal(self.driver_id, option.driver_id);
+      assert.notEqual(summary.matched_pair.other.driver_id, option.driver_id);
+      // 표가 뜨는 쪽은 항상 케어 또는 우대 — 보류·기본 노출 금지 계약.
+      assert.ok(self.care_state === "Care Review" || self.reward_state === "Reward", `${self.driver_id} pole violation`);
+    }
+  }
+  assert.ok(shown >= 80, `matched-pair coverage too low: ${shown}/180`);
+});

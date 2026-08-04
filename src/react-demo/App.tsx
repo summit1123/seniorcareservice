@@ -24,6 +24,8 @@ import type {
   DriverAnnualSummary,
   DriverOption,
   Interpretation,
+  MatchedPairComparison,
+  MatchedPairSide,
   MonthlyEvidence,
   PersonaDirectoryResponse,
   PersonaSummary,
@@ -1562,9 +1564,82 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
             ? tf("위험 정합 — 케어 검토가 열린 해에는 우대 보너스가 지급되지 않고 연간 할인이 {pct}%p 줄어듭니다(연 {amount} 차이). 할증이 아니라 할인 축소이며, 보험료는 기준 보험료를 넘지 않습니다.", { pct: Math.abs(rateDelta).toFixed(1), amount: krwWithUsd(Math.abs(premiumDelta)) })
             : t("기존 기준과 동일한 수준입니다")}
       </p>
+      <MatchedPairTable pair={driver.matched_pair ?? null} />
       <p>
         {tf("기준 보험료 {base} 가정의 합성 비교입니다. 달러 표기는 해외 심사위원의 규모 비교를 위한 예시 환율(1$≈₩{rate}) 환산이며, 실제 계약보험료·해외 요율을 의미하지 않습니다.", { base: krwWithUsd(comparison.base_premium_krw), rate: DEMO_USD_RATE.toLocaleString("ko-KR") })}
       </p>
+    </div>
+  );
+}
+
+// '같은 조건, 다른 행동' — 같은 차종(1단계는 기존 요율까지 동일)에서 반대 판정을
+// 받은 실제 시나리오와의 자동 대조. 상대가 없는 시나리오는 표를 그리지 않는다.
+function MatchedPairTable({ pair }: { pair: MatchedPairComparison | null }) {
+  if (!pair) return null;
+  const won = (value: number) => `₩${Math.round(value).toLocaleString("ko-KR")}`;
+  const name = (side: MatchedPairSide) => (getLocale() === "ko" ? side.display_label : side.display_label_en);
+  const stateLabel = (side: MatchedPairSide) =>
+    side.care_state === "Care Review" ? t("케어 검토") : stateLabelKo(side.reward_state);
+  const identical = pair.match_tier === "identical";
+  const sides = [pair.self, pair.other];
+  return (
+    <div className="pair-compare">
+      <div className="pair-compare-head">
+        <strong>{t("같은 조건, 다른 행동")}</strong>
+        <span>
+          {identical
+            ? tf("기본보험료 {base} · 기존 요율까지 동일 — 기존 제도라면 두 사람의 연 보험료가 같습니다", { base: won(pair.base_premium_krw) })
+            : tf("같은 차종(기본보험료 {base}) · 기존 요율은 서로 다름", { base: won(pair.base_premium_krw) })}
+        </span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th />
+            <th>{name(pair.self)} <em>{t("현재 선택")}</em></th>
+            <th>{name(pair.other)} <em>{t("대조 사례")}</em></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>{t("연간 판정")}</th>
+            {sides.map((side) => (
+              <td key={side.driver_id} className={side.care_state === "Care Review" ? "is-care" : side.reward_state === "Reward" ? "is-good" : undefined}>{stateLabel(side)}</td>
+            ))}
+          </tr>
+          <tr>
+            <th>{t("유형")}</th>
+            {sides.map((side) => <td key={side.driver_id}>{t(side.persona_label)}</td>)}
+          </tr>
+          <tr>
+            <th>{t("연 주행")}</th>
+            {sides.map((side) => <td key={side.driver_id}>{numberFormatter.format(side.annual_distance_km)} km</td>)}
+          </tr>
+          <tr>
+            <th>{t("생활권 밖 비중")}</th>
+            {sides.map((side) => <td key={side.driver_id}>{percent(side.outer_share_pct)}</td>)}
+          </tr>
+          <tr>
+            <th>{t("위험행동 · 평가 12개월")}</th>
+            {sides.map((side) => (
+              <td key={side.driver_id}>{side.risk_event_count === null ? "—" : tf("{n}건", { n: numberFormatter.format(side.risk_event_count) })}</td>
+            ))}
+          </tr>
+          <tr className={identical ? "is-same" : undefined}>
+            <th>{identical ? t("기존 마일리지 (동일)") : t("기존 마일리지")}</th>
+            {sides.map((side) => (
+              <td key={side.driver_id}>{percent(side.existing_rate_pct)} · {won(side.existing_premium_krw)}</td>
+            ))}
+          </tr>
+          <tr className="is-strong">
+            <th>{t("마실 제안")}</th>
+            {sides.map((side) => (
+              <td key={side.driver_id}>{percent(side.proposed_rate_pct)} · {won(side.proposed_premium_krw)}</td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+      <p>{t("180개 시나리오 중 같은 차종(가능하면 기존 요율까지 동일)의 반대 판정 사례에서 연 주행이 가장 가까운 실측 대조입니다. 요율을 가른 것은 거리·위치가 아니라 행동(위험행동의 동시 변화)입니다.")}</p>
     </div>
   );
 }
