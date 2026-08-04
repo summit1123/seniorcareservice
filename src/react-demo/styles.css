@@ -1980,14 +1980,14 @@ p {
   gap: 12px;
 }
 
-.premium-simulation div {
+.premium-simulation > div {
   display: grid;
   grid-template-columns: 170px minmax(180px, 0.8fr) minmax(0, 1fr);
   gap: 12px;
   align-items: center;
 }
 
-.premium-simulation span {
+.premium-simulation > div span {
   color: var(--muted);
   font-size: 12px;
   font-weight: 850;
@@ -2041,6 +2041,7 @@ p {
   margin-top: 3px;
   font-size: 12px;
   font-weight: 650;
+  color: var(--muted);
 }
 
 .pair-compare table {
@@ -4210,7 +4211,7 @@ p {
   .score-meter-grid,
   .insight-grid,
   .risk-signal-grid,
-  .premium-simulation div,
+  .premium-simulation > div,
   .month-board {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -5978,7 +5979,7 @@ body,
   .candidate-comparison-grid,
   .same-driver-compare,
   .formula-substitution,
-  .premium-simulation div {
+  .premium-simulation > div {
     grid-template-columns: 1fr !important;
   }
 
