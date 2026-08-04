@@ -34,6 +34,9 @@ function initialLocale(): Locale {
 let currentLocale: Locale = initialLocale();
 if (typeof document !== "undefined") {
   document.documentElement.lang = LOCALE_META[currentLocale].htmlLang;
+  document.title = currentLocale === "ko"
+    ? "MASIL · 시니어 생활권 기반 보험 설계"
+    : "MASIL · Senior MASIL Zone Insurance Design";
 }
 
 export function getLocale(): Locale {
@@ -49,6 +52,10 @@ export function setLocale(locale: Locale): void {
   }
   if (typeof document !== "undefined") {
     document.documentElement.lang = LOCALE_META[locale].htmlLang;
+    // 탭 제목도 로케일을 따른다 — 심사위원이 QR로 열었을 때 한글 탭이 뜨지 않도록.
+    document.title = locale === "ko"
+      ? "MASIL · 시니어 생활권 기반 보험 설계"
+      : "MASIL · Senior MASIL Zone Insurance Design";
   }
 }
 
