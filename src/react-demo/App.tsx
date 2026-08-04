@@ -1525,7 +1525,8 @@ function FormulaSubstitution({ driver, selectedRow, rules }: { driver: DriverAnn
         <div>
           <span>{t("기존 마일리지")}</span>
           <strong>{percent(comparison.existing_discount_rate_pct)}</strong>
-          <small>{translateText(comparison.existing_matched_tier_label)}</small>
+          {/* 어댑터의 한국어 데이터 문자열 대신 i18n 템플릿으로 렌더 — EN 화면 한글 잔존 방지 */}
+          <small>{tf("기존 마일리지 기준 {rate}%", { rate: numberFormatter.format(comparison.existing_discount_rate_pct) })}</small>
         </div>
         <ArrowRight size={18} />
         <div>

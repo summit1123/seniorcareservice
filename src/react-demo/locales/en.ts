@@ -15,6 +15,7 @@ const dict: Record<string, string> = {
   "지표별 영향 분해 · {month}": "Per-metric impact breakdown · {month}",
   "설명가능 AI(XAI) + 직원용 리포트": "Explainable AI (XAI) + staff report",
   "설명가능 AI(XAI)가 4개 지표의 영향을 추출하면 LLM이 직원용 설명문으로 바꿉니다. 보험료·인수·케어는 사람이 최종 결정합니다.": "Explainable AI (XAI) extracts each of the four metrics' influence, then an LLM turns it into a staff-facing explanation. Premium, underwriting, and care are decided by a human.",
+  "안정 구간은 환경 밀도에 비례해 이동합니다 — 표의 과병합 0% 구간으로 환경별 안정 상한을 확인하세요(과병합 판정은 설계상 한 생활권인 근접 거점 쌍을 제외한, 환경별 생활권 반경 이상 떨어진 거점 쌍 기준)": "The stable band shifts with environment density — read each environment's safe upper bound from the 0% over-merge range in the table (over-merge is judged on hub pairs farther apart than the environment's zone radius, excluding nearby pairs that are one zone by design)",
   "방문이벤트 기반 실측에서 eps 150~500m가 안정 구간 — 하한 절벽(과소·흔들림), 상한 절벽(800m~ 과병합) 확인": "In visit-event measurements, eps 150–500m is the stable band — a lower cliff (under-clustering, jitter) and an upper cliff (over-merge from 800m+) are confirmed",
   "기존 마일리지 기준 {rate}%": "Existing mileage tariff {rate}%",
   "위험 가설": "Risk hypothesis",
