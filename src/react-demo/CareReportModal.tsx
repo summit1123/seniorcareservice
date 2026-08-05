@@ -266,13 +266,34 @@ export function CareReportModal({
     .filter(([, count]) => count > 0)
     .sort((a, b) => b[1] - a[1]);
   const signed = (v: number) => (v >= 0 ? "+" : "") + numberFmt.format(v);
-  const careStatus = report.verdict.care_axis === "Care Review" ? "watch" : (report.verdict.favorable_axis || "").toLowerCase() === "hold" ? "hold" : "ok";
+  // 고객 화면은 4갈래다 — 케어/보류/우대/기본. '기본'을 '우대'와 같은 화면으로 묶으면
+  // 우대가 아닌 달에 "우대 혜택에 반영된다"고 말하게 되고, 위험 신호가 있는 달에도
+  // "안심하셔도 좋아요"가 떠서 바로 아래 목록과 모순된다(2026-08-04 발견).
+  const favorableAxis = (report.verdict.favorable_axis || "").toLowerCase();
+  const hasRiskSignals = riskTypeChips.length > 0;
+  const careStatus =
+    report.verdict.care_axis === "Care Review" ? "watch"
+      : favorableAxis === "hold" ? "hold"
+        : favorableAxis === "reward" ? "ok"
+          : "steady";
   const familyName = report.driver.name_ko.replace(/\s*\(.*\)\s*$/, "");
+  const selfHeadline =
+    careStatus === "watch" ? t("한 번 살펴봐 주세요")
+      : careStatus === "hold" ? t("데이터가 부족했어요")
+        : careStatus === "ok"
+          ? (hasRiskSignals ? t("대체로 안정적이에요") : t("안심하셔도 좋아요"))
+          : (hasRiskSignals ? t("몇 가지만 살펴보면 좋겠어요") : t("기준 범위 안에서 운전하셨어요"));
   const selfBody = careStatus === "watch"
     ? tf("{month}에는 평소보다 먼 외출과 새로운 경로 운전이 늘었어요. 벌점이나 보험료 불이익은 없어요 — 안전하게 다니실 수 있도록 아래 지원을 준비했어요.", { month: report.report_month })
     : careStatus === "hold"
       ? t("이번 달은 수집된 데이터가 부족해 평가를 쉬어가요. 불이익은 없어요.")
-      : tf("{month}에는 익숙한 생활권에서 안정적으로 운전하셨어요. 이 기록은 우대 혜택 산정에 그대로 반영돼요.", { month: report.report_month });
+      : careStatus === "ok"
+        ? (hasRiskSignals
+          ? tf("{month}에는 익숙한 생활권에서 안정적으로 운전하셨고, 이 기록은 우대 혜택 산정에 반영돼요. 아래 몇 가지는 참고만 해주세요.", { month: report.report_month })
+          : tf("{month}에는 익숙한 생활권에서 안정적으로 운전하셨어요. 이 기록은 우대 혜택 산정에 그대로 반영돼요.", { month: report.report_month }))
+        : (hasRiskSignals
+          ? tf("{month}은 기준 범위 안이라 보험료 불이익은 없어요. 다만 아래 신호는 한 번 살펴보시면 좋겠어요.", { month: report.report_month })
+          : tf("{month}은 기준 범위 안에서 운전하셨어요. 보험료 불이익은 없고, 우대 기준까지는 조금 더 필요해요.", { month: report.report_month }));
     const reportNo = `CR-${driver.customer_id.replace(/[^a-z0-9]/gi, "").toUpperCase()}-${report.report_month.replace("-", "")}`;
 
   return (
@@ -541,7 +562,7 @@ export function CareReportModal({
                     <div className={`fam-status ${careStatus}`}>
                       <span>{tf("{name} 님, 이번 달 나의 운전", { name: familyName })}</span>
                       <strong>
-                        {careStatus === "watch" ? t("한 번 살펴봐 주세요") : careStatus === "hold" ? t("데이터가 부족했어요") : t("안심하셔도 좋아요")}
+                        {selfHeadline}
                       </strong>
                       <p>{selfBody}</p>
                     </div>

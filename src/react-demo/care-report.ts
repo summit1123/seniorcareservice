@@ -276,7 +276,10 @@ export function buildLocalCareReport(
       environment_ko: driver.environment_display_name_ko ?? driver.environment_id ?? ""
     },
     verdict: {
-      favorable_axis: stateKo(driver.reward_state, "Neutral"),
+      // 이 리포트는 '이번 달' 리포트다 — 연간 우대 상태를 쓰면 우대가 아닌 달에도
+      // 고객 화면이 "우대 혜택에 반영됩니다"라고 말하게 되고, 같은 화면의 스태프
+      // 헤드라인(선택 월 기준)과 서로 다른 답을 내놓는다. 두 축 모두 선택 월 기준으로 맞춘다.
+      favorable_axis: stateKo(selected.reward_state ?? driver.reward_state, "Neutral"),
       care_axis: stateKo(selected.care_state, "None"),
       integrated_score: integrated,
       headline_ko: headline,

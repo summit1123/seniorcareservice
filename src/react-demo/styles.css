@@ -7573,6 +7573,9 @@ h1, h2, h3 { letter-spacing: -0.014em; }
 }
 .fam-status.watch { background: var(--app-warn-soft); }
 .fam-status.hold { background: var(--app-hold-soft); }
+/* 기본(우대 아님) — 긍정 초록과 구분되는 중립 톤 */
+.fam-status.steady { background: var(--app-hold-soft); }
+.fam-status.steady strong { color: var(--app-sub); }
 .fam-status-top { display: flex; align-items: center; gap: 11px; }
 .fam-avatar {
   flex: none;
