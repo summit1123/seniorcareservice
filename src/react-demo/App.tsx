@@ -1723,7 +1723,7 @@ function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairCompar
             ))}
           </tr>
           <tr>
-            <th>{t("연간 통합점수")}</th>
+            <th>{t("연간 평균 점수")}</th>
             {sides.map((side) => (
               <td key={side.driver_id}>{tf("{n}점", { n: numberFormatter.format(side.integrated_score) })}</td>
             ))}

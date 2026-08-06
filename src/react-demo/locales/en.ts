@@ -751,7 +751,7 @@ const dict: Record<string, string> = {
   "{n}건": "{n}",
   "같은 조건, 다른 행동": "Same conditions, different behavior",
   "{n}점": "{n} pts",
-  "연간 통합점수": "Annual integrated score",
+  "연간 평균 점수": "Annual average score",
   "우대 충족 {met} / {total}개월": "Favorable months met: {met} of {total}",
   "연간 우대는 통합점수 {threshold}점을 넘긴 달이 {required}개월 이상이어야 성립합니다 — 평균이 아니라 달 수입니다.": "Annual Favorable status requires at least {required} months above an integrated score of {threshold} — it counts months, not an average.",
   "연간 우대 성립": "Annual Favorable met",
