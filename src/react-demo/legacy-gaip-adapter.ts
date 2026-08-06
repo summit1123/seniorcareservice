@@ -423,6 +423,11 @@ export function adaptRepresentativePair(bundle: GaipStudioBundle, rules?: Produc
       // 표의 임무는 '생활권 밖에서의 운전이 갈랐다'를 보이는 것이다. 그래서
       // 밖 안전점수 격차를 최우선으로 보고, 밖에 나가는 '정도'는 비슷할수록,
       // 안에서는 둘 다 무난할수록(안 격차가 작을수록) 좋은 대조가 된다.
+      // 쇼케이스로 쓰는 표라 '완벽한 사람'은 대조로 쓰지 않는다 — 위험 0건에
+      // 안전점수 만점이면 합성 대조군(오탐 검증용 유형)이라 현실감이 없다.
+      if (riskCountOf(reward) === 0) continue;
+      if ((reward.metrics.in_zone_safe_score ?? 0) >= 99.5) continue;
+      if ((reward.metrics.out_zone_safe_score ?? 0) >= 99.5) continue;
       const outSafeGap =
         care.metrics.out_zone_safe_score === null || reward.metrics.out_zone_safe_score === null
           ? 0

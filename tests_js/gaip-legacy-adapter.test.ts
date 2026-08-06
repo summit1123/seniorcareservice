@@ -204,8 +204,12 @@ test("representative pair picks the most-alike care/reward contrast deterministi
   assert.equal(pair.other.reward_state, "Reward");
   assert.equal(pair.self.existing_premium_krw, pair.other.existing_premium_krw);
   // 현재 데이터 기준 1위 페어 — 데이터 재생성으로 순위가 정당하게 바뀌면 이 두 줄만 갱신.
-  assert.equal(pair.self.driver_id, "gaip-112");
-  assert.equal(pair.other.driver_id, "gaip-064");
+  assert.equal(pair.self.driver_id, "gaip-106");
+  assert.equal(pair.other.driver_id, "gaip-154");
+  // 쇼케이스 표에 '완벽한 사람'을 세우지 않는다 — 합성 대조군으로 보인다.
+  assert.ok((pair.other.risk_event_count ?? 0) > 0, "우대 쪽 위험행동이 0건이면 안 된다");
+  assert.ok((pair.other.in_zone_safe_score ?? 0) < 99.5, "우대 쪽 안 안전점수가 만점이면 안 된다");
+  assert.ok((pair.other.out_zone_safe_score ?? 0) < 99.5, "우대 쪽 밖 안전점수가 만점이면 안 된다");
   // 표의 임무 — '갈린 지점이 생활권 밖'임이 숫자로 보여야 한다.
   const outGap = Math.abs((pair.other.out_zone_safe_score ?? 0) - (pair.self.out_zone_safe_score ?? 0));
   const inGap = Math.abs((pair.other.in_zone_safe_score ?? 0) - (pair.self.in_zone_safe_score ?? 0));
