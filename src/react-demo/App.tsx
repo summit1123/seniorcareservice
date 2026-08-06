@@ -1608,10 +1608,11 @@ function FormulaSubstitution({ driver, selectedRow, rules }: { driver: DriverAnn
 
 const DEMO_USD_RATE = 1350; // 예시 환율(비교 열람용) — 실제 환율 아님
 
+// 해외 심사 기준 — 달러를 앞에 두고 원화를 괄호로 남긴다(규모 비교가 먼저 읽히게).
 function krwWithUsd(amount: number | null | undefined) {
   if (amount === null || amount === undefined || Number.isNaN(amount)) return "—";
   const usd = amount / DEMO_USD_RATE;
-  return `₩${Math.round(amount).toLocaleString("ko-KR")} (≈$${usd.toLocaleString("en-US", { maximumFractionDigits: 0 })})`;
+  return `$${usd.toLocaleString("en-US", { maximumFractionDigits: 0 })} (₩${Math.round(amount).toLocaleString("ko-KR")})`;
 }
 
 function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
