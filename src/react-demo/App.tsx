@@ -1671,8 +1671,8 @@ function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairCompar
         <strong>{t("같은 조건, 다른 행동")}</strong>
         <span>
           {identical
-            ? tf("기본보험료 {base} · 기존 요율까지 동일 — 기존 제도라면 두 사람의 연 보험료가 같습니다", { base: `${usd(pair.base_premium_krw)} (${won(pair.base_premium_krw)})` })
-            : tf("같은 차종(기본보험료 {base}) · 기존 요율은 서로 다름", { base: `${usd(pair.base_premium_krw)} (${won(pair.base_premium_krw)})` })}
+            ? tf("기본보험료 {base} · 기존 요율까지 동일 — 기존 제도라면 두 사람의 연 보험료가 같습니다", { base: usd(pair.base_premium_krw) })
+            : tf("같은 차종(기본보험료 {base}) · 기존 요율은 서로 다름", { base: usd(pair.base_premium_krw) })}
         </span>
       </div>
       <table>
