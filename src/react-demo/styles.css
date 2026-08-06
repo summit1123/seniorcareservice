@@ -2014,6 +2014,120 @@ p {
   background: var(--blue);
 }
 
+/* 월별 우대 달성 트래커 — 연간 판정이 '달 수'로 정해진다는 걸 보여준다 */
+.monthly-pattern-wrap {
+  display: grid;
+  gap: 14px;
+}
+
+.reward-tracker {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel-soft);
+  padding: 13px 14px;
+}
+
+.reward-tracker-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 11px;
+}
+
+.reward-tracker-head strong {
+  display: block;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.reward-tracker-head span {
+  display: block;
+  margin-top: 3px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 460px;
+}
+
+.reward-tracker-head em {
+  flex: none;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 850;
+  padding: 5px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.reward-tracker-head em.ok { color: var(--green); background: var(--spring-soft); }
+.reward-tracker-head em.short { color: var(--muted); background: var(--panel); border: 1px solid var(--line); }
+
+.reward-tracker-bars {
+  display: block;
+}
+
+.reward-track {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 76px;
+}
+
+.reward-month {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  border-radius: 4px;
+  background: #eef1f6;
+  overflow: hidden;
+}
+
+.reward-month b {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  border-radius: 4px;
+  background: var(--line-strong);
+}
+
+.reward-month.met b { background: var(--green); }
+.reward-month.miss b { background: var(--faint); }
+.reward-month.hold b { background: repeating-linear-gradient(45deg, var(--line-strong) 0 4px, transparent 4px 8px); }
+
+/* 문턱선 — 트랙 높이의 %로 직접 얹는다 */
+.reward-track u {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-bottom: 1px dashed var(--orange);
+  text-decoration: none;
+  font-size: 9.5px;
+  font-weight: 800;
+  color: var(--orange);
+  text-align: right;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.reward-labels {
+  display: flex;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.reward-labels span {
+  flex: 1;
+  text-align: center;
+  font-size: 9.5px;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+
 /* 오버뷰 대표 대조 사례 패널 */
 .representative-pair-panel {
   display: grid;

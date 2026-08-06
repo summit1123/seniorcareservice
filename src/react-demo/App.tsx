@@ -1442,7 +1442,7 @@ function AnalysisTabs({
         ) : null}
 
         {activeTab === "Monthly Pattern" ? (
-          <MonthlyPatternChart rows={rows} selectedMonth={selectedMonth} onSelectMonth={onSelectMonth} />
+          <MonthlyPatternChart rows={rows} selectedMonth={selectedMonth} onSelectMonth={onSelectMonth} rules={rules} />
         ) : null}
 
         {activeTab === "Risk Signals" && driver && selectedRow ? (
@@ -1479,8 +1479,57 @@ function AnalysisTabs({
   );
 }
 
-function MonthlyPatternChart({ rows, selectedMonth, onSelectMonth }: { rows: MonthlyEvidence[]; selectedMonth: number; onSelectMonth: (month: number) => void }) {
+// 연간 우대는 '평균'이 아니라 '넘긴 달의 수'로 정해진다 — 화면에 그 규칙이
+// 없어서 판정 근거가 안 보였다. 문턱선과 달성 카운터를 함께 보여준다.
+function RewardMonthTracker({ rows, rules }: { rows: MonthlyEvidence[]; rules: ProductRules | null }) {
+  const active = rules ?? referenceProductRules;
+  const threshold = active.reward_score_threshold;
+  const required = active.reward_required_months;
+  const evaluation = rows.filter((row) => row.period_role !== "baseline");
+  const scored = evaluation.map((row) => ({
+    row,
+    score: row.monthly_integrated_evidence_score ?? monthlyIntegratedEvidenceScore(row),
+    hold: row.reward_state === "Hold" || row.care_state === "Hold"
+  }));
+  const met = scored.filter((s) => !s.hold && s.score >= threshold).length;
+  const achieved = met >= required;
   return (
+    <div className="reward-tracker">
+      <div className="reward-tracker-head">
+        <div>
+          <strong>{tf("우대 충족 {met} / {total}개월", { met, total: evaluation.length })}</strong>
+          <span>{tf("연간 우대는 통합점수 {threshold}점을 넘긴 달이 {required}개월 이상이어야 성립합니다 — 평균이 아니라 달 수입니다.", { threshold, required })}</span>
+        </div>
+        <em className={achieved ? "ok" : "short"}>
+          {achieved ? t("연간 우대 성립") : tf("{n}개월 부족", { n: required - met })}
+        </em>
+      </div>
+      <div className="reward-tracker-bars">
+        {/* 트랙을 독립 요소로 두어 문턱선을 %로 직접 지정한다 — 라벨 높이 같은
+            바깥 치수를 추정하지 않으므로 선과 막대가 항상 같은 좌표계에 있다. */}
+        <div className="reward-track">
+          {scored.map(({ row, score, hold }) => {
+            const state = hold ? "hold" : score >= threshold ? "met" : "miss";
+            return (
+              <div key={row.service_month} className={`reward-month ${state}`} title={`${row.service_month} · ${numberFormatter.format(score)}`}>
+                <b style={{ height: `${Math.max(2, Math.min(100, score))}%` }} />
+              </div>
+            );
+          })}
+          <u style={{ bottom: `${Math.min(100, threshold)}%` }}>{tf("{threshold}점", { threshold })}</u>
+        </div>
+        <div className="reward-labels">
+          {scored.map(({ row }) => <span key={row.service_month}>{row.service_month.slice(-2)}</span>)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MonthlyPatternChart({ rows, selectedMonth, onSelectMonth, rules }: { rows: MonthlyEvidence[]; selectedMonth: number; onSelectMonth: (month: number) => void; rules: ProductRules | null }) {
+  return (
+    <div className="monthly-pattern-wrap">
+    <RewardMonthTracker rows={rows} rules={rules} />
     <div className="monthly-pattern-chart">
       {rows.map((row) => {
         const meta = interpretationClass(row.dominant_interpretation);
@@ -1499,6 +1548,7 @@ function MonthlyPatternChart({ rows, selectedMonth, onSelectMonth }: { rows: Mon
           </button>
         );
       })}
+    </div>
     </div>
   );
 }
@@ -1606,6 +1656,8 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
 // 받은 실제 시나리오와의 자동 대조. 상대가 없는 시나리오는 표를 그리지 않는다.
 function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairComparison | null; selfTag?: string; otherTag?: string }) {
   if (!pair) return null;
+  // 해외 심사위원 기준 — 표 안은 달러로 읽히게 하고, 원화 기준값은 각주에 남긴다.
+  const usd = (value: number) => `$${Math.round(value / DEMO_USD_RATE).toLocaleString("en-US")}`;
   const won = (value: number) => `₩${Math.round(value).toLocaleString("ko-KR")}`;
   const name = (side: MatchedPairSide) => (getLocale() === "ko" ? side.display_label : side.display_label_en);
   const stateLabel = (side: MatchedPairSide) =>
@@ -1618,8 +1670,8 @@ function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairCompar
         <strong>{t("같은 조건, 다른 행동")}</strong>
         <span>
           {identical
-            ? tf("기본보험료 {base} · 기존 요율까지 동일 — 기존 제도라면 두 사람의 연 보험료가 같습니다", { base: won(pair.base_premium_krw) })
-            : tf("같은 차종(기본보험료 {base}) · 기존 요율은 서로 다름", { base: won(pair.base_premium_krw) })}
+            ? tf("기본보험료 {base} · 기존 요율까지 동일 — 기존 제도라면 두 사람의 연 보험료가 같습니다", { base: `${usd(pair.base_premium_krw)} (${won(pair.base_premium_krw)})` })
+            : tf("같은 차종(기본보험료 {base}) · 기존 요율은 서로 다름", { base: `${usd(pair.base_premium_krw)} (${won(pair.base_premium_krw)})` })}
         </span>
       </div>
       <table>
@@ -1658,13 +1710,13 @@ function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairCompar
           <tr className={identical ? "is-same" : undefined}>
             <th>{identical ? t("기존 마일리지 (동일)") : t("기존 마일리지")}</th>
             {sides.map((side) => (
-              <td key={side.driver_id}>{percent(side.existing_rate_pct)} · {won(side.existing_premium_krw)}</td>
+              <td key={side.driver_id}>{percent(side.existing_rate_pct)} · {usd(side.existing_premium_krw)}</td>
             ))}
           </tr>
           <tr className="is-strong">
             <th>{t("마실 제안")}</th>
             {sides.map((side) => (
-              <td key={side.driver_id}>{percent(side.proposed_rate_pct)} · {won(side.proposed_premium_krw)}</td>
+              <td key={side.driver_id}>{percent(side.proposed_rate_pct)} · {usd(side.proposed_premium_krw)}</td>
             ))}
           </tr>
         </tbody>
