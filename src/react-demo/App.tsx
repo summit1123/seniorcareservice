@@ -1707,6 +1707,26 @@ function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairCompar
               <td key={side.driver_id}>{side.risk_event_count === null ? "—" : tf("{n}건", { n: numberFormatter.format(side.risk_event_count) })}</td>
             ))}
           </tr>
+          {/* 갈린 지점이 '생활권 밖'임을 표에서 보이게 한다 — 총 건수만 두면
+              "위험운전 많이 한 사람이 손해"로 읽히고 생활권이 드러나지 않는다. */}
+          <tr>
+            <th>{t("생활권 안 안전점수")}</th>
+            {sides.map((side) => (
+              <td key={side.driver_id}>{side.in_zone_safe_score === null ? t("관측 없음") : numberFormatter.format(side.in_zone_safe_score)}</td>
+            ))}
+          </tr>
+          <tr className="is-pivot">
+            <th>{t("생활권 밖 안전점수")}</th>
+            {sides.map((side) => (
+              <td key={side.driver_id}>{side.out_zone_safe_score === null ? t("관측 없음") : numberFormatter.format(side.out_zone_safe_score)}</td>
+            ))}
+          </tr>
+          <tr>
+            <th>{t("연간 통합점수")}</th>
+            {sides.map((side) => (
+              <td key={side.driver_id}>{tf("{n}점", { n: numberFormatter.format(side.integrated_score) })}</td>
+            ))}
+          </tr>
           <tr className={identical ? "is-same" : undefined}>
             <th>{identical ? t("기존 마일리지 (동일)") : t("기존 마일리지")}</th>
             {sides.map((side) => (

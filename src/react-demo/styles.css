@@ -2257,6 +2257,12 @@ p {
   background: var(--spring-soft);
 }
 
+/* 갈린 지점 — 생활권 밖 안전점수 */
+.pair-compare tr.is-pivot td {
+  background: var(--spring-soft);
+  font-weight: 800;
+}
+
 .pair-compare tr.is-strong td {
   font-weight: 800;
 }

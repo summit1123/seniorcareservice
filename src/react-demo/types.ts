@@ -185,6 +185,11 @@ export interface MatchedPairSide {
   outer_share_pct: number;
   /** 평가기간 위험행동 실측 건수. 유형별 집계가 없는 시나리오는 null. */
   risk_event_count: number | null;
+  /** 연간 안/밖 안전점수 — 갈린 지점이 '생활권 밖'임을 표에서 보이게 한다. */
+  in_zone_safe_score: number | null;
+  out_zone_safe_score: number | null;
+  /** 연간 4개 지표 가중합(관측된 가중치로 정규화) — 보너스 계산의 입력값. */
+  integrated_score: number;
   care_month_count: number;
   reward_state: string;
   care_state: string;

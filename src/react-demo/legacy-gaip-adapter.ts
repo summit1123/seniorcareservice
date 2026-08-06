@@ -299,6 +299,9 @@ function matchedPairSide(driver: StudioDriver, result: SandboxResult): MatchedPa
     risk_event_count: hasRiskCounts
       ? sum(evaluation.map((month) => sum(Object.values(month.risk_event_type_counts ?? {}))))
       : null,
+    in_zone_safe_score: driver.metrics.in_zone_safe_score === null ? null : round(driver.metrics.in_zone_safe_score, 1),
+    out_zone_safe_score: driver.metrics.out_zone_safe_score === null ? null : round(driver.metrics.out_zone_safe_score, 1),
+    integrated_score: round(result.score, 1),
     care_month_count: result.care_review_month_count,
     reward_state: result.reward_state,
     care_state: result.care_state,
@@ -417,12 +420,23 @@ export function adaptRepresentativePair(bundle: GaipStudioBundle, rules?: Produc
       const distanceGapPct = (Math.abs(care.metrics.annual_distance_km - reward.metrics.annual_distance_km) / maxDistance) * 100;
       const outerGap = Math.abs(outerShareOf(care) - outerShareOf(reward));
       const riskGap = riskCountOf(care) - riskCountOf(reward);
+      // 표의 임무는 '생활권 밖에서의 운전이 갈랐다'를 보이는 것이다. 그래서
+      // 밖 안전점수 격차를 최우선으로 보고, 밖에 나가는 '정도'는 비슷할수록,
+      // 안에서는 둘 다 무난할수록(안 격차가 작을수록) 좋은 대조가 된다.
+      const outSafeGap =
+        care.metrics.out_zone_safe_score === null || reward.metrics.out_zone_safe_score === null
+          ? 0
+          : Math.abs(reward.metrics.out_zone_safe_score - care.metrics.out_zone_safe_score);
+      const inSafeGap =
+        care.metrics.in_zone_safe_score === null || reward.metrics.in_zone_safe_score === null
+          ? 0
+          : Math.abs(reward.metrics.in_zone_safe_score - care.metrics.in_zone_safe_score);
       const score =
         -distanceGapPct * 3 -
         outerGap * 0.5 +
         (care.environment_id === reward.environment_id ? 5 : 0) +
-        (care.age === reward.age ? 3 : 0) +
-        Math.min(riskGap, 200) / 20;
+        outSafeGap / 2 -
+        inSafeGap / 4;
       if (!best || score > best.score) best = { care, reward, score };
     }
   }
