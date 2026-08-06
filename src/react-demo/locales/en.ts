@@ -770,7 +770,7 @@ const dict: Record<string, string> = {
   "위험행동 · 평가 12개월": "Risky events · 12-month evaluation",
   "기존 마일리지 (동일)": "Existing mileage (identical)",
   "마실 제안": "MASIL proposal",
-  "180개 시나리오 중 같은 차종(가능하면 기존 요율까지 동일)의 반대 판정 사례에서 연 주행이 가장 가까운 실측 대조입니다. 요율을 가른 것은 거리·위치가 아니라 행동(위험행동의 동시 변화)입니다.": "Measured contrast: among the 180 scenarios, the opposite-decision case in the same vehicle class (and the same legacy tariff when available) with the closest annual distance. What split the tariff was behavior (co-occurring risky-behavior change), not distance or location.",
+  "180개 시나리오 중 같은 차종·비슷한 연 주행(15%p 이내)·비슷한 생활권 밖 비중(5%p 이내)에서 반대 판정을 받은 실측 대조입니다. 조건이 이만큼 겹치는 상대가 없으면 표를 표시하지 않습니다. 요율을 가른 것은 거리·위치가 아니라 행동입니다.": "Measured contrast: among the 180 scenarios, an opposite-decision case in the same vehicle class with a comparable annual distance (within 15%) and a comparable out-of-zone share (within 5pp). When no counterpart matches this closely, no table is shown. What split the tariff was behavior, not distance or location.",
   "발송 월": "Send month",
   "전달 프로세스": "Delivery process",
   "담당자 승인": "Staff approval",

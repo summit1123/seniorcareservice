@@ -186,9 +186,14 @@ test("matched pair contrasts the same vehicle class and never exceeds the base p
       assert.notEqual(summary.matched_pair.other.driver_id, option.driver_id);
       // 표가 뜨는 쪽은 항상 케어 또는 우대 — 보류·기본 노출 금지 계약.
       assert.ok(self.care_state === "Care Review" || self.reward_state === "Reward", `${self.driver_id} pole violation`);
+      // '같은 조건'이 성립하는 범위 안에서만 표시한다 — 거리 15% · 밖 비중 5%p.
+      const other = summary.matched_pair.other;
+      const distanceGapPct = (Math.abs(other.annual_distance_km - self.annual_distance_km) / Math.max(other.annual_distance_km, self.annual_distance_km, 1)) * 100;
+      assert.ok(distanceGapPct <= 15, `${self.driver_id} distance gap ${distanceGapPct.toFixed(1)}%`);
+      assert.ok(Math.abs(other.outer_share_pct - self.outer_share_pct) <= 5, `${self.driver_id} outer-share gap`);
     }
   }
-  assert.ok(shown >= 80, `matched-pair coverage too low: ${shown}/180`);
+  assert.ok(shown >= 8, `matched-pair coverage too low: ${shown}/180`);
 });
 
 test("representative pair picks the most-alike care/reward contrast deterministically", () => {

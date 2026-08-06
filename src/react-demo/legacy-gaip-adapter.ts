@@ -314,6 +314,8 @@ function matchedPairSide(driver: StudioDriver, result: SandboxResult): MatchedPa
  * 1단계: 기본보험료·기존 마일리지 요율이 모두 같은 반대 판정(케어↔우대) 사례 —
  *        기존 제도에서는 두 사람의 연 보험료가 원 단위까지 같다.
  * 2단계: 기본보험료만 같은(같은 차종) 반대 판정 사례.
+ * 어느 단계든 연 주행거리(≤15% 차)와 생활권 밖 비중(≤5%p 차)이 함께 비슷해야 한다 —
+ * 밖 비중이 벌어진 페어를 보여주면 '결국 위치로 가른 것 아니냐'는 반박을 자초한다.
  * 둘 다 없으면 null — UI는 표를 그리지 않는다. self가 보류·기본이면 '반대
  * 판정' 서사 자체가 성립하지 않으므로 역시 null이다(케어 또는 우대만 대조).
  * 판정·요율은 현재 샌드박스 규칙으로 재계산하므로 심사위원이 가중치를
@@ -333,8 +335,19 @@ function matchedPair(
 
   let bestIdentical: { candidate: StudioDriver; decision: SandboxResult } | null = null;
   let bestSameVehicle: { candidate: StudioDriver; decision: SandboxResult } | null = null;
-  const distanceGap = (candidate: StudioDriver) =>
-    Math.abs(candidate.metrics.annual_distance_km - driver.metrics.annual_distance_km);
+  const selfDistance = driver.metrics.annual_distance_km;
+  const selfOuterShare = mean(evaluationMonths(driver).map((month) => month.outer_visit_share_pct));
+  const distanceGap = (candidate: StudioDriver) => Math.abs(candidate.metrics.annual_distance_km - selfDistance);
+  // '같은 조건'이 성립하는 범위 — 넘으면 대조로 쓰지 않는다.
+  const MAX_DISTANCE_GAP_PCT = 15;
+  const MAX_OUTER_SHARE_GAP_PCT_POINTS = 5;
+  const withinComparableRange = (candidate: StudioDriver) => {
+    const maxDistance = Math.max(candidate.metrics.annual_distance_km, selfDistance, 1);
+    const distanceGapPct = (Math.abs(candidate.metrics.annual_distance_km - selfDistance) / maxDistance) * 100;
+    if (distanceGapPct > MAX_DISTANCE_GAP_PCT) return false;
+    const candidateOuterShare = mean(evaluationMonths(candidate).map((month) => month.outer_visit_share_pct));
+    return Math.abs(candidateOuterShare - selfOuterShare) <= MAX_OUTER_SHARE_GAP_PCT_POINTS;
+  };
 
   for (const candidate of bundle.drivers) {
     if (candidate.id === driver.id) continue;
@@ -345,6 +358,7 @@ function matchedPair(
       ? !candidateIsCare && decision.reward_state === "Reward"
       : candidateIsCare;
     if (!isOpposite) continue;
+    if (!withinComparableRange(candidate)) continue;
     if (candidate.tariff?.korea_mileage_discount_rate_pct === referenceRate) {
       if (!bestIdentical || distanceGap(candidate) < distanceGap(bestIdentical.candidate)) {
         bestIdentical = { candidate, decision };
