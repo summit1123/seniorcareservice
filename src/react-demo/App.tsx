@@ -1176,9 +1176,12 @@ function DecisionSummaryCard({
 
       <div className="summary-decision-stack">
         {(() => {
-          const collapsed = driver.reward_state === "Hold" || driver.care_state === "Hold"
-            ? { label: t("판단 보류"), className: reward.className }
-            : { label: stateLabelKo(driver.reward_state ?? "Neutral"), className: reward.className };
+          // 케어는 등급이 아니라 월간 검토 상태다 — 연간 판정 자리에는 연간 점수를 쓴다.
+          const collapsed = driver.care_state === "Care Review"
+            ? { label: tf("{score}점", { score: numberFormatter.format(driver.ab_comparison.annual_senior_safe_mileage_score) }), className: "care" }
+            : driver.reward_state === "Hold" || driver.care_state === "Hold"
+              ? { label: t("판단 보류"), className: reward.className }
+              : { label: stateLabelKo(driver.reward_state ?? "Neutral"), className: reward.className };
           return (
         <div className={`risk-score-block ${collapsed.className}`}>
           <span>{t("연간 판정")}</span>
@@ -1659,8 +1662,8 @@ function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairCompar
   const usd = (value: number) => `$${Math.round(value / DEMO_USD_RATE).toLocaleString("en-US")}`;
   const won = (value: number) => `₩${Math.round(value).toLocaleString("ko-KR")}`;
   const name = (side: MatchedPairSide) => (getLocale() === "ko" ? side.display_label : side.display_label_en);
-  // 연간 판정은 우대 축만 말한다 — 케어는 등급이 아니라 월간 검토 상태다.
-  const stateLabel = (side: MatchedPairSide) => stateLabelKo(side.reward_state);
+  const stateLabel = (side: MatchedPairSide) =>
+    side.care_state === "Care Review" ? t("케어 검토") : stateLabelKo(side.reward_state);
   const identical = pair.match_tier === "identical";
   const sides = [pair.self, pair.other];
   return (
@@ -1685,7 +1688,7 @@ function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairCompar
           <tr>
             <th>{t("연간 판정")}</th>
             {sides.map((side) => (
-              <td key={side.driver_id} className={side.reward_state === "Reward" ? "is-good" : undefined}>{stateLabel(side)}</td>
+              <td key={side.driver_id} className={side.care_state === "Care Review" ? "is-care" : side.reward_state === "Reward" ? "is-good" : undefined}>{stateLabel(side)}</td>
             ))}
           </tr>
           <tr>
@@ -1788,11 +1791,16 @@ function DecisionPanel({
       <div className="decision-panel-head">
         <p className="eyebrow">{t("사람 검토")}</p>
         <h2>{t("검토 제안")}</h2>
-        <em className={`decision ${decision.className}`} title={t("연간 판정")}>
+        <em
+          className={`decision ${driver.care_state === "Care Review" ? "care" : decision.className}`}
+          title={t("연간 판정")}
+        >
           {tf("연간 {state}", {
-            state: driver.reward_state === "Hold" || driver.care_state === "Hold"
-              ? t("판단 보류")
-              : stateLabelKo(driver.reward_state ?? "Neutral")
+            state: driver.care_state === "Care Review"
+              ? tf("{score}점", { score: numberFormatter.format(comparison.annual_senior_safe_mileage_score) })
+              : driver.reward_state === "Hold" || driver.care_state === "Hold"
+                ? t("판단 보류")
+                : stateLabelKo(driver.reward_state ?? "Neutral")
           })}
         </em>
       </div>
