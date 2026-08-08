@@ -70,7 +70,7 @@ const reasonLabels: Record<string, string> = {
   REWARD_REQUIRED_MONTHS_MET: "우대 충족월 기준 통과",
   REWARD_REQUIRED_MONTHS_NOT_MET: "우대 충족월 기준 미달",
   SAME_MONTH_CARE_GATE_MET: "같은 달 이동·위험행동 동시변화",
-  REWARD_BONUS_SUSPENDED_PENDING_CARE_REVIEW: "케어 검토 중 우대 보너스 미지급",
+  REWARD_BONUS_SUSPENDED_PENDING_CARE_REVIEW: "케어 검토 중 우대 보너스 유예",
   SAME_MONTH_CARE_GATE_NOT_MET: "동시변화 게이트 미충족",
   CANDIDATE_LIVING_ZONE: "후보 생활권 관찰",
   HARSH_BRAKE_INCREASE: "급감속 증가",
@@ -712,7 +712,7 @@ function ScenarioControlPanel({
         <div className="sandbox-threshold-grid">
           <RuleNumber label={t("이동 변화 임계")} helper={t("기준선 대비 생활권 밖 비중 상승폭이 이 값을 넘어야 케어 후보")} value={rules.care_mobility_change_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_mobility_change_threshold", value)} />
           <RuleNumber label={t("위험행동 변화 임계")} helper={t("기준선 대비 위험행동 상승폭 — 이동 변화와 함께 넘어야 케어")} value={rules.care_risky_behavior_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_risky_behavior_threshold", value)} />
-          <div className="rule-static" title={t("케어 검토 중 우대 보너스 미지급")}>
+          <div className="rule-static" title={t("케어 검토 중 우대 보너스 유예")}>
             <span>{t("케어 결합 규칙 (선언값)")}</span>
             <strong>{t("우대 보너스 유예")}</strong>
             <small>{tf("케어는 검토·지원 축입니다. 요율 후보 계산에 들어간 감액 {n}%p는 시연용 파라미터이며 확정 요율이 아닙니다 — 최종 적용은 사람 검토가 결정", { n: numberFormatter.format(rules.care_discount_reduction_pct ?? 13) })}</small>
@@ -1190,7 +1190,8 @@ function DecisionSummaryCard({
           <small className="axis-note">
             {(() => {
               const careMonthCount = rows.filter((row) => row.care_state === "Care Review").length;
-              if (careMonthCount > 0 && reward.label !== "Reward") {
+              // reward.label은 번역된 값이라 영문 리터럴과 비교하면 항상 참이 된다 — 상태값으로 비교한다.
+              if (careMonthCount > 0 && driver.reward_state !== "Reward") {
                 return tf("동시변화로 케어 검토가 {n}개월 발생 — 사람이 검토하고 예방 지원으로 연결합니다", { n: careMonthCount });
               }
               return careMonthCount > 0
