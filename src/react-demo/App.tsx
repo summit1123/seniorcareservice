@@ -1104,11 +1104,14 @@ function CaseRail({
                       ["Reward", "good", t("우대")],
                       ["Neutral", "base", t("기본")]
                     ];
-                    return order
-                      .filter(([state]) => (counts.get(state) ?? 0) > 0)
-                      .map(([state, cls, label]) => (
-                        <i key={state} className={`state-inline ${cls}`}>{label}{counts.get(state)}</i>
-                      ));
+                    const present = order.filter(([state]) => (counts.get(state) ?? 0) > 0);
+                    const uniform = present.length === 1 && group.length > 1;
+                    return present.map(([state, cls, label]) => (
+                      <i key={state} className={`state-inline ${cls}`}>
+                        {label}
+                        {uniform ? t(" · 환경 무관 동일") : ` ${counts.get(state)}`}
+                      </i>
+                    ));
                   })()}
                 </small>
               </span>
@@ -1190,10 +1193,10 @@ function DecisionSummaryCard({
             {(() => {
               const careMonthCount = rows.filter((row) => row.care_state === "Care Review").length;
               if (careMonthCount > 0 && reward.label !== "Reward") {
-                return tf("동시변화로 케어 검토가 {n}개월 발생한 해 — 그 달들은 우대 보너스가 정지되어 할인율이 기존보다 낮습니다", { n: careMonthCount });
+                return tf("동시변화로 케어 검토가 {n}개월 발생 — 그해 할인이 축소됩니다. 보험료가 기준 보험료를 넘지는 않습니다", { n: careMonthCount });
               }
               return careMonthCount > 0
-                ? tf("케어 검토 {n}개월 발생 — 나머지 달의 우대 요건은 충족", { n: careMonthCount })
+                ? tf("우대 요건은 충족했으나 케어 검토 {n}개월로 그해 보너스가 유예되고 할인이 축소됩니다", { n: careMonthCount })
                 : t("케어 검토 발생 없음 — 안정 주행 기반 할인");
             })()}
           </small>
@@ -1818,7 +1821,7 @@ function DecisionPanel({
           <span>{t("제안 − 기존 할인율 차이")}</span>
           <strong>{signedPercentPoint(rateDelta)}</strong>
           <small>{driver.care_state === "Care Review"
-            ? t("케어 검토가 열린 해에는 우대 보너스가 지급되지 않고 연간 할인이 13%p 줄어듭니다. 할증이 아니라 할인 축소이며 하한은 기준 요율입니다. 최종 적용은 사람 검토가 결정합니다.")
+            ? tf("케어 검토가 열린 해에는 연간 할인이 {pct}%p 축소됩니다. 할증이 아니라 할인 축소이며, 보험료는 기준 보험료를 넘지 않습니다. 최종 적용은 사람 검토가 결정합니다.", { pct: Math.abs(rateDelta).toFixed(1) })
             : t("후보 민감도 · 확정 요율 아님")}</small>
         </div>
       </div>
