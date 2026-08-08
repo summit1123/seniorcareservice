@@ -1109,7 +1109,7 @@ function CaseRail({
                     return present.map(([state, cls, label]) => (
                       <i key={state} className={`state-inline ${cls}`}>
                         {label}
-                        {uniform ? t(" · 환경 무관 동일") : ` ${counts.get(state)}`}
+                        {uniform ? "" : ` ${counts.get(state)}`}
                       </i>
                     ));
                   })()}
