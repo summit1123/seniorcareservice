@@ -616,7 +616,7 @@ const dict: Record<string, string> = {
   "케어 검토가 발생한 달이 자동 선택됩니다 — 다른 달을 누르면 위 요약·지도·근거가 그 달 기준으로 바뀝니다.": "The month with a Care review is auto-selected — click another month and the summary, map, and evidence above switch to it.",
   "평가 제외": "Not scored",
   "케어 검토 중 우대 보너스 미지급": "Favorable bonus withheld pending Care review",
-  "케어 검토가 열린 해에는 연간 할인이 {pct}%p 축소됩니다. 할증이 아니라 할인 축소이며, 보험료는 기준 보험료를 넘지 않습니다. 최종 적용은 사람 검토가 결정합니다.": "In a year with an open Care review the annual discount narrows by {pct}%p. A smaller discount, not a surcharge — the premium never exceeds the base premium. Final application is decided by human review.",
+  "케어 검토 중에는 우대 보너스가 유예됩니다. 손익 시연용 후보값이며 확정 요율이 아닙니다 — 최종 적용은 사람 검토가 결정합니다.": "The Favorable bonus is on hold while a Care review is open. An illustrative sandbox figure, not a final tariff — final application is decided by human review.",
   "판정(우대·케어)은 독립 계산합니다. 요율 후보 결합 시 케어 검토 중에는 우대 지급이 유예됩니다. 케어는 같은 달 이동 변화와 위험행동 변화가 모두 있을 때만 검토를 제안합니다.": "The judgments (Favorable · Care) are computed independently. When combined into the rate candidate, the Favorable payout is suspended while a Care review is open. Care is proposed only when mobility change and risky-behavior change occur in the same month.",
   "케어 결합 규칙 (선언값)": "Care coupling rule (declared)",
   "우대 보너스 미지급 + 연간 할인 {n}%p 축소": "Favorable bonus withheld + annual discount narrowed by {n}%p",
@@ -885,9 +885,9 @@ const dict: Record<string, string> = {
   "연간 · 케어 축: 검토 {n}개월 발생 — 우대 요건은 그와 별개로 충족": "Annual · Care axis: fired in {n} months — favorable requirements met independently",
   "우대 축(보험료): {state} · 후보점수 {score}점": "Favorable axis (premium): {state} · candidate score {score}",
   "연간 할인율 {rate}% · 기존 마일리지 {existing}%": "Annual discount {rate}% · existing mileage {existing}%",
-  "동시변화로 케어 검토가 {n}개월 발생 — 그해 할인이 축소됩니다. 보험료가 기준 보험료를 넘지는 않습니다": "{n} care-review month(s) from co-change — the discount narrows for that year. The premium still never exceeds the base premium",
+  "동시변화로 케어 검토가 {n}개월 발생 — 사람이 검토하고 예방 지원으로 연결합니다": "{n} care-review month(s) from co-change — a person reviews it and connects the driver to preventive support",
   " · 환경 무관 동일": " · same in all environments",
-  "우대 요건은 충족했으나 케어 검토 {n}개월로 그해 보너스가 유예되고 할인이 축소됩니다": "Favorable criteria met, but {n} care-review month(s) pause the bonus for the year and narrow the discount",
+  "우대 요건은 충족했으나 케어 검토 {n}개월로 그해 보너스가 유예됩니다": "Favorable criteria met, but {n} care-review month(s) put the bonus on hold for the year",
   "케어 검토 발생 없음 — 안정 주행 기반 할인": "No care review fired — discount based on stable driving",
 };
 

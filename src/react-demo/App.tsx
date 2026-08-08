@@ -1193,10 +1193,10 @@ function DecisionSummaryCard({
             {(() => {
               const careMonthCount = rows.filter((row) => row.care_state === "Care Review").length;
               if (careMonthCount > 0 && reward.label !== "Reward") {
-                return tf("동시변화로 케어 검토가 {n}개월 발생 — 그해 할인이 축소됩니다. 보험료가 기준 보험료를 넘지는 않습니다", { n: careMonthCount });
+                return tf("동시변화로 케어 검토가 {n}개월 발생 — 사람이 검토하고 예방 지원으로 연결합니다", { n: careMonthCount });
               }
               return careMonthCount > 0
-                ? tf("우대 요건은 충족했으나 케어 검토 {n}개월로 그해 보너스가 유예되고 할인이 축소됩니다", { n: careMonthCount })
+                ? tf("우대 요건은 충족했으나 케어 검토 {n}개월로 그해 보너스가 유예됩니다", { n: careMonthCount })
                 : t("케어 검토 발생 없음 — 안정 주행 기반 할인");
             })()}
           </small>
@@ -1821,7 +1821,7 @@ function DecisionPanel({
           <span>{t("제안 − 기존 할인율 차이")}</span>
           <strong>{signedPercentPoint(rateDelta)}</strong>
           <small>{driver.care_state === "Care Review"
-            ? tf("케어 검토가 열린 해에는 연간 할인이 {pct}%p 축소됩니다. 할증이 아니라 할인 축소이며, 보험료는 기준 보험료를 넘지 않습니다. 최종 적용은 사람 검토가 결정합니다.", { pct: Math.abs(rateDelta).toFixed(1) })
+            ? t("케어 검토 중에는 우대 보너스가 유예됩니다. 손익 시연용 후보값이며 확정 요율이 아닙니다 — 최종 적용은 사람 검토가 결정합니다.")
             : t("후보 민감도 · 확정 요율 아님")}</small>
         </div>
       </div>
