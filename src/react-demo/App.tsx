@@ -70,7 +70,7 @@ const reasonLabels: Record<string, string> = {
   REWARD_REQUIRED_MONTHS_MET: "우대 충족월 기준 통과",
   REWARD_REQUIRED_MONTHS_NOT_MET: "우대 충족월 기준 미달",
   SAME_MONTH_CARE_GATE_MET: "같은 달 이동·위험행동 동시변화",
-  REWARD_BONUS_SUSPENDED_PENDING_CARE_REVIEW: "케어 검토 중 우대 보너스 유예",
+  REWARD_BONUS_SUSPENDED_PENDING_CARE_REVIEW: "케어 검토 진행 중",
   SAME_MONTH_CARE_GATE_NOT_MET: "동시변화 게이트 미충족",
   CANDIDATE_LIVING_ZONE: "후보 생활권 관찰",
   HARSH_BRAKE_INCREASE: "급감속 증가",
@@ -712,10 +712,10 @@ function ScenarioControlPanel({
         <div className="sandbox-threshold-grid">
           <RuleNumber label={t("이동 변화 임계")} helper={t("기준선 대비 생활권 밖 비중 상승폭이 이 값을 넘어야 케어 후보")} value={rules.care_mobility_change_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_mobility_change_threshold", value)} />
           <RuleNumber label={t("위험행동 변화 임계")} helper={t("기준선 대비 위험행동 상승폭 — 이동 변화와 함께 넘어야 케어")} value={rules.care_risky_behavior_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_risky_behavior_threshold", value)} />
-          <div className="rule-static" title={t("케어 검토 중 우대 보너스 유예")}>
+          <div className="rule-static" title={t("케어 검토 진행 중")}>
             <span>{t("케어 결합 규칙 (선언값)")}</span>
-            <strong>{t("우대 보너스 유예")}</strong>
-            <small>{tf("케어는 검토·지원 축입니다. 요율 후보 계산에 들어간 감액 {n}%p는 시연용 파라미터이며 확정 요율이 아닙니다 — 최종 적용은 사람 검토가 결정", { n: numberFormatter.format(rules.care_discount_reduction_pct ?? 13) })}</small>
+            <strong>{t("사람 검토로 연결")}</strong>
+            <small>{t("케어는 요율 축이 아니라 검토·지원 축입니다 — 감지되면 사람이 검토하고 예방 지원으로 연결합니다")}</small>
           </div>
         </div>
       </div>
@@ -1195,7 +1195,7 @@ function DecisionSummaryCard({
                 return tf("동시변화로 케어 검토가 {n}개월 발생 — 사람이 검토하고 예방 지원으로 연결합니다", { n: careMonthCount });
               }
               return careMonthCount > 0
-                ? tf("우대 요건은 충족했으나 케어 검토 {n}개월로 그해 보너스가 유예됩니다", { n: careMonthCount })
+                ? tf("우대 요건 충족 · 케어 검토 {n}개월 발생 — 사람이 검토하고 예방 지원으로 연결합니다", { n: careMonthCount })
                 : t("케어 검토 발생 없음 — 안정 주행 기반 할인");
             })()}
           </small>
@@ -1644,7 +1644,7 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
         {rateDelta > 0.05
           ? tf("고객 이득 — 기존 대비 연간 할인 {pct}%p 확대, 연 {amount} 절감", { pct: Math.abs(rateDelta).toFixed(1), amount: krwWithUsd(Math.abs(premiumDelta)) })
           : rateDelta < -0.05
-            ? tf("케어 검토 중 — 우대 보너스가 유예됩니다(연 {amount} 차이). 손익 시연용 후보값이며 확정 요율이 아닙니다.", { amount: krwWithUsd(Math.abs(premiumDelta)) })
+            ? t("후보 민감도 · 확정 요율 아님")
             : t("기존 기준과 동일한 수준입니다")}
       </p>
       <MatchedPairTable pair={driver.matched_pair ?? null} />
@@ -1819,9 +1819,7 @@ function DecisionPanel({
         <div className="money-delta">
           <span>{t("제안 − 기존 할인율 차이")}</span>
           <strong>{signedPercentPoint(rateDelta)}</strong>
-          <small>{driver.care_state === "Care Review"
-            ? t("케어 검토 중에는 우대 보너스가 유예됩니다. 손익 시연용 후보값이며 확정 요율이 아닙니다 — 최종 적용은 사람 검토가 결정합니다.")
-            : t("후보 민감도 · 확정 요율 아님")}</small>
+          <small>{t("후보 민감도 · 확정 요율 아님")}</small>
         </div>
       </div>
 
