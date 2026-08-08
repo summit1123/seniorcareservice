@@ -714,8 +714,8 @@ function ScenarioControlPanel({
           <RuleNumber label={t("위험행동 변화 임계")} helper={t("기준선 대비 위험행동 상승폭 — 이동 변화와 함께 넘어야 케어")} value={rules.care_risky_behavior_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_risky_behavior_threshold", value)} />
           <div className="rule-static" title={t("케어 검토 중 우대 보너스 미지급")}>
             <span>{t("케어 결합 규칙 (선언값)")}</span>
-            <strong>{tf("우대 보너스 미지급 + 연간 할인 {n}%p 축소", { n: numberFormatter.format(rules.care_discount_reduction_pct ?? 13) })}</strong>
-            <small>{t("숨은 상수가 아니라 선언된 규칙 — 최종 적용은 사람 검토가 결정")}</small>
+            <strong>{t("우대 보너스 유예")}</strong>
+            <small>{tf("케어는 검토·지원 축입니다. 요율 후보 계산에 들어간 감액 {n}%p는 시연용 파라미터이며 확정 요율이 아닙니다 — 최종 적용은 사람 검토가 결정", { n: numberFormatter.format(rules.care_discount_reduction_pct ?? 13) })}</small>
           </div>
         </div>
       </div>
@@ -1645,7 +1645,7 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
         {rateDelta > 0.05
           ? tf("고객 이득 — 기존 대비 연간 할인 {pct}%p 확대, 연 {amount} 절감", { pct: Math.abs(rateDelta).toFixed(1), amount: krwWithUsd(Math.abs(premiumDelta)) })
           : rateDelta < -0.05
-            ? tf("위험 정합 — 케어 검토가 열린 해에는 우대 보너스가 지급되지 않고 연간 할인이 {pct}%p 줄어듭니다(연 {amount} 차이). 할증이 아니라 할인 축소이며, 보험료는 기준 보험료를 넘지 않습니다.", { pct: Math.abs(rateDelta).toFixed(1), amount: krwWithUsd(Math.abs(premiumDelta)) })
+            ? tf("케어 검토 중 — 우대 보너스가 유예됩니다(연 {amount} 차이). 손익 시연용 후보값이며 확정 요율이 아닙니다.", { amount: krwWithUsd(Math.abs(premiumDelta)) })
             : t("기존 기준과 동일한 수준입니다")}
       </p>
       <MatchedPairTable pair={driver.matched_pair ?? null} />
