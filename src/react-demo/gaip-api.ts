@@ -352,11 +352,23 @@ function normalizeDrivers(root: JsonRecord, personas: PersonaType[], environment
     const id = text(first(item, ["id", "driver_id", "customer_id"]), `synthetic-driver-${String(index + 1).padStart(3, "0")}`);
     const hubs = normalizeHubs(mobility);
     const monthlyResults = normalizeMonthlyResults(item);
-    const driverNameKo = text(first(item, ["driver_name_ko"])) || undefined;
-    const driverNameEn = text(first(item, ["driver_name_en"])) || undefined;
+    const sourceDriverNameEn = text(first(item, ["driver_name_en"])) || undefined;
+    const presentationProfile = sourceDriverNameEn === "Edward Clark"
+      ? { name: "Jackie Chan", birthYear: 1954 }
+      : sourceDriverNameEn === "Frank Wilson"
+        ? { name: "Tom Hanks", birthYear: 1956 }
+        : null;
+    const driverNameKo = presentationProfile?.name ?? (text(first(item, ["driver_name_ko"])) || undefined);
+    const driverNameEn = presentationProfile?.name ?? sourceDriverNameEn;
     const driverAge = nullableNumber(first(item, ["age"])) ?? undefined;
     // Display shows birth year, not age (evaluation year is 2026 in the sim calendar).
-    const birthYear = nullableNumber(first(item, ["birth_year"])) ?? (driverAge !== undefined ? 2026 - driverAge : undefined);
+    const birthYear = presentationProfile?.birthYear
+      ?? nullableNumber(first(item, ["birth_year"]))
+      ?? (driverAge !== undefined ? 2026 - driverAge : undefined);
+    const mobilityProfile = normalizeMobilityProfile(item);
+    if (presentationProfile && sourceDriverNameEn && mobilityProfile?.reasoning_en) {
+      mobilityProfile.reasoning_en = mobilityProfile.reasoning_en.replaceAll(sourceDriverNameEn, presentationProfile.name);
+    }
 
     const monthlyReasonCodes = array(item.monthly_results)
       .filter(isRecord)
@@ -371,14 +383,15 @@ function normalizeDrivers(root: JsonRecord, personas: PersonaType[], environment
       id,
       display_label: text(
         first(item, ["display_label", "display_name", "label"]),
-        driverNameKo && birthYear !== undefined
-          ? `${driverNameKo} (${birthYear}년생)`
+        driverNameKo
+          ? driverNameKo
           : `합성 운전자 ${String(index + 1).padStart(2, "0")}`
       ),
       driver_name_ko: driverNameKo,
       driver_name_en: driverNameEn,
       // English display label — romanized name for non-Korean locales.
-      display_label_en: driverNameEn && birthYear !== undefined ? `${driverNameEn} (b. ${birthYear})` : undefined,
+      display_label_en: driverNameEn,
+      birth_year: birthYear,
       age: driverAge,
       persona_id: personaId,
       persona_label: text(first(item, ["persona_label", "persona_display_name_ko"]), personas.find((persona) => persona.id === personaId)?.label ?? personaLabel(personaId)),
@@ -405,7 +418,7 @@ function normalizeDrivers(root: JsonRecord, personas: PersonaType[], environment
         noise_ratio_pct: noiseRatio === undefined ? undefined : number(noiseRatio, 0),
         note: text(first(mobility, ["note", "explanation"])) || undefined
       },
-      mobility_profile: normalizeMobilityProfile(item),
+      mobility_profile: mobilityProfile,
       monthly_results: monthlyResults,
       tariff: Object.keys(tariff).length
         ? {

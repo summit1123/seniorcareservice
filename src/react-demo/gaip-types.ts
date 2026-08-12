@@ -168,6 +168,8 @@ export interface StudioDriver {
   /** Synthetic Korean person name (실존 인물 아님). */
   driver_name_ko?: string;
   driver_name_en?: string;
+  /** Presentation-only synthetic birth year. Kept separate from the display name. */
+  birth_year?: number;
   /** Synthetic age (66-84). */
   age?: number;
   persona_id: string;

@@ -63,6 +63,7 @@ export interface DriverOption {
   label: string;
   /** Romanized label for non-Korean locales. */
   label_en?: string;
+  birth_year?: number;
   persona_type: string;
   annual_decision_signal: DecisionSignal;
   existing_matched_tier_label: string;
@@ -180,6 +181,7 @@ export interface MatchedPairSide {
   driver_id: string;
   display_label: string;
   display_label_en: string;
+  birth_year?: number;
   persona_label: string;
   annual_distance_km: number;
   outer_share_pct: number;

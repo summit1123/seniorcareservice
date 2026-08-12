@@ -1064,6 +1064,7 @@ function CaseRail({
       <div className="rail-heading">
         <p className="eyebrow">{t("가상 사례")}</p>
         <h2>{tf("{count}명 · 환경 3종 시나리오", { count: personMap.size })}</h2>
+        <small>{t("표시 이름은 합성 시나리오를 위한 발표용 가명입니다")}</small>
       </div>
       <label className="search-box">
         <Search size={15} />
@@ -1089,6 +1090,9 @@ function CaseRail({
             >
               <span>
                 <strong>{personaName(option.customer_id)}</strong>
+                {personaBirthYear(option.customer_id) ? (
+                  <span className="case-birth-year">Birth year {personaBirthYear(option.customer_id)}</span>
+                ) : null}
                 <small>
                   {changeTag}
                   {(() => {
@@ -1159,6 +1163,9 @@ function DecisionSummaryCard({
       <div className="summary-identity">
         <p className="eyebrow">{t("검토 제안 요약")}</p>
         <h2>{personaName(driver.customer_id)}</h2>
+        {personaBirthYear(driver.customer_id) ? (
+          <small className="summary-birth-year">Birth year {personaBirthYear(driver.customer_id)}</small>
+        ) : null}
         <span>
           {driver.environment_display_name_ko ? t(driver.environment_display_name_ko) : personaResidence(driver)}
           {" · "}
@@ -1176,17 +1183,14 @@ function DecisionSummaryCard({
 
       <div className="summary-decision-stack">
         {(() => {
-          // 케어는 등급이 아니라 월간 검토 상태다 — 연간 판정 자리에는 연간 점수를 쓴다.
-          const collapsed = driver.care_state === "Care Review"
-            ? { label: tf("{score}점", { score: numberFormatter.format(driver.ab_comparison.annual_senior_safe_mileage_score) }), className: "care" }
-            : driver.reward_state === "Hold" || driver.care_state === "Hold"
-              ? { label: t("판단 보류"), className: reward.className }
-              : { label: stateLabelKo(driver.reward_state ?? "Neutral"), className: reward.className };
+          const collapsed = driver.reward_state === "Hold" || driver.care_state === "Hold"
+            ? { label: t("판단 보류"), className: reward.className }
+            : { label: tf("{score}점", { score: numberFormatter.format(driver.ab_comparison.annual_senior_safe_mileage_score) }), className: reward.className };
           return (
         <div className={`risk-score-block ${collapsed.className}`}>
-          <span>{t("연간 판정")}</span>
+          <span>{t("연간 평균 점수")}</span>
           <strong>{collapsed.label}</strong>
-          <b>{tf("연간 할인율 {rate}% · 기존 마일리지 {existing}%", { rate: numberFormatter.format(driver.ab_comparison.proposed_discount_rate_pct), existing: numberFormatter.format(driver.ab_comparison.existing_discount_rate_pct) })}</b>
+          <b>{tf("연간 환급률 {rate}% · 기존 마일리지 환급률 {existing}%", { rate: numberFormatter.format(driver.ab_comparison.proposed_discount_rate_pct), existing: numberFormatter.format(driver.ab_comparison.existing_discount_rate_pct) })}</b>
           <small className="axis-note">
             {(() => {
               const careMonthCount = rows.filter((row) => row.care_state === "Care Review").length;
@@ -1196,7 +1200,7 @@ function DecisionSummaryCard({
               }
               return careMonthCount > 0
                 ? tf("우대 요건 충족 · 케어 검토 {n}개월 발생 — 사람이 검토하고 예방 지원으로 연결합니다", { n: careMonthCount })
-                : t("케어 검토 발생 없음 — 안정 주행 기반 할인");
+                : t("케어 검토 발생 없음 — 안정 주행 기반 환급");
             })()}
           </small>
         </div>
@@ -1247,7 +1251,6 @@ function DecisionProcessFrame({
     : zoneMap
       ? tf("중심권 500m · P90 {p90}m", { p90: Math.round(zoneMap.snapshot.living_zone.buffer.departure_p90_threshold_m).toLocaleString("ko-KR") })
       : t("생활권 산출 중");
-  const annualTierKo = tierLabelKo(driver.reward_state, driver.care_state);
   const steps = [
     {
       title: t("기존 기준선"),
@@ -1268,9 +1271,9 @@ function DecisionProcessFrame({
       icon: Activity
     },
     {
-      title: t("연간 판단"),
-      value: `${percent(comparison.proposed_discount_rate_pct)} · ${annualTierKo}`,
-      detail: t("판정 근거는 사람이 최종 검토하며 자동 확정하지 않음"),
+      title: t("연간 점수와 환급"),
+      value: tf("{score}점 · 환급률 {rate}%", { score: numberFormatter.format(comparison.annual_senior_safe_mileage_score), rate: numberFormatter.format(comparison.proposed_discount_rate_pct) }),
+      detail: t("4개 지표가 통합점수를 만들고, 사람 검토 후 환급 제안에 반영"),
       icon: AlertTriangle
     }
   ];
@@ -1439,7 +1442,7 @@ function AnalysisTabs({
           <div className="insight-grid">
             <InsightCard title={t("분류 근거")} value={profile?.headline ?? t("월별 근거 확인")} detail={profile?.summary ?? translateText(driver.care_context.message_focus)} />
             <InsightCard title={t("생활권 변화")} value={tf("이동 {mob} · 위험 {risk}", { mob: numberFormatter.format(selectedRow.mobility_change_index_pct ?? 0), risk: numberFormatter.format(selectedRow.risky_behavior_change_index_pct ?? 0) })} detail={tf("{month}: 같은 달 동시조건 적용", { month: selectedRow.service_month })} />
-            <InsightCard title={t("상품 제안")} value={tf("연간 {annual} · 선택월 {care}", { annual: stateLabelKo(driver.reward_state ?? "Neutral"), care: stateLabelKo(selectedRow.care_state ?? "None") })} detail={t("연간 우대와 선택 월 케어를 독립 계산한 뒤 사람이 검토합니다.")} />
+            <InsightCard title={t("상품 제안")} value={tf("연간 {score}점 · 선택월 {care}", { score: numberFormatter.format(driver.ab_comparison.annual_senior_safe_mileage_score), care: stateLabelKo(selectedRow.care_state ?? "None") })} detail={t("월별 4개 지표를 통합한 연간 점수와 선택 월 케어 근거를 사람이 함께 검토합니다.")} />
           </div>
         ) : null}
 
@@ -1663,8 +1666,6 @@ function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairCompar
   const usd = (value: number) => `$${Math.round(value / DEMO_USD_RATE).toLocaleString("en-US")}`;
   const won = (value: number) => `₩${Math.round(value).toLocaleString("ko-KR")}`;
   const name = (side: MatchedPairSide) => (getLocale() === "ko" ? side.display_label : side.display_label_en);
-  const stateLabel = (side: MatchedPairSide) =>
-    side.care_state === "Care Review" ? t("케어 검토") : stateLabelKo(side.reward_state);
   const identical = pair.match_tier === "identical";
   const sides = [pair.self, pair.other];
   return (
@@ -1681,17 +1682,19 @@ function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairCompar
         <thead>
           <tr>
             <th />
-            <th>{name(pair.self)} <em>{selfTag ?? t("현재 선택")}</em></th>
-            <th>{name(pair.other)} <em>{otherTag ?? t("대조 사례")}</em></th>
+            <th>
+              <strong className="pair-person-name">{name(pair.self)}</strong>
+              {pair.self.birth_year ? <small className="pair-birth-year">Birth year {pair.self.birth_year}</small> : null}
+              <em>{selfTag ?? t("현재 선택")}</em>
+            </th>
+            <th>
+              <strong className="pair-person-name">{name(pair.other)}</strong>
+              {pair.other.birth_year ? <small className="pair-birth-year">Birth year {pair.other.birth_year}</small> : null}
+              <em>{otherTag ?? t("대조 사례")}</em>
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th>{t("연간 판정")}</th>
-            {sides.map((side) => (
-              <td key={side.driver_id} className={side.care_state === "Care Review" ? "is-care" : side.reward_state === "Reward" ? "is-good" : undefined}>{stateLabel(side)}</td>
-            ))}
-          </tr>
           <tr>
             <th>{t("유형")}</th>
             {sides.map((side) => <td key={side.driver_id}>{t(side.persona_label)}</td>)}
@@ -1731,13 +1734,13 @@ function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairCompar
             ))}
           </tr>
           <tr className={identical ? "is-same" : undefined}>
-            <th>{identical ? t("기존 마일리지 (동일)") : t("기존 마일리지")}</th>
+            <th>{identical ? t("기존 마일리지 환급 (동일)") : t("기존 마일리지 환급")}</th>
             {sides.map((side) => (
               <td key={side.driver_id}>{percent(side.existing_rate_pct)} · {usd(side.existing_premium_krw)}</td>
             ))}
           </tr>
           <tr className="is-strong">
-            <th>{t("마실 제안")}</th>
+            <th>{t("MASIL 환급 제안")}</th>
             {sides.map((side) => (
               <td key={side.driver_id}>{percent(side.proposed_rate_pct)} · {usd(side.proposed_premium_krw)}</td>
             ))}
@@ -1794,30 +1797,27 @@ function DecisionPanel({
         <h2>{t("검토 제안")}</h2>
         <em
           className={`decision ${driver.care_state === "Care Review" ? "care" : decision.className}`}
-          title={t("연간 판정")}
+          title={t("연간 평균 점수")}
         >
-          {tf("연간 {state}", {
-            state: driver.care_state === "Care Review"
-              ? tf("{score}점", { score: numberFormatter.format(comparison.annual_senior_safe_mileage_score) })
-              : driver.reward_state === "Hold" || driver.care_state === "Hold"
-                ? t("판단 보류")
-                : stateLabelKo(driver.reward_state ?? "Neutral")
-          })}
+          {driver.reward_state === "Hold" || driver.care_state === "Hold"
+            ? t("연간 판단 보류")
+            : tf("연간 {score}점", { score: numberFormatter.format(comparison.annual_senior_safe_mileage_score) })}
         </em>
       </div>
 
       <div className="decision-money-stack">
         <div>
-          <span>{t("기존 마일리지 기준 할인율")}</span>
+          <span>{t("기존 마일리지 환급률")}</span>
           <strong>{percent(comparison.existing_discount_rate_pct)}</strong>
+          <small>{tf("연간 환급액 {amount}", { amount: krwWithUsd(comparison.existing_discount_amount_krw) })}</small>
         </div>
         <div>
-          <span>{t("마실 제안 할인율 · 후보")}</span>
+          <span>{t("MASIL 환급률 · 후보")}</span>
           <strong>{percent(comparison.proposed_discount_rate_pct)}</strong>
-          <small>{tf("통합점수 {score}점", { score: numberFormatter.format(comparison.annual_senior_safe_mileage_score) })}</small>
+          <small>{tf("4개 지표 → 통합점수 {score}점 · 환급액 {amount}", { score: numberFormatter.format(comparison.annual_senior_safe_mileage_score), amount: krwWithUsd(comparison.proposed_discount_amount_krw) })}</small>
         </div>
         <div className="money-delta">
-          <span>{t("제안 − 기존 할인율 차이")}</span>
+          <span>{t("제안 − 기존 환급률 차이")}</span>
           <strong>{signedPercentPoint(rateDelta)}</strong>
           <small>{t("후보 민감도 · 확정 요율 아님")}</small>
         </div>
@@ -2759,11 +2759,11 @@ function zoneIsReady(status: string | undefined) {
   return status === "available" || status === "ready";
 }
 
-const personaNameRegistry = new Map<string, { ko: string; en?: string }>();
+const personaNameRegistry = new Map<string, { ko: string; en?: string; birthYear?: number }>();
 
-export function registerPersonaNames(options: Array<{ customer_id: string; label: string; label_en?: string }>) {
+export function registerPersonaNames(options: Array<{ customer_id: string; label: string; label_en?: string; birth_year?: number }>) {
   options.forEach((option) => {
-    if (option.label) personaNameRegistry.set(option.customer_id, { ko: option.label, en: option.label_en });
+    if (option.label) personaNameRegistry.set(option.customer_id, { ko: option.label, en: option.label_en, birthYear: option.birth_year });
   });
 }
 
@@ -2772,6 +2772,10 @@ function personaName(customerId: string) {
   if (!entry) return tf("합성 시니어 {n}", { n: String(personaIndex(customerId) + 1).padStart(2, "0") });
   // Korean locale shows the Hangul name; every other locale the romanized one.
   return getLocale() === "ko" ? entry.ko : entry.en ?? entry.ko;
+}
+
+function personaBirthYear(customerId: string) {
+  return personaNameRegistry.get(customerId)?.birthYear;
 }
 
 function personaIndex(customerId: string) {

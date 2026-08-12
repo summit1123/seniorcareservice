@@ -293,6 +293,7 @@ function matchedPairSide(driver: StudioDriver, result: SandboxResult): MatchedPa
     driver_id: driver.id,
     display_label: driver.display_label,
     display_label_en: driver.display_label_en ?? driver.display_label,
+    birth_year: driver.birth_year,
     persona_label: driver.persona_label,
     annual_distance_km: round(driver.metrics.annual_distance_km),
     outer_share_pct: round(mean(evaluation.map((month) => month.outer_visit_share_pct)), 1),
@@ -645,7 +646,8 @@ export function adaptDirectory(bundle: GaipStudioBundle, rules?: ProductRules): 
   });
   const decisionCounts: Record<string, number> = {};
   rows.forEach(({ result }) => increment(decisionCounts, decisionSignal(result)));
-  const defaultDriver = rows.find(({ result }) => result.care_review_eligible)?.driver
+  const defaultDriver = rows.find(({ driver }) => driver.driver_name_en === "Jackie Chan")?.driver
+    ?? rows.find(({ result }) => result.care_review_eligible)?.driver
     ?? rows.find(({ result }) => result.reward_state === "Hold")?.driver
     ?? bundle.drivers[0];
 
@@ -682,6 +684,7 @@ export function adaptDirectory(bundle: GaipStudioBundle, rules?: ProductRules): 
       driver_id: driver.id,
       label: driver.display_label,
       label_en: driver.display_label_en,
+      birth_year: driver.birth_year,
       persona_type: driver.persona_id,
       annual_decision_signal: decisionSignal(result),
       existing_matched_tier_label: koreaReferenceLabel(driver),

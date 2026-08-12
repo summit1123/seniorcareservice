@@ -1615,6 +1615,32 @@ p {
   line-height: 1.1;
 }
 
+.summary-birth-year,
+.case-birth-year,
+.pair-birth-year {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.summary-birth-year {
+  margin: -1px 0 5px;
+}
+
+.rail-heading > small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.case-birth-year {
+  margin-top: 2px;
+}
+
 .summary-identity span,
 .summary-verdict span,
 .risk-score-block span,
@@ -2218,6 +2244,16 @@ p {
   font-size: 10.5px;
   font-weight: 750;
   color: var(--muted);
+}
+
+.pair-person-name {
+  display: block;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.pair-birth-year {
+  margin-top: 2px;
 }
 
 .pair-compare tbody tr {
