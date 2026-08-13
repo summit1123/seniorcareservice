@@ -2257,6 +2257,9 @@ p {
 
 .pair-birth-year {
   margin-top: 2px;
+  color: var(--ink);
+  font-size: 22px;
+  font-weight: 850;
 }
 
 .pair-compare tbody tr {
