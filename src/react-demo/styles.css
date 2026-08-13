@@ -1626,8 +1626,10 @@ p {
 }
 
 .summary-birth-year {
-  margin: -1px 0 5px;
-  font-size: 18px;
+  margin: 1px 0 7px;
+  color: var(--ink);
+  font-size: 22px;
+  font-weight: 850;
 }
 
 .rail-heading > small {
