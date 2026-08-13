@@ -188,6 +188,9 @@ type LoadState = "loading" | "ready" | "error";
 type PageMode = "overview" | "profiles";
 
 function App() {
+  const captureMode = typeof window !== "undefined"
+    ? new URLSearchParams(window.location.search).get("capture")
+    : null;
   const [directory, setDirectory] = useState<PersonaDirectoryResponse | null>(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState("gaip-051");
   const [pageMode, setPageMode] = useState<PageMode>("overview");
@@ -339,6 +342,13 @@ function App() {
     return <ScreenState title={t("데모 데이터를 열 수 없습니다")} detail={errorMessage} />;
   }
 
+  if (captureMode === "monthly") {
+    if (driverState !== "ready" || !monthlyEvidence.length) {
+      return <ScreenState title={t("월별 점수 불러오는 중")} detail={t("캡처 전용 화면을 준비하고 있습니다.")} />;
+    }
+    return <MonthlyScoreCapture rows={monthlyEvidence} rules={productRules} />;
+  }
+
   return (
     <div className="workbench">
       <header className="app-header">
@@ -470,6 +480,37 @@ function App() {
         </main>
       )}
     </div>
+  );
+}
+
+function MonthlyScoreCapture({ rows, rules }: { rows: MonthlyEvidence[]; rules: ProductRules | null }) {
+  const weights = normalizeProductWeights(rules?.weights ?? referenceProductRules.weights);
+  const focusMonth = chooseFocusMonth(rows);
+  const row = rows.find((item) => item.month === focusMonth) ?? rows[0];
+  const score = row.monthly_integrated_evidence_score ?? monthlyIntegratedEvidenceScore(row);
+
+  return (
+    <main className="monthly-capture-page" aria-label={t("PPT용 월별 점수 요약")}>
+      <section className="monthly-capture-card">
+        <div className="monthly-capture-month">
+          <span>{t("선택 월")}</span>
+          <strong>{row.service_month}</strong>
+          <small>{t("월별 4개 지표")}</small>
+        </div>
+        <div className="monthly-capture-metrics">
+          <ScoreMeter label={t("주행거리 점수")} value={row.mileage_score} />
+          <ScoreMeter label={t("생활권 안 안전점수")} value={row.in_zone_safe_driving_score} />
+          <ScoreMeter label={t("생활권 밖 안전점수")} value={row.out_zone_safe_driving_score} />
+          <ScoreMeter label={t("패턴 안정성")} value={row.pattern_stability_score ?? Math.max(0, 100 - row.out_zone_pattern_change_risk)} />
+        </div>
+        <ArrowRight className="monthly-capture-arrow" aria-hidden="true" />
+        <div className="monthly-capture-result">
+          <span>{t("월 통합점수")}</span>
+          <strong>{tf("{score}점", { score: numberFormatter.format(score) })}</strong>
+          <small>{tf("{mileage} · {inZone} · {outZone} · {stability}", { mileage: `${weights.mileage}%`, inZone: `${weights.in_zone_safe}%`, outZone: `${weights.out_zone_safe}%`, stability: `${weights.pattern_stability}%` })}</small>
+        </div>
+      </section>
+    </main>
   );
 }
 
@@ -1611,13 +1652,14 @@ function FormulaSubstitution({ driver, selectedRow, rules }: { driver: DriverAnn
   );
 }
 
-const DEMO_USD_RATE = 1350; // 예시 환율(비교 열람용) — 실제 환율 아님
+const DEMO_KRW_PER_USD = 1350; // 발표용 고정 환율 — 실제 계약 환율 아님
+const DEMO_SGD_PER_USD = 1.28;
 
-// 해외 심사 기준 — 달러를 앞에 두고 원화를 괄호로 남긴다(규모 비교가 먼저 읽히게).
-function krwWithUsd(amount: number | null | undefined) {
+// 싱가포르 심사 기준 — SGD를 앞에 두고 원화를 괄호로 남긴다.
+function krwWithSgd(amount: number | null | undefined) {
   if (amount === null || amount === undefined || Number.isNaN(amount)) return "—";
-  const usd = amount / DEMO_USD_RATE;
-  return `$${usd.toLocaleString("en-US", { maximumFractionDigits: 0 })} (₩${Math.round(amount).toLocaleString("ko-KR")})`;
+  const sgd = (amount / DEMO_KRW_PER_USD) * DEMO_SGD_PER_USD;
+  return `S$${sgd.toLocaleString("en-SG", { maximumFractionDigits: 0 })} (₩${Math.round(amount).toLocaleString("ko-KR")})`;
 }
 
 function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
@@ -1625,34 +1667,35 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
   const existingRate = comparison.existing_discount_rate_pct;
   const proposedRate = comparison.proposed_discount_rate_pct;
   const maxRate = Math.max(existingRate, proposedRate, 1);
-  // 이득/부담이 즉시 읽히도록 연 보험료 차액과 방향을 명시한다.
+  // 환급액의 차이와 방향을 즉시 읽히게 한다. 요율 엔진은 그대로 두고
+  // 기준보험료 × 환급률로 이미 산출된 discount_amount만 표시한다.
   const rateDelta = proposedRate - existingRate;
-  const premiumDelta = (comparison.existing_net_premium_krw ?? 0) - (comparison.proposed_net_premium_krw ?? 0);
+  const refundDelta = (comparison.proposed_discount_amount_krw ?? 0) - (comparison.existing_discount_amount_krw ?? 0);
   return (
     <div className="premium-simulation">
-      <p className="premium-basis">{t("연간 할인율과 연 보험료 기준의 비교입니다")}</p>
+      <p className="premium-basis">{t("연간 환급률과 환급액 기준의 비교입니다")}</p>
       <div>
-        <span>{t("기존 마일리지 할인율 · 국내")}</span>
+        <span>{t("기존 마일리지 환급률")}</span>
         <strong>{percent(existingRate)}</strong>
         <i><b style={{ width: `${(existingRate / maxRate) * 100}%` }} /></i>
-        <small>{tf("적용 시 연 보험료 {amount}", { amount: krwWithUsd(comparison.existing_net_premium_krw) })}</small>
+        <small>{tf("연간 환급액 {amount}", { amount: krwWithSgd(comparison.existing_discount_amount_krw) })}</small>
       </div>
       <div>
-        <span>{t("마실 제안 할인율 · 후보")}</span>
+        <span>{t("MASIL 환급률 · 후보")}</span>
         <strong>{percent(proposedRate)}</strong>
         <i><b style={{ width: `${(proposedRate / maxRate) * 100}%` }} /></i>
-        <small>{tf("적용 시 연 보험료 {amount}", { amount: krwWithUsd(comparison.proposed_net_premium_krw) })}</small>
+        <small>{tf("연간 환급액 {amount}", { amount: krwWithSgd(comparison.proposed_discount_amount_krw) })}</small>
       </div>
       <p className={`premium-verdict ${rateDelta > 0.05 ? "gain" : rateDelta < -0.05 ? "reduce" : "same"}`}>
         {rateDelta > 0.05
-          ? tf("고객 이득 — 기존 대비 연간 할인 {pct}%p 확대, 연 {amount} 절감", { pct: Math.abs(rateDelta).toFixed(1), amount: krwWithUsd(Math.abs(premiumDelta)) })
+          ? tf("고객 이득 — 기존 대비 연간 환급률 {pct}%p 확대, 환급액 {amount} 증가", { pct: Math.abs(rateDelta).toFixed(1), amount: krwWithSgd(Math.abs(refundDelta)) })
           : rateDelta < -0.05
             ? t("후보 민감도 · 확정 요율 아님")
             : t("기존 기준과 동일한 수준입니다")}
       </p>
       <MatchedPairTable pair={driver.matched_pair ?? null} />
       <p>
-        {tf("기준 보험료 {base} 가정의 합성 비교입니다. 달러 표기는 해외 심사위원의 규모 비교를 위한 예시 환율(1$≈₩{rate}) 환산이며, 실제 계약보험료·해외 요율을 의미하지 않습니다.", { base: krwWithUsd(comparison.base_premium_krw), rate: DEMO_USD_RATE.toLocaleString("ko-KR") })}
+        {tf("예시 연 보험료 {base} 가정의 합성 비교입니다. 환급액은 연 보험료 × 환급률이며, 싱가포르 달러는 발표용 고정 환율(US$1=₩{krw}, US$1=S${sgd})로 환산했습니다. 실제 계약보험료·해외 요율을 의미하지 않습니다.", { base: krwWithSgd(comparison.base_premium_krw), krw: DEMO_KRW_PER_USD.toLocaleString("ko-KR"), sgd: DEMO_SGD_PER_USD.toFixed(2) })}
       </p>
     </div>
   );
@@ -1662,9 +1705,9 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
 // 받은 실제 시나리오와의 자동 대조. 상대가 없는 시나리오는 표를 그리지 않는다.
 function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairComparison | null; selfTag?: string; otherTag?: string }) {
   if (!pair) return null;
-  // 해외 심사위원 기준 — 표 안은 달러로 읽히게 하고, 원화 기준값은 각주에 남긴다.
-  const usd = (value: number) => `$${Math.round(value / DEMO_USD_RATE).toLocaleString("en-US")}`;
-  const won = (value: number) => `₩${Math.round(value).toLocaleString("ko-KR")}`;
+  // 비교표는 환급 후 보험료가 아니라 기준보험료 × 환급률로 계산한 환급액을 표시한다.
+  const sgd = (value: number) => `S$${Math.round((value / DEMO_KRW_PER_USD) * DEMO_SGD_PER_USD).toLocaleString("en-SG")}`;
+  const refundAmount = (netPremium: number) => Math.max(0, pair.base_premium_krw - netPremium);
   const name = (side: MatchedPairSide) => (getLocale() === "ko" ? side.display_label : side.display_label_en);
   const identical = pair.match_tier === "identical";
   const sides = [pair.self, pair.other];
@@ -1674,8 +1717,8 @@ function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairCompar
         <strong>{t("같은 조건, 다른 행동")}</strong>
         <span>
           {identical
-            ? tf("기본보험료 {base} · 기존 요율까지 동일 — 기존 제도라면 두 사람의 연 보험료가 같습니다", { base: usd(pair.base_premium_krw) })
-            : tf("같은 차종(기본보험료 {base}) · 기존 요율은 서로 다름", { base: usd(pair.base_premium_krw) })}
+            ? tf("예시 연 보험료 {base} · 기존 환급률까지 동일 — 기존 제도라면 두 사람의 환급액이 같습니다", { base: sgd(pair.base_premium_krw) })
+            : tf("같은 차종(예시 연 보험료 {base}) · 기존 환급률은 서로 다름", { base: sgd(pair.base_premium_krw) })}
         </span>
       </div>
       <table>
@@ -1736,13 +1779,13 @@ function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairCompar
           <tr className={identical ? "is-same" : undefined}>
             <th>{identical ? t("기존 마일리지 환급 (동일)") : t("기존 마일리지 환급")}</th>
             {sides.map((side) => (
-              <td key={side.driver_id}>{percent(side.existing_rate_pct)} · {usd(side.existing_premium_krw)}</td>
+              <td key={side.driver_id}>{percent(side.existing_rate_pct)} · {sgd(refundAmount(side.existing_premium_krw))}</td>
             ))}
           </tr>
           <tr className="is-strong">
             <th>{t("MASIL 환급 제안")}</th>
             {sides.map((side) => (
-              <td key={side.driver_id}>{percent(side.proposed_rate_pct)} · {usd(side.proposed_premium_krw)}</td>
+              <td key={side.driver_id}>{percent(side.proposed_rate_pct)} · {sgd(refundAmount(side.proposed_premium_krw))}</td>
             ))}
           </tr>
         </tbody>
@@ -1809,12 +1852,12 @@ function DecisionPanel({
         <div>
           <span>{t("기존 마일리지 환급률")}</span>
           <strong>{percent(comparison.existing_discount_rate_pct)}</strong>
-          <small>{tf("연간 환급액 {amount}", { amount: krwWithUsd(comparison.existing_discount_amount_krw) })}</small>
+          <small>{tf("연간 환급액 {amount}", { amount: krwWithSgd(comparison.existing_discount_amount_krw) })}</small>
         </div>
         <div>
           <span>{t("MASIL 환급률 · 후보")}</span>
           <strong>{percent(comparison.proposed_discount_rate_pct)}</strong>
-          <small>{tf("4개 지표 → 통합점수 {score}점 · 환급액 {amount}", { score: numberFormatter.format(comparison.annual_senior_safe_mileage_score), amount: krwWithUsd(comparison.proposed_discount_amount_krw) })}</small>
+          <small>{tf("4개 지표 → 통합점수 {score}점 · 환급액 {amount}", { score: numberFormatter.format(comparison.annual_senior_safe_mileage_score), amount: krwWithSgd(comparison.proposed_discount_amount_krw) })}</small>
         </div>
         <div className="money-delta">
           <span>{t("제안 − 기존 환급률 차이")}</span>
@@ -2126,28 +2169,20 @@ function MonthlyEvidenceLane({
         <div className="month-focus-panel">
           <div className="month-focus-copy">
             <span>{t("선택 월")}</span>
-            <strong>
-              {selectedRow.service_month} · {selectedMeta.label}
-            </strong>
-            <p>
-              {tf("{dist}km 주행, {basis}으로 생활권을 판단했습니다.", { dist: numberFormatter.format(selectedRow.monthly_total_distance_km), basis: basisLabel(selectedRow.basis_status) })}
-              {selectedRow.period_role === "baseline" ? t(" 이 달은 개인 기준선 관찰용이며 우대·케어 평가에서 제외됩니다.") : t(" 아래 값은 월 보험료가 아니라 상품 검토 근거입니다.")}
-            </p>
+            <strong>{selectedRow.service_month}</strong>
           </div>
           <div className="score-meter-grid">
-            <ScoreMeter label={t("주행거리 점수")} value={selectedRow.mileage_score} helper={t("월별 주행거리가 낮을수록 높음")} />
-            <ScoreMeter label={t("생활권 안 안전점수")} value={selectedRow.in_zone_safe_driving_score} helper={t("생활권 안 급감속·과속·야간 비율이 낮을수록 높음")} />
-            <ScoreMeter label={t("생활권 밖 안전점수")} value={selectedRow.out_zone_safe_driving_score} helper={t("생활권 밖 위험행동과 야간 비율이 낮을수록 높음")} />
-            <ScoreMeter label={t("패턴 안정성")} value={selectedRow.pattern_stability_score ?? Math.max(0, 100 - selectedRow.out_zone_pattern_change_risk)} helper={t("개인 기준선 대비 이동 맥락 안정성")} />
+            <ScoreMeter label={t("주행거리 점수")} value={selectedRow.mileage_score} />
+            <ScoreMeter label={t("생활권 안 안전점수")} value={selectedRow.in_zone_safe_driving_score} />
+            <ScoreMeter label={t("생활권 밖 안전점수")} value={selectedRow.out_zone_safe_driving_score} />
+            <ScoreMeter label={t("패턴 안정성")} value={selectedRow.pattern_stability_score ?? Math.max(0, 100 - selectedRow.out_zone_pattern_change_risk)} />
           </div>
-          <p className="score-legend-copy">
-            {t("안전점수의 관측값이 없으면 100점으로 채우지 않고 N/A로 남긴 뒤, 관측된 구성요소의 가중치만 재정규화합니다.")}
-          </p>
           <div className="monthly-integrated-formula" aria-label={t("월별 통합 근거점수 산식")}>
-            <span>{t("월별 통합 근거점수")}</span>
-            <strong>{monthlyIntegratedLabel}</strong>
+            <div className="monthly-integrated-score">
+              <span>{t("월별 통합 근거점수")}</span>
+              <strong>{monthlyIntegratedLabel}</strong>
+            </div>
             <p>{tf("주행거리 {mileage}% + 생활권 안 안전 {inZone}% + 생활권 밖 안전 {outZone}% + 패턴 안정성 {stability}%", { mileage: weights.mileage, inZone: weights.in_zone_safe, outZone: weights.out_zone_safe, stability: weights.pattern_stability })}</p>
-            <small>{t("우대 후보점수와 케어 동시조건은 독립 계산되며, 어느 쪽도 보험료·인수 결정을 자동 확정하지 않습니다.")}</small>
             <div className={`monthly-care-gate ${selectedRow.care_state === "Care Review" ? "active" : ""}`}>
               <b>{t("케어 동시조건")}</b>
               <span>{tf("이동 {mob} · 위험행동 {risk}", { mob: numberFormatter.format(selectedRow.mobility_change_index_pct ?? 0), risk: numberFormatter.format(selectedRow.risky_behavior_change_index_pct ?? 0) })}</span>
@@ -2514,13 +2549,12 @@ function Metric({ label, value, tone = "default" }: { label: string; value: stri
   );
 }
 
-function ScoreMeter({ label, value, inverse = false, helper }: { label: string; value: number | null; inverse?: boolean; helper?: string }) {
+function ScoreMeter({ label, value, inverse = false }: { label: string; value: number | null; inverse?: boolean }) {
   if (value === null || !Number.isFinite(value)) {
     return (
       <div className="score-meter unavailable">
         <span>{translateText(label)}</span>
         <strong>N/A</strong>
-        {helper ? <small>{translateText(helper)}</small> : null}
         <i><b style={{ width: "0%" }} /></i>
       </div>
     );
@@ -2531,7 +2565,6 @@ function ScoreMeter({ label, value, inverse = false, helper }: { label: string; 
     <div className={`score-meter ${tone}`}>
       <span>{translateText(label)}</span>
       <strong>{tf("{score}점", { score: numberFormatter.format(value) })}</strong>
-      {helper ? <small>{translateText(helper)}</small> : null}
       <i>
         <b style={{ width: `${normalized}%` }} />
       </i>

@@ -2,6 +2,11 @@
 // strings. GAIP submission language — British spelling, insurance register.
 // Missing keys fall back to the Korean source.
 const dict: Record<string, string> = {
+  "PPT용 월별 점수 요약": "Monthly score summary for presentation",
+  "월별 점수 불러오는 중": "Loading monthly scores",
+  "캡처 전용 화면을 준비하고 있습니다.": "Preparing the presentation capture.",
+  "월별 4개 지표": "Four monthly indicators",
+  "월 통합점수": "Monthly MASIL Score",
   "구매자 행동 · 신뢰": "Buyer behavior · trust",
   "감시가 아니라, 계속 안전하게 운전할 자유를 지키는 설계입니다": "Designed to protect the freedom to keep driving safely — not to watch",
   "운전할 자유": "Freedom to keep driving",
@@ -855,6 +860,11 @@ const dict: Record<string, string> = {
   "MASIL 환급률 · 후보": "MASIL refund rate · candidate",
   "연간 환급액 {amount}": "Annual refund amount {amount}",
   "4개 지표 → 통합점수 {score}점 · 환급액 {amount}": "4 indicators → integrated score {score} pts · refund amount {amount}",
+  "연간 환급률과 환급액 기준의 비교입니다": "Compared by annual refund rate and refund amount",
+  "고객 이득 — 기존 대비 연간 환급률 {pct}%p 확대, 환급액 {amount} 증가": "Customer benefit — annual refund rate rises by {pct}%p, increasing the refund by {amount}",
+  "예시 연 보험료 {base} 가정의 합성 비교입니다. 환급액은 연 보험료 × 환급률이며, 싱가포르 달러는 발표용 고정 환율(US$1=₩{krw}, US$1=S${sgd})로 환산했습니다. 실제 계약보험료·해외 요율을 의미하지 않습니다.": "Synthetic comparison assuming an illustrative annual premium of {base}. Refund amount equals annual premium × refund rate. Singapore-dollar figures use fixed presentation rates (US$1=₩{krw}, US$1=S${sgd}) and do not represent an actual contract premium or overseas tariff.",
+  "예시 연 보험료 {base} · 기존 환급률까지 동일 — 기존 제도라면 두 사람의 환급액이 같습니다": "Same illustrative annual premium ({base}) and same existing refund rate — the existing mileage rider gives both drivers the same refund",
+  "같은 차종(예시 연 보험료 {base}) · 기존 환급률은 서로 다름": "Same vehicle class (illustrative annual premium {base}) · existing refund rates differ",
   "제안 − 기존 환급률 차이": "Proposed − existing refund-rate difference",
   "기존 마일리지 환급 (동일)": "Existing mileage refund (same)",
   "기존 마일리지 환급": "Existing mileage refund",
