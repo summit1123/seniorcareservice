@@ -1659,7 +1659,7 @@ const DEMO_SGD_PER_USD = 1.28;
 function krwWithSgd(amount: number | null | undefined) {
   if (amount === null || amount === undefined || Number.isNaN(amount)) return "—";
   const sgd = (amount / DEMO_KRW_PER_USD) * DEMO_SGD_PER_USD;
-  return `S$${sgd.toLocaleString("en-SG", { maximumFractionDigits: 0 })} (₩${Math.round(amount).toLocaleString("ko-KR")})`;
+  return `$${sgd.toLocaleString("en-SG", { maximumFractionDigits: 0 })} (₩${Math.round(amount).toLocaleString("ko-KR")})`;
 }
 
 function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
@@ -1695,7 +1695,7 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
       </p>
       <MatchedPairTable pair={driver.matched_pair ?? null} />
       <p>
-        {tf("예시 연 보험료 {base} 가정의 합성 비교입니다. 환급액은 연 보험료 × 환급률이며, 싱가포르 달러는 발표용 고정 환율(US$1=₩{krw}, US$1=S${sgd})로 환산했습니다. 실제 계약보험료·해외 요율을 의미하지 않습니다.", { base: krwWithSgd(comparison.base_premium_krw), krw: DEMO_KRW_PER_USD.toLocaleString("ko-KR"), sgd: DEMO_SGD_PER_USD.toFixed(2) })}
+        {tf("예시 연 보험료 {base} 가정의 합성 비교입니다. 환급액은 연 보험료 × 환급률이며, 싱가포르 달러는 발표용 고정 환율(US$1=₩{krw}, US$1=SGD {sgd})로 환산했습니다. 실제 계약보험료·해외 요율을 의미하지 않습니다.", { base: krwWithSgd(comparison.base_premium_krw), krw: DEMO_KRW_PER_USD.toLocaleString("ko-KR"), sgd: DEMO_SGD_PER_USD.toFixed(2) })}
       </p>
     </div>
   );
@@ -1706,7 +1706,7 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
 function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairComparison | null; selfTag?: string; otherTag?: string }) {
   if (!pair) return null;
   // 비교표는 환급 후 보험료가 아니라 기준보험료 × 환급률로 계산한 환급액을 표시한다.
-  const sgd = (value: number) => `S$${Math.round((value / DEMO_KRW_PER_USD) * DEMO_SGD_PER_USD).toLocaleString("en-SG")}`;
+  const sgd = (value: number) => `$${Math.round((value / DEMO_KRW_PER_USD) * DEMO_SGD_PER_USD).toLocaleString("en-SG")}`;
   const refundAmount = (netPremium: number) => Math.max(0, pair.base_premium_krw - netPremium);
   const name = (side: MatchedPairSide) => (getLocale() === "ko" ? side.display_label : side.display_label_en);
   const identical = pair.match_tier === "identical";

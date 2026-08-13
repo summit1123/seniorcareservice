@@ -862,7 +862,7 @@ const dict: Record<string, string> = {
   "4개 지표 → 통합점수 {score}점 · 환급액 {amount}": "4 indicators → integrated score {score} pts · refund amount {amount}",
   "연간 환급률과 환급액 기준의 비교입니다": "Compared by annual refund rate and refund amount",
   "고객 이득 — 기존 대비 연간 환급률 {pct}%p 확대, 환급액 {amount} 증가": "Customer benefit — annual refund rate rises by {pct}%p, increasing the refund by {amount}",
-  "예시 연 보험료 {base} 가정의 합성 비교입니다. 환급액은 연 보험료 × 환급률이며, 싱가포르 달러는 발표용 고정 환율(US$1=₩{krw}, US$1=S${sgd})로 환산했습니다. 실제 계약보험료·해외 요율을 의미하지 않습니다.": "Synthetic comparison assuming an illustrative annual premium of {base}. Refund amount equals annual premium × refund rate. Singapore-dollar figures use fixed presentation rates (US$1=₩{krw}, US$1=S${sgd}) and do not represent an actual contract premium or overseas tariff.",
+  "예시 연 보험료 {base} 가정의 합성 비교입니다. 환급액은 연 보험료 × 환급률이며, 싱가포르 달러는 발표용 고정 환율(US$1=₩{krw}, US$1=SGD {sgd})로 환산했습니다. 실제 계약보험료·해외 요율을 의미하지 않습니다.": "Synthetic comparison assuming an illustrative annual premium of {base}. Refund amount equals annual premium × refund rate. Singapore-dollar figures use fixed presentation rates (US$1=₩{krw}, US$1=SGD {sgd}) and do not represent an actual contract premium or overseas tariff.",
   "예시 연 보험료 {base} · 기존 환급률까지 동일 — 기존 제도라면 두 사람의 환급액이 같습니다": "Same illustrative annual premium ({base}) and same existing refund rate — the existing mileage rider gives both drivers the same refund",
   "같은 차종(예시 연 보험료 {base}) · 기존 환급률은 서로 다름": "Same vehicle class (illustrative annual premium {base}) · existing refund rates differ",
   "제안 − 기존 환급률 차이": "Proposed − existing refund-rate difference",
