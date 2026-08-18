@@ -2270,6 +2270,40 @@ p {
   border-bottom: none;
 }
 
+.pair-compare tbody tr.pair-section-row {
+  border-bottom: none;
+}
+
+.pair-compare .pair-section-row th {
+  width: auto;
+  padding: 13px 8px 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: .01em;
+}
+
+.pair-compare .pair-section-row:first-child th {
+  padding-top: 8px;
+}
+
+.pair-compare .pair-section-row.risk th {
+  color: var(--care);
+  padding-top: 15px;
+}
+
+.pair-compare .pair-explainer-row {
+  border-bottom: none;
+}
+
+.pair-compare .pair-explainer-row td {
+  padding: 8px;
+  text-align: center;
+  color: var(--faint);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
 .pair-compare tbody th {
   text-align: left;
   padding: 6px 8px;
@@ -2305,8 +2339,29 @@ p {
   font-weight: 800;
 }
 
+.pair-compare tr.is-pivot th {
+  color: var(--primary);
+  font-weight: 850;
+}
+
 .pair-compare tr.is-strong td {
+  background: var(--primary-strong);
+  color: #fff;
   font-weight: 800;
+}
+
+.pair-compare tr.is-strong th {
+  background: var(--primary-strong);
+  color: #dcecff;
+  font-weight: 850;
+}
+
+.pair-compare tr.is-strong th:first-child {
+  border-radius: 9px 0 0 9px;
+}
+
+.pair-compare tr.is-strong td:last-child {
+  border-radius: 0 9px 9px 0;
 }
 
 .pair-compare > p {
@@ -2439,12 +2494,13 @@ p {
   line-height: 1.15;
 }
 
-.decision-money-stack .money-delta {
+.decision-money-stack .refund-rate-difference {
+  border-color: color-mix(in srgb, var(--amber) 30%, var(--line));
   background: var(--amber-soft);
 }
 
-.money-delta strong {
-  color: var(--orange);
+.decision-money-stack .refund-rate-difference strong {
+  color: var(--amber);
 }
 
 .decision-reason-box strong {
@@ -3486,11 +3542,11 @@ p {
 
 .month-focus-panel {
   display: grid;
-  grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.28fr);
-  gap: 12px;
+  grid-template-columns: minmax(205px, 0.54fr) minmax(0, 1.46fr);
+  gap: 10px;
   align-items: stretch;
-  margin-bottom: 12px;
-  padding: 12px;
+  margin-bottom: 10px;
+  padding: 10px;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--panel-soft);
@@ -3499,7 +3555,8 @@ p {
 .month-focus-copy {
   display: grid;
   align-content: center;
-  gap: 5px;
+  gap: 4px;
+  padding-left: 6px;
 }
 
 .month-focus-copy span {
@@ -3510,12 +3567,8 @@ p {
 
 .month-focus-copy strong {
   color: var(--ink);
-  font-size: 17px;
-  line-height: 1.35;
-}
-
-.month-focus-copy p {
-  font-size: 12px;
+  font-size: 19px;
+  line-height: 1.25;
 }
 
 .score-meter-grid {
@@ -3526,93 +3579,79 @@ p {
 
 .score-meter {
   display: grid;
-  align-content: center;
-  gap: 7px;
-  min-height: 84px;
-  padding: 11px;
+  grid-template-rows: 38px 1fr 7px;
+  align-content: stretch;
+  gap: 6px;
+  min-height: 100px;
+  padding: 11px 12px;
   border: 1px solid var(--line);
   border-radius: 9px;
   background: var(--panel);
 }
 
 .score-meter span {
+  display: flex;
+  align-items: flex-start;
   color: var(--muted);
-  font-size: 11px;
-  font-weight: 800;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.2;
 }
 
 .score-meter strong {
+  align-self: center;
   color: var(--ink);
-  font-size: 20px;
+  font-size: 30px;
+  letter-spacing: -0.035em;
   line-height: 1;
-}
-
-.score-meter small {
-  min-height: 30px;
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 750;
-  line-height: 1.35;
-}
-
-.score-legend-copy {
-  grid-column: 1 / -1;
-  margin-top: 2px;
-  padding: 10px 12px;
-  border: 1px solid #dfe7f3;
-  border-radius: 10px;
-  background: var(--panel);
-  color: var(--ink-soft);
-  font-size: 12px;
-  line-height: 1.45;
+  white-space: nowrap;
 }
 
 .monthly-integrated-formula {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: minmax(132px, 0.32fr) minmax(0, 1fr);
+  grid-template-columns: minmax(170px, 0.72fr) minmax(0, 1.45fr) minmax(185px, 0.83fr);
   align-items: center;
-  gap: 5px 14px;
-  padding: 12px 14px;
-  border: 1px solid #cfe0fb;
-  border-radius: 12px;
-  background: var(--panel);
+  gap: 10px 12px;
+  padding: 11px 4px 1px;
+  border: 0;
+  border-top: 1px solid #cfe0fb;
+  border-radius: 0;
+  background: transparent;
 }
 
-.monthly-integrated-formula span {
+.monthly-integrated-score {
+  display: grid;
+  gap: 4px;
+}
+
+.monthly-integrated-score span {
   color: var(--muted);
-  font-size: 11px;
-  font-weight: 850;
+  font-size: 14px;
+  font-weight: 900;
+  white-space: nowrap;
 }
 
-.monthly-integrated-formula strong {
+.monthly-integrated-score strong {
   color: var(--ink);
-  font-size: 24px;
+  font-size: 36px;
   line-height: 1;
 }
 
-.monthly-integrated-formula p,
-.monthly-integrated-formula small {
+.monthly-integrated-formula p {
   margin: 0;
   color: var(--ink-soft);
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-.monthly-integrated-formula p {
-  grid-column: 1 / -1;
+  font-size: 13px;
+  line-height: 1.35;
+  grid-column: auto;
   font-weight: 850;
-}
-
-.monthly-integrated-formula small {
-  grid-column: 1 / -1;
-  color: var(--muted);
+  overflow-wrap: anywhere;
 }
 
 .score-meter i,
 .score-meter b {
   display: block;
-  height: 6px;
+  height: 7px;
   border-radius: 999px;
 }
 
@@ -6618,7 +6657,7 @@ body,
 .care-gate-card span,
 .monthly-care-gate b {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -6627,13 +6666,13 @@ body,
 .care-gate-card strong,
 .monthly-care-gate span {
   color: var(--ink);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .care-gate-card small,
 .monthly-care-gate em {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   font-style: normal;
 }
 
@@ -6648,7 +6687,11 @@ body,
   flex-wrap: wrap;
   gap: 8px 12px;
   align-items: center;
-  margin-top: 10px;
+  justify-self: end;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  margin-top: 0;
   padding: 9px 11px;
 }
 
@@ -6656,6 +6699,106 @@ body,
   border-style: dashed;
   background: var(--panel-soft);
   opacity: 0.86;
+}
+
+/* PPT crop surface: the live monthly values, without dashboard chrome or
+   explanatory copy. It is intentionally wide and shallow so it stays legible
+   after being reduced into the deck's top evidence slot. */
+.monthly-capture-page {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: #eef3fa;
+}
+
+.monthly-capture-card {
+  display: grid;
+  grid-template-columns: 155px minmax(0, 1fr) 48px 220px;
+  gap: 14px;
+  align-items: stretch;
+  width: 1200px;
+  height: 320px;
+  box-sizing: border-box;
+  padding: 18px;
+  border: 1px solid #d9e3f1;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 12px 34px rgba(31, 54, 90, 0.1);
+}
+
+.monthly-capture-month,
+.monthly-capture-result {
+  display: grid;
+  align-content: center;
+  gap: 7px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: #f5f8fc;
+}
+
+.monthly-capture-month span,
+.monthly-capture-result span {
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.monthly-capture-month strong {
+  color: var(--ink);
+  font-size: 27px;
+  line-height: 1;
+}
+
+.monthly-capture-month small,
+.monthly-capture-result small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.monthly-capture-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.monthly-capture-metrics .score-meter {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+}
+
+.monthly-capture-arrow {
+  align-self: center;
+  width: 48px;
+  height: 48px;
+  color: var(--blue);
+  stroke-width: 2.5;
+}
+
+.monthly-capture-result {
+  border: 1px solid rgba(11, 99, 246, 0.24);
+  background: #edf5ff;
+}
+
+.monthly-capture-result strong {
+  color: var(--blue);
+  font-size: 44px;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+@media (max-width: 980px) {
+  .monthly-capture-card {
+    grid-template-columns: 1fr;
+  }
+  .monthly-capture-arrow {
+    transform: rotate(90deg);
+    justify-self: center;
+  }
 }
 
 /* Rendered as a real (translatable) element instead of CSS content, so the

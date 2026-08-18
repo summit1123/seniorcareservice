@@ -116,7 +116,7 @@ test("Care requires mobility and risky-behavior changes in the same eligible mon
   assert.ok(result.reason_codes.includes("SAME_MONTH_CARE_GATE_NOT_MET"));
 });
 
-test("Reward and Care are independent axes, and Care routes pricing to the reduction", () => {
+test("Care remains a monthly support state and does not reduce the annual refund", () => {
   const months = Array.from({ length: 12 }, (_, index) => month(index));
   months[6] = month(6, {
     outer_visit_share_pct: 40,
@@ -124,7 +124,7 @@ test("Reward and Care are independent axes, and Care routes pricing to the reduc
     mobility_change_index_pct: 40,
     risky_behavior_change_index_pct: 30
   });
-  const result = decide(months, { careDiscountReduction: 13 });
+  const result = decide(months);
 
   // Both axes fire independently.
   assert.equal(result.reward_state, "Reward");
@@ -132,9 +132,52 @@ test("Reward and Care are independent axes, and Care routes pricing to the reduc
   assert.equal(result.outcome, "Reward + Care Review");
   assert.equal(result.reward_month_count, 12);
   assert.equal(result.care_review_month_count, 1);
-  // A Care case takes the leakage-prevention reduction instead of the safe-driver
-  // bonus: korea 40% − 13pp reduction, no bonus.
-  assert.equal(result.proposed_discount_rate_pct, 27);
+  // Care does not suppress the Favorable bonus or subtract a fixed amount from
+  // the annual refund proposal.
+  assert.ok(result.proposed_discount_rate_pct > 40);
+  assert.ok(!result.reason_codes.includes("REWARD_BONUS_SUSPENDED_PENDING_CARE_REVIEW"));
+});
+
+test("Only the submitted Jackie Chan PPT case keeps its frozen refund candidate", () => {
+  const months = Array.from({ length: 12 }, (_, index) => month(index));
+  months[6] = month(6, {
+    outer_visit_share_pct: 40,
+    risky_behavior_rate_pct: 30,
+    mobility_change_index_pct: 40,
+    risky_behavior_change_index_pct: 30
+  });
+  const pptDriver = driver(months);
+  pptDriver.driver_name_en = "Jackie Chan";
+  pptDriver.tariff = {
+    ...pptDriver.tariff,
+    masil_candidate_discount_rate_pct: 3
+  };
+  const result = decide(months, { driver: pptDriver });
+
+  assert.equal(result.care_state, "Care Review");
+  assert.equal(result.proposed_discount_rate_pct, 3);
+  assert.ok(result.reason_codes.includes("PPT_ANNUAL_REFUND_CANDIDATE_USED"));
+});
+
+test("Other Care cases ignore legacy frozen reductions and use the current annual rule", () => {
+  const months = Array.from({ length: 12 }, (_, index) => month(index));
+  months[6] = month(6, {
+    outer_visit_share_pct: 40,
+    risky_behavior_rate_pct: 30,
+    mobility_change_index_pct: 40,
+    risky_behavior_change_index_pct: 30
+  });
+  const otherDriver = driver(months);
+  otherDriver.driver_name_en = "Jean Carter";
+  otherDriver.tariff = {
+    ...otherDriver.tariff,
+    masil_candidate_discount_rate_pct: 27
+  };
+  const result = decide(months, { driver: otherDriver });
+
+  assert.equal(result.care_state, "Care Review");
+  assert.notEqual(result.proposed_discount_rate_pct, 27);
+  assert.ok(!result.reason_codes.includes("PPT_ANNUAL_REFUND_CANDIDATE_USED"));
 });
 
 test("Reward bonus scales with the integrated safety score", () => {

@@ -59,7 +59,9 @@ const DEFAULT_RULES: ProductRules = {
   care_risky_behavior_threshold: 20,
   reward_discount_rate_pct: 7,
   reward_bonus_floor_pct: 1,
-  care_discount_reduction_pct: 13,
+  // Legacy payload compatibility only. Care is a monthly support state and
+  // does not reduce the annual refund in the final presentation contract.
+  care_discount_reduction_pct: 0,
   candidate_discount_cap_pct: 45
 };
 
@@ -458,7 +460,10 @@ function normalizeRules(root: JsonRecord): ProductRules {
     ),
     reward_discount_rate_pct: number(first(product, ["reward_discount_rate_pct", "reward_bonus_discount_rate_pct"]), DEFAULT_RULES.reward_discount_rate_pct),
     reward_bonus_floor_pct: number(first(product, ["reward_bonus_floor_pct"]), DEFAULT_RULES.reward_bonus_floor_pct ?? 1),
-    care_discount_reduction_pct: number(first(product, ["care_discount_reduction_pct"]), DEFAULT_RULES.care_discount_reduction_pct ?? 0),
+    // Ignore the legacy Care-to-refund reduction even if an older generated
+    // artifact still carries it. The final PPT treats Care and annual refund
+    // as separate outputs.
+    care_discount_reduction_pct: 0,
     candidate_discount_cap_pct: number(first(product, ["candidate_discount_cap_pct", "discount_cap_pct"]), DEFAULT_RULES.candidate_discount_cap_pct)
   };
 }
