@@ -70,7 +70,7 @@ const reasonLabels: Record<string, string> = {
   REWARD_REQUIRED_MONTHS_MET: "우대 충족월 기준 통과",
   REWARD_REQUIRED_MONTHS_NOT_MET: "우대 충족월 기준 미달",
   SAME_MONTH_CARE_GATE_MET: "같은 달 이동·위험행동 동시변화",
-  REWARD_BONUS_SUSPENDED_PENDING_CARE_REVIEW: "케어 검토 진행 중",
+  PPT_ANNUAL_REFUND_CANDIDATE_USED: "발표용 연간 환급 후보값",
   SAME_MONTH_CARE_GATE_NOT_MET: "동시변화 게이트 미충족",
   CANDIDATE_LIVING_ZONE: "후보 생활권 관찰",
   HARSH_BRAKE_INCREASE: "급감속 증가",
@@ -193,7 +193,9 @@ function App() {
     : null;
   const [directory, setDirectory] = useState<PersonaDirectoryResponse | null>(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState("gaip-051");
-  const [pageMode, setPageMode] = useState<PageMode>("overview");
+  // The live presentation opens on the Jackie Chan case. The design overview
+  // remains one click away for judges who want to inspect the model structure.
+  const [pageMode, setPageMode] = useState<PageMode>("profiles");
   const [driver, setDriver] = useState<DriverAnnualSummary | null>(null);
   const [monthlyEvidence, setMonthlyEvidence] = useState<MonthlyEvidence[]>([]);
   const [selectedMonth, setSelectedMonth] = useState(1);
@@ -355,8 +357,8 @@ function App() {
         <div className="brand-block">
           <div>
             <p className="eyebrow">FOURSURE · MASIL · GAIP Insurance Innovation Competition 2026</p>
-            <h1>{t("시니어 생활권 기반 보험 설계 대시보드")}</h1>
-            <p>{t("한국 마일리지 특약을 참조하되, 반복 생활권과 운전행동의 변화를 분리해 혜택과 예방 케어 검토 근거를 제안합니다.")}</p>
+            <h1>{t("Senior MASIL Zone Rider 대시보드")}</h1>
+            <p>{t("월별 4개 지표를 통합점수와 3단계로 연결하고, 12개월 결과로 연간 환급을 제안합니다.")}</p>
           </div>
         </div>
         <div className="header-actions">
@@ -364,19 +366,19 @@ function App() {
             <div className="page-switch" aria-label={t("페이지 전환")}>
               <button
                 type="button"
-                className={pageMode === "overview" ? "active" : ""}
-                onClick={() => setPageMode("overview")}
-                aria-current={pageMode === "overview" ? "page" : undefined}
-              >
-                {t("설계구조")}
-              </button>
-              <button
-                type="button"
                 className={pageMode === "profiles" ? "active" : ""}
                 onClick={() => setPageMode("profiles")}
                 aria-current={pageMode === "profiles" ? "page" : undefined}
               >
                 {t("프로필 분석")}
+              </button>
+              <button
+                type="button"
+                className={pageMode === "overview" ? "active" : ""}
+                onClick={() => setPageMode("overview")}
+                aria-current={pageMode === "overview" ? "page" : undefined}
+              >
+                {t("설계구조")}
               </button>
             </div>
             <div className="lang-switch" role="group" aria-label={t("언어 선택")}>
@@ -405,8 +407,8 @@ function App() {
           </div>
           <div className="contract-box">
             <span>{t("데모 범위")}</span>
-            <strong>{t("합성 시뮬레이션 · 사람 검토 지원")}</strong>
-            <small>{t("2개월 기준선 + 12개월 평가 · 실제 요율 아님")}</small>
+            <strong>{t("합성 데이터 · 고정 규칙 · 사람 승인")}</strong>
+            <small>{t("2개월 기준선 + 12개월 평가 · 실제 환급률 아님")}</small>
           </div>
         </div>
       </header>
@@ -604,7 +606,7 @@ function PersonaMatrix({ summaries }: { summaries: PersonaSummary[] }) {
             </div>
             <p className="persona-decisions">{formatDecisionCounts(summary.decision_counts)}</p>
             <small className="persona-rate">
-              {tf("요율 {a}% → {b}%", { a: numberFormatter.format(summary.avg_existing_discount_rate_pct), b: numberFormatter.format(summary.avg_proposed_discount_rate_pct) })}
+              {tf("환급률 {a}% → {b}%", { a: numberFormatter.format(summary.avg_existing_discount_rate_pct), b: numberFormatter.format(summary.avg_proposed_discount_rate_pct) })}
             </small>
           </div>
         ))}
@@ -622,7 +624,6 @@ const referenceProductRules: ProductRules = {
   care_risky_behavior_threshold: 20,
   reward_discount_rate_pct: 7,
   reward_bonus_floor_pct: 1,
-  care_discount_reduction_pct: 13,
   candidate_discount_cap_pct: 45
 };
 
@@ -674,12 +675,6 @@ function ScenarioControlPanel({
       rules: referenceProductRules
     },
     {
-      id: "revenue-neutral",
-      label: t("총액 중립 · 보너스 4%p"),
-      hint: t("보너스 상한만 7→4%p로 — 180건 평균 할인 델타 +0.02%p, 재분배(최고위험군 회수)는 유지"),
-      rules: { ...referenceProductRules, reward_discount_rate_pct: 4.0 }
-    },
-    {
       id: "intl-conservative",
       label: t("국제 예시 A · 보수적"),
       hint: t("우대 문턱을 높이고 케어를 더 민감하게 보는 시장 가정"),
@@ -726,7 +721,7 @@ function ScenarioControlPanel({
         </div>
       </div>
       <div className="sandbox-layout">
-        <span className="sandbox-axis-label">{t("① 우대 점수 가중치 — 4개 지표를 어떤 비율로 섞을지 (합계 100%로 재정규화)")}</span>
+        <span className="sandbox-axis-label">{t("① 월 통합점수 가중치 — 4개 지표를 어떤 비율로 합칠지 (합계 100%)")}</span>
         <div className="sandbox-weight-grid">
           {weightRows.map((row) => (
             <label key={row.key}>
@@ -743,27 +738,27 @@ function ScenarioControlPanel({
             </label>
           ))}
         </div>
-        <span className="sandbox-axis-label">{t("② 우대 축 임계 — 위 점수를 우대로 인정하는 기준")}</span>
+        <span className="sandbox-axis-label">{t("② Favorable 기준 — 월 점수를 Favorable로 인정하는 기준")}</span>
         <div className="sandbox-threshold-grid">
           <RuleNumber label={t("우대 점수")} helper={t("통합점수가 이 값 이상인 달을 우대 후보로 봄")} value={rules.reward_score_threshold} min={50} max={95} onChange={(value) => updateRule("reward_score_threshold", value)} />
           <RuleNumber label={t("우대 충족월")} helper={t("12개월 중 우대 점수를 넘긴 달이 이만큼 있어야 연간 우대")} value={rules.reward_required_months} min={1} max={12} suffix={t("개월")} onChange={(value) => updateRule("reward_required_months", value)} />
           <RuleNumber label={t("최소 데이터")} helper={t("이 커버리지 미만이면 판단 보류(불이익 없음)")} value={rules.minimum_data_coverage_pct} min={50} max={100} suffix="%" onChange={(value) => updateRule("minimum_data_coverage_pct", value)} />
         </div>
-        <span className="sandbox-axis-label care">{t("③ 케어 축 게이트 — 직전 2개월 대비 두 변화가 같은 달 동시 급증하면 발동, 원래 생활로 복귀할 때까지 유지")}</span>
+        <span className="sandbox-axis-label care">{t("③ Care 기준 — 직전 2개월 대비 이동 변화와 위험행동 변화가 같은 달 함께 나타날 때")}</span>
         <div className="sandbox-threshold-grid">
           <RuleNumber label={t("이동 변화 임계")} helper={t("기준선 대비 생활권 밖 비중 상승폭이 이 값을 넘어야 케어 후보")} value={rules.care_mobility_change_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_mobility_change_threshold", value)} />
           <RuleNumber label={t("위험행동 변화 임계")} helper={t("기준선 대비 위험행동 상승폭 — 이동 변화와 함께 넘어야 케어")} value={rules.care_risky_behavior_threshold} min={0} max={100} suffix="%" onChange={(value) => updateRule("care_risky_behavior_threshold", value)} />
           <div className="rule-static" title={t("케어 검토 진행 중")}>
             <span>{t("케어 결합 규칙 (선언값)")}</span>
             <strong>{t("사람 검토로 연결")}</strong>
-            <small>{t("케어는 요율 축이 아니라 검토·지원 축입니다 — 감지되면 사람이 검토하고 예방 지원으로 연결합니다")}</small>
+            <small>{t("Care는 그달의 예방지원 상태입니다. 다음 달은 다시 같은 기준으로 평가하며, Care 자체가 연간 환급을 자동으로 줄이지 않습니다.")}</small>
           </div>
         </div>
       </div>
       <div className="sandbox-live" aria-live="polite">
         <div className="sandbox-live-head">
           <span className="sandbox-live-title">{t("지금 규칙으로 다시 계산한 180개 사례")}</span>
-          <span className="sandbox-live-avg">{t("제안 평균 할인율 ")}<strong>{percent(avgDiscount)}</strong></span>
+          <span className="sandbox-live-avg">{t("제안 평균 환급률 ")}<strong>{percent(avgDiscount)}</strong></span>
         </div>
         <div className="sandbox-live-bar" role="img" aria-label={tf("우대 {reward}, 기본 {neutral}, 예방 케어 {care}, 판단 보류 {hold}", { reward: liveReward, neutral: liveNeutral, care: liveCare, hold: liveHold })}>
           {liveReadout.map((seg) =>
@@ -855,42 +850,42 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
         </div>
         <div>
           <span>{t("제안 차별점")}</span>
-          <strong>{t("우대와 예방 케어 검토를 서로 독립된 두 축으로 설계합니다")}</strong>
-          <p>{t("안전운전은 혜택(우대)으로 인정하고, 같은 달 이동 변화와 위험행동 변화가 함께 나타날 때만 사람에게 예방 케어 검토를 제안합니다.")}</p>
+          <strong>{t("월별 4개 지표를 통합점수와 3단계로 연결합니다")}</strong>
+          <p>{t("월 통합점수는 Favorable·Standard·Care를 구분하고, 12개월 점수는 연간 환급 제안으로 이어집니다.")}</p>
           <p className="stakes-line">{t("예방 케어는 처벌이 아니라 조기 개입입니다 — 심각한 사고가 나기 전에 담당자가 가족·의료·이동지원과 연결할 근거를 만드는 것이 목표입니다.")}</p>
         </div>
         <div>
           <span>{t("검증 결과")}</span>
           <strong>{t("도심·교외·광역 저밀도 환경에서도 동일한 안전 원칙을 검증합니다")}</strong>
-          <p>{t("결과는 합성 시나리오의 일관성과 예외 처리를 보여주는 것이며, 실제 사고감소·손해율·확정 요율을 뜻하지 않습니다.")}</p>
+          <p>{t("결과는 합성 시나리오에서 상품 논리의 일관성과 예외 처리를 확인한 것입니다. 실제 사고감소·손해율·최종 환급률은 파일럿에서 검증합니다.")}</p>
         </div>
       </div>
 
       <div className="risk-hypothesis">
         <span className="eyebrow">{t("위험 가설")}</span>
-        <strong>{t("익숙한 생활권은 안전 신호, 반경 급확대와 행동 변화는 위험 신호입니다")}</strong>
-        <p>{t("노인 운전자는 익숙한 반복 경로·시간대에서 사고 빈도가 낮습니다. 반대로 생활권 반경이 갑자기 넓어지면서 급감속·과속이 함께 늘어나는 것은 인지·신체 기능 저하가 드러나는 알려진 전조입니다. 그래서 얼마나 탔는지가 아니라, 어디를 어떻게, 어떻게 달라지며 타는지를 봅니다.")}</p>
+        <strong>{t("익숙함은 개인마다 다르므로, 각자의 기준선에서 변화를 봅니다")}</strong>
+        <p>{t("처음 가는 길은 더 많은 주의가 필요한 맥락이지만, 생활권 밖이라는 위치만으로 불이익을 주지는 않습니다. 실제 안전운전과 평소 대비 변화를 함께 봅니다.")}</p>
         <p className="hypothesis-note">{t("이 가설의 계산 가능성과 예외 처리를 합성 데이터로 검증하며, 실제 사고·손해율 상관은 별도 실증이 필요합니다.")}</p>
       </div>
 
       <div className="experiment-structure">
         <span className="eyebrow">{t("데이터 실험 구조")}</span>
-        <strong>{t("AI 에이전트가 각 시니어의 삶으로 주행 데이터를 만들고, 결정론 엔진이 유형을 모른 채 분석합니다")}</strong>
+        <strong>{t("근거 기반 표본 프로필로 주행 데이터를 만들고, 고정 규칙으로 상품 논리를 검증합니다")}</strong>
         <div className="experiment-structure-grid">
           <div className="es-step">
-            <b>{t("1 · 추론 — AI 에이전트")}</b>
-            <p>{t("페르소나의 생활 맥락(가구·취미·목표·운전 습관)에서 14개월간 어디를·어떤 리듬으로·언제부터 다르게 다니는지를 추론해, 이름 있는 생활권과 변화 시점을 만듭니다.")}</p>
+            <b>{t("1 · 표본 프로필과 주행 로그")}</b>
+            <p>{t("6개 시니어 유형과 공개 운전 기준·사고 통계를 참고해 3개 지역의 14개월 합성 주행 로그를 만듭니다.")}</p>
           </div>
           <div className="es-step">
             <b>{t("2 · 분석 — 결정론 엔진")}</b>
-            <p>{t("생성된 방문 데이터를 유형 라벨 없이 그대로 받아 실제 DBSCAN 군집·생활권 반경·통합 점수·같은 달 동시 게이트로 판정합니다. 결과는 엔진에서 창발하며 목표값을 심지 않습니다.")}</p>
+            <p>{t("DBSCAN과 P90으로 개인별 MASIL Zone을 만들고, 4개 점수와 3단계를 고정된 설명 가능 규칙으로 계산합니다.")}</p>
           </div>
           <div className="es-step">
             <b>{t("3 · 검증 — 재현 가능")}</b>
-            <p>{t("에이전트 생성물은 오프라인에서 한 번 만들어 캐시·고정하므로 데모는 완전히 결정론적이고 재현 가능합니다. 60명 전원이 아키타입 경향과 검증 게이트를 통과하는지 확인합니다.")}</p>
+            <p>{t("같은 입력에는 같은 결과가 나오도록 180개 시나리오의 계산 재현성과 예외 처리를 확인합니다.")}</p>
           </div>
         </div>
-        <p className="experiment-structure-note">{t("추론(무엇을)과 분석(어떻게 판정)을 분리한 구조입니다. 아키타입 경향은 실험의 통제변수이고, 위험 크기는 엔진이 관리하므로 라벨 유출 없이 결과가 창발합니다.")}</p>
+        <p className="experiment-structure-note">{t("합성 데이터는 상품 로직을 검증하기 위한 표본입니다. 실제 사고 감소·손해율·최종 환급률은 실데이터 파일럿에서 검증합니다.")}</p>
       </div>
 
       <div className="buyer-trust">
@@ -903,14 +898,14 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
           </div>
           <div>
             <b>{t("감시가 아닌 존중")}</b>
-            <p>{t("어디를 가든 위치만으로는 감점하지 않고, 원본 좌표를 저장하거나 노출하지 않습니다. 텔레매틱스를 지켜봐 주는 장치로 느끼게 하는 프라이버시·설명가능 설계입니다.")}</p>
+            <p>{t("어디를 가든 위치만으로 감점하지 않습니다. 목적지 이름은 가리고, 최소 수집과 권한 분리 원칙으로 필요한 정보만 다룹니다.")}</p>
           </div>
           <div>
             <b>{t("가족의 안심")}</b>
             <p>{t("이동과 위험행동이 같은 달에 함께 나빠질 때만, 처벌이 아니라 조기 개입 신호를 사람에게 전합니다. 부모의 운전을 걱정하는 가족이 믿고 맡길 수 있는 근거입니다.")}</p>
           </div>
         </div>
-        <p className="buyer-trust-note">{t("빠르게 늘어나는 고령 운전자는 저평가·과소보장되기 쉬운 세그먼트입니다. 행동 기반의 공정한 가격으로 이들을 다시 보험 안으로 초대하는 것이 이 설계의 목표입니다.")}</p>
+        <p className="buyer-trust-note">{t("운전을 제한하기보다 개인별 위험을 더 정확히 보고, 안전한 이동을 오래 유지하도록 돕는 것이 이 설계의 목표입니다.")}</p>
       </div>
 
       <div className="comparison-ledger" aria-label={t("기존 마일리지와 제안 산식 비교표")}>
@@ -921,18 +916,18 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
         </div>
         <ComparisonLedgerRow
           label={t("판단 기준")}
-          legacy={t("연간 주행거리와 차종으로 할인율 결정")}
+          legacy={t("연간 주행거리 구간으로 환급률 결정")}
           proposed={t("주행거리 + 생활권 안/밖 안전 + 패턴 안정성")}
         />
         <ComparisonLedgerRow
           label={t("같은 저주행 구간 처리")}
-          legacy={t("같은 거리구간이면 생활권 변화와 관계없이 같은 할인율")}
-          proposed={t("우대는 안전 점수로, 예방 케어는 같은 달 두 변화지표의 동시 충족 조건으로 별도 계산")}
+          legacy={t("같은 거리구간이면 행동 차이와 관계없이 같은 환급")}
+          proposed={t("4개 지표의 월 통합점수로 Favorable·Standard·Care를 구분")}
         />
         <ComparisonLedgerRow
-          label={t("연간 할인 계산")}
-          legacy={t("거리구간 할인율을 그대로 적용")}
-          proposed={t("한국 할인표를 참조하고 후보 가중치·임계치의 민감도만 비교")}
+          label={t("연간 환급 계산")}
+          legacy={t("거리구간 환급률을 그대로 적용")}
+          proposed={t("12개월 점수의 연간 평균과 Favorable 누적을 환급 제안에 반영")}
         />
         <ComparisonLedgerRow
           label={t("설명 가능성")}
@@ -943,7 +938,7 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
 
       <div className="overview-evidence-grid">
         <div className="decision-donut-card">
-          <span>{t("제안 산식의 판정 구조 · 2축 → 4상태")}</span>
+          <span>{t("월 통합점수의 3단계 결과")}</span>
           <div className="decision-donut-wrap">
             <div className="decision-donut" style={{ background: donutBackground }}>
               <div>
@@ -952,16 +947,16 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
               </div>
             </div>
             <div className="decision-donut-legend">
-              <DecisionLegend label={tf("우대 {count}", { count: preferredCount })} detail={t("우대 축 · 안전 인정")} className="preferred" />
+              <DecisionLegend label={tf("우대 {count}", { count: preferredCount })} detail={t("월 점수 · 안전 인정")} className="preferred" />
               <DecisionLegend label={tf("기본 {count}", { count: standardCount })} detail={t("변화 낮음 · 중립")} className="standard" />
-              <DecisionLegend label={tf("예방 케어 {count}", { count: careCount })} detail={t("케어 축 · 사람 검토")} className="care" />
+              <DecisionLegend label={tf("예방 케어 {count}", { count: careCount })} detail={t("동시변화 · 사람 검토")} className="care" />
               {holdCount ? (
                 <DecisionLegend label={tf("판단 보류 {count}", { count: holdCount })} detail={t("근거 부족 · 불이익 없음")} className="hold" />
               ) : null}
             </div>
           </div>
           <p className="portfolio-footnote">
-            {t("안전운전 인정(우대 축)과 예방 케어 검토(케어 축)를 독립된 두 축으로 계산하면, 두 축의 조합이 우대·기본·예방 케어·판단 보류의 네 상태로 나타납니다. 기준이 다른 시장에서도 같은 엔진이 두 축을 그대로 다시 계산합니다.")}
+            {t("4개 지표의 월 통합점수는 Favorable·Standard·Care로 표시합니다. Hold는 네 번째 위험등급이 아니라, 근거가 부족해 판단을 미루는 상태입니다.")}
           </p>
         </div>
 
@@ -969,28 +964,28 @@ function OverviewComparisonPanel({ directory }: { directory: PersonaDirectoryRes
           <span>{t("국내 기준 A/B 시뮬레이션 · 180개 사례")}</span>
           <strong>{t("총액을 맞춰 끼운 값이 아니라, 두 산식을 각각 계산한 결과입니다")}</strong>
           <p>
-            {t("같은 인물 60명(6개 유형 × 10명)을 3개 이동환경에서 각각 시뮬레이션한 180개 사례의 연간 주행 데이터를, 기존 마일리지 산식과 제안 통합 산식에 각각 넣어 비교했습니다. 실제 계약보험료를 확정하지 않은 단계이므로, 평균 할인율과 우대·기본·예방 케어 판정 구조를 중심으로 검증합니다.")}
+            {t("같은 인물 60명(6개 유형 × 10명)을 3개 이동환경에서 각각 시뮬레이션한 180개 사례의 연간 주행 데이터를, 기존 마일리지 산식과 제안 통합 산식에 각각 넣어 비교했습니다. 이 단계에서는 평균 환급률과 Favorable·Standard·Care 판정 구조를 검증합니다.")}
           </p>
-          <p className="business-case-line">{t("제안 산식은 평균 할인을 소폭 늘리지만, 저평가된 시니어 세그먼트의 획득·유지와 케어 축의 중대 클레임 조기 차단으로 상쇄하는 구조입니다. 손해율 효과는 별도 실증이 필요합니다.")}</p>
+          <p className="business-case-line">{t("제안 산식은 비슷한 주행거리 안의 위험 차이를 더 세밀하게 구분합니다. 조기 예방지원이 실제 사고와 손해율을 얼마나 줄이는지는 파일럿에서 검증합니다.")}</p>
           <div className="budget-compare-grid no-money">
             <div>
-              <span>{t("기존 평균 할인율")}</span>
+              <span>{t("기존 평균 환급률")}</span>
               <strong>{percent(summary.avg_existing_discount_rate_pct)}</strong>
               <small>{t("연간 주행거리 구간 기준")}</small>
             </div>
             <div>
-              <span>{t("제안 평균 할인율")}</span>
+              <span>{t("제안 평균 환급률")}</span>
               <strong>{percent(summary.avg_proposed_discount_rate_pct)}</strong>
               <small>{t("4개 지표 통합점수 기준")}</small>
             </div>
             <div>
               <span>{t("기존 대비 평균 차이")}</span>
               <strong>{signedPercentPoint(avgRateDelta)}</strong>
-              <small>{t("일괄 인상이 아니라 재분배의 순효과 — 최고위험군(동시변화형)에서 11.6%p를 회수해 안전군에 배분. 보너스 상한 4%p면 총액 중립(선언 파라미터). 손해율 효과는 별도 실증.")}</small>
+              <small>{t("4개 지표와 연간 점수로 환급 후보를 다시 배분한 합성 비교")}</small>
             </div>
           </div>
           <p className="portfolio-footnote">
-            {t("합성 시뮬레이션 결과입니다. 실제 요율·인수·케어 결정은 계리·상품·심사 권한자의 검토 없이 확정하지 않습니다. 기준을 다른 시장 값으로 바꾸면 아래 상품 샌드박스가 180개 사례를 즉시 다시 계산합니다.")}
+            {t("합성 시뮬레이션 결과입니다. 실제 환급률·인수·케어 결정은 계리·상품·심사 권한자의 검토 없이 확정하지 않습니다. 기준을 바꾸면 아래 상품 샌드박스가 180개 사례를 다시 계산합니다.")}
           </p>
         </div>
       </div>
@@ -1249,7 +1244,7 @@ function DecisionSummaryCard({
         })()}
 
         <div className={`premium-delta-block ${care.className}`}>
-          <span>{tf("선택 월 {month} 케어 축", { month: selectedRow?.service_month ?? tf("{n}월", { n: selectedMonth }) })}</span>
+          <span>{tf("선택 월 {month} Care 상태", { month: selectedRow?.service_month ?? tf("{n}월", { n: selectedMonth }) })}</span>
           <strong>{stateLabelKo(selectedCare === "None" ? "미충족" : selectedCare)}</strong>
           <small>{t("같은 달 이동 변화와 위험행동 변화가 함께 있을 때만")}</small>
         </div>
@@ -1278,7 +1273,7 @@ function DecisionProcessFrame({
   rules: ProductRules | null;
 }) {
   if (!driver) {
-    return <InspectorState title={t("판단 과정 대기")} detail={t("사례를 선택하면 할인 보정 과정이 표시됩니다.")} />;
+    return <InspectorState title={t("판단 과정 대기")} detail={t("사례를 선택하면 월별 점수와 연간 환급 과정이 표시됩니다.")} />;
   }
 
   const comparison = driver.ab_comparison;
@@ -1314,7 +1309,7 @@ function DecisionProcessFrame({
     {
       title: t("연간 점수와 환급"),
       value: tf("{score}점 · 환급률 {rate}%", { score: numberFormatter.format(comparison.annual_senior_safe_mileage_score), rate: numberFormatter.format(comparison.proposed_discount_rate_pct) }),
-      detail: t("4개 지표가 통합점수를 만들고, 사람 검토 후 환급 제안에 반영"),
+      detail: t("12개월의 월 통합점수를 평균해 연간 환급 제안에 반영"),
       icon: AlertTriangle
     }
   ];
@@ -1323,9 +1318,9 @@ function DecisionProcessFrame({
     <section className="decision-process-frame" aria-label={t("상품 근거와 사람 검토 과정")}>
       <div className="decision-process-copy">
         <p className="eyebrow">{t("판단 과정")}</p>
-        <h2>{t("같은 저주행이라도 생활권 밖 위험변화가 있으면 다른 결론이 납니다")}</h2>
+        <h2>{t("월별 Care 신호와 연간 환급은 서로 다른 역할을 합니다")}</h2>
         <p>
-          {t("생활권 밖 이동 자체는 중립입니다. 혜택(우대)은 안전운전 근거로 계산하고, 같은 달 이동 맥락과 위험행동이 동시에 달라질 때만 사람에게 예방 케어 검토를 제안합니다.")}
+          {t("매월 4개 지표로 점수와 상태를 확인합니다. 이동 맥락과 위험행동이 함께 달라지면 Care를 제안하지만, Care 자체가 환급률을 낮추지는 않습니다. 연간 환급은 12개월 점수를 기준으로 별도 계산합니다.")}
         </p>
       </div>
       <div className="process-rail">
@@ -1395,8 +1390,8 @@ function LivingZoneDecisionMap({
       {driver.mobility_profile && driver.mobility_profile.zones.length ? (
         <div className="agent-mobility">
           <div className="agent-mobility-head">
-            <span className="eyebrow">{t("AI 에이전트가 추론한 생활 동선")}</span>
-            <span className="agent-badge">{t("오프라인 생성 · 캐시 · 결정론 엔진이 유형 모른 채 분석")}</span>
+            <span className="eyebrow">{t("근거 기반 샘플 생활 동선")}</span>
+            <span className="agent-badge">{t("합성 데이터 · 고정 규칙으로 분석")}</span>
           </div>
           {localeText(driver.mobility_profile.reasoning_ko, driver.mobility_profile.reasoning_en) ? (
             <p className="agent-reasoning">{localeText(driver.mobility_profile.reasoning_ko, driver.mobility_profile.reasoning_en)}</p>
@@ -1416,7 +1411,7 @@ function LivingZoneDecisionMap({
               {localeText(driver.mobility_profile.change_trigger_ko, driver.mobility_profile.change_trigger_en)}
             </p>
           ) : null}
-          <p className="agent-mobility-note">{t("이 동선은 AI가 페르소나 맥락으로 생성한 합성 데이터이며, 실제 위치·인물이 아닙니다. 좌표는 결정론 엔진 내부에서만 쓰이고 화면에 노출되지 않습니다.")}</p>
+          <p className="agent-mobility-note">{t("이 동선은 공개 통계와 문헌을 참고해 만든 합성 사례이며, 실제 위치·인물이 아닙니다. 화면에는 목적지 이름 대신 판정에 필요한 근거만 표시합니다.")}</p>
         </div>
       ) : null}
 
@@ -1464,7 +1459,7 @@ function AnalysisTabs({
     { key: "Overview", label: t("요약") },
     { key: "Monthly Pattern", label: t("월별 패턴") },
     { key: "Risk Signals", label: t("위험 신호") },
-    { key: "Premium Simulation", label: t("요율 샌드박스") },
+    { key: "Premium Simulation", label: t("환급 시뮬레이션") },
     { key: "Algorithm Lab", label: t("알고리즘 실험실") }
   ];
 
@@ -1647,7 +1642,7 @@ function FormulaSubstitution({ driver, selectedRow, rules }: { driver: DriverAnn
           <em>{stateLabelKo(selectedRow.reward_state ?? "Neutral")}</em>
         </div>
       </div>
-      <p className="formula-substitution-note">{t("선택 월의 4개 지표 점수에 상품 가중치를 적용해 통합 근거점수를 만들고, 기존 마일리지 요율과 제안 산식 요율을 비교합니다. 요율은 예시이며 최종 보험료가 아닙니다.")}</p>
+      <p className="formula-substitution-note">{t("선택 월의 4개 지표를 합쳐 월 통합점수를 만들고, 12개월 점수를 모아 연간 환급을 제안합니다. 표시된 환급률은 합성 시나리오의 예시입니다.")}</p>
     </div>
   );
 }
@@ -1690,7 +1685,7 @@ function PremiumSimulation({ driver }: { driver: DriverAnnualSummary }) {
         {rateDelta > 0.05
           ? tf("고객 이득 — 기존 대비 연간 환급률 {pct}%p 확대, 환급액 {amount} 증가", { pct: Math.abs(rateDelta).toFixed(1), amount: krwWithSgd(Math.abs(refundDelta)) })
           : rateDelta < -0.05
-            ? t("후보 민감도 · 확정 요율 아님")
+            ? t("후보 민감도 · 최종 환급률 아님")
             : t("기존 기준과 동일한 수준입니다")}
       </p>
       <MatchedPairTable pair={driver.matched_pair ?? null} />
@@ -1717,8 +1712,8 @@ function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairCompar
         <strong>{t("같은 조건, 다른 행동")}</strong>
         <span>
           {identical
-            ? tf("예시 연 보험료 {base} · 기존 환급률까지 동일 — 기존 제도라면 두 사람의 환급액이 같습니다", { base: sgd(pair.base_premium_krw) })
-            : tf("같은 차종(예시 연 보험료 {base}) · 기존 환급률은 서로 다름", { base: sgd(pair.base_premium_krw) })}
+            ? t("비슷한 연간 주행거리 · 동일한 기존 특약 환급")
+            : t("같은 차종 · 서로 다른 기존 특약 환급")}
         </span>
       </div>
       <table>
@@ -1727,41 +1722,44 @@ function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairCompar
             <th />
             <th>
               <strong className="pair-person-name">{name(pair.self)}</strong>
-              {pair.self.birth_year ? <small className="pair-birth-year">Birth year {pair.self.birth_year}</small> : null}
+              {pair.self.birth_year ? <small className="pair-birth-year">{tf("출생연도 {year}", { year: pair.self.birth_year })}</small> : null}
               <em>{selfTag ?? t("현재 선택")}</em>
             </th>
             <th>
               <strong className="pair-person-name">{name(pair.other)}</strong>
-              {pair.other.birth_year ? <small className="pair-birth-year">Birth year {pair.other.birth_year}</small> : null}
+              {pair.other.birth_year ? <small className="pair-birth-year">{tf("출생연도 {year}", { year: pair.other.birth_year })}</small> : null}
               <em>{otherTag ?? t("대조 사례")}</em>
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th>{t("유형")}</th>
-            {sides.map((side) => <td key={side.driver_id}>{t(side.persona_label)}</td>)}
+          <tr className="pair-section-row">
+            <th colSpan={3}>{t("[현재] 같은 거리 (연간)")}</th>
           </tr>
           <tr>
-            <th>{t("연 주행")}</th>
+            <th>{t("연간 주행거리")}</th>
             {sides.map((side) => <td key={side.driver_id}>{numberFormatter.format(side.annual_distance_km)} km</td>)}
           </tr>
+          <tr className={identical ? "is-same" : undefined}>
+            <th>{t("기존 Pay-As-You-Drive 특약")}</th>
+            {sides.map((side) => (
+              <td key={side.driver_id}>{percent(side.existing_rate_pct)} ({sgd(refundAmount(side.existing_premium_krw))})</td>
+            ))}
+          </tr>
+          <tr className="pair-explainer-row">
+            <td colSpan={3}>{t("같은 거리는 같은 환급을 받습니다")}</td>
+          </tr>
+          <tr className="pair-section-row risk">
+            <th colSpan={3}>{t("[MASIL] 다른 위험 (연간)")}</th>
+          </tr>
           <tr>
-            <th>{t("생활권 밖 비중")}</th>
+            <th>{t("생활권 밖 주행 비중")}</th>
             {sides.map((side) => <td key={side.driver_id}>{percent(side.outer_share_pct)}</td>)}
           </tr>
           <tr>
-            <th>{t("위험행동 · 평가 12개월")}</th>
+            <th>{t("위험 이벤트 · 12개월 평가")}</th>
             {sides.map((side) => (
-              <td key={side.driver_id}>{side.risk_event_count === null ? "—" : tf("{n}건", { n: numberFormatter.format(side.risk_event_count) })}</td>
-            ))}
-          </tr>
-          {/* 갈린 지점이 '생활권 밖'임을 표에서 보이게 한다 — 총 건수만 두면
-              "위험운전 많이 한 사람이 손해"로 읽히고 생활권이 드러나지 않는다. */}
-          <tr>
-            <th>{t("생활권 안 안전점수")}</th>
-            {sides.map((side) => (
-              <td key={side.driver_id}>{side.in_zone_safe_score === null ? t("관측 없음") : numberFormatter.format(side.in_zone_safe_score)}</td>
+              <td key={side.driver_id}>{side.risk_event_count === null ? "—" : numberFormatter.format(side.risk_event_count)}</td>
             ))}
           </tr>
           <tr className="is-pivot">
@@ -1773,24 +1771,18 @@ function MatchedPairTable({ pair, selfTag, otherTag }: { pair: MatchedPairCompar
           <tr>
             <th>{t("연간 평균 점수")}</th>
             {sides.map((side) => (
-              <td key={side.driver_id}>{tf("{n}점", { n: numberFormatter.format(side.integrated_score) })}</td>
-            ))}
-          </tr>
-          <tr className={identical ? "is-same" : undefined}>
-            <th>{identical ? t("기존 마일리지 환급 (동일)") : t("기존 마일리지 환급")}</th>
-            {sides.map((side) => (
-              <td key={side.driver_id}>{percent(side.existing_rate_pct)} · {sgd(refundAmount(side.existing_premium_krw))}</td>
+              <td key={side.driver_id}>{numberFormatter.format(side.integrated_score)}</td>
             ))}
           </tr>
           <tr className="is-strong">
-            <th>{t("MASIL 환급 제안")}</th>
+            <th>{t("MASIL 제안 (환급률)")}</th>
             {sides.map((side) => (
-              <td key={side.driver_id}>{percent(side.proposed_rate_pct)} · {sgd(refundAmount(side.proposed_premium_krw))}</td>
+              <td key={side.driver_id}>{percent(side.proposed_rate_pct)} ({sgd(refundAmount(side.proposed_premium_krw))})</td>
             ))}
           </tr>
         </tbody>
       </table>
-      <p>{t("180개 시나리오 중 같은 차종·비슷한 연 주행(15%p 이내)·비슷한 생활권 밖 비중(5%p 이내)에서 반대 판정을 받은 실측 대조입니다. 조건이 이만큼 겹치는 상대가 없으면 표를 표시하지 않습니다. 요율을 가른 것은 거리·위치가 아니라 행동입니다.")}</p>
+      <p>{t("180개 합성 시나리오에서 주행거리가 비슷한 두 사례를 비교했습니다. 기존 특약은 같은 환급을 주지만, MASIL은 4개 지표로 드러난 위험 차이를 연간 환급 제안에 반영합니다.")}</p>
     </div>
   );
 }
@@ -1819,6 +1811,7 @@ function DecisionPanel({
   if (!driver) return <aside className="decision-panel"><InspectorState title={t("사람 검토 패널")} detail={t("사례를 선택하면 근거와 검토 작업이 표시됩니다.")} /></aside>;
 
   const comparison = driver.ab_comparison;
+  const refundRateDifference = comparison.proposed_discount_rate_pct - comparison.existing_discount_rate_pct;
   const decision = decisionClass(driver.reward_state ?? comparison.annual_decision_signal);
   const selectedRow = rows.find((row) => row.month === selectedMonth);
   const selectedCare = selectedRow?.care_state ?? "None";
@@ -1831,8 +1824,6 @@ function DecisionPanel({
         ? t("개인 기준선 관찰 · 케어 평가 제외")
         : profile?.headline;
   const xaiReasons = topXaiReasons(driver, zoneMap, selectedMonth);
-  const rateDelta = comparison.proposed_discount_rate_pct - comparison.existing_discount_rate_pct;
-
   return (
     <aside className={`decision-panel ${loading ? "is-loading" : ""} ${careReportOpen ? "has-report" : ""}`} aria-label={t("사람 검토 패널")}>
       <div className="decision-panel-head">
@@ -1859,10 +1850,16 @@ function DecisionPanel({
           <strong>{percent(comparison.proposed_discount_rate_pct)}</strong>
           <small>{tf("4개 지표 → 통합점수 {score}점 · 환급액 {amount}", { score: numberFormatter.format(comparison.annual_senior_safe_mileage_score), amount: krwWithSgd(comparison.proposed_discount_amount_krw) })}</small>
         </div>
-        <div className="money-delta">
+        <div className="refund-rate-difference">
           <span>{t("제안 − 기존 환급률 차이")}</span>
-          <strong>{signedPercentPoint(rateDelta)}</strong>
-          <small>{t("후보 민감도 · 확정 요율 아님")}</small>
+          <strong>{refundRateDifference > 0 ? "+" : ""}{numberFormatter.format(refundRateDifference)}%p</strong>
+          <small>
+            {refundRateDifference > 0
+              ? tf("기존 환급률 대비 {pct}%p 높음", { pct: numberFormatter.format(Math.abs(refundRateDifference)) })
+              : refundRateDifference < 0
+                ? tf("기존 환급률 대비 {pct}%p 낮음", { pct: numberFormatter.format(Math.abs(refundRateDifference)) })
+                : t("기존 환급률과 동일")}
+          </small>
         </div>
       </div>
 
@@ -1980,7 +1977,7 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
       <div className="panel-head">
         <div>
           <p className="eyebrow">{t("AI 활용과 상품 검증")}</p>
-          <h2>{t("AI는 보험료를 직접 결정하지 않고, 생활권 생성·후보 산식 탐색·판정 설명을 보조합니다.")}</h2>
+          <h2>{t("AI는 보험료를 결정하지 않습니다. 합성 데이터와 설명을 보조하고, 판정과 환급은 고정 규칙으로 계산합니다.")}</h2>
         </div>
         <span className="count-badge">{t("4개 지표 가중치 비교")}</span>
       </div>
@@ -1988,18 +1985,18 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
       <div className="ai-proof-row" aria-label={t("AI 활용 위치")}>
         <div>
           <span>AI 1</span>
-          <strong>{t("생활권 자동 생성")}</strong>
-          <p>{t("매달 직전 2개월의 목적지를 DBSCAN으로 군집화해 지도를 갱신하고, 개인 P90 반경으로 주차·우회 같은 작은 흔들림을 흡수합니다.")}</p>
+          <strong>{t("합성 주행 데이터 생성")}</strong>
+          <p>{t("표본 운전자 프로필과 공개 기준을 바탕으로 14개월 합성 주행 로그를 만듭니다.")}</p>
         </div>
         <div>
           <span>AI 2</span>
-          <strong>{t("가중치 후보 탐색 · 민감도 검증")}</strong>
-          <p>{t("후보 가중치 탐색·랭킹은 오프라인 1회 산출물로 남겨 감사 가능하며, 채택값 30/30/20/20은 사람이 설계한 초기값입니다. 969개 조합 전수 민감도(결정론 재판정)로 둔감성만 검증합니다 — AI가 가중치를 확정하지 않습니다.")}</p>
+          <strong>{t("고정 규칙 계산 · 민감도 검증")}</strong>
+          <p>{t("DBSCAN·P90과 사람이 정한 가중치로 점수를 계산합니다. 30/30/20/20은 969개 조합 민감도 분석에서 확인한 안정적인 초기 후보입니다.")}</p>
         </div>
         <div>
           <span>AI 3</span>
           <strong>{t("설명가능 AI(XAI) + 직원용 리포트")}</strong>
-          <p>{t("설명가능 AI(XAI)가 4개 지표의 영향을 추출하면 LLM이 직원용 설명문으로 바꿉니다. 보험료·인수·케어는 사람이 최종 결정합니다.")}</p>
+          <p>{t("4개 지표와 Reason Code를 LLM이 직원이 읽기 쉬운 설명으로 바꿉니다. 직원이 월별 결과와 연간 환급을 최종 승인합니다.")}</p>
         </div>
       </div>
 
@@ -2018,8 +2015,8 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
         <ArrowRight size={18} />
         <div className="flow-step">
           <span>3</span>
-          <strong>{t("12개월 평가와 사람 검토")}</strong>
-          <p>{t("판정(우대·케어)은 독립 계산합니다. 요율 후보 결합 시 케어 검토 중에는 우대 지급이 유예됩니다. 케어는 같은 달 이동 변화와 위험행동 변화가 모두 있을 때만 검토를 제안합니다.")}</p>
+          <strong>{t("월별 3단계와 연간 환급")}</strong>
+          <p>{t("매월 4개 지표로 Favorable·Standard·Care를 계산하고, 12개월 점수로 연간 환급을 제안합니다. Care 자체가 환급을 자동으로 줄이지 않습니다.")}</p>
         </div>
       </div>
 
@@ -2069,8 +2066,8 @@ function ProductBlueprintPanel({ directory }: { directory: PersonaDirectoryRespo
           <div className="evidence-checklist">
             <div>
               <span>{t("비용 검증")}</span>
-              <strong>{t("평균 할인율 변화가 설명 가능한 범위인지 확인")}</strong>
-              <p>{t("두 산식을 각각 계산해 기존 할인 구조와 비교하고, 변화폭이 과도하지 않은지 확인합니다.")}</p>
+              <strong>{t("평균 환급률 변화가 설명 가능한 범위인지 확인")}</strong>
+              <p>{t("두 산식을 각각 계산해 기존 환급 구조와 비교하고, 변화폭이 과도하지 않은지 확인합니다.")}</p>
             </div>
             <div>
               <span>{t("공정성 조건")}</span>
@@ -2118,7 +2115,7 @@ function CandidateSearchChart() {
 
       <div className="selection-criteria">
         <span>{t("선택 기준")}</span>
-        <strong>{t("평균 할인율 변화가 과도하지 않음 · 위험변화군 분리 가능 · 외부 안정주행 오분류 방지")}</strong>
+        <strong>{t("평균 환급률 변화가 과도하지 않음 · 위험변화군 분리 가능 · 외부 안정주행 오분류 방지")}</strong>
       </div>
     </div>
   );

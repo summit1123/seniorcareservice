@@ -2270,6 +2270,40 @@ p {
   border-bottom: none;
 }
 
+.pair-compare tbody tr.pair-section-row {
+  border-bottom: none;
+}
+
+.pair-compare .pair-section-row th {
+  width: auto;
+  padding: 13px 8px 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: .01em;
+}
+
+.pair-compare .pair-section-row:first-child th {
+  padding-top: 8px;
+}
+
+.pair-compare .pair-section-row.risk th {
+  color: var(--care);
+  padding-top: 15px;
+}
+
+.pair-compare .pair-explainer-row {
+  border-bottom: none;
+}
+
+.pair-compare .pair-explainer-row td {
+  padding: 8px;
+  text-align: center;
+  color: var(--faint);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
 .pair-compare tbody th {
   text-align: left;
   padding: 6px 8px;
@@ -2305,8 +2339,29 @@ p {
   font-weight: 800;
 }
 
+.pair-compare tr.is-pivot th {
+  color: var(--primary);
+  font-weight: 850;
+}
+
 .pair-compare tr.is-strong td {
+  background: var(--primary-strong);
+  color: #fff;
   font-weight: 800;
+}
+
+.pair-compare tr.is-strong th {
+  background: var(--primary-strong);
+  color: #dcecff;
+  font-weight: 850;
+}
+
+.pair-compare tr.is-strong th:first-child {
+  border-radius: 9px 0 0 9px;
+}
+
+.pair-compare tr.is-strong td:last-child {
+  border-radius: 0 9px 9px 0;
 }
 
 .pair-compare > p {
@@ -2439,12 +2494,13 @@ p {
   line-height: 1.15;
 }
 
-.decision-money-stack .money-delta {
+.decision-money-stack .refund-rate-difference {
+  border-color: color-mix(in srgb, var(--amber) 30%, var(--line));
   background: var(--amber-soft);
 }
 
-.money-delta strong {
-  color: var(--orange);
+.decision-money-stack .refund-rate-difference strong {
+  color: var(--amber);
 }
 
 .decision-reason-box strong {
@@ -3554,7 +3610,7 @@ p {
 .monthly-integrated-formula {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: 250px minmax(510px, 1fr) 245px;
+  grid-template-columns: minmax(170px, 0.72fr) minmax(0, 1.45fr) minmax(185px, 0.83fr);
   align-items: center;
   gap: 10px 12px;
   padding: 11px 4px 1px;
@@ -3589,7 +3645,7 @@ p {
   line-height: 1.35;
   grid-column: auto;
   font-weight: 850;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .score-meter i,
@@ -6632,7 +6688,8 @@ body,
   gap: 8px 12px;
   align-items: center;
   justify-self: end;
-  width: 245px;
+  width: 100%;
+  min-width: 0;
   box-sizing: border-box;
   margin-top: 0;
   padding: 9px 11px;

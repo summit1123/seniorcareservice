@@ -84,7 +84,6 @@ function sandboxDecision(driver: StudioDriver, rules: ProductRules): SandboxResu
     careRiskThreshold: rules.care_risky_behavior_threshold,
     rewardDiscount: rules.reward_discount_rate_pct ?? 0,
     rewardBonusFloor: rules.reward_bonus_floor_pct ?? 1,
-    careDiscountReduction: rules.care_discount_reduction_pct ?? 0,
     candidateDiscountCap: rules.candidate_discount_cap_pct ?? 100
   });
 }
